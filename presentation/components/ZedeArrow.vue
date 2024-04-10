@@ -17,7 +17,7 @@ const props = defineProps<{
   x2: number | string
   y2: number | string
   width?: number | string
-  style?: '' | 'dashed'
+  stroke?: '' | 'dashed'
   color?: string
 }>()
 
@@ -30,8 +30,8 @@ const svgStyle = computed(() => {
   return {
     width: diffX.value + 10,
     height: diffY.value + 10,
-    let: `${+props.x1 - 5}px`,
-    top: `${+props.y1 - 5}px`,
+    left: `${+minX.value - 5}px`,
+    top: `${+minY.value - 5}px`,
   }
 })
 
@@ -60,7 +60,7 @@ const id = String(`svg-${Math.random()}`)
     <path
       :d="`M${5 + +x1 - minX} ${5 + +y1 - minY}, L${5 + +x2 - minX} ${5 + +y2 - minY}`"
       :stroke="color || 'currentColor'"
-      :stroke-dasharray="style === 'dashed' ? '5,5' : 'none'"
+      :stroke-dasharray="stroke === 'dashed' ? '5,5' : 'none'"
       fill="none"
       stroke-width="1.5"
       :marker-end="`url(#${id})`"

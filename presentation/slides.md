@@ -372,7 +372,7 @@ clicks: 7
 ---
 layout: statement
 variant: second
-clicks: 10
+clicks: 8
 ---
 
 # Передача по ссылке
@@ -405,7 +405,7 @@ console.log(obj2) // { item: 'initial' }
 ---
 layout: statement
 variant: second
-clicks: 10
+clicks: 8
 ---
 
 # Call-by-Sharing
@@ -474,7 +474,7 @@ layout: fact
 variant: third
 ---
 
-![img_3.png](img_3.png)
+![tdz](/img/tdz.png)
 
 ---
 layout: statement

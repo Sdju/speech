@@ -2,5 +2,8 @@
 	"dependencies": {
 		"@iconify/json": "^2.2.197",
 		"seedrandom": "^3.0.5"
+	},
+	"devDependencies": {
+		"playwright-chromium": "^1.43.0"
 	}
 }

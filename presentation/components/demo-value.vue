@@ -3,7 +3,7 @@
 import {reactive, watch} from "vue";
 import { useNav } from "@slidev/client";
 
-const { clicks } = useNav()
+const { clicks, currentSlideNo } = useNav()
 
 
 const valueA = reactive({
@@ -15,6 +15,9 @@ const valueB = reactive({
 })
 
 watch(clicks, () => {
+  if (currentSlideNo.value !== 15) {
+    return
+  }
   if (clicks.value === 3) {
     valueB.top = '82px'
   }
@@ -44,7 +47,7 @@ watch(clicks, () => {
       v-click="3"
     >value</div>
     <div
-      class="absolute left-[340px] w-[120px] h-[60px] bg-orange-2 rd-2 text-center text-xl c-black font-600 vertical-mid line-height-[60px]"
+      class="absolute left-[340px] w-[120px] h-[60px] rd-2 text-center text-xl c-black font-600 vertical-mid line-height-[60px]"
       :class="valueB.color"
       :style="valueB"
       key="valueB"
