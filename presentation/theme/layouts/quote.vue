@@ -1,7 +1,12 @@
 <template>
-  <div class="slidev-layout quote">
-    <div class="my-auto">
-      <slot />
-    </div>
+  <div class="slidev-layout quote flex flex-col justify-center">
+    <slot />
   </div>
 </template>
+<style>
+.quote {
+  p {
+    @apply text-center;
+  }
+}
+</style>

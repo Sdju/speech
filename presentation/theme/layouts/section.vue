@@ -5,3 +5,10 @@
     </div>
   </div>
 </template>
+<style>
+.section {
+  x {
+    color: #a1e3a1;
+  }
+}
+</style>

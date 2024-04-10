@@ -2,72 +2,78 @@
 theme: ./theme
 highlighter: shiki
 css: unocss
-colorSchema: light
+colorSchema: dark
 transition: fade-out
 mdc: true
 growSeed: 4
 title: The Progressive Path
----
-
-Test
-
----
 layout: intro
 author: Денис Чернов
 name: 'JS, которого нет'
 twitch: '@izede'
 discord: '@izede'
 telegram: '@zede1697'
+variant: first
 ---
 
 ---
-layout: statements
-variant: one
----
-
-# Предупреждение
-
-Будем рассматривать преимущественно v8
-- Самый популярный
-- Самый продвинутый
-- Больше всего открытой информации
-- Все остальные движки +/- стремятся или повторяют v8
-
----
-layout: statements
-variant: one
+layout: statement
+variant: first
 ---
 
 # Цели
 
+<v-clicks>
+
 - Узнать о разных сторонах JavaScript
-- Осознать разницу подходов к восприятию JavaScript​
+- Осознать разницу подходов к восприятию JavaScript
 - Задать очень много вопросов себе
 
----
-layout: quote
-variant: second
----
-
-# А в чем проблема?
-
-> Самый неправильно понятый язык программирования в мире стал самым популярным в мире языком программирования © - Дуглас Крокфорд
+</v-clicks>
 
 ---
 layout: quote
 variant: second
 ---
 
-# А в чем проблема?
+Самый неправильно понятый язык программирования в мире стал самым популярным в мире языком программирования
 
->  Я подчеркиваю слово «Путешествие», потому что знание JS не является пунктом назначения, это направление © - Кайл Симпсон
+_Дуглас Крокфорд_
+
+---
+layout: quote
+variant: first
+---
+
+<p>Я подчеркиваю слово <span v-mark.orange>Путешествие</span>, потому что знание JS не является пунктом назначения, это направление</p>
+
+_Кайл Симпсон_
 
 ---
 layout: fact
-variant: third
+variant: second
 ---
 
 JavaScript **не** существует в единственной форме!
+
+---
+layout: fact
+variant: second
+---
+<img class="center w-[240px]" src="/img/iceberg.png" />
+<div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
+<img class="center w-[240px]" src="/img/iceberg.png" />
+
+<div class="absolute center w-full h-full text-lg">
+  <div class="absolute absolute top-[65px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 pr-[50px]">JS на практике</div>
+  <div class="absolute absolute top-[125px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 pr-[50px]">JS на собеседованиях</div>
+  <div class="absolute absolute top-[185px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 pr-[50px]">JS на MDN</div>
+  <div class="absolute absolute top-[245px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 pr-[50px]">JS в спеке HTML</div>
+  <div class="absolute absolute top-[305px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 pr-[50px]">JS в спеке ECMA-262</div>
+  <div class="absolute absolute top-[365px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 pr-[50px]">реализация JS в джвижках</div>
+  <div class="absolute absolute top-[425px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 pr-[60px]">оптимизации JS под движки</div>
+  <div class="absolute absolute top-[485px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 pr-[50px]">JS на практике</div>
+</div>
 
 ---
 layout: section
@@ -77,7 +83,19 @@ variant: third
 # Мифический JS
 
 ```mermaid
+---
+config:
+  theme: base
+  themeVariables:
+    primaryColor: '#e2ffe2'
+    primaryTextColor: 'green'
+    primaryBorderColor: 'green'
+    lineColor: '#4E9F4EFF'
+---
+
 flowchart LR
+  classDef default rx:10px,ry:10px
+  
   A[Прагматичный\nJavaScript] --> B
   B[JavaScript\nна собеседованиях] --> C[Vue]
   C[JavaScript\nкак ему обучают]
@@ -85,53 +103,72 @@ flowchart LR
 
 ---
 layout: section
-variant: third
+variant: second
 ---
 
 # Задокументированный JS
 
 ```mermaid
+---
+config:
+  theme: base
+  themeVariables:
+    primaryColor: '#e2e3ff'
+    primaryTextColor: '#003180'
+    primaryBorderColor: '#003180'
+    lineColor: '#003180'
+---
+
 flowchart LR
-  A[JavaScript\nсогласно\nECMAScript] --> B
-  B[JavaScript\nкак часть\nHost-среды] --> C[Vue]
-  C[JavaScript\nотносительно\nJS-движка]
+  classDef default rx:10px,ry:10px
+  A[JavaScript\nсогласно ECMAScript] --> B
+  B[JavaScript\nкак часть Host-среды] --> C[Vue]
+  C[расширение\nJavaScript JS-движком]
 ```
 
 ---
 layout: section
-variant: third
+variant: first
 ---
 
 # JS в действии
 
 ```mermaid
+---
+config:
+  theme: base
+  themeVariables:
+    primaryColor: '#FFE7C0'
+    primaryTextColor: '#FF751D'
+    primaryBorderColor: '#FF751D'
+    lineColor: '#FF751D'
+---
+
 flowchart LR
-  A[Прагматичный\nJavaScript] --> B
-  B[JavaScript\nна собеседованиях] --> C[Vue]
-  C[JavaScript\nкак ему обучают]
+  classDef default rx:10px,ry:10px
+  A[JavaScript\nкак часть Host-среды] --> B
+  B[JavaScript\nкак часть JS-движка] --> C[Vue]
+  C[JavaScript\nкак этап в JS-движке]
 ```
 
 ---
-layout: fact
+layout: statement
 variant: third
----
-
-![img.png](img.png)
-
----
-layout: statements
-variant: one
 ---
 
 # Прагматичный JavaScript
 
-- Читабельность / поддерживаемость важнее написания "идеального кода"
+<v-clicks>
+
+- Удобство важнее написания _идеального кода_
 - TypeScript
-- "Вера в магию" движков JS
+- _Вера в магию_ движков JS
 - Работает — не трогай!
 
+</v-clicks>
+
 ---
-layout: statements
+layout: statement
 variant: one
 ---
 
@@ -140,9 +177,18 @@ variant: one
 ````md magic-move
 ```ts
 // [['a', 1], ['b', 2]] => { a: 2, b: 4 }
+array.reduce((a,[b,c])=>{
+  return {...a,[b]:c*2}
+},
+{})
+```
+
+```ts
+// [['a', 1], ['b', 2]] => { a: 2, b: 4 }
 array.reduce((a, [b, c]) => {
   return { ...a, [b]: c * 2 }
 }, {})
+⠀
 ```
 
 ```ts
@@ -150,6 +196,7 @@ array.reduce((a, [b, c]) => {
 pairs.reduce((acc, [key, value]) => {
   return { ...acc, [key]: value * 2 }
 }, {})
+⠀
 ```
 
 ```ts
@@ -162,21 +209,27 @@ pairs.reduce((acc, [key, value]) => {
 ````
 
 ---
-layout: statements
+layout: statement
 variant: second
 ---
 
 # JavaScript мира собеседований
 
-- Основная зона для мифов
+<v-clicks>
+
+- Больший уровень погружения
+- Основная зона для _мифов_
 - Сами придумываем правила по которым собеседуем
 
+</v-clicks>
+
 ---
-layout: statements
+layout: statement
 variant: second
 ---
 
-# Передача по ссылке или по значению?
+# Типичный вопрос
+Что в JS передается по ссылке, а что по значению?
 
 <v-clicks>
 
@@ -191,7 +244,7 @@ variant: second
 ---
 
 ````md magic-move
-```ts {1|3-6|8|10}
+```ts {*|1|3-5|7|9}
 let num = 10
 
 function changeStuff(a) {
@@ -201,6 +254,12 @@ function changeStuff(a) {
 changeStuff(num)
 
 console.log(num)
+⠀
+⠀
+⠀
+⠀
+⠀
+⠀
 ```
 
 ```ts
@@ -213,6 +272,12 @@ function changeStuff(a) {
 changeStuff(num)
 
 console.log(num) // 10 - Ничего не поменялось
+⠀
+⠀
+⠀
+⠀
+⠀
+⠀
 ```
 
 ```ts {*|2,6,9,12}
@@ -228,6 +293,9 @@ changeStuff(num, obj)
 
 console.log(num) // 10
 console.log(obj)
+⠀
+⠀
+⠀
 ```
 
 ```ts
@@ -243,6 +311,9 @@ changeStuff(num, obj)
 
 console.log(num) // 10
 console.log(obj) // { item: 'changed' }
+⠀
+⠀
+⠀
 ```
 
 ```ts {*|3,8,11,15}
@@ -291,6 +362,7 @@ f(a)
 ---
 layout: statement
 variant: second
+clicks: 7
 ---
 
 # Передача по значению
@@ -300,9 +372,10 @@ variant: second
 ---
 layout: statement
 variant: second
+clicks: 10
 ---
 
-# Передача по значению
+# Передача по ссылке
 
 <demo-refrerence />
 
@@ -332,6 +405,7 @@ console.log(obj2) // { item: 'initial' }
 ---
 layout: statement
 variant: second
+clicks: 10
 ---
 
 # Call-by-Sharing
@@ -342,6 +416,8 @@ variant: second
 layout: statement
 variant: second
 ---
+
+# Что в итоге?
 
 <v-clicks>
 
@@ -373,31 +449,30 @@ layout: statement
 variant: third
 ---
 
-# Устаревшее ключевое слово var
-
-![img_2.png](img_2.png)
+<div flex="~ col items-center gap-2" class="font-size-[10rem] mt-[-5rem]" p4>
+  <div relative :class="$clicks >= 1 ? 'op40 duration-800 scale-70 pb-[10px]' : ''" transition v-mark.red.strike-through="{at: 2, strokeWidth: 10}"><pre>var</pre></div>
+  <div v-click="2" text-7xl class="mt-[-6rem]"><strong>Устарел!</strong></div>
+</div>
 
 ---
 layout: statement
 variant: third
 ---
 
-# Устаревшее ключевое слово var
+# _Устаревшее_ ключевое слово `var`
 
 <v-clicks>
 
-- В спецификации даже намека на устаревание var — нет
-- Производительность var может быть значительно выше
-- Огромный объем кода использует var
+- В спецификации даже намека на устаревание `var` — нет
+- Производительность `var` может быть значительно выше
+- Огромный объем кода использует `var`
 
 </v-clicks>
 
 ---
-layout: statement
+layout: fact
 variant: third
 ---
-
-# Действительно медленнее?
 
 ![img_3.png](img_3.png)
 
@@ -406,13 +481,13 @@ layout: statement
 variant: third
 ---
 
-# Так что всё-таки с var?
+# Так что всё-таки с `var`?
 
 <v-clicks>
 
 - На практике его можно частично считать устаревшим
-- Сборщики / Транспайлеры приводят let / const к var
-- var бывает крайне важен для производительности
+- Сборщики / Транспайлеры приводят `let` / `const` к `var`
+- `var` бывает крайне важен для производительности
 - По спецификации — устаревания нет
 
 </v-clicks>
@@ -427,7 +502,7 @@ variant: first
 <v-clicks>
 
 - ECMAScript (ECMA-262)
-- JS в "вакууме"
+- JS в _вакууме_
 - Созданы свои языки для спецификации
 - Единственный источник истины про JS
 - Достаточно не противоречить спецификации​
@@ -439,7 +514,7 @@ layout: statement
 variant: first
 ---
 
-# "Заклинания" из спецификации
+# _Заклинания_ из спецификации
 
 <v-clicks>
 
@@ -447,15 +522,9 @@ variant: first
 - Свои абстрактные методы
 - Созданы свои языки для спецификации
 - Свои уникальные языки для описания алгоритмов
-- Описывает концепты, которые еще предстоит дореализовать Host-среде
+- Есть концепты, которые еще предстоит реализовать Host-среде
 
 </v-clicks>
-
-<v-click>
-
-> Не пытайтесь искать аналогий в JS!
-
-</v-click>
 
 ---
 layout: statement
@@ -474,31 +543,40 @@ variant: first
 ---
 layout: fact
 variant: first
+clicks: 5
 ---
 
-![img_4.png](img_4.png)
-
----
-layout: fact
-variant: first
----
-
-![img_5.png](img_5.png)
-![img_6.png](img_6.png)
+<SpecExmaple1 />
 
 ---
 layout: fact
 variant: first
+clicks: 5
 ---
 
-![img_7.png](img_7.png)
+<SpecExample2 />
 
 ---
 layout: statement
 variant: second
 ---
 
-# JavaScript относительно Host-среды
+# Итого
+
+<v-clicks>
+
+- Не рассчитана на JS-программистов
+- Требует очень много времени и усилий
+- Полученные знания сложно применить на практике
+
+</v-clicks>
+
+---
+layout: statement
+variant: second
+---
+
+# JavaScript в среде обитания
 
 Host-среда - оболочка в рамках которых JavaScript может функционировать
 
@@ -519,8 +597,6 @@ variant: second
 
 # Спецификация в HTML
 
-Host-среда - оболочка в рамках которых JavaScript может функционировать
-
 <v-clicks>
 
 - Дружелюбная к начинающим
@@ -533,22 +609,36 @@ layout: fact
 variant: second
 ---
 
-![img_8.png](img_8.png)
+<SpecExmaple3 />
 
 ---
 layout: fact
 variant: second
 ---
 
-![img_9.png](img_9.png)
-
-- Очередь задач это набор, а не очередь.
-
-Так как модель выполнения Event Loop-а забирает первую возможную для запуска задачу из выбранной очереди, а не снимает первую задачу
+<SpecExmaple4 />
 
 ---
 layout: statement
-variant: second
+variant: first
+---
+
+# Предупреждение
+
+Будем рассматривать преимущественно v8
+
+<v-clicks>
+
+- Самый популярный
+- Больше всего открытой информации
+- Самый навороченный
+- Многое справедливо и для других движков
+
+</v-clicks>
+
+---
+layout: statement
+variant: first
 ---
 
 # JavaScript в v8
@@ -564,7 +654,7 @@ variant: second
 
 ---
 layout: statement
-variant: third
+variant: first
 ---
 
 # Cвои термины
@@ -579,7 +669,7 @@ variant: third
 
 ---
 layout: fact
-variant: third
+variant: first
 ---
 
 ```mermaid
@@ -618,35 +708,85 @@ flowchart LR
 
 ---
 layout: fact
-variant: third
+variant: first
 ---
 
-![img_10.png](img_10.png)
+<div class="w-full grid grid-cols-[300px_1fr] gap-2">
 
----
-layout: fact
-variant: third
----
+````md magic-move
+```js {*|*}
+function sum(a, b, c) {
+  return a + b + c;
+}
 
-![img_11.png](img_11.png)
+sum(1, 6, 9)
+```
+```js
+const c = 9
+function sum(a, b) {
+  return a + b + c;
+}
 
----
-layout: fact
-variant: third
----
+sum(1, 6)
+```
+```js
+const myConstantC = 9
+function sum(a, b) {
+  return a + b + myConstantC;
+}
 
-![img_12.png](img_12.png)
+sum(1, 6)
+```
+````
 
----
-layout: fact
-variant: third
----
+````md magic-move {at:1}
+```text {*|5-10|*|*}
+Bytecode length: 12
+Parameter count 4
+Register count 1
+Frame size 8
+  Ldar a1
+  Add a0, [0]
+  Star0
+  Ldar a2
+  Add r0, [1]
+  Return
+Constant pool (size = 0)
 
-![img_13.png](img_13.png)
+
+
+
+⠀
+```
+```text {*|5-11|12-100|16|8-9|*}
+Bytecode length: 14
+Parameter count 3
+Register count 1
+Frame size 8
+  Ldar a1
+  Add a0, [0]
+  Star0
+  LdaImmutableCurrentContextSlot [2]
+  ThrowReferenceErrorIfHole [0]
+  Add r0, [1]
+  Return
+Constant pool (size = 1)
+0000023D00119591: [FixedArray] in OldSpace
+ - map: 0x023d00000565 <Map(FIXED_ARRAY_TYPE)>
+ - length: 1
+           0: 0x023d001193a1 <String[11]: #myConstantC>
+```
+````
+
+</div>
+
+<style>
+:deep(.slidev-code) { height: 100%; }
+</style>
 
 ---
 layout: statement
-variant: third
+variant: first
 ---
 
 # Что стоит учитывать о v8?

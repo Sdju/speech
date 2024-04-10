@@ -1,5 +1,6 @@
 {
 	"dependencies": {
-		"@iconify/json": "^2.2.197"
+		"@iconify/json": "^2.2.197",
+		"seedrandom": "^3.0.5"
 	}
 }
