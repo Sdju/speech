@@ -1,0 +1,19 @@
+{
+  "name": "slideshow",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "slidev build",
+    "dev": "slidev",
+    "eject": "slidev theme eject",
+    "export": "slidev export"
+  },
+  "dependencies": {
+    "@iconify/json": "^2.2.192",
+    "@slidev/cli": "^0.48.7",
+    "@slidev/theme-default": "^0.25.0",
+    "@slidev/theme-seriph": "latest",
+    "slidev-theme-vuetiful": "^0.3.1",
+    "vue": "^3.4.21"
+  }
+}
