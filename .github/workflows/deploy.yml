@@ -30,7 +30,7 @@ jobs:
         run: cd jstdne
 
       - name: Install dependencies
-        run: pnpm install
+        run: npm install
 
       - name: Build
         run: npm run build -- --base /speech/
