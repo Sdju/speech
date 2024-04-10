@@ -27,10 +27,7 @@ jobs:
           node-version: 'lts/*'
 
       - name: Install dependencies
-        run: cd jstdne
-
-      - name: Install dependencies
-        run: npm install
+        run: cd jstdne & npm install
 
       - name: Build
         run: npm run build -- --base /speech/

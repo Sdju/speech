@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@iconify/json':
+    specifier: ^2.2.197
+    version: 2.2.199
   '@slidev/cli':
     specifier: ^0.48.2
     version: 0.48.8(@types/markdown-it@13.0.7)(postcss@8.4.38)
@@ -14,6 +17,9 @@ dependencies:
   '@slidev/theme-seriph':
     specifier: latest
     version: 0.25.0
+  seedrandom:
+    specifier: ^3.0.5
+    version: 3.0.5
   vue:
     specifier: ^3.4.21
     version: 3.4.21(typescript@5.4.3)
@@ -625,6 +631,13 @@ packages:
     resolution: {integrity: sha512-Aab6SqkORaTJ1W+ooufn6C8BsBitrn3uk8iRQLPA6pjhyvQAhkKCGMctyXIL5ZjrycnoFVsZ4mx7KnwEMra8qg==}
     dependencies:
       '@iconify/types': 2.0.0
+    dev: false
+
+  /@iconify/json@2.2.199:
+    resolution: {integrity: sha512-dmdbHES8HmvGYwdbse8g7ZO4Grvi35NGuaVA8+R5alkf1Ky6Y6atlzQJPhj7a6UN/+gM5qOzQ3Tcc6Fna7Rv5A==}
+    dependencies:
+      '@iconify/types': 2.0.0
+      pathe: 1.1.2
     dev: false
 
   /@iconify/types@2.0.0:
@@ -4540,6 +4553,10 @@ packages:
     dependencies:
       extend-shallow: 2.0.1
       kind-of: 6.0.3
+    dev: false
+
+  /seedrandom@3.0.5:
+    resolution: {integrity: sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==}
     dev: false
 
   /semver@6.3.1:
