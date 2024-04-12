@@ -66,7 +66,7 @@ variant: second
 
 <div class="absolute center w-full h-full text-lg">
   <div class="absolute absolute top-[65px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 pr-[50px]">JS на практике</div>
-  <div class="absolute absolute top-[125px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 pr-[50px]">JS на собеседованиях</div>
+  <div class="absolute absolute top-[125px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 pr-[50px]"><span class="bg-[#00000025]">JS на собеседованиях</span></div>
   <div class="absolute absolute top-[185px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 pr-[50px]">JS на MDN</div>
   <div class="absolute absolute top-[245px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 pr-[50px]">JS в спеке HTML</div>
   <div class="absolute absolute top-[305px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 pr-[50px]">JS в спеке ECMA-262</div>
@@ -819,9 +819,10 @@ variant: fourth
 </v-clicks>
 
 ---
-layout: final
-author: Денис Чернов
+layout: intro
+name: 'Спасибо за внимание'
 twitch: '@izede'
 discord: '@izede'
 telegram: '@zede1697'
+variant: first
 ---
