@@ -51,25 +51,32 @@ layout: cover
 
 # Vue renderer
 
-**Renderer** - Механизм связи между VDOM и внешним миром (хост-средой)
+**Renderer** - Механизм связи между **VDOM** и внешним миром (**host-средой**)
 
 <v-click>
 
 **Host-среда** - окружение в рамках которого работает приложение
 
-Может выступать:
-
 </v-click>
 
-<v-clicks at="2">
+---
+layout: cover
+---
 
-- DOM
-- строка (SSR)
-- canvas
-- pdf
-- и тп
-
-</v-clicks>
+<div class="relative w-full h-full top-[0] lef-[0]">
+  <div class="w-[min-content] aspect-ratio-1/1 p-1 bg-green rd-full text-4xl w-[max-content] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Vue</div>
+  <ZedeArrow x1="435" y1="206" x2="435" y2="114" color="#DADADA" />
+  <div class="text-2xl w-[max-content] absolute top-[66px] left-[394px]" >DOM</div>
+  <ZedeArrow x1="65" y1="123" x2="65" y2="175" color="#DADADA" />
+  <VueGraph label="string" class="text-2xl w-[max-content] absolute top-[130px] left-[550px]"  />
+  <ZedeArrow x1="65" y1="123" x2="65" y2="175" color="#DADADA" />
+  <VueGraph label="canvas" class="text-2xl w-[max-content] absolute top-[360px] left-[480px]" />
+  <ZedeArrow x1="65" y1="210" x2="65" y2="262" color="#DADADA" />
+  <VueGraph label="pdf" class="text-2xl w-[max-content] absolute top-[360px] left-[100px]" />
+  <ZedeArrow x1="65" y1="210" x2="65" y2="262" color="#DADADA" />
+  <VueGraph label="*ваше фанатзия*" class="text-2xl w-[max-content] absolute top-[150px] left-[100px]" />
+  <ZedeArrow x1="65" y1="210" x2="65" y2="262" color="#DADADA" />
+</div>
 
 <!--
 По своей сути Vue Renderer это то самое соединительное звено, которые превращают виртуальный дом в полне себе реальный.
@@ -85,7 +92,7 @@ layout: cover
 
 # Vue custom renderer
 
-Создать Custom Renderer, значит описать, как взаимодействовать Vue приложениям с Host-средой.
+**Custom Renderer** - пользовательский адаптер между **Vue** и **Host-средой**.
 
 <v-click>
 
@@ -156,7 +163,7 @@ layout: cover
 # Небольшой пример
 
 ````md magic-move
-```html {*|1,2,4,5,8,9}
+```html {*|1,2,5}
 <article>
     <h1>
         Простой пример верстки
@@ -168,12 +175,12 @@ layout: cover
 </article>
 ```
 
-```html {1,2,4,5,8,9|3,7|6}
-<article> <- HostElement
-    <h1> <- HostElement
+```html {1,2,5|3,7|6}
+<article> <- Element
+    <h1> <- Element
         Простой пример верстки
     </h1>
-    <div> <- HostElement
+    <div> <- Element
         <!-- тут могут быть комментарии -->
         Текст статьи про верстку
     </div>
@@ -217,26 +224,15 @@ layout: cover
 ```
 ````
 
-<v-click>
+<v-clicks depth="2">
 
-```mermaid
----
-config:
-  theme: base
-  themeVariables:
-    primaryColor: '#e2e3ff'
-    primaryTextColor: '#003180'
-    primaryBorderColor: '#003180'
-    lineColor: '#003180'
-    edgeLabelBackground: 'white'
----
+- `HostElement` - это **Element** окружения
+- `HostNode` - это **Node** окружения
+  - может быть текстовой нодой
+  - может быть комментарием
+  - `HostElement` это также `HostNode`
 
-flowchart LR
-  classDef default rx:10px,ry:10px
-  A[HostElement] --> B[HostNode]
-```
-
-</v-click>
+</v-clicks>
 
 <!--
 Давайте еще разберем небольшой примерчик
@@ -250,36 +246,7 @@ flowchart LR
 Если мы же помним DOM очень хорошо, то вспомним что это не просто Node, а TextNode и CommentNode
 
 Таким образом Node для рендерера это HostNode. И еще важный момент, что каждый HostElement это еще и HostNode, прямо как в HTML Element это Node с типом Element
--->
 
----
-layout: cover
----
-
-# Renderer Params
-
-```html
-<article> <- HostElement
-    <h1> <- HostElement
-        Простой пример верстки <- HostNode
-    </h1>
-    <div> <- HostElement
-        <!-- тут могут быть комментарии --> <- HostNode
-        Текст статьи про верстку <- HostNode
-    </div>
-</article>
-```
-
-<v-clicks depth="2">
-
-- `HostElement` - это Element реального мира
-- `HostNode` - это Node реального мира
-  - может быть текстовой нодой
-  - может быть комментарием
-
-</v-clicks>
-
-<!--
 Таким образом, для рендерера важно 2 типа: HostNode и HostElement
 
 Причем стоит учитывать, что HostNode может быть еще как текстовой, так и комментарием
