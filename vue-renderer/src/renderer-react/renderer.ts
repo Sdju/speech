@@ -157,14 +157,14 @@ export const createApp = (rootComponent: Component, rootProps?: Record<string, u
 
   app.mount = (doc: HTMLElement): any => {
     const container = createNode('root')
-    container.root = () => {
+    const root = () => {
       ;[container.children, container.setChildren] = useState(container.children)
 
       return createElement(Fragment, null, ...container.children.map(child => child.render()))
     }
     const proxy = mount(container)
 
-    createRoot(doc).render(createElement(container.root))
+    createRoot(doc).render(createElement(root))
 
     return proxy
   }

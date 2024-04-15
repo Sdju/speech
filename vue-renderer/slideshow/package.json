@@ -9,6 +9,7 @@
     "export": "slidev export"
   },
   "dependencies": {
+    "@tsconfig/node18": "^18.2.4",
     "@iconify/json": "^2.2.192",
     "@slidev/cli": "^0.48.7",
     "@slidev/theme-default": "^0.25.0",
