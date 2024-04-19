@@ -2,7 +2,12 @@
 layout: clear
 growSeed: 14
 class: pt-[100px] pl-[100px]
-bg.offset: 0 0
+bg.green: 308 359 280 277
+bg.black: 285 320 235 232
+bg.accent: 287 344 182 192
+bg.green.trans: rotate(-20.8609 308.673 359.341)
+bg.black.trans: rotate(-20.8609 285.307 320.668)
+bg.accent.trans: rotate(-20.8609 287.186 344.356)
 ---
 
 <div class="mb-[50px] flex flex-row">
@@ -34,21 +39,63 @@ bg.offset: 0 0
 
 ---
 layout: clear
-class: flex flex-col justify-center
+class: flex flex-col justify-center items-center
+bg.green: 327 409 523 260
+bg.black: 289 534 577 372
+bg.accent: 269 283 405 591
+bg.green.trans: rotate(-40.4524 523.141 260.053)
+bg.black.trans: rotate(-40.4524 577.792 372.724)
+bg.accent.trans: rotate(-40.4524 405.31 591.236)
 ---
+
+<style>
+.item {
+  @apply text-sm bg-black p-[12px] rd-[8px] flex flex-row items-center gap-[8px]
+}
+.item-icon {
+  @apply w-[27px] h-[27px] rd-[4px] flex items-center justify-center;
+  background-color: #D9D9D920;
+}
+</style>
 
 <img src="/img/smlab.png" class="w-[240px]" />
 
-Ведущий разработчик в платформенной команде
+<div class="-mt-2 text-xl">Ведущий разработчик в платформенной команде</div>
 
-<v-clicks>
-
-- Выбираем подходы и инструменты
-- Разработка внутренних инструментов
-- Помогаем с внедрением и проработкой решений
-- Глубоко погружаемся в существующие инструменты
-
-</v-clicks>
+<div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr_1fr] gap-[14px]" mt-12>
+  <div v-click="1" class="item">
+    <div class="item-icon">
+      <material-symbols-light-checklist-rtl-rounded />
+    </div>
+    <div>
+      Выбираем подходы и инструменты
+    </div>
+  </div>
+  <div v-click="2" class="item">
+    <div class="item-icon">
+      <material-symbols-tools-wrench />
+    </div>
+    <div>
+      Разработка внутренних инструментов
+    </div>
+  </div>
+  <div v-click="3" class="item">
+    <div class="item-icon">
+      <fa6-solid-gears />
+    </div>
+    <div>
+      Помогаем с внедрением и проработкой решений
+    </div>
+  </div>
+  <div v-click="4" class="item">
+    <div class="item-icon">
+      <icon-park-solid-bubble-chart />
+    </div>
+    <div>
+      Глубоко погружаемся в существующие инструменты
+    </div>
+  </div>
+</div>
 
 <!--
 <div class="flex flex-col gap-4">

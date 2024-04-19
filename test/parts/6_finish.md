@@ -1,10 +1,13 @@
 ---
 layout: cover
+class: text-center
 ---
 
 # Vue Vapor
 
-<div class="grid grid-cols-[310px_1fr] gap-2" >
+<div class="grid grid-cols-[1fr_200px_200px_1fr] gap-2" >
+
+<div />
 
 <v-clicks depth="2">
 

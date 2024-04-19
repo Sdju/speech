@@ -4,7 +4,13 @@ class: text-center
 ---
 
 <script setup>
+import {getCurrentInstance} from "vue";
+import VueConfetti from 'vue-confetti';
+import {useNav} from "@slidev/client"; 
 
+const instance = getCurrentInstance();
+instance.appContext.app.use(VueConfetti);
+console.log(instance);
 </script>
 
 # Поздравления!!!
@@ -70,6 +76,14 @@ layout: cover
 - Рендерер для **React**...
 
 </v-clicks>
+
+---
+layout: cover
+---
+
+<img class="absolute center w-[740px] ml-[80px]" src="/img/render.png" />
+<div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
+<img class="relative center w-[740px] ml-[80px]" src="/img/render.png" />
 
 ---
 layout: cover

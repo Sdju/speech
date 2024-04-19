@@ -70,19 +70,23 @@ layout: cover
 ---
 layout: cover
 dragPos:
-  e-dom: 463,101,71,32
-  e-string: 580,159,71,32
-  e-canvas: 558,383,71,32
-  e-pdf: 357,382,71,32
+  e-dom: 461,97,71,32
+  e-string: 579,158,71,32
+  e-canvas: 559,375,71,32
+  e-pdf: 364,381,71,32
   e-fan: 320,162,71,32
   a-1: 486,129,10,102
   a-2: 565,169,10,102,55
-  a-3: 550,298,10,102,137
-  a-4: 420,297,10,102,222
+  a-3: 547,291,10,102,137
+  a-4: 424,289,10,102,223
   a-5: 404,170,10,102,-58
+  vue: 461,250,60,60
 ---
 
-<div class="w-[min-content] line-height-[60px] text-center p-3 aspect-ratio-1/1 p-1 rd-full text-4xl w-[max-content] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Vue</div>
+<svg v-drag="'vue'" class="absolute top-0" width="60" height="60" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 196.32 170.02">
+  <path fill="#42b883" d="M120.83 0L98.16 39.26 75.49 0H0l98.16 170.02L196.32 0h-75.49z"/>
+  <path fill="#35495e" d="M120.83 0L98.16 39.26 75.49 0H39.26l58.9 102.01L157.06 0h-36.23z"/>
+</svg>
 
 <div v-click="1" v-drag="'e-dom'" class="text-2xl w-[max-content]" >DOM</div>
 <div v-click="2" v-drag="'e-string'" class="text-2xl w-[max-content]" >string</div>
@@ -198,7 +202,7 @@ layout: cover
 </article>
 ```
 
-```html {1,2,5|3,7|6}
+```html {1,2,5}
 <article> <- Element
     <h1> <- Element
         Простой пример верстки
@@ -210,12 +214,24 @@ layout: cover
 </article>
 ```
 
-```html {3,7,6|*}
-<article> <- Element
-    <h1> <- Element
+```html {1,2,5|3,7|6}
+<article> <- Element / HostElement
+    <h1> <- Element / HostElement
+        Простой пример верстки
+    </h1>
+    <div> <- Element / HostElement
+        <!-- тут могут быть комментарии -->
+        Текст статьи про верстку
+    </div>
+</article>
+```
+
+```html {3,7,6}
+<article> <- Element / HostElement
+    <h1> <- Element / HostElement
         Простой пример верстки <- Node
     </h1>
-    <div> <- Element
+    <div> <- Element / HostElement
         <!-- тут могут быть комментарии --> <- Node
         Текст статьи про верстку <- Node
     </div>
@@ -234,7 +250,7 @@ layout: cover
 </article>
 ```
 
-```html {3,7,6|1,2,4,5,8,9}
+```html {3,7,6}
 <article> <- HostElement
     <h1> <- HostElement
         Простой пример верстки <- HostNode
@@ -247,15 +263,21 @@ layout: cover
 ```
 ````
 
-<v-clicks depth="2">
+<ul>
+  <li v-click="3">
 
-- `HostElement` - это **Element** окружения
-- `HostNode` - это **Node** окружения
-  - может быть текстовой нодой
-  - может быть комментарием
-  - `HostElement` это также `HostNode`
+`HostElement` - это **Element** окружения
 
-</v-clicks>
+</li>
+<li v-click="9">
+
+`HostNode` - это **Node** окружения
+
+<ul>
+<li v-click="10">Может быть текстовой нодой</li>
+<li v-click="11">Может быть комментарием</li>
+<li v-click="12"><strong>HostElement</strong> это расширение <strong>HostNode</strong></li>
+</ul></li></ul>
 
 <!--
 Давайте еще разберем небольшой примерчик
@@ -280,6 +302,23 @@ layout: cover
 ---
 
 # Renderer Example
+
+<div class="grid grid-cols-[170px_1fr] gap-2" >
+<FileTree :files="[{
+    type: 'folder',
+    name: 'src/assets'
+  }, {
+    type: 'typescript',
+    name: 'src/renderer/index.ts',
+    highlighted: true
+  }, {
+    type: 'vue',
+    name: 'src/App.vue',
+  }, {
+    type: 'typescript',
+    name: 'src/main.ts',
+  }
+]" />
 
 ````md magic-move
 ```ts
@@ -328,6 +367,8 @@ export const createApp = renderer.createApp
 ```
 ````
 
+</div>
+
 <!--
 Теперь давайте посмотрим что нам нужно, чтобы реализовать свой собственный простейший рендерер
 
@@ -350,7 +391,23 @@ layout: cover
 
 # Подключаем рендерер
 
-### main.ts
+<div class="grid grid-cols-[170px_1fr] gap-2" >
+<FileTree :files="[{
+    type: 'folder',
+    name: 'src/assets'
+  }, {
+    type: 'typescript',
+    name: 'src/renderer/index.ts',
+  }, {
+    type: 'vue',
+    name: 'src/App.vue',
+  }, {
+    type: 'typescript',
+    name: 'src/main.ts',
+    highlighted: true
+  }
+]" />
+
 ````md magic-move
 ```ts
 import { createApp } from 'vue'
@@ -377,6 +434,8 @@ app.mount(document.querySelector('#app'))
 ```
 ````
 
+</div>
+
 <!--
 Теперь мы хотим использовать наш супер-пупер рендерер, вместо дефолтного вьюшного
 
@@ -393,7 +452,29 @@ layout: cover
 
 # Подготовка
 
-### nodeOps.ts
+<div class="grid grid-cols-[170px_1fr] gap-2 h-[100%]" >
+<FileTree :files="[{
+    type: 'folder',
+    name: 'src/assets'
+  }, {
+    type: 'typescript',
+    name: 'src/renderer/index.ts',
+  }, {
+    type: 'typescript',
+    name: 'src/renderer/nodeOps.ts',
+    highlighted: true
+  }, {
+    type: 'vue',
+    name: 'src/App.vue',
+  }, {
+    type: 'typescript',
+    name: 'src/main.ts'
+  }
+]" />
+
+<div class="bg-[var(--slidev-code-background)] my-[4px] rd-[4px] p-2 relative">
+<div v-click.hide="2" class="absolute top-0">
+
 ````md magic-move
 ```ts
 function noop(fn: string): any {
@@ -440,8 +521,20 @@ const nodeOps = {
   insertStaticContent: () => noop('insertStaticContent'),
 }
 ```
-
 ````
+
+</div>
+<div v-click="2" class="absolute top-0">
+
+```
+// [!code word:createComment]
+renderer-temp.ts:8 Uncaught (in promise) Error: no-op: createElement
+  ...
+```
+
+</div>
+</div>
+</div>
 
 <!--
 Теперь осталось лишь самое важное:
@@ -452,21 +545,7 @@ const nodeOps = {
 А вот и весь список всех возможных методов рендерера во Vue. По началу этот список может напгугать своим количеством. Но мы с вами последовательно изучим эти методы
 
 Поэтому не особо откладыва начинаем их изучение
--->
 
----
-layout: cover
----
-
-# Запуск
-
-```
-// [!code word:createComment]
-renderer-temp.ts:8 Uncaught (in promise) Error: no-op: createElement
-  ...
-```
-
-<!--
 Правда если мы сейчас запустим проект, то будет пустая страничка и примерно вот такая ошибка.
 
 Это знгачи, что все хорошо и наш рендерер подцепился и уже пытается брать методы рендерера. Но так как они еще не реализованы, то выкидывается лишь наша заглушка.

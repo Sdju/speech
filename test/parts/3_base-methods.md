@@ -4,7 +4,26 @@ layout: cover
 
 # Простейший DOM-рендерер
 
-App.vue
+<div class="grid grid-cols-[170px_1fr] gap-2" >
+<FileTree :files="[{
+    type: 'folder',
+    name: 'src/assets'
+  }, {
+    type: 'typescript',
+    name: 'src/renderer/index.ts',
+  }, {
+    type: 'typescript',
+    name: 'src/renderer/nodeOps.ts',
+  }, {
+    type: 'vue',
+    name: 'src/App.vue',
+    highlighted: true
+  }, {
+    type: 'typescript',
+    name: 'src/main.ts',
+  }
+]" />
+
 ```html
 <template>
     <article>
@@ -17,6 +36,8 @@ App.vue
     </article>
 </template>
 ```
+
+</div>
 
 <!--
 Давайте попробуем для начала вывести вот такой совершенно незамысловатый компонент App.vue
@@ -254,17 +275,17 @@ Vue понимает это автоматически, либо из парам
 ---
 layout: cover
 dragPos:
-  circle-1: 466,101,60,60
-  circle-2: 605,312,60,60
-  circle-3: 483,315,60,60
-  circle-4: 355,320,60,60
-  circle-5: 536,204,60,60
+  circle-1: 471,103,60,60
+  circle-2: 605,311,60,60
+  circle-3: 479,313,60,60
+  circle-4: 355,315,60,60
+  circle-5: 536,206,60,60
   circle-6: 410,206,60,60
   a-1: 407,265,10,60,208
-  a-2: 595,251,10,67,146
+  a-2: 597,250,10,67,146
   a-3: 532,259,10,60,209
   a-4: 406,266,10,60,207
-  a-5: 527,152,10,60,144
+  a-5: 529,154,10,60,147
   a-6: 464,155,10,60,208
 ---
 

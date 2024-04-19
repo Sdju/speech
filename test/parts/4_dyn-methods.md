@@ -3,9 +3,19 @@ layout: cover
 ---
 
 <script setup lang="ts">
-import { ref, onUnmounted } from 'vue';
+import { ref, onUnmounted, getCurrentInstance, watch } from 'vue';
+import {useNav} from "@slidev/client"; 
 
 const count = ref(0);
+
+const instance = getCurrentInstance();
+
+const { currentSlideNo } = useNav();
+watch(currentSlideNo, (id) => {
+  if (id === instance.setupState.$page) {
+    count.value = 0
+  }
+});
 
 const id = setInterval(() => count.value++, 1000);
 onUnmounted(() => clearInterval(id));
@@ -225,9 +235,18 @@ layout: cover
 # Все заработало!
 
 <script setup lang="ts">
-import { ref, onUnmounted } from 'vue';
+import {ref, onUnmounted, getCurrentInstance, watch} from 'vue'; 
+import {useNav} from "@slidev/client"; 
 
 const count = ref(0);
+
+const instance = getCurrentInstance();
+const { currentSlideNo } = useNav();
+watch(currentSlideNo, (id) => {
+  if (id === instance.setupState.$page) {
+    count.value = 0
+  }
+});
 
 const id = setInterval(() => count.value++, 1000);
 onUnmounted(() => clearInterval(id));
