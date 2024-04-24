@@ -1,6 +1,19 @@
 ---
 layout: cover
+bg.green: 280 277 1100 276
+bg.black: 235 282 1102 262
+bg.accent: 0 0 682 692
+bg.green.trans: rotate(0)
+bg.black.trans: rotate(0)
+bg.accent.trans: rotate(0)
 ---
+
+<svg width="291" height="552" viewBox="0 0 291 552" fill="none" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="339.186" cy="261.356" rx="182.9" ry="192.114" transform="rotate(-20.8609 339.186 261.356)" fill="#34475E"/>
+<ellipse cx="360.673" cy="276.341" rx="280.108" ry="277.805" transform="" fill="#3ABA7F"/>
+<ellipse cx="382.134" cy="262.535" rx="235.65" ry="232.886" transform="" fill="#111214"/>
+</svg>
+
 
 <img src="/img/lifecycle.png" class="h-[500px] m-a" />
 
@@ -92,7 +105,7 @@ dragPos:
 <div v-click="2" v-drag="'e-string'" class="text-2xl w-[max-content]" >string</div>
 <div v-click="3" v-drag="'e-canvas'" class="text-2xl w-[max-content]" >canvas</div>
 <div v-click="4" v-drag="'e-pdf'" class="text-2xl w-[max-content]" >PDF</div>
-<div v-click="5" v-drag="'e-fan'" class="text-2xl w-[max-content]" >WebGL</div>
+<div v-click="5" v-drag="'e-fan'" class="text-2xl w-[max-content]" >DOCX</div>
 <div v-click="1" v-drag="'a-1'">
 <ZedeArrow inert x1="435" y1="206" x2="435" y2="114" color="#DADADA" />
 </div>
@@ -250,7 +263,7 @@ layout: cover
 </article>
 ```
 
-```html {3,7,6}
+```html {3,7,6|3,7|6|1,2,5}
 <article> <- HostElement
     <h1> <- HostElement
         Простой пример верстки <- HostNode
@@ -448,6 +461,7 @@ app.mount(document.querySelector('#app'))
 
 ---
 layout: cover
+clicks: 4
 ---
 
 # Подготовка
@@ -524,12 +538,23 @@ const nodeOps = {
 ````
 
 </div>
-<div v-click="2" class="absolute top-0">
+<div v-click="2" v-if="$clicks < 3" class="absolute top-0 w-full h-full">
+  <bx-loader-alt class="animate-[spin_1s_ease-in-out_infinite] center" />
+</div>
+<div v-click="3" class="absolute top-0">
 
-```
-// [!code word:createComment]
-renderer-temp.ts:8 Uncaught (in promise) Error: no-op: createElement
-  ...
+```text {*|*|*|1}
+renderer-temp.ts:8 Uncaught Error: no-op: createElement
+    at noop (nodeOps.ts:8:9)
+    at createElement (nodeOps.ts:15:24)
+    at mountElement (chunk-PMX2LL7O.js?v=0268bb3c:6930:21)
+    at processElement (chunk-PMX2LL7O.js?v=0268bb3c:6904:7)
+    at patch (chunk-PMX2LL7O.js?v=0268bb3c:6772:11)
+    at ReactiveEffect.componentUpdateFn [as fn] (chunk-PMX2LL7O.js?v=0268bb3c:7462:11)
+    at ReactiveEffect.run (chunk-PMX2LL7O.js?v=0268bb3c:430:19)
+    at instance.update (chunk-PMX2LL7O.js?v=0268bb3c:7586:17)
+    at setupRenderEffect (chunk-PMX2LL7O.js?v=0268bb3c:7596:5)
+    at mountComponent (chunk-PMX2LL7O.js?v=0268bb3c:7364:7)
 ```
 
 </div>

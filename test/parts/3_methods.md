@@ -415,28 +415,6 @@ onUnmounted(() => clearInterval(id));
         </div>
     </article>
 </template>
-
-
-
-
-
-
-
-
-⠀
-```
-
-```vue
-<template>
-    <article class="example">
-        <h1>
-            Простой пример верстки
-        </h1>
-        <div>
-            С таймером {{ count }}
-        </div>
-    </article>
-</template>
 <style>
 .example {
   border: 1px solid black;

@@ -1,5 +1,7 @@
 import {createElement, useMemo, useState} from 'react';
 
+let id = 0
+
 export interface VueactNode {
   id: number
   parent: null | VueactElement
@@ -22,8 +24,6 @@ export interface VueactElement extends VueactNode {
     get current(): unknown;
   }
 }
-
-let id = 0
 
 export function createTextNode(content: string): VueactNode {
   return {

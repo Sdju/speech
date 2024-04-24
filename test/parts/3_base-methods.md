@@ -129,6 +129,10 @@ layout: cover
 layout: cover
 ---
 
+<script setup>
+$doubleClick($renderContext, [1, 3, 5])
+</script>
+
 # createElement
 
 <div class="grid grid-cols-[300px_1fr] gap-2" >
@@ -319,6 +323,10 @@ dragPos:
 layout: cover
 ---
 
+<script setup>
+$doubleClick($renderContext, 3)
+</script>
+
 # createElement
 
 <div class="grid grid-cols-[310px_1fr] gap-2" >
@@ -421,6 +429,11 @@ layout: cover
 layout: cover
 ---
 
+<script setup>
+$doubleClick($renderContext, 3)
+</script>
+
+
 # createElement
 
 ````md magic-move
@@ -510,6 +523,10 @@ layout: cover
 ---
 layout: cover
 ---
+
+<script setup>
+$doubleClick($renderContext, 9)
+</script>
 
 # insert
 
@@ -657,6 +674,10 @@ renderer-temp.ts:8 Uncaught Error: no-op: setElementText
 ---
 layout: cover
 ---
+
+<script setup>
+$doubleClick($renderContext, 4)
+</script>
 
 # setElementText
 

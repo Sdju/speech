@@ -115,6 +115,10 @@ renderer-temp.ts:8 Uncaught (in promise) Error: no-op: createComment
 layout: cover
 ---
 
+<script setup>
+$doubleClick($renderContext, 1)
+</script>
+
 # Оптимизация вставки
 
 ````md magic-move
@@ -355,6 +359,10 @@ layout: cover
 ---
 layout: cover
 ---
+
+<script setup>
+$doubleClick($renderContext, 2)
+</script>
 
 # setScopeId
 

@@ -5,25 +5,13 @@ function noop(fn: string): never {
 }
 
 const propRename: Record<string, string> = {
-  'xmlns:xlink': 'xmlnsXlink',
   'class': 'className',
+  'xmlns:xlink': 'xmlnsXlink',
   'onUpdate:modelValue': 'onChange',
   'modelValue': 'value'
 }
 
 export const nodeOps = {
-  patchProp(el: VueactElement, key: string, _prevVal: any, nextVal: any) {
-    const realKey = propRename[key] ?? key
-    el.setProps({ ...el.props, [realKey]: nextVal })
-  },
-
-  insert(child: VueactNode, parent: VueactElement, anchor: VueactNode) {
-    child.parent = parent
-
-    parent.children.splice(parent.children.indexOf(anchor), 0, child)
-    parent.setChildren([...parent.children])
-  },
-
   createElement(tag: string): VueactElement {
     return createNode(tag)
   },
@@ -34,6 +22,18 @@ export const nodeOps = {
 
   createComment(text: string): VueactNode {
     return createCommentNode(text)
+  },
+
+  patchProp(el: VueactElement, key: string, _prevVal: any, nextVal: any) {
+    const realKey = propRename[key] ?? key
+    el.setProps({ ...el.props, [realKey]: nextVal })
+  },
+
+  insert(child: VueactNode, parent: VueactElement, anchor: VueactNode) {
+    child.parent = parent
+
+    parent.children.splice(parent.children.indexOf(anchor), 0, child)
+    parent.setChildren([...parent.children])
   },
 
   setText(node: VueactNode, text: string) {

@@ -1,6 +1,26 @@
 <script setup lang="ts">
-import {computed, getCurrentInstance, ref, watch} from 'vue'
+import {computed, getCurrentInstance, ref, watch, onScopeDispose} from 'vue'
 import {useNav} from '@slidev/client'
+
+window.$doubleClick = function(ctx, when: number | number[]) {
+  if (ctx.value !== 'slide') {
+    return
+  }
+  const instance = getCurrentInstance()
+  const isCurrent = computed(() => currentSlideNo.value === instance.setupState.$page)
+
+  const whenDouble = new Set([when].flat())
+
+
+  const { clicks, next } = useNav();
+  watch(clicks, (id, prev) => {
+    if (whenDouble.has(id) && (id > prev) && isCurrent.value) {
+      setTimeout(() => {
+        next()
+      }, 500)
+    }
+  });
+}
 
 const {currentSlideRoute, currentSlideNo} = useNav()
 
@@ -17,12 +37,12 @@ function ellipseMapper(key, base) {
 }
 
 const offset = computed(() => frontmatter.value['bg.offset']?.split(' ').map(x => Number(x)) ?? [0, 0])
-const ellipseGreen = computed(() => ellipseMapper('bg.green', [320, 320, 190, 290]))
-const ellipseBlack = computed(() => ellipseMapper('bg.black', [280, 280, 170, 250]))
-const ellipseAccent = computed(() => ellipseMapper('bg.accent', [280, 280, 170, 250]))
-const transGreen = computed(() => frontmatter.value['bg.green.trans'] ?? 'rotate(-40.4524 587.434 858.064)')
-const transBlack = computed(() => frontmatter.value['bg.black.trans'] ?? 'rotate(-40.4524 705.266 526.881)')
-const transAccent = computed(() => frontmatter.value['bg.accent.trans'] ?? 'rotate(-40.4524 759.916 639.553)')
+const ellipseGreen = computed(() => ellipseMapper('bg.green', [280, 277, 1100, 276]))
+const ellipseBlack = computed(() => ellipseMapper('bg.black', [235, 282, 1102, 262]))
+const ellipseAccent = computed(() => ellipseMapper('bg.accent', [0, 0, 682, 692]))
+const transGreen = computed(() => frontmatter.value['bg.green.trans'] ?? 'rotate(0)')
+const transBlack = computed(() => frontmatter.value['bg.black.trans'] ?? 'rotate(0)')
+const transAccent = computed(() => frontmatter.value['bg.accent.trans'] ?? 'rotate(0)')
 const speed = computed(() => frontmatter.value['bg.speed'] ?? '0.7s')
 
 </script>

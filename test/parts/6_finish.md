@@ -69,7 +69,12 @@ layout: cover
 ---
 layout: intro
 class: pt-[100px] pl-[100px]
-bg.offset: 0 0
+bg.green: 308 359 280 277
+bg.black: 285 320 235 232
+bg.accent: 287 344 182 192
+bg.green.trans: rotate(-20.8609 308.673 359.341)
+bg.black.trans: rotate(-20.8609 285.307 320.668)
+bg.accent.trans: rotate(-20.8609 287.186 344.356)
 ---
 <div class="mb-[50px] flex flex-row">
   <div class="w-[80px] h-[80px] bg-amber rd-full of-hidden">

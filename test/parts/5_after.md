@@ -4,13 +4,24 @@ class: text-center
 ---
 
 <script setup>
-import {getCurrentInstance} from "vue";
-import VueConfetti from 'vue-confetti';
+import { ref, onUnmounted, getCurrentInstance, watch } from 'vue';
 import {useNav} from "@slidev/client"; 
+import JSConfetti from 'js-confetti';
+
+const jsConfetti = new JSConfetti();
 
 const instance = getCurrentInstance();
-instance.appContext.app.use(VueConfetti);
-console.log(instance);
+const { currentSlideNo } = useNav();
+
+watch(currentSlideNo, (id) => {
+  if (id === instance.setupState.$page) {
+    jsConfetti.addConfetti({
+      confettiColors: ['#ffbe0b', '#fb5607', '#ff006e', '#8338ec', '#3a86ff'],
+      confettiRadius: 10,
+      confettiNumber: 150,
+    })
+  }
+});
 </script>
 
 # Поздравления!!!
@@ -57,9 +68,9 @@ layout: cover
 layout: cover
 ---
 
-<img class="absolute center w-[740px] ml-[80px]" src="/img/loev.jpg" />
+<img class="absolute center w-[740px]" src="/img/loev.jpg" />
 <div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
-<img class="relative center w-[740px] ml-[80px]" src="/img/loev.jpg" />
+<img class="absolute center w-[740px]" src="/img/loev.jpg" />
 
 ---
 layout: cover
@@ -81,9 +92,9 @@ layout: cover
 layout: cover
 ---
 
-<img class="absolute center w-[740px] ml-[80px]" src="/img/render.png" />
+<img class="absolute center w-[740px]" src="/img/render.png" />
 <div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
-<img class="relative center w-[740px] ml-[80px]" src="/img/render.png" />
+<img class="absolute center w-[740px]" src="/img/render.png" />
 
 ---
 layout: cover
