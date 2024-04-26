@@ -14,8 +14,12 @@ watch(test, async () => {
   <div class="about">
 
     <button @click="count++"> + </button>
-    <input :value="count" type="number" @input="count = Number($event.target.value)" />
-    <h1 ref="test">Count: {{ count }}</h1>
+    <input
+      :value="count"
+      type="number"
+      @input="count = Number($event.target.value)"
+    />
+    <h1 ref="test">Счет: {{ count }}</h1>
   </div>
 </template>
 

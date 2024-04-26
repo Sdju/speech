@@ -91,4 +91,8 @@ const speed = computed(() => frontmatter.value['bg.speed'] ?? '0.7s')
 .back *, .back {
   transition: all v-bind(speed) ease-out;
 }
+
+.tehas {
+  @apply animate-spin;
+}
 </style>

@@ -140,7 +140,7 @@ bg.accent.trans: rotate(-40.4524 405.31 591.236)
 
 </div>
 
-<div z-1>
+<div z-1 class="bg-[#00000030]">
 
 # Vue Renderer
 
