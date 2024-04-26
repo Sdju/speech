@@ -27,18 +27,18 @@ jobs:
           node-version: 'lts/*'
 
       - name: Install dependencies
-        working-directory: ./jstdne
+        working-directory: ./test
         run: npm install
 
       - name: Build
-        working-directory: ./jstdne
+        working-directory: ./test
         run: npm run build -- --base /speech/
 
       - uses: actions/configure-pages@v4
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: jstdne/dist
+          path: test/dist
 
       - name: Deploy
         id: deployment

@@ -90,5 +90,6 @@ bg.accent.trans: rotate(-20.8609 287.186 344.356)
 <p><ion-logo-github /> @Sdju</p>
 
 <QrCodeIntro class="w-[200px] h-[200px] absolute top-[200px] right-[80px]" />
+<QrCodeIntro class="w-[200px] h-[200px] absolute top-[200px] right-[80px]" />
 
 <style> p { @apply text-[1.25rem]; } </style>
