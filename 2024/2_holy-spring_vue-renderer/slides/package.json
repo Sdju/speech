@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "slidev build --out ../../../-static/slides/2024_holy-spring_vue-renderer --base speech/slides/2024_holy-spring_vue-renderer/",
+    "build": "slidev build --out ../../../-static/slides/2024_holy-spring_vue-renderer --base /speech/slides/2024_holy-spring_vue-renderer/",
     "dev": "slidev",
     "export": "slidev export",
     "eject": "slidev theme eject"

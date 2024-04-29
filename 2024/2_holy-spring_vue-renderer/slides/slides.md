@@ -1,5 +1,8 @@
 ---
 theme: ./theme
+routerMode: hash
+htmlAttrs:
+  lang: ru
 highlighter: shiki
 css: unocss
 colorSchema: dark

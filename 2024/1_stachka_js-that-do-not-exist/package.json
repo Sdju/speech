@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "slidev build --out ../../-static/slides/2024_stachka_js-that-do-not-exist --base speech/slides/2024_stachka_js-that-do-not-exist/",
+    "build": "slidev build --out ../../-static/slides/2024_stachka_js-that-do-not-exist --base /speech/slides/2024_stachka_js-that-do-not-exist/",
     "dev": "slidev",
     "eject": "slidev theme eject",
     "export": "slidev export"
