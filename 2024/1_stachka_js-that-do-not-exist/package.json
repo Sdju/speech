@@ -1,0 +1,17 @@
+{
+  "name": "presentation",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "slidev build --out ../../-static/speech/1_stachka_js-that-do-not-exist --base speech/1_stachka_js-that-do-not-exist/",
+    "dev": "slidev",
+    "eject": "slidev theme eject",
+    "export": "slidev export"
+  },
+  "dependencies": {
+    "@slidev/cli": "^0.49.0-beta.2",
+    "vue": "^3.4.21",
+    "@iconify/json": "^2.2.197",
+    "seedrandom": "^3.0.5"
+  }
+}
