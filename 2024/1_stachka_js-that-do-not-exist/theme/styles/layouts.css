@@ -46,6 +46,19 @@
     }
 }
 
+#app {
+    .CodeMirror-cursor {
+        border-left-color: white;
+    }
+
+    .CodeMirror {
+        color: white;
+        caret-color: white;
+    }
+}
+
+
+
 .slidev-layout :not(pre) > code {
     background-color: var(--bg-keyword);
     font-weight: 600;

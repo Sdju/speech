@@ -1,0 +1,17 @@
+{
+  "name": "presentation",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "slidev build --out ../../-static/slides/2024_msk-vuejs_50-shades-of-vue-reactivity --base /speech/slides/2024_msk-vuejs_50-shades-of-vue-reactivity/",
+    "dev": "slidev",
+    "eject": "slidev theme eject",
+    "export": "slidev export"
+  },
+  "dependencies": {
+    "@slidev/cli": "^0.49.0-beta.4",
+    "vue": "^3.4.26",
+    "@iconify/json": "^2.2.205",
+    "seedrandom": "^3.0.5"
+  }
+}
