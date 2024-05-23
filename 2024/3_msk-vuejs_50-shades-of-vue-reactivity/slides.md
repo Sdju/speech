@@ -188,9 +188,9 @@ dragPos:
 </svg>
 
 <div v-drag="'e-dom'" class="text-2xl w-[max-content]" >ref</div>
-<div v-drag="'e-string'" v-mark.green.strike-through="{at: 3, strokeWidth: 3}" class="text-2xl w-[max-content] flex" >computed</div>
-<div v-drag="'e-canvas'" v-mark.green.strike-through="{at: 1, strokeWidth: 3}" class="text-2xl w-[max-content]" >watch</div>
-<div v-drag="'e-pdf'" v-mark.green.strike-through="{at: 2, strokeWidth: 3}" class="text-2xl w-[max-content]" >watchEffect</div>
+<div v-drag="'e-string'" v-mark.green.strike-through="{at: 3, strokeWidth: 5}" class="text-2xl w-[max-content] flex" >computed</div>
+<div v-drag="'e-canvas'" v-mark.green.strike-through="{at: 1, strokeWidth: 5}" class="text-2xl w-[max-content]" >watch</div>
+<div v-drag="'e-pdf'" v-mark.green.strike-through="{at: 2, strokeWidth: 5}" class="text-2xl w-[max-content]" >watchEffect</div>
 <div v-drag="'e-fan'" class="text-2xl w-[max-content]" >reactive</div>
 <div v-drag="'a-1'">
 <ZedeArrow inert x1="435" y1="206" x2="435" y2="114" color="#DADADA" />
@@ -329,6 +329,7 @@ scope.stop()
 
 <v-clicks>
 
+- Переменная которая указывает текущий эффект
 - В один момент времени может быть только 1 активный эффект
 - Работают как стек для вложенных эффектов
 
@@ -336,9 +337,9 @@ scope.stop()
 
 ---
 dragPos:
-  trigger: 413,79,74,32
-  track: 533,79,56,32
-  ref: 225,302,31,32
+  trigger: 362,124,74,32
+  track: 588,123,56,32
+  ref: 213,335,31,32
 ---
 
 :GlowImage{src="/img/brothers.png"}
@@ -464,9 +465,7 @@ function ref(value) {
 <v-clicks depth="2">
 
 - Основан на работе с `Proxy`
-- может быть `readonly`
-- может быть `shallow`
-- может быть `shallow` + `readonly`
+- может быть `shallow` / `readonly` или все сразу
 
 </v-clicks>
 
@@ -575,8 +574,8 @@ console.log(toRaw(obj) === data)
 
 ---
 
-<div  v-click.hide>
-  <GlowImage src="/img/ref-usual.png" />
+<div>
+  <GlowImage src="/img/proxy-old.png" />
 </div>
 
 <div  v-click>
@@ -584,7 +583,11 @@ console.log(toRaw(obj) === data)
 </div>
 
 <div  v-click>
-  <GlowImage src="/img/ref-fixed.png" />
+  <GlowImage src="/img/proxy-new.png" />
+</div>
+
+<div  v-click>
+  <GlowImage src="/img/props-new.png" />
 </div>
 
 
@@ -610,6 +613,31 @@ console.log(toRaw(obj) === data)
 class ComputedRefImpl<T> {
   
 }
+
+
+
+
+
+
+
+
+
+⠀
+```
+```ts
+class ComputedRefImpl<T> {
+  public readonly effect: ReactiveEffect<T>
+}
+
+
+
+
+
+
+
+
+
+⠀
 ```
 ```ts
 class ComputedRefImpl<T> {
@@ -619,15 +647,12 @@ class ComputedRefImpl<T> {
   
   set value(v) {}
 }
-```
-```ts
-class ComputedRefImpl<T> {
-  public readonly effect: ReactiveEffect<T>
-  
-  get value() {}
-  
-  set value(v) {}
-}
+
+
+
+
+
+⠀
 ```
 ```ts
 class ComputedRefImpl<T> {
@@ -639,6 +664,10 @@ class ComputedRefImpl<T> {
   
   private _value!: T
 }
+
+
+
+⠀
 ```
 ```ts
 class ComputedRefImpl<T> {
@@ -652,6 +681,8 @@ class ComputedRefImpl<T> {
   
   private dep!: Dep
 }
+
+⠀
 ```
 ```ts
 class ComputedRefImpl<T> {
@@ -672,28 +703,174 @@ class ComputedRefImpl<T> {
 
 ---
 
-# computed 3.4+
+# computed
 
-> Сделать демку на основе computed из 3.4+ по оптимизации объекта
+<div class="grid grid-cols-[400px_1fr] gap-2" >
+
+```vue {*|4|5-8|9-12|13-17|20|*}
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+
+const counter = ref(0)
+const isCool = computed(() => {
+  console.log('isCool')
+  return counter.value % 6 === 0
+})
+const isBad = computed(() => {
+  console.log('isBad')
+  return !isCool.value
+})
+setInterval(() => {
+  console.log('tick')
+  counter.value += 1
+  counter.value += 1
+}, 1000)
+</script>
+<template>
+  <div> {{ isBad }} </div>
+</template>
+```
+
+<div class="bg-[var(--slidev-code-background)] my-[4px] rd-[4px] p-4">
+  <div class="relative">
+    <div class="absolute top-0 text-[0.6rem] text-xl" >
+      <v-clicks>
+        <div c-blue>render <span c-green>(count=0 <span c-red>isBad=?</span> isCool=?)</span></div>
+        <div>isBad <span c-green>(count=0 isBad=? <span c-red>isCool=?</span>)</span></div>
+        <div>isCool <span c-green>(count=0 isBad=false isCool=true)</span></div>
+        <div>tick <span c-green>(count=2 isBad=false <span c-blue>isCool=true</span>)</span></div>
+        <div>isCool <span c-green>(count=2 <span c-blue>isBad=false</span> isCool=false)</span></div>
+        <div>isBad <span c-green>(count=2 isBad=true isCool=false)</span></div>
+        <div c-blue>render <span c-green>(count=2 isBad=true isCool=false)</span></div>
+        <div>tick <span c-green>(count=4 isBad=true <span c-blue>isCool=false</span>)</span></div>
+        <div>isCool <span c-green>(count=4 isBad=true isCool=false)</span></div>
+        <div>tick <span c-green>(count=6 isBad=true <span c-blue>isCool=false</span>)</span></div>
+        <div>isCool <span c-green>(count=6 <span c-blue>isBad=true</span> isCool=true)</span></div>
+        <div>isBad <span c-green>(count=6 isBad=false isCool=false)</span></div>
+        <div c-blue>render <span c-green>(count=2 isBad=false isCool=true)</span></div>
+      </v-clicks>
+    </div>
+  </div>
+</div>
+</div>
 
 ---
 
 # Push / Pull реактивность
 
-> Сделать демку показывающую разницу между Push и Pull реактивностью.
-> Сделать вывод о работе с оптимизацией при работе с computed
+<v-clicks depth="2">
+
+- Push
+  - если что-то обновляется, то обновление проталкивается во все зависимости
+  - источником обновления служит обновление зависимости
+  - нет механизма синхронизации значения по отношению к зависимости
+
+</v-clicks>
+
+---
+
+# Push / Pull реактивность
+
+<v-clicks depth="2">
+
+- Pull
+  - источником обновления служит запрос на данные
+  - сущность не будет обновлена, пока ее не запросят
+  - легко делать синхронизацию значения по отношению к зависимости
+
+</v-clicks>
+
+---
+
+# Push / Pull реактивность
+
+<v-clicks depth="2">
+
+- computed-ы которые не вызываются, не будут никогда вычислены и обновлены
+- computed-ы перевыичисляются только когда их вызывают
+- если зависимость обновили несколько раз синхронно, то обновление будет только 1 
+- Vue 3.4: если computed вернул старое значение, то он не считается измененным
+
+</v-clicks>
+
+---
+
+:GlowImage{src="/img/catch.png"}
+
+---
+
+# computed
+
+<v-clicks depth="2">
+
+- не бойтесь создавать компьютеды которые не будут никогда использованы
+- старайтесь возвращать одно и тоже значение
+- не бойтесь менять зависимости и запрашивать значение computed-а
+- постарайтесь обновить версию Vue до 3.4+
+
+</v-clicks>
 
 ---
 
 # Scheduler
 
-> Слайд с простым объяснением работы планировщика и базового батчинга
+<v-clicks depth="2">
+
+- механизм синхронизирующий обновления
+- единственный способ с ним взаимодействовать `nextTick`
+- синхронизация старается быть вычисленной в конце списка микротасков
+
+</v-clicks>
 
 ---
 
 # watch
 
-> 3 режима работы watch
+<v-clicks depth="2">
+
+- по-умолчанию пользуется возможностями планировщика
+- возвращает как результат функцию для остановки прослушивания
+- принимает на вход `onCleanup`- который будет вызван для очистки эффекта
+- может работать в 3-ех режимах
+
+</v-clicks>
+
+---
+
+# watch pre
+
+<v-clicks depth="2">
+
+- Режим работы по-умолчанию
+- Использует возможности батчинга
+- Вызывается до обновления DOM 
+
+</v-clicks>
+
+---
+
+# watch post
+
+<v-clicks depth="2">
+
+- Требует отдельной опции или использования `flush: post`
+- Использует возможности батчинга
+- Вызывается **после** обновления DOM
+- Лучшая альтернатива чем `watch` + `nextTick` 
+
+</v-clicks>
+
+---
+
+# watch sync
+
+<v-clicks depth="2">
+
+- Игнорирует возможности батчинга
+- Вызывается сразу же после триггера
+- Удобно для деббага значений
+
+</v-clicks>
 
 ---
 layout: intro

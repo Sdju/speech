@@ -4,9 +4,9 @@
 
 [variant=first] {
     --bg-keyword: #5a8f298c;
-    --bg-first: #49ff3c;
-    --bg-second: #4cc580;
-    --bg-third: #ceff1d;
+    --bg-first: #49ff3c80;
+    --bg-second: #4cc58080;
+    --bg-third: #ceff1d80;
     --v-color: theme('colors.amber.500');
 }
 
