@@ -880,3 +880,8 @@ discord: '@izede'
 telegram: '@zede1697'
 variant: first
 ---
+
+---
+<img class="w-full h-full object-cover" src="/img/dno.png" />
+<img class="w-full h-full object-cover" src="/img/catch.png" />
+<img class="w-full h-full object-cover" src="/img/brothers.png" />
