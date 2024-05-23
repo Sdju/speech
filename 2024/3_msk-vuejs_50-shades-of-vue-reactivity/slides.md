@@ -81,7 +81,10 @@ dragPos:
 
 ---
 
-:GlowImage{src="/img/dno.png"}
+<script setup>
+  import img from '/img/dno.png'
+</script>
+<GlowImage :src="img" />
 
 ---
 
@@ -342,7 +345,10 @@ dragPos:
   ref: 213,335,31,32
 ---
 
-:GlowImage{src="/img/brothers.png"}
+<script setup>
+  import img from '/img/brothers.png'
+</script>
+<GlowImage :src="img" />
 
 <div v-drag="'ref'" class="t text-2xl w-[max-content]" >ref</div>
 <div v-drag="'track'" class="t text-2xl w-[max-content]" >track</div>
@@ -574,20 +580,27 @@ console.log(toRaw(obj) === data)
 
 ---
 
+<script setup>
+  import proxyOld from '/img/proxy-old.png'
+  import console from '/img/console.png'
+  import proxyNew from '/img/proxy-new.png'
+  import propsNew from '/img/props-new.png'
+</script>
+
 <div>
-  <GlowImage src="/img/proxy-old.png" />
+  <GlowImage :src="proxyOld" />
 </div>
 
 <div  v-click>
-  <GlowImage src="/img/console.png" />
+  <GlowImage :src="console" />
 </div>
 
 <div  v-click>
-  <GlowImage src="/img/proxy-new.png" />
+  <GlowImage :src="proxyNew" />
 </div>
 
 <div  v-click>
-  <GlowImage src="/img/props-new.png" />
+  <GlowImage :src="propsNew" />
 </div>
 
 
@@ -795,7 +808,10 @@ setInterval(() => {
 
 ---
 
-:GlowImage{src="/img/catch.png"}
+<script setup>
+  import img from '/img/catch.png'
+</script>
+<GlowImage :src="img" />
 
 ---
 
@@ -880,8 +896,3 @@ discord: '@izede'
 telegram: '@zede1697'
 variant: first
 ---
-
----
-<img class="w-full h-full object-cover" src="/img/dno.png" />
-<img class="w-full h-full object-cover" src="/img/catch.png" />
-<img class="w-full h-full object-cover" src="/img/brothers.png" />
