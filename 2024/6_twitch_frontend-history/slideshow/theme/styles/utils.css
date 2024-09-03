@@ -1,0 +1,11 @@
+.center {
+    @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+}
+
+.s-container {
+    @apply relative pt-[0.5px];
+}
+
+.s-container > :not(:first-child) {
+    @apply absolute top-0 w-full;
+}
