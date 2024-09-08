@@ -5,7 +5,7 @@
   "scripts": {
     "build": "slidev build --out ../../../-static/slides/2024_omsk_safe-ts --base /speech/slides/2024_omsk_safe-ts/",
     "dev": "slidev",
-    "export": "slidev export"
+    "export": "slidev export --with-clicks"
   },
   "dependencies": {
     "@iconify/json": "^2.2.230",
