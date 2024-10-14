@@ -1260,8 +1260,9 @@ const b = "123"; // string
 let c: number | string = '123' // string | number
 let d = 123 as number | string // number | string
 let e = 123 satisfies number | string // number
-let f = false satisfies number | string // number
-// ERROR! Type 'boolean' does not satisfy the expected type 'string | number'
+let f = (123 as number) satisfies 123
+// ERROR! Type number does not satisfy the expected type 123
+let f = (123 as number) as 123 // OK!
 ```
 ````
 
