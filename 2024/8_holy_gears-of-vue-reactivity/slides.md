@@ -9,42 +9,71 @@ colorSchema: dark
 transition: fade-out
 mdc: true
 growSeed: 4
-title: The Progressive Path
+title: Шестеренки реактивности Vue
 
-layout: intro
-author: Денис Чернов
-name: 'шестеренки реактивности Vue'
-twitch: '@izede'
-discord: '@izede'
-telegram: '@zede1697'
-variant: first
+layout: clear
 ---
 
-<div v-drag="[126,158,689,128,20]" class="text-red text-[6em] text-shadow-lg"> ЗАМЕНИТЬ </div>
+<div class="mb-[50px] flex flex-row">
+  <div class="w-[80px] h-[80px] rd-full of-hidden">
+    <img class="w-full h-full object-cover" src="/img/photo.png" />
+  </div>
+  <div class="w-[80px] h-[80px] rd-full ml-[15px]">
+    <zede-icon class="w-full h-full" />
+  </div>
+</div>
+<div class="text-4xl mb-[50px]">Денис Чернов</div>
+<p><file-icons-telegram /> @zede_code</p>
+<p><ion-logo-twitch /> @izede</p>
+<p><ion-logo-github /> @Sdju</p>
+
+<QrCodeIntro class="w-[200px] h-[200px] absolute top-[200px] right-[80px]" />
+
+---
+layout: center
+---
+
+# Шестеренки реактивности Vue
+
+<ion-cog-sharp v-drag="[729,-220,496,450]" class="animate-[spin_70s_linear_infinite] opacity-20" />
 
 ---
 
-# Слайд о себе
+<div class="animate-spin" />
 
-<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
+<material-symbols-settings-outline v-drag="[388,145,223,202]" class="animate-[spin_20s_linear_infinite]" />
+<logos-vue v-drag="[476,229,46,42]" />
+
+<f7-gear v-click v-drag="[656,115,104,95]" class="animate-[spin_17s_linear_infinite]" />
+<div v-click="'+0'" v-drag="[691,84,40,40]" class="text-[1em] text-shadow-xl"> ref </div>
+
+<heroicons-cog-solid v-click v-drag="[689,285,104,95]" class="animate-[spin_31s_linear_infinite]" />
+<div v-click="'+0'" v-drag="[684,256,119,40]" class="text-[1em] text-shadow-xl"> computed </div>
+
+<clarity-settings-solid v-click v-drag="[348,413,62,63]" class="animate-[spin_17s_linear_infinite]" />
+<div v-click="'+0'" v-drag="[344,383,69,40]" class="text-[1em] text-shadow-xl"> watch </div>
+
+<mingcute-settings-7-fill v-click v-drag="[178,278,88,89]" class="animate-[spin_17s_linear_infinite]" />
+<div v-click="'+0'" v-drag="[165,252,138,40]" class="text-[1em] text-shadow-xl"> watchEffect </div>
+
+<zondicons-cog v-click v-drag="[258,70,104,95]" class="animate-[spin_17s_linear_infinite]" />
+<div v-click="'+0'" v-drag="[260,38,104,95]" class="text-[1em] text-shadow-xl"> reactive </div>
+
+<!--
+разгоняем за что мы любим Vue
+
+мало кто знает а что за ними скрыто
+
+поэтому мы посмотрим на каждую шестеренку по отдельности. Чтоб получить чуть более глубокое понимание.
+-->
 
 ---
-
-# Слайд о команде SmLab
-
-<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
-
+layout: cover
 ---
 
-<script setup>
-import Gear1 from './img/gear-1.svg?raw'
-</script>
-
-<div v-drag="[343,126,300,300]" class="animate-[spin_20s_linear_infinite]" v-html="Gear1" />
-
-<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
-
-<div v-drag="[116,54,793,65]" class="text-green text-[1.5em] text-shadow-lg"> **схема реактивности Vue шестернями** </div>
+<img class="center w-[740px]" src="/img/interview.png" />
+<div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
+<img class="center w-[740px]" src="/img/interview.png" />
 
 ---
 layout: center
@@ -52,11 +81,23 @@ layout: center
 
 <div class="text-[1.5em]">Чем отличается computed от watch?</div>
 
+<!--
+Представим ситуацию из собеса
+
+простые вопросы отвечается легко
+
+но что если начинают задавать сложные?
+-->
+
 ---
 
 <img class="center w-[740px]" src="/img/computed-watch.png" />
 <div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
 <img class="center w-[740px]" src="/img/computed-watch.png" />
+
+<!--
+Если вы начинаете чустсвовать себя неуверенно, то это доклад для вас.
+-->
 
 ---
 dragPos:
@@ -67,7 +108,7 @@ dragPos:
   vue-runtime-core: 359,291,208,36
   advanced: 400,168,130,36
   internal: 395,348,136,36
-  vapor: 334,459,260,36
+  vapor: 334,459,260,51
   jonson: 597,459,63,58
 ---
 
@@ -85,9 +126,17 @@ dragPos:
 <div v-drag="'internal'" >internal api</div>
 <div v-drag="'vapor'" class="text-[0.7em]" >написать свою реактивность для Vapor Vue</div>
 
+<!--
+Подумать за разгоны. Постепенное погружение. Попытаться санимировать
+
+- как вариант убрать шутку и расположить снизу вверх шестерни в порядке их разгона в докладе
+-->
+
 ---
 
 # Реактивность
+
+<img v-drag="[404,8,362,217]" class="center w-[340px]" src="/img/magic.gif" />
 
 > Способность системы автоматически реагировать на раздражители
 
@@ -95,29 +144,78 @@ dragPos:
 
 ````md magic-move
 ```ts
-const oranges = 5
-const apples = 6
-const total = oranges + apples
+let oranges = 5
+let apples = 10
 ```
 ```ts
-const oranges = ref(5)
-const apples = ref(6)
-const total = computed(() => oranges.value + apples.value)
+let oranges = 5
+let apples = 10
+let total = oranges + apples
+console.log(c)
+```
+
+```ts
+let oranges = 5
+let apples = 10
+let total = oranges + apples
+console.log(total) // 15
+```
+
+```ts
+let oranges = 5
+let apples = 10
+let total = oranges + apples
+console.log(total) // 15
+apples = 7
+console.log(total) // 12
+```
+
+```ts
+let oranges = 5
+let apples = 10
+let total = oranges + apples
+console.log(total) // 15
+apples = 7
+console.log(total) // 12
+```
+
+```ts
+let oranges = ref(5)
+let apples = ref(10)
+let total = computed(() => oranges.value + apples.value)
+console.log(total.value)
+apples.value = 7
+console.log(total.value)
+```
+
+```ts {*|5|6|*}
+let oranges = ref(5)
+let apples = ref(10)
+let total = computed(() => oranges.value + apples.value)
+console.log(total.value) // 15
+apples.value = 7 
+console.log(total.value) // 12
 ```
 ````
 
----
-
-# Слайд о пакетах Vue связанных с реактивностью
-
-- vue-reactivity
-- vue-runtime-core
-
-<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
+<!--
+расширить пример
+-->
 
 ---
-dragPos:
-  replace: 141,172,757,182,12
+
+<logos-vue v-drag="[441,49,119,108]" />
+
+<div v-drag="[214,201,166,54]" class="text-[1em] bg-green-5 rounded-md p-2" > vue-reactivity </div>
+
+<div v-drag="[628,205,211,51]" class="text-[1em] bg-green-5 rounded-md p-2" > vue-runtime-core </div>
+
+<!--
+визулизацию
+
+что в нем лежит
+-->
+
 ---
 
 # Карта реактивности
@@ -126,7 +224,13 @@ dragPos:
 <div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
 <img class="center w-[840px]" src="/img/map.png" />
 
-<div v-drag="'replace'" class="text-red text-[6em] text-shadow-lg"> ЗАМЕНИТЬ </div>
+<div v-drag="[156,152,757,182,-26]" class="text-red text-[6em] text-shadow-lg"> ЗАМЕНИТЬ </div>
+
+<!--
+порешить этого слайда (переместить)
+
+- обдумать идею глобальной карты и реактивности и доклада, максимально подробную при разгоне шестерни зумить часть карты (часть за которую отвечает эта шестерня)
+-->
 
 ---
 
@@ -139,6 +243,10 @@ dragPos:
 - есть отличия от API из основного пакета Vue
 
 </v-clicks>
+
+<!--
+- сказать чего тут нет (watch / scheduler)
+-->
 
 ---
 layout: center
@@ -154,10 +262,17 @@ const apples = ref(6)
 const total = computed(() => oranges.value + apples.value)
 ```
 
-<div v-click v-drag="[100,100,100,100]" class="border-2 border-white rounded-md p-2" />
-<div v-click v-drag="[100,100,100,100]" class="border-b-2 border-blue rounded-md p-2" />
-<div v-click v-drag="[100,100,100,100]" class="border-b-2 border-blue rounded-md p-2" />
-<div v-click v-drag="[100,100,100,100]" class="border-t-2 border-red rounded-md p-2" />
+<div v-click v-drag="[218,274,433,40]" class="border-2 border-white rounded-md p-2" />
+
+<div v-click v-drag="[364,267,134,40]" class="border-b-2 border-blue rounded-md p-2" />
+
+<div v-click v-drag="[519,208,118,100]" class="border-b-2 border-blue rounded-md p-2" />
+
+<div v-click v-drag="[311,281,326,40]" class="border-t-2 border-red rounded-md p-2" />
+
+<!--
+- Vue реализует внутри себя класс ReactiveEffect
+-->
 
 ---
 
@@ -173,9 +288,9 @@ const total = computed(() => oranges.value + apples.value)
 
 ---
 dragPos:
-  cross-1: -66,0,0,0
-  cross-2: -66,0,0,0
-  cross-text: -66,0,0,0
+  cross-1: 122,373,118,5,-11
+  cross-2: 118,372,121,5,12
+  cross-text: 248,353,131,40
 ---
 
 # Где используется?
@@ -206,6 +321,12 @@ dragPos:
 
 </v-clicks>
 
+<!--
+- свои реактивные примитивы
+
+- заголовки для тем (общее для всех слайдов)
+-->
+
 ---
 layout: center
 ---
@@ -232,6 +353,10 @@ effect(() => {
 ```
 ````
 
+<!--
+- использовать пример с computed
+-->
+
 ---
 
 # Effect
@@ -244,19 +369,46 @@ effect(() => {
 
 </v-clicks>
 
+<!--
+- перепродумать разгон за "сразу же"
+- объяснить что другие не сразу
+-->
+
 ---
 
 # Где используется?
 
+<v-clicks>
+
 - Тесты системы реактивности
 - ... все!
+
+</v-clicks>
 
 ---
 
 # Когда использовать?
 
+<v-clicks>
+
 - Тесты системы реактивности
 - Когда вы используете реактивность без Vue, а watch реализовывать не хотите
+
+</v-clicks>
+
+<!--
+- разгонять про замену (продать effect вместо watch)
+-->
+
+---
+layout: center
+---
+
+# effectScope
+
+<!--
+- добавить слайд "а что есть скоуп"
+-->
 
 ---
 
@@ -319,9 +471,15 @@ scope.stop()
 ```
 ````
 
+<!--
+- добавить слайд "а что есть скоуп"
+-->
+
 ---
 
 # Где используется?
+
+<v-clicks depth="2">
 
 - `setup` у компонента
 - Системы реактивности вне Vue (`Pinia`)
@@ -329,25 +487,54 @@ scope.stop()
   - `createSharedComposable`
   - `createGlobalState`
 
+</v-clicks>
+
+<!--
+- добавить логотипы
+-->
+
 ---
 
 # Полезное API
 
+<v-clicks>
+
 - `getCurrentScope` - получить текущий scope
 - `onScopeDispose` - установить обработчик на уничтожение scope
+
+</v-clicks>
+
+<!--
+- добавить примеры кодом API
+- добавить визуализацию схемы для скоупов
+- сопутствующее API
+-->
 
 ---
 
 # Когда использовать?
 
+<v-clicks>
+
 - Когда нужно собирать эффекты за пределами компонентов
 - Когда нужно создавать эффекты асинхронно от setup
+
+</v-clicks>
+
+<!--
+- подумать о корнер кейсе из-за async setup
+- очень нюансовая история ()
+-->
 
 ---
 layout: center
 ---
 
 # Tracking
+
+<!--
+- сделать отсылку на определение реактивности
+-->
 
 ---
 
@@ -361,8 +548,12 @@ layout: center
 
 </v-clicks>
 
----
-layout: center
+<!--
+- ПРИДУМАТЬ ИЛЛЮСТРАЦИЮ (думать о шестеренках)
+- подумать о спиче
+- исходить от проблематики. как это помогает вью
+-->
+
 ---
 
 # Track / Trigger
@@ -374,26 +565,45 @@ layout: center
 
 </v-clicks>
 
+<!--
+- переписать описания
+- перепродумать спич
+- ДОБАВИТЬ ИЛЮСТРАЦИЮ
+- подумать о репрезентации на что-то знакомое
+-->
+
 ---
 layout: center
 ---
 
 # Deps / Link
 
----
-dragPos:
-  replace: -66,0,0,0
+<!--
+- как было раньше
+- как стало
+-->
+
 ---
 
 <img class="center w-[640px]" src="/img/deps-link.png" />
 <div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
 <img class="center w-[640px]" src="/img/deps-link.png" />
 
-<div v-drag="'replace'" class="text-red text-[6em] text-shadow-lg"> ЗАМЕНИТЬ </div>
+<div v-drag="[614,91,769,180,26]" class="text-red text-[6em] text-shadow-lg"> ЗАМЕНИТЬ </div>
+
+<!--
+- разобраться в вопросе
+ - как работало раньше
+ - как работает сейчас (Link)
+ - почему это круче
+- переверстать диаграмку
+-->
 
 ---
 
 # Dep
+
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
 
 ---
 
@@ -410,6 +620,11 @@ export class Link {
 }
 ```
 
+<!--
+- следующий слайд
+ - продать метрики почему это сделало круто
+-->
+
 ---
 
 # Tracking API
@@ -421,6 +636,11 @@ export class Link {
 - `resetTracking` - востанавливает прежнее состояние
 
 </v-clicks>
+
+<!--
+- попробовать подвести через код
+- обяъснить а на кой их добавили
+-->
 
 ---
 
@@ -434,6 +654,16 @@ export class Link {
 - `pauseTracking` + `enableTracking` = утечка памяти
 - Доступно только через `@vue/reactivity`
 </v-clicks>
+
+<!--
+- убрать ошибочное использование
+-->
+
+---
+layout: center
+---
+
+# Источники / Зависимости
 
 ---
 layout: center
@@ -460,11 +690,15 @@ layout: center
 
 # Reactive
 
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
+
 ---
 layout: center
 ---
 
 # ref
+
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
 
 ---
 layout: center
@@ -481,6 +715,12 @@ dragPos:
 
 <div v-drag="'push'">Push</div>
 <div v-drag="'pull'">Pull</div>
+
+---
+
+# Пояснялово за Push / Pull
+
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
 
 ---
 dragPos:
@@ -511,17 +751,23 @@ layout: center
 
 # computed
 
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
+
 ---
 layout: center
 ---
 
 # watchEffect
 
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
+
 ---
 layout: center
 ---
 
 # watch
+
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
 
 ---
 
@@ -572,11 +818,15 @@ layout: center
 
 # Setup-функция
 
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
+
 ---
 layout: center
 ---
 
 # Render-функция
+
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
 
 ---
 layout: center
@@ -584,17 +834,23 @@ layout: center
 
 # Props
 
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
+
 ---
 layout: center
 ---
 
 # Slots
 
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
+
 ---
 layout: center
 ---
 
 # Template refs
+
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
 
 ---
 layout: center
@@ -607,10 +863,10 @@ dragPos:
   object-1: 449,131,73,40
   object-2: 396,216,69,40
   object-3: 505,216,69,40
-  object-4: 509,310,69,40
+  object-4: 504,308,69,40
   a: 489,169,50,47
   b: 438,167,46,52,90
-  c: -66,0,0,0
+  c: 438,167,46,52,90
 ---
 
 <div v-drag="'object-1'" class="border-2 border-white rounded-full p-2 text-center text-[0.5em]">Object 1</div>
@@ -622,6 +878,8 @@ dragPos:
 <Arrow v-drag="'b'" x1="0" y1="0" x2="100%" y2="100%" />
 <Arrow v-drag="'c'" x1="0" y1="0" x2="100%" y2="100%" />
 
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
+
 ---
 dragPos:
   a: 426,124,102,40
@@ -631,17 +889,27 @@ dragPos:
 <div v-drag="'a'" class="border-2 border-white rounded-md p-2 text-center text-[0.5em]">Component A</div>
 <div v-drag="'b'" class="border-2 border-white rounded-md p-2 text-center text-[0.5em]">Component B</div>
 
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
+
 ---
 layout: center
 ---
 
 # Attrs
 
+<div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
+
 ---
 layout: center
 ---
 
 <div class="text-[1.5em]">Чем отличается computed от watch?</div>
+
+---
+
+<img class="center w-[540px]" src="/img/incredible.png" />
+<div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
+<img class="center w-[540px]" src="/img/incredible.png" />
 
 ---
 layout: intro

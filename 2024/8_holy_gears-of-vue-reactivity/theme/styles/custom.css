@@ -3,10 +3,10 @@
 }
 
 [variant=first] {
-    --bg-keyword: #007acc;
-    --bg-first: #96b5e7;
-    --bg-second: #149dc7;
-    --bg-third: #3d39a2;
+    --bg-keyword: #cc8b00;
+    --bg-first: #e7e696;
+    --bg-second: #c7a614;
+    --bg-third: #a27839;
     --v-color: theme('colors.amber.500');
 }
 
