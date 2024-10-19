@@ -1,10 +1,9 @@
 {
-  "name": "@slidev/theme-default",
-  "version": "0.25.0",
-  "description": "Default theme for Slidev",
-  "author": "antfu <anthonyfu117@hotmail.com>",
+  "name": "@zede/theme",
+  "version": "0.0.1",
+  "description": "Zede theme for Slidev",
+  "author": "Zede <zede169778@gmail.com>",
   "license": "MIT",
-  "funding": "https://github.com/sponsors/antfu",
   "homepage": "https://sli.dev",
   "repository": {
     "type": "git",

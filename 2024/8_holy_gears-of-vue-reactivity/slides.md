@@ -11,7 +11,7 @@ mdc: true
 growSeed: 4
 title: Шестеренки реактивности Vue
 
-layout: clear
+contextMenu: false
 ---
 
 <div class="mb-[50px] flex flex-row">
@@ -37,6 +37,8 @@ layout: center
 
 <ion-cog-sharp v-drag="[729,-220,496,450]" class="animate-[spin_70s_linear_infinite] opacity-20" />
 
+<ion-cog-sharp v-drag="[-222,307,496,450]" class="animate-[spin_70s_linear_infinite] opacity-10" />
+
 ---
 
 <div class="animate-spin" />
@@ -56,8 +58,8 @@ layout: center
 <mingcute-settings-7-fill v-click v-drag="[178,278,88,89]" class="animate-[spin_17s_linear_infinite]" />
 <div v-click="'+0'" v-drag="[165,252,138,40]" class="text-[1em] text-shadow-xl"> watchEffect </div>
 
-<zondicons-cog v-click v-drag="[258,70,104,95]" class="animate-[spin_17s_linear_infinite]" />
-<div v-click="'+0'" v-drag="[260,38,104,95]" class="text-[1em] text-shadow-xl"> reactive </div>
+<zondicons-cog v-click v-drag="[250,74,104,95]" class="animate-[spin_17s_linear_infinite]" />
+<div v-click="'+0'" v-drag="[259,37,104,40]" class="text-[1em] text-shadow-xl"> reactive </div>
 
 <!--
 разгоняем за что мы любим Vue
@@ -86,7 +88,8 @@ layout: center
 
 простые вопросы отвечается легко
 
-но что если начинают задавать сложные?
+- можно ли заменить computed на watch
+- а можно ли заменить watch на computed
 -->
 
 ---
@@ -100,36 +103,51 @@ layout: center
 -->
 
 ---
-dragPos:
-  basic: 388,46,168,36
-  main: 346,103,233,36
-  advamced: 72,308,227,36
-  "@vue/reactivity": 381,232,172,36
-  vue-runtime-core: 359,291,208,36
-  advanced: 400,168,130,36
-  internal: 395,348,136,36
-  vapor: 334,459,260,51
-  jonson: 597,459,63,58
+variant: second
 ---
 
-<img class="center w-[340px]" src="/img/iceberg.png" />
+<script setup>
+const heights = [
+  59,
+  116,
+  185,
+  246,
+  308,
+  363,
+  422,
+  472,
+]
+</script>
+
+<div class="center w-[340px] overflow-hidden transition-all duration-400" :style="{ maxHeight: `${heights[$clicks]}px` }" >
+<img src="/img/iceberg.png" />
+</div>
 <div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
-<img class="center w-[340px]" src="/img/iceberg.png" />
+<div class="center w-[340px] overflow-hidden transition-all duration-400" :style="{ maxHeight: `${heights[$clicks]}px` }" >
+<img src="/img/iceberg.png" />
+</div>
 
-<img v-drag="'jonson'" class="center w-[340px]" src="/img/jonson.jfif" />
-
-<div v-drag="'basic'" >ref computed</div>
-<div v-drag="'main'" >provide/inject watch</div>
-<div v-drag="'advanced'" >effectScope</div>
-<div v-drag="'@vue/reactivity'" >@vue/reactivity</div>
-<div v-drag="'vue-runtime-core'" >vue-runtime-core</div>
-<div v-drag="'internal'" >internal api</div>
-<div v-drag="'vapor'" class="text-[0.7em]" >написать свою реактивность для Vapor Vue</div>
+<div 
+  class="center overflow-hidden transition-all duration-400"
+  :style="{ maxHeight: `${heights[$clicks]}px` }"
+>
+  <div class="text-shadow-xl w-[340px] h-[472px] flex flex-col items-stretch justify-around p-r-[60px] text-center relative">
+    <div>азы реактивности</div>
+    <div v-click>основной функционал</div>
+    <div v-click>продвинутая реактивность</div>
+    <div v-click>@vue/reactivity</div>
+    <div v-click>@vue/runtime-core</div>
+    <div v-click>Закрытый API</div>
+    <div v-click class="text-size-[0.75em]">Контрибьютить во Vue</div>
+    <div v-click class="text-size-[0.75em]">написать свою реактивность для Vapor Vue</div>
+    <img class="absolute bottom-[-10px] right-0 h-[60px] w-[64px]" src="/img/jonson.jfif" />
+  </div>
+</div>
 
 <!--
-Подумать за разгоны. Постепенное погружение. Попытаться санимировать
-
-- как вариант убрать шутку и расположить снизу вверх шестерни в порядке их разгона в докладе
+- вначале вам хватает простых ref computed и reactive
+- затем познаете watch и watchEffect
+- сложные случаи вынуждают познакомиться с effectScope, customRef
 -->
 
 ---
@@ -204,11 +222,44 @@ console.log(total.value) // 12
 
 ---
 
+<h1 v-drag="[320,28,365,46]"> Реактивности </h1>
+
+<VueGraph v-click v-drag="[463,257,84,NaN]" label="Data" />
+<Arrow v-click v-drag="[525,212,69,20,-58]" x1="0" y1="50%" x2="100%" y2="50%" />
+<VueGraph v-click="'+0'" v-drag="[535,156,118,NaN]" label="Subscribers" />
+<Arrow v-click v-drag="[470,317,69,20,270]" x1="0" y1="50%" x2="100%" y2="50%" />
+<VueGraph v-click="'+0'" v-drag="[456,366,100,NaN]" label="Action" />
+<Arrow v-click v-drag="[471,160,59,20,180]" x1="0" y1="50%" x2="100%" y2="50%" />
+<VueGraph v-click="'+0'" v-drag="[319,152,141,NaN]" label="Scheduler" />
+<Arrow v-click v-drag="[365,215,106,20,41]" x1="0" y1="50%" x2="100%" y2="50%" />
+
+---
+
 <logos-vue v-drag="[441,49,119,108]" />
 
-<div v-drag="[214,201,166,54]" class="text-[1em] bg-green-5 rounded-md p-2" > vue-reactivity </div>
+<div v-click v-drag="[231,210,191,54]" class="text-[1em] bg-green-5 rounded-md p-2" > @vue/reactivity </div>
+<v-drag-arrow v-click="'+0'" pos="462,127,-72,71" />
 
-<div v-drag="[628,205,211,51]" class="text-[1em] bg-green-5 rounded-md p-2" > vue-runtime-core </div>
+<div v-click v-drag="[588,208,233,53]" class="text-[1em] bg-green-5 rounded-md p-2" > @vue/runtime-core </div>
+<v-drag-arrow v-click="'+0'" pos="535,126,83,72" />
+
+<div v-drag="[226,274,195,154]" class="absolute"><v-clicks>
+
+- ref
+- reactive
+- <span class="text-red">computed</span>
+- <span class="text-red">watchers</span>
+
+</v-clicks></div>
+
+<div v-drag="[587,273,195,154]" class="absolute"><v-clicks>
+
+- computed
+- watchers
+- nextTick
+- реактивность компонентов
+
+</v-clicks></div>
 
 <!--
 визулизацию
@@ -224,7 +275,7 @@ console.log(total.value) // 12
 <div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
 <img class="center w-[840px]" src="/img/map.png" />
 
-<div v-drag="[156,152,757,182,-26]" class="text-red text-[6em] text-shadow-lg"> ЗАМЕНИТЬ </div>
+<div v-drag="[98,157,757,182,-26]" class="text-red text-[6em] text-shadow-lg"> ЗАМЕНИТЬ </div>
 
 <!--
 порешить этого слайда (переместить)
@@ -233,27 +284,13 @@ console.log(total.value) // 12
 -->
 
 ---
-
-# @vue/reactivity
-
-<v-clicks>
-
-- базовая реализация реактивности
-- может подключаться отдельно
-- есть отличия от API из основного пакета Vue
-
-</v-clicks>
-
-<!--
-- сказать чего тут нет (watch / scheduler)
--->
-
----
 layout: center
+topTitle: ReactiveEffect
+topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-50%]
 ---
 
-# ReactiveEffect
-
+---
+topTitle: ReactiveEffect
 ---
 
 ```ts {*|3}
@@ -275,51 +312,118 @@ const total = computed(() => oranges.value + apples.value)
 -->
 
 ---
-
-# ReactiveEffect
-
-<v-clicks>
-
-- собрать зависимости
-- уведомлять зависимости об обновлении
-- хранение функции-эффекта
-
-</v-clicks>
-
----
-dragPos:
-  cross-1: 122,373,118,5,-11
-  cross-2: 118,372,121,5,12
-  cross-text: 248,353,131,40
+topTitle: ReactiveEffect
 ---
 
-# Где используется?
+<style>
+.item {
+  @apply text-sm bg-[#00000088] p-[12px] rd-[8px] flex flex-row items-center gap-[8px]
+}
+.item-icon {
+  @apply w-[27px] h-[27px] rd-[4px] flex items-center justify-center;
+  background-color: #D9D9D920;
+}
+</style>
 
-<v-clicks>
-
-- `watch` / `watchEffect`
-- `effectScope`
-- `render` у компонента
-- `computed`
-
-</v-clicks>
-
-<div v-click v-drag="'cross-1'" class="bg-red" />
-<div v-click="'+0'" v-drag="'cross-2'" class="bg-red" />
-<div v-click v-drag="'cross-text'"> (после 3.5) </div>
+<div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr_1fr] gap-[14px]" mt-12>
+  <div v-click class="item">
+    <div class="item-icon">
+      <MaterialSymbolsLightShoppingBasket/>
+    </div>
+    <div>
+      собрать зависимости
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <MaterialSymbolsLightNotificationsActiveRounded/>
+    </div>
+    <div>
+      уведомлять зависимости об обновлении
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <SolarMagicStickBold/>
+    </div>
+    <div>
+      хранение функции-эффекта
+    </div>
+  </div>
+</div>
 
 ---
+topTitle: ReactiveEffect
+topTitleClass: top-[251px] left-[525px] text-[25px] translate-x-[-50%] z-index-[100]
+---
 
-# Когда использовать?
+<material-symbols-settings-outline v-drag="[412,167,223,202]" class="animate-[spin_20s_linear_infinite]" />
+<div v-click="'+0'" v-drag="[438,242,173,50]" class="text-[1em] text-shadow-xl bg-[#00000088] rounded-md p-2"> ReactiveEffect </div>
 
-<v-clicks>
+<f7-gear v-click v-drag="[727,117,104,95]" class="animate-[spin_17s_linear_infinite]" />
+<div v-click="'+0'" v-drag="[723,81,106,40]" class="text-[1em] text-shadow-xl"> watchers </div>
 
-- Не нужен для ручного использования
-- Для понимания при дебаге
-- Для понимания функционирования
-- Вы пишите свою реактивность
+<heroicons-cog-solid v-click v-drag="[716,351,104,95]" class="animate-[spin_31s_linear_infinite]" />
+<div v-click="'+0'" v-drag="[728,321,119,40]" class="text-[1em] text-shadow-xl"> render </div>
 
-</v-clicks>
+<clarity-settings-solid v-click v-drag="[346,416,62,63]" class="animate-[spin_17s_linear_infinite]" />
+<div v-click="'+0'" v-drag="[314,382,69,40]" class="text-[1em] text-shadow-xl"> effectScope </div>
+
+<mingcute-settings-7-fill v-click v-drag="[191,219,88,89]" class="animate-[spin_17s_linear_infinite]" :style="{ opacity: $clicks === 5 ? '30%' : '100%' }" />
+<div v-click="'+0'" v-drag="[175,185,138,40]" class="text-[1em] text-shadow-xl" :style="{ opacity: $clicks === 5 ? '30%' : '100%' }" > computed </div>
+
+<div v-click v-drag="[196,299,89,40]" class="text-[0.75em]"> после 3.5 </div>
+
+---
+topTitle: ReactiveEffect
+---
+
+<style>
+.item {
+  @apply text-sm bg-[#00000088] p-[12px] rd-[8px] flex flex-row items-center gap-[8px]
+}
+.item-icon {
+  @apply w-[27px] h-[27px] rd-[4px] flex items-center justify-center;
+  background-color: #D9D9D920;
+}
+</style>
+
+<h1 class="text-center">Когда использовать?</h1>
+
+<div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr_1fr] gap-[14px]" mt-12>
+  <div v-click class="item">
+    <div class="item-icon">
+      <MdiHandBackRightOff/>
+    </div>
+    <div>
+      Не нужен для ручного использования
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <IcRoundBugReport/>
+    </div>
+    <div>
+      Для понимания при дебаге
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <Fa6SolidGears />
+    </div>
+    <div>
+      Для понимания функционирования
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <BxBxsFlask/>
+    </div>
+    <div>
+      Вы пишите свои реактивные примитивы
+    </div>
+  </div>
+</div>
 
 <!--
 - свои реактивные примитивы
@@ -329,10 +433,12 @@ dragPos:
 
 ---
 layout: center
+topTitle: Effect
+topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-50%]
 ---
 
-# Effect
-
+---
+topTitle: Effect
 ---
 
 ````md magic-move
@@ -358,8 +464,8 @@ effect(() => {
 -->
 
 ---
-
-# Effect
+topTitle: Effect
+---
 
 <v-clicks>
 
@@ -375,6 +481,8 @@ effect(() => {
 -->
 
 ---
+topTitle: Effect
+---
 
 # Где используется?
 
@@ -386,13 +494,15 @@ effect(() => {
 </v-clicks>
 
 ---
+topTitle: Effect
+---
 
 # Когда использовать?
 
 <v-clicks>
 
 - Тесты системы реактивности
-- Когда вы используете реактивность без Vue, а watch реализовывать не хотите
+- Альтернатива watchEffect
 
 </v-clicks>
 
@@ -402,17 +512,17 @@ effect(() => {
 
 ---
 layout: center
+topTitle: effectScope
+topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-50%]
 ---
-
-# effectScope
 
 <!--
 - добавить слайд "а что есть скоуп"
 -->
 
 ---
-
-# effectScope
+topTitle: effectScope
+---
 
 ````md magic-move
 ```ts
@@ -476,33 +586,70 @@ scope.stop()
 -->
 
 ---
+variant: second
+topTitle: effectScope
+topTitleClass: top-[248px] left-[240px] text-[25px] translate-x-[-50%] z-index-[100]
+---
 
-# Где используется?
+<clarity-settings-solid v-drag="[201,282,62,63]" class="animate-[spin_17s_linear_infinite]" />
 
-<v-clicks depth="2">
+<div v-drag="[362,61,555,132]" class="text-[1em] bg-[#00000088] p-[12px] rd-[8px]">
+   EffectScope (скоуп) - это способ собрать эффекты для управления их жизненным циклом 
+</div>
 
-- `setup` у компонента
-- Системы реактивности вне Vue (`Pinia`)
-- Особые вариации во VueUse
-  - `createSharedComposable`
-  - `createGlobalState`
+---
+variant: second
+topTitle: effectScope
+topTitleClass: top-[248px] left-[240px] text-[25px] translate-x-[-50%] z-index-[100]
+---
 
-</v-clicks>
+<clarity-settings-solid v-drag="[201,282,62,63]" class="animate-[spin_17s_linear_infinite]" />
+
+<LogosVue v-click v-drag="[512,112,62,63]" />
+<div v-click="'+0'" v-drag="[520,78,57,40]" class="text-[1em] text-shadow-xl"> Vue </div>
+
+<div v-click="'+0'" v-drag="[631,115,69,40]" class="text-[1em] text-shadow-xl"> setup </div>
+
+<LogosPinia v-click v-drag="[519,271,62,63]" />
+<div v-click="'+0'" v-drag="[516,236,69,40]" class="text-[1em] text-shadow-xl"> Pinia </div>
+
+<div v-click v-drag="[632,281,292,40]" class="text-[1em] text-shadow-xl"> setup-like stores </div>
+
+<LogosVueuse v-click v-drag="[527,438,56,57]" />
+<div v-click="'+0'" v-drag="[517,400,69,40]" class="text-[1em] text-shadow-xl"> VueUse </div>
+
+<div v-click v-drag="[632,421,292,40]" class="text-[1em] text-shadow-xl font-mono"> createSharedComposable </div>
+
+<div v-click v-drag="[633,469,292,40]" class="text-[1em] text-shadow-xl font-mono"> createGlobalState </div>
 
 <!--
 - добавить логотипы
 -->
 
 ---
+topTitle: effectScope
+---
 
-# Полезное API
+````md magic-move
+```ts
+function myComposable() {
+  // получить текущий scope
+  const scope = getCurrentScope()
+  if (!scope) {
+    throw new Error('the composable must be called inside a Vue context')
+  }
+}
+```
 
-<v-clicks>
-
-- `getCurrentScope` - получить текущий scope
-- `onScopeDispose` - установить обработчик на уничтожение scope
-
-</v-clicks>
+```ts
+function myComposable() {
+  // установить обработчик на уничтожение scope
+  onScopeDispose(() => {
+    console.log('disposed')
+  })
+}
+```
+````
 
 <!--
 - добавить примеры кодом API
@@ -510,6 +657,8 @@ scope.stop()
 - сопутствующее API
 -->
 
+---
+topTitle: effectScope
 ---
 
 # Когда использовать?
@@ -528,25 +677,55 @@ scope.stop()
 
 ---
 layout: center
+topTitle: Tracking
+topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-50%]
 ---
-
-# Tracking
 
 <!--
 - сделать отсылку на определение реактивности
 -->
 
 ---
+topTitle: Tracking
+---
 
-# activeSub
+<mingcute-settings-7-fill v-click v-drag="[437,138,88,89]" class="animate-[spin_17s_linear_infinite]" />
+<div v-click="'+0'" v-drag="[413,166,131,40]" class="text-[1em] text-shadow-xl bg-[#00000088] px-3 rd-[8px]"> activeSub </div>
 
-<v-clicks>
-
-- Переменная которая указывает текущий эффект
-- В один момент времени может быть только 1 активный эффект
-- Работает как стек для вложенных эффектов
-
-</v-clicks>
+<div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr_1fr] gap-[14px]" mt-12>
+  <div v-click class="item">
+    <div class="item-icon">
+      <MdiCursorPointer/>
+    </div>
+    <div>
+      Переменная которая указывает текущий эффект
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <BiTrophyFill/>
+    </div>
+    <div>
+      Только 1 активный эффект
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <MaterialSymbolsStacks/>
+    </div>
+    <div>
+      Работает как стек для вложенных эффектов
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <MdiHandBackRightOff/>
+    </div>
+    <div>
+      Нет ручного доступа
+    </div>
+  </div>
+</div>
 
 <!--
 - ПРИДУМАТЬ ИЛЛЮСТРАЦИЮ (думать о шестеренках)
@@ -555,15 +734,35 @@ layout: center
 -->
 
 ---
+topTitle: Tracking
+---
 
-# Track / Trigger
+<mingcute-settings-7-fill v-click v-drag="[114,240,88,89]" class="animate-[spin_17s_linear_infinite]" />
+<div v-click="'+0'" v-drag="[94,264,131,40]" class="text-[1em] text-shadow-xl bg-[#00000088] px-3 rd-[8px]"> activeSub </div>
 
-<v-clicks>
+<heroicons-cog-solid v-click v-drag="[363,349,104,95]" class="animate-[spin_31s_linear_infinite]" />
+<div v-click="'+0'" v-drag="[387,324,119,40]" class="text-[1em] text-shadow-xl"> track </div>
 
-- `track` - Добавляет текущее значение в список зависимостей у activeSub
-- `trigger` - Уведомляет все зависящие от него значения о необходимости обновления
+<div v-click="'+0'" v-drag="[472,350,459,101]" class="item">
+  <div class="item-icon">
+    <MaterialSymbolsAdd2/>
+  </div>
+  <div>
+    Добавляет текущее значение в список зависимостей у activeSub
+  </div>
+</div>
 
-</v-clicks>
+<zondicons-cog v-click v-drag="[365,169,90,83]" class="animate-[spin_31s_linear_infinite]" />
+<div v-click="'+0'" v-drag="[372,129,119,40]" class="text-[1em] text-shadow-xl"> trigger </div>
+
+<div v-click="'+0'" v-drag="[474,163,451,89]" class="item">
+  <div class="item-icon">
+    <MaterialSymbolsLightNotificationsActiveRounded/>
+  </div>
+  <div>
+    Уведомляет все зависящие от него значения о необходимости обновления
+  </div>
+</div>
 
 <!--
 - переписать описания
@@ -573,23 +772,14 @@ layout: center
 -->
 
 ---
-layout: center
----
-
-# Deps / Link
-
-<!--
-- как было раньше
-- как стало
--->
-
+topTitle: Tracking
 ---
 
 <img class="center w-[640px]" src="/img/deps-link.png" />
 <div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
 <img class="center w-[640px]" src="/img/deps-link.png" />
 
-<div v-drag="[614,91,769,180,26]" class="text-red text-[6em] text-shadow-lg"> ЗАМЕНИТЬ </div>
+<div v-drag="[136,174,769,180,26]" class="text-red text-[6em] text-shadow-lg"> ЗАМЕНИТЬ </div>
 
 <!--
 - разобраться в вопросе
@@ -600,11 +790,15 @@ layout: center
 -->
 
 ---
+topTitle: Tracking
+---
 
 # Dep
 
 <div v-drag="[144,394,689,128]" class="text-blue text-[4em] text-shadow-lg"> РЕАЛИЗОВАТЬ </div>
 
+---
+topTitle: Tracking
 ---
 
 # Link
@@ -626,16 +820,47 @@ export class Link {
 -->
 
 ---
+topTitle: Tracking
+---
 
-# Tracking API
+````md magic-move
+```ts
+watchEffect(() => {
+  const user = fetchUsers()
+})
+```
 
-<v-clicks>
+```ts {*|2}
+watchEffect(() => {
+  console.log('Loading State: ', loadingState.value)
+  const user = fetchUsers()
+})
+```
 
-- `pauseTracking` - временно приостанавливает сбор зависимостей
-- `enableTracking` - возобновляет сбор зависимостей
-- `resetTracking` - востанавливает прежнее состояние
+```ts {*|1,4-6|*}
+import { pauseTracking, resetTracking } from '@vue/reactivity'
 
-</v-clicks>
+watchEffect(() => {
+  pauseTracking()
+  console.log('Loading State: ', loadingState.value)
+  resetTracking()
+
+  const user = fetchUsers()
+})
+```
+
+```ts
+import { pauseTracking, resetTracking } from '@vue/reactivity'
+
+watchEffect(() => {
+  pauseTracking() // временно приостанавливает сбор зависимостей
+  console.log('Loading State: ', loadingState.value)
+  resetTracking() // востанавливает прежнее состояние
+
+  const user = fetchUsers()
+})
+```
+````
 
 <!--
 - попробовать подвести через код
@@ -643,34 +868,20 @@ export class Link {
 -->
 
 ---
-
-# Tracking API
-
-<v-clicks>
-
-- Все это работает по принципу стека
-- `pauseTracking` + `resetTracking` = 💖
-- `enableTracking` = 80%, что вы делаете что-то не так
-- `pauseTracking` + `enableTracking` = утечка памяти
-- Доступно только через `@vue/reactivity`
-</v-clicks>
-
-<!--
-- убрать ошибочное использование
--->
+layout: center
+topTitle: Источники
+topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-50%]
+---
 
 ---
 layout: center
----
-
-# Источники / Зависимости
-
----
-layout: center
+topTitle: Источники
 ---
 
 # shallowRef
 
+---
+topTitle: Источники
 ---
 
 # shallowRef
@@ -686,6 +897,7 @@ layout: center
 
 ---
 layout: center
+topTitle: Источники
 ---
 
 # Reactive
@@ -694,6 +906,7 @@ layout: center
 
 ---
 layout: center
+topTitle: Источники
 ---
 
 # ref
@@ -724,7 +937,7 @@ dragPos:
 
 ---
 dragPos:
-  scheduler: 391,24,167,40
+  scheduler: 0,-39,0,0
 ---
 
 <img class="center w-[540px]" src="/img/scheduler.png" />
