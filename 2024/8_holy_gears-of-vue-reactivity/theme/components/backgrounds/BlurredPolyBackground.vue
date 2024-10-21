@@ -182,9 +182,8 @@ const poly3 = usePloy(3)
 </template>
 
 <style scoped>
-.bg,
 .clip {
-  transition: all 2.5s ease;
+  transition: inherit;
 }
 
 .bg {
