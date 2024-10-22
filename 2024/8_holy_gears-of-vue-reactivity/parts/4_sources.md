@@ -1,11 +1,11 @@
 ---
 layout: center
-topTitle: Источники
+topTitle: Sources
 topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-50%]
 ---
 
 ---
-topTitle: Источники
+topTitle: Sources
 ---
 
 # Reactive
@@ -21,7 +21,7 @@ topTitle: Источники
 
 
 ---
-topTitle: Источники
+topTitle: Sources
 ---
 
 <div v-drag="[75,243,100,40]" class="text-shadow-lg"> Reactive </div>
@@ -37,7 +37,7 @@ topTitle: Источники
 <div v-drag="[306,467,305,40]" class="text-shadow-lg"> ReactiveFlags.IS_SHALLOW </div>
 
 ---
-topTitle: Источники/Reactive
+topTitle: Sources
 ---
 
 ````md magic-move {at: 1}
@@ -127,7 +127,7 @@ topTitle: Источники
 </v-clicks>
 
 ---
-topTitle: Источники
+topTitle: Sources
 ---
 
 # shallowRef

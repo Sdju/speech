@@ -1,11 +1,31 @@
 ---
 layout: center
-topTitle: Реактивность компонентов
+topTitle: Components
 topTitleClass: transition-none top-[220px] left-[50%] text-[3em] translate-x-[-50%] w-full text-center
 ---
 
 ---
-topTitle: Реактивность компонентов
+topTitle: Components
+---
+
+<div class="grid grid-rows-3 gap-4">
+  <NodeGraph class="py-4 bg-[#4ade804d]">Component</NodeGraph>
+  <div class="grid grid-cols-5 gap-4">
+    <NodeGraph v-click class="col-span-4 bg-[#3c5cff4d]">Proxy</NodeGraph>
+    <NodeGraph v-click class="col-span-1 bg-[#ff4d4d4d]">JS Prototypes</NodeGraph>
+  </div>
+  <div class="grid grid-cols-5 gap-4">
+    <NodeGraph v-click class="bg-[#3c5cff4d]">Props</NodeGraph>
+    <NodeGraph v-click="'+0'" class="bg-[#3c5cff4d]">Slots</NodeGraph>
+    <NodeGraph v-click="'+0'" class="bg-[#3c5cff4d]">Attrs</NodeGraph>
+    <NodeGraph v-click="'+0'" class="bg-[#3c5cff4d]">Refs</NodeGraph>
+    <NodeGraph v-click class="bg-[#ff4d4d4d]">Provide/Inject</NodeGraph>
+  </div>
+</div>
+
+
+---
+topTitle: Components
 ---
 
 # Setup-функция
@@ -17,7 +37,7 @@ topTitle: Реактивность компонентов
 </v-clicks>
 
 ---
-topTitle: Реактивность компонентов
+topTitle: Components
 ---
 
 # Render-функция
@@ -29,45 +49,7 @@ topTitle: Реактивность компонентов
 </v-clicks>
 
 ---
-topTitle: Реактивность компонентов
----
-
-# Props
-
-<v-clicks>
-
-- Использует Proxy
-- readonly (C версии Vue 3)
-
-</v-clicks>
-
----
-topTitle: Реактивность компонентов
----
-
-# Slots
-
-<v-clicks>
-
-- Использует Proxy
-- readonly
-
-</v-clicks>
-
----
-topTitle: Реактивность компонентов
----
-
-# Template refs
-
-<v-clicks>
-
-- Использует Proxy
-
-</v-clicks>
-
----
-topTitle: Реактивность компонентов
+topTitle: Components
 ---
 
 # Provide / Inject
@@ -107,18 +89,6 @@ dragPos:
 
 <div v-drag="'a'" class="border-2 border-white rounded-md p-2 text-center text-[0.5em]">Component A</div>
 <div v-drag="'b'" class="border-2 border-white rounded-md p-2 text-center text-[0.5em]">Component B</div>
-
----
-topTitle: Реактивность компонентов
----
-
-# Attrs
-
-<v-clicks>
-
-- Использует Proxy
-
-</v-clicks>
 
 ---
 

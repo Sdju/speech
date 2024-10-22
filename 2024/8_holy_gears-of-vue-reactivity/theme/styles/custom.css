@@ -1,16 +1,16 @@
 [variant] {
-    transition: all 3.5s ease-out,
-     --bg-keyword 3.5s ease-out,
-     --bg-first 3.5s ease-out,
-     --bg-second 3.5s ease-out,
-     --bg-third 3.5s ease-out,
-     --v-color 3.5s ease-out;
+    transition: all 2.5s ease-out,
+     --bg-keyword 2.5s ease-out,
+     --bg-first 2.5s ease-out,
+     --bg-second 2.5s ease-out,
+     --bg-third 2.5s ease-out,
+     --v-color 2.5s ease-out;
 }
 
 [variant=first], [variant=orange] {
     --bg-keyword: #cc8b00;
-    --bg-first: #e7e696;
-    --bg-second: #c7a614;
+    --bg-first: #ffae00;
+    --bg-second: #dc8e27;
     --bg-third: #a27839;
     --v-color: theme('colors.amber.500');
 }

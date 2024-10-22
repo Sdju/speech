@@ -1,11 +1,11 @@
 ---
 layout: center
-topTitle: Подписчики
+topTitle: Subscribers
 topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-50%]
 ---
 
 ---
-topTitle: Подписчики
+topTitle: Subscribers
 ---
 
 # watchEffect
@@ -18,7 +18,7 @@ topTitle: Подписчики
 </v-clicks>
 
 ---
-topTitle: Подписчики
+topTitle: Subscribers
 ---
 
 # watch
@@ -32,7 +32,7 @@ topTitle: Подписчики
 </v-clicks>
 
 ---
-topTitle: Подписчики
+topTitle: Subscribers
 ---
 
 <div v-drag="[41,283,109,40]" class="text-shadow-lg"> watchers </div>
@@ -44,7 +44,7 @@ topTitle: Подписчики
 <div v-click v-drag="[420,417,57,40]" class="text-shadow-lg"> sync </div>
 
 ---
-topTitle: Подписчики
+topTitle: Subscribers
 ---
 
 # computed

@@ -15,13 +15,20 @@ const apples = ref(6)
 const total = computed(() => oranges.value + apples.value)
 ```
 
-<div v-click v-drag="[218,274,433,40]" class="border-2 border-white rounded-md p-2" />
+<div v-drag="[312,243,326,40]">
+  <div font-hand c-red text-center v-click="2">Effect</div>
+  <div class="w-full" v-mark.underline.red="{ at: '2'}" />
+</div>
 
-<div v-click v-drag="[364,267,134,40]" class="border-b-2 border-blue rounded-md p-2" />
+<div v-drag="[362,304,134,40]">
+  <div class="w-full" v-mark.underline.blue="{ at: '3'}" />
+  <div font-hand c-blue text-center v-click="3">Source</div>
+</div>
 
-<div v-click v-drag="[519,208,118,100]" class="border-b-2 border-blue rounded-md p-2" />
-
-<div v-click v-drag="[311,281,326,40]" class="border-t-2 border-red rounded-md p-2" />
+<div v-drag="[523,307,118,100]">
+  <div class="w-full" v-mark.underline.blue="{ at: '3'}" />
+  <div font-hand c-blue text-center v-click="3">Source</div>
+</div>
 
 <!--
 - Vue реализует внутри себя класс ReactiveEffect
@@ -48,7 +55,7 @@ topTitleClass: top-[140px] left-[50%] translate-x-[-50%]
       <MaterialSymbolsLightShoppingBasket/>
     </div>
     <div>
-      собрать зависимости
+      Собирает зависимости
     </div>
   </div>
   <div v-click class="item">
@@ -56,7 +63,7 @@ topTitleClass: top-[140px] left-[50%] translate-x-[-50%]
       <MaterialSymbolsLightNotificationsActiveRounded/>
     </div>
     <div>
-      уведомлять зависимости об обновлении
+      Уведомлять зависимости об обновлении
     </div>
   </div>
   <div v-click class="item">
@@ -64,7 +71,7 @@ topTitleClass: top-[140px] left-[50%] translate-x-[-50%]
       <SolarMagicStickBold/>
     </div>
     <div>
-      хранение функции-эффекта
+      Xранение функции-эффекта
     </div>
   </div>
 </div>
@@ -78,22 +85,20 @@ variant: blue
 
 <material-symbols-settings-outline v-drag="[412,167,223,202]" class="animate-[spin_20s_linear_infinite]" />
 
-<f7-gear v-click v-drag="[727,117,104,95]" class="animate-[spin_17s_linear_infinite]" />
-<div v-click="'+0'" v-drag="[723,81,106,40]" class="text-[1em] text-shadow-xl"> watchers </div>
+<Gear v-click v-drag="[772,34,92,127]" :style="{ opacity: $clicks >= 6 ? '30%' : '100%' }" name="watch" />
+<Gear v-click="'+0'" v-drag="[128,84,138,127]" :style="{ opacity: $clicks >= 6 ? '30%' : '100%' }" name="watchEffect" />
 
-<heroicons-cog-solid v-click v-drag="[716,351,104,95]" class="animate-[spin_31s_linear_infinite]" />
-<div v-click="'+0'" v-drag="[728,321,119,40]" class="text-[1em] text-shadow-xl"> render </div>
+<Gear v-click v-drag="[752,317,104,95]" name="render" />
 
-<clarity-settings-solid v-click v-drag="[346,416,62,63]" class="animate-[spin_17s_linear_infinite]" />
-<div v-click="'+0'" v-drag="[314,382,69,40]" class="text-[1em] text-shadow-xl"> effectScope </div>
+<Gear v-click v-drag="[131,299,138,112]" :style="{ opacity: $clicks >= 5 ? '30%' : '100%' }" name="computed" />
 
-<mingcute-settings-7-fill v-click v-drag="[191,219,88,89]" class="animate-[spin_17s_linear_infinite]" :style="{ opacity: $clicks === 5 ? '30%' : '100%' }" />
-<div v-click="'+0'" v-drag="[175,185,138,40]" class="text-[1em] text-shadow-xl" :style="{ opacity: $clicks === 5 ? '30%' : '100%' }" > computed </div>
+<div v-click v-drag="[157,406,89,40]" class="text-[0.75em]"> после 3.5 </div>
 
-<div v-click v-drag="[196,299,89,40]" class="text-[0.75em]"> после 3.5 </div>
+<Gear v-click="7" v-drag="[454,403,151,111]" name="effect" />
 
 ---
 topTitle: ReactiveEffect
+disabled: true
 ---
 
 <style>
@@ -153,6 +158,7 @@ topTitle: ReactiveEffect
 layout: center
 topTitle: Effect
 topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-50%]
+disabled: true
 ---
 
 ---
@@ -162,15 +168,17 @@ topTitleClass: top-[120px] left-[50%] translate-x-[-50%]
 
 ````md magic-move
 ```ts
-const oranges = 5
-const apples = 6
-const total = oranges + apples
+const oranges = ref(5)
+const apples = ref(6)
+
+const total = computed(() => oranges.value + apples.value)
 ```
 ```ts {*|1,5-}
 import { effect } from 'vue'
 
 const oranges = ref(5)
 const apples = ref(6)
+
 const total = ref(0)
 effect(() => {
   total.value = oranges.value + apples.value
@@ -178,13 +186,10 @@ effect(() => {
 ```
 ````
 
-<!--
-- использовать пример с computed
--->
-
 ---
 topTitle: Effect
 topTitleClass: top-[140px] left-[50%] translate-x-[-50%]
+disabled: true
 ---
 
 <div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr_1fr] gap-[14px]" mt-12>
@@ -229,6 +234,7 @@ topTitleClass: top-[140px] left-[50%] translate-x-[-50%]
 
 ---
 topTitle: Effect
+disabled: true
 ---
 
 # Где используется?
@@ -242,6 +248,7 @@ topTitle: Effect
 
 ---
 topTitle: Effect
+disabled: true
 ---
 
 # Когда использовать?

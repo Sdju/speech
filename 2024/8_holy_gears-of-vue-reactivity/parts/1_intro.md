@@ -30,20 +30,15 @@ layout: center
 <material-symbols-settings-outline v-drag="[388,145,223,202]" class="animate-[spin_20s_linear_infinite]" />
 <logos-vue v-drag="[476,229,46,42]" />
 
-<f7-gear v-click v-drag="[656,115,104,95]" class="animate-[spin_17s_linear_infinite]" />
-<div v-click="'+0'" v-drag="[691,84,40,40]" class="text-[1em] text-shadow-xl"> ref </div>
+<Gear v-click v-drag="[727,84,103,131]" name="ref" />
 
-<heroicons-cog-solid v-click v-drag="[689,285,104,95]" class="animate-[spin_31s_linear_infinite]" />
-<div v-click="'+0'" v-drag="[684,256,119,40]" class="text-[1em] text-shadow-xl"> computed </div>
+<Gear v-click v-drag="[720,330,141,118]" name="computed" />
 
-<clarity-settings-solid v-click v-drag="[348,413,62,63]" class="animate-[spin_17s_linear_infinite]" />
-<div v-click="'+0'" v-drag="[344,383,69,40]" class="text-[1em] text-shadow-xl"> watch </div>
+<Gear v-click v-drag="[348,413,134,105]" name="watch" />
 
-<mingcute-settings-7-fill v-click v-drag="[178,278,88,89]" class="animate-[spin_17s_linear_infinite]" />
-<div v-click="'+0'" v-drag="[165,252,138,40]" class="text-[1em] text-shadow-xl"> watchEffect </div>
+<Gear v-click v-drag="[150,258,142,119]" name="watchEffect" />
 
-<zondicons-cog v-click v-drag="[250,74,104,95]" class="animate-[spin_17s_linear_infinite]" />
-<div v-click="'+0'" v-drag="[259,37,104,40]" class="text-[1em] text-shadow-xl"> reactive </div>
+<Gear v-click v-drag="[216,69,104,95]" name="reactive" />
 
 <!--
 разгоняем за что мы любим Vue
@@ -90,10 +85,12 @@ layout: center
 
 ---
 variant: second
+clicks: 8
 ---
 
 <script setup>
 const heights = [
+  59,
   59,
   116,
   185,
@@ -117,17 +114,35 @@ const heights = [
   class="center overflow-hidden transition-all duration-400"
   :style="{ maxHeight: `${heights[$clicks]}px` }"
 >
-  <div class="text-shadow-xl w-[340px] h-[472px] flex flex-col items-stretch justify-around p-r-[60px] text-center relative">
-    <div>азы реактивности</div>
-    <div v-click>основной функционал</div>
-    <div v-click>продвинутая реактивность</div>
-    <div v-click>@vue/reactivity</div>
-    <div v-click>@vue/runtime-core</div>
-    <div v-click>Закрытый API</div>
-    <div v-click class="text-size-[0.75em]">Контрибьютить во Vue</div>
-    <div v-click class="text-size-[0.75em]">написать свою реактивность для Vapor Vue</div>
+  <div class="text-shadow-xl w-[340px] h-[472px] flex flex-col items-stretch p-r-[60px] text-center relative">
+    <div class="text-shadow-lg mt-[10px] mb-[20px]">азы реактивности</div>
+    <div class="text-shadow-lg mb-[32px]" v-click>основной функционал</div>
+    <div class="text-shadow-lg text-size-[0.75em] mb-[32px]" v-click>продвинутая реактивность</div>
+    <div class="text-shadow-lg mb-[28px]" v-click>@vue/reactivity</div>
+    <div class="text-shadow-lg mb-[25px]" v-click>@vue/runtime-core</div>
+    <div class="text-shadow-lg mb-[23px]" v-click>Закрытый API</div>
+    <div class="text-shadow-lg text-size-[0.75em] mb-[14px]" v-click>Контрибьютить во Vue</div>
+    <div class="text-shadow-lg text-size-[0.75em]" v-click>написать свою реактивность для Vapor Vue</div>
     <img class="absolute bottom-[-10px] right-0 h-[60px] w-[64px]" src="/img/jonson.jfif" />
   </div>
+</div>
+
+<div absolute top-0 left-0 v-click="[1,2]">
+  <Gear :pos="[835,54,103,141]" name="ref" />
+  <Gear :pos="[71,45,103,151]" name="computed" />
+  <Gear :pos="[186,339,103,151]" name="reactive" />
+  <Gear :pos="[782,266,103,151]" name="props" />
+</div>
+<div absolute top-0 left-0 v-click="[2,3]">
+  <Gear :pos="[672,24,103,141]" name="watch" />
+  <Gear :pos="[705,320,103,151]" name="watchEffect" />
+  <Gear :pos="[82,294,103,151]" name="vModel" />
+</div>
+<div absolute top-0 left-0 v-click="[3,4]">
+
+<Gear v-drag="[788,101,103,151]" name="effectScope" />
+<Gear v-drag="[75,342,125,107]" name="customRef" />
+
 </div>
 
 <!--
@@ -149,9 +164,9 @@ variant: purple
 
 <div v-click="'+0'" class="italic bg-[#00000048] p-4 rd-[8px] mb-4"> Способность системы автоматически реагировать на раздражители </div>
 
-<v-click>
+<div v-click="3">
 
-```ts
+```ts {*|*|1-3|5|6}
 let oranges = ref(5)
 let apples = ref(10)
 let total = computed(() => oranges.value + apples.value)
@@ -160,7 +175,7 @@ apples.value = 7
 console.log(total.value) // 12
 ```
 
-</v-click>
+</div>
 
 <!--
 - тут точно можно сэкономить по времени. оставить основную суть
@@ -170,7 +185,7 @@ console.log(total.value) // 12
 
 <h1 v-drag="[365,32,244,46]"> Реактивность </h1>
 
-<VueGraph v-click v-drag="[463,257,84,NaN]" label="Data" />
+<VueGraph v-click v-drag="[456,258,84,NaN]" label="Model" />
 <Arrow v-click v-drag="[525,212,69,20,-58]" x1="0" y1="50%" x2="100%" y2="50%" />
 <VueGraph v-click="'+0'" v-drag="[535,156,118,NaN]" label="Subscribers" />
 <Arrow v-click v-drag="[470,317,69,20,270]" x1="0" y1="50%" x2="100%" y2="50%" />
@@ -191,31 +206,29 @@ console.log(total.value) // 12
 
 ---
 
-<logos-vue v-drag="[441,49,119,108]" />
+<logos-vue v-drag="[445,40,119,108]" />
 
-<div v-click v-drag="[231,210,191,54]" class="text-[1em] bg-green-5 rounded-md p-2" > @vue/reactivity </div>
-<v-drag-arrow v-click="'+0'" pos="462,127,-72,71" />
+<div v-click v-drag="[108,161,379,168]" class="text-[1em] bg-blue-5/30 rounded-2xl p-4" > 
+  @vue/reactivity 
 
-<div v-click v-drag="[588,208,233,53]" class="text-[1em] bg-green-5 rounded-md p-2" > @vue/runtime-core </div>
-<v-drag-arrow v-click="'+0'" pos="535,126,83,72" />
+  <div class="text-size-[0.75em] flex flex-col">
+    <Gear inline name="ref" />
+    <Gear inline name="reactive" />
+    <Gear inline name="computed" />
+    <Gear inline name="watchers" />
+  </div>
+</div>
 
-<div v-drag="[226,274,195,154]" class="absolute"><v-clicks>
+<div v-click v-drag="[523,164,398,167]" class="text-[1em] bg-cyan-5/30 rounded-2xl p-2" > 
+  @vue/runtime-core
 
-- ref
-- reactive
-- <span class="text-red">computed</span>
-- <span class="text-red">watchers</span>
-
-</v-clicks></div>
-
-<div v-drag="[587,273,195,154]" class="absolute"><v-clicks>
-
-- computed
-- watchers
-- nextTick
-- реактивность компонентов
-
-</v-clicks></div>
+  <div class="text-size-[0.75em] flex flex-col">
+    <Gear inline name="effect" />
+    <Gear inline name="scheduler" />
+    <Gear inline name="nextTick" />
+    <Gear inline name="components" />
+  </div>
+</div>
 
 <!--
 визулизацию
@@ -231,9 +244,39 @@ console.log(total.value) // 12
 
 # Карта реактивности
 
-<img class="center w-[840px]" src="/img/map.png" />
-<div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
-<img class="center w-[840px]" src="/img/map.png" />
+```mermaid
+graph TD
+    A[getters/setters] --> B[ref]
+    A --> C[shallowRef]
+    A --> D[customRef]
+    A --> E[Dep]
+    B -.-> F[reactive]
+    E --> B
+    E --> C
+    E --> D
+    F --> G[track/trigger]
+    E --> G
+    H[Proxy] --> F
+    H --> I[props]
+    H --> J[attrs]
+    H --> K[slots]
+    I --> G
+    J --> G
+    K --> G
+    L[JS Prototypes] --> M[provide/inject]
+    E --> N[Link]
+    N <--> O[Subscriber]
+    E --> P[activeSub]
+    P -.-> O
+    E --> Q[computed]
+    R[ReactiveEffect] --> O
+    R --> S[watch]
+    R --> T[watchEffect]
+    R --> U[effect]
+    R ..-> V[effectScope]
+    W[render] --> V
+    X[setup] --> V
+```
 
 <div hidden v-drag="[120,392,757,182]" class="text-red text-[6em] text-shadow-lg"> ЗАМЕНИТЬ </div>
 

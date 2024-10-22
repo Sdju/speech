@@ -1,0 +1,79 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+    refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" />
+    </marker>
+  </defs>
+  
+  <!-- Фоновые секции -->
+  <rect x="10" y="10" width="380" height="280" fill="#f0f0f0" rx="10" ry="10" />
+  <rect x="410" y="10" width="380" height="280" fill="#f0f8ff" rx="10" ry="10" />
+  <rect x="10" y="310" width="780" height="280" fill="#fff0f0" rx="10" ry="10" />
+  
+  <!-- Заголовки секций -->
+  <text x="20" y="40" font-family="Arial" font-size="16" fill="#333">Реактивность</text>
+  <text x="420" y="40" font-family="Arial" font-size="16" fill="#333">Эффекты</text>
+  <text x="20" y="340" font-family="Arial" font-size="16" fill="#333">Компоненты</text>
+
+  <!-- Элементы реактивности -->
+  <g font-family="Arial" font-size="14">
+    <circle cx="100" cy="100" r="40" fill="#90EE90" />
+    <text x="100" y="105" text-anchor="middle">ref</text>
+    
+    <circle cx="220" cy="100" r="40" fill="#90EE90" />
+    <text x="220" y="105" text-anchor="middle">reactive</text>
+    
+    <circle cx="100" cy="220" r="40" fill="#90EE90" />
+    <text x="100" y="225" text-anchor="middle">shallowRef</text>
+    
+    <circle cx="220" cy="220" r="40" fill="#90EE90" />
+    <text x="220" y="225" text-anchor="middle">customRef</text>
+  </g>
+
+  <!-- Элементы эффектов -->
+  <g font-family="Arial" font-size="14">
+    <circle cx="500" cy="100" r="40" fill="#ADD8E6" />
+    <text x="500" y="105" text-anchor="middle">effect</text>
+    
+    <circle cx="620" cy="100" r="40" fill="#ADD8E6" />
+    <text x="620" y="105" text-anchor="middle">computed</text>
+    
+    <circle cx="500" cy="220" r="40" fill="#ADD8E6" />
+    <text x="500" y="225" text-anchor="middle">watch</text>
+    
+    <circle cx="620" cy="220" r="40" fill="#ADD8E6" />
+    <text x="620" y="225" text-anchor="middle">watchEffect</text>
+  </g>
+
+  <!-- Элементы компонентов -->
+  <g font-family="Arial" font-size="14">
+    <circle cx="100" cy="450" r="40" fill="#FFA07A" />
+    <text x="100" y="455" text-anchor="middle">props</text>
+    
+    <circle cx="220" cy="450" r="40" fill="#FFA07A" />
+    <text x="220" y="455" text-anchor="middle">attrs</text>
+    
+    <circle cx="340" cy="450" r="40" fill="#FFA07A" />
+    <text x="340" y="455" text-anchor="middle">slots</text>
+    
+    <circle cx="460" cy="450" r="40" fill="#FFA07A" />
+    <text x="460" y="455" text-anchor="middle">emit</text>
+  </g>
+
+  <!-- Центральный элемент -->
+  <circle cx="400" cy="300" r="50" fill="#FF6347" />
+  <text x="400" y="305" text-anchor="middle" font-family="Arial" font-size="14" fill="white">Dep</text>
+
+  <!-- Примеры связей -->
+  <g stroke="#333" stroke-width="2" marker-end="url(#arrowhead)">
+    <line x1="140" y1="100" x2="360" y2="280" />
+    <line x1="260" y1="100" x2="360" y2="280" />
+    <line x1="140" y1="220" x2="360" y2="300" />
+    <line x1="260" y1="220" x2="360" y2="300" />
+    <line x1="460" y1="100" x2="400" y2="250" />
+    <line x1="580" y1="100" x2="440" y2="250" />
+    <line x1="460" y1="220" x2="400" y2="350" />
+    <line x1="580" y1="220" x2="440" y2="350" />
+  </g>
+</svg>
