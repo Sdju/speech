@@ -27,5 +27,7 @@ defineProps<{
         <ion-logo-discord /> {{ discord }}
       </div>
     </div>
+
+    <slot />
   </div>
 </template>

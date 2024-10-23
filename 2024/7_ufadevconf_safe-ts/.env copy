@@ -1,0 +1,3 @@
+PRJ_NAME=7_ufadevconf_safe-ts
+STATIC_ROOT=../../../-static/slides/
+BASE_ROOT=/speech/slides/

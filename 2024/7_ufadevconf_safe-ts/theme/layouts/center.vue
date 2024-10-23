@@ -1,5 +1,8 @@
 <template>
-  <div class="slidev-layout center w-full flex">
+  <div 
+    class="slidev-layout center w-full flex"
+    :variant="$attrs.variant ?? 'first'"
+  >
     <div class="w-full flex flex-col justify-center items-center">
       <slot />
     </div>

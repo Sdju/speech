@@ -1,16 +1,21 @@
 [variant] {
-    transition: all 3.5s ease-out;
+    transition: all 2.5s ease-out,
+     --bg-keyword 2.5s ease-out,
+     --bg-first 2.5s ease-out,
+     --bg-second 2.5s ease-out,
+     --bg-third 2.5s ease-out,
+     --v-color 2.5s ease-out;
 }
 
-[variant=first] {
-    --bg-keyword: #007acc;
-    --bg-first: #96b5e7;
-    --bg-second: #149dc7;
-    --bg-third: #3d39a2;
+[variant=orange] {
+    --bg-keyword: #cc8b00;
+    --bg-first: #ffae00;
+    --bg-second: #dc8e27;
+    --bg-third: #a27839;
     --v-color: theme('colors.amber.500');
 }
 
-[variant=second] {
+[variant=main], [variant=blue] {
     --bg-keyword: rgba(50, 98, 178, 0.55);
     --bg-first: #3c5cff;
     --bg-second: #4cbbc5;
@@ -18,10 +23,56 @@
     --v-color: theme('colors.blue.500');
 }
 
-[variant=third] {
+[variant=green] {
     --bg-keyword: #5a8f298c;
     --bg-first: #49ff3c;
     --bg-second: #4cc580;
     --bg-third: #ceff1d;
     --v-color: theme('colors.gray.500');
+}
+
+[variant=red] {
+    --bg-keyword: #990000;
+    --bg-first: #ff4d4d;
+    --bg-second: #ff8080;
+    --bg-third: #ff9999;
+    --v-color: theme('colors.red.500');
+}
+
+[variant=purple] {
+    --bg-keyword: #990099;
+    --bg-first: #ff4dff;
+    --bg-second: #ff80ff;
+    --bg-third: #ff99ff;
+    --v-color: theme('colors.purple.500');
+}
+
+@property --v-color {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: true;
+}
+
+@property --bg-keyword {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: true;
+}
+
+@property --bg-first {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: true;
+}
+
+@property --bg-second {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: true;
+}
+
+@property --bg-third {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: false;
 }

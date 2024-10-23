@@ -1,12 +1,30 @@
 /* v-click */
-.slidev-vclick-target {
+.slidev-vclick-target:not(.vclick-custom) {
     transition: opacity 500ms ease, filter 200ms ease;
 }
 
-.slidev-vclick-hidden {
+.slidev-vclick-hidden:not(.vclick-custom) {
     opacity: 0;
     pointer-events: none;
     filter: blur(3px);
+}
+
+.slidev-vclick-target.vclick-popup {
+    transition: transform 500ms ease;
+    transform: scale(1);
+}
+
+.slidev-vclick-hidden.vclick-popup {
+    pointer-events: none;
+    transform: scale(0);
+}
+
+.fx-popup-hidden {
+    @apply pointer-events-none scale-0 filter-blur-[10px];
+}
+
+.fx-blur-hidden {
+    @apply pointer-events-none filter-blur-[10px] opacity-0;
 }
 
 /* fade-out */
