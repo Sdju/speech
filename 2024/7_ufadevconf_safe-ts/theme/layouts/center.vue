@@ -1,7 +1,7 @@
 <template>
   <div 
     class="slidev-layout center w-full flex"
-    :variant="$attrs.variant ?? 'first'"
+    :variant="$attrs.variant ?? 'main'"
   >
     <div class="w-full flex flex-col justify-center items-center">
       <slot />

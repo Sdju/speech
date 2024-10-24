@@ -7,22 +7,15 @@ highlighter: shiki
 css: unocss
 colorSchema: dark
 transition: fade-out
+contextMenu: false
 mdc: true
 growSeed: 4
-title: The Progressive Path
+title: Safe TS
 
-layout: full
-dragPos:
-  photo: 608,0,372,349
+layout: center
 ---
 
-![img.png](/img/intro.png)
-
-<div v-drag="'photo'">
-
-![img.png](/img/photo.png)
-
-</div>
+# Безопасный TypeScript
 
 ---
 
@@ -35,11 +28,12 @@ dragPos:
   </div>
 </div>
 <div class="text-4xl mb-[50px]">Денис Чернов</div>
-<p><file-icons-telegram /> @zede_code</p>
-<p><ion-logo-twitch /> @izede</p>
-<p><ion-logo-github /> @Sdju</p>
+<p><file-icons-telegram mr-2 /> @zede_code</p>
+<p><ion-logo-twitch mr-2 /> @izede</p>
+<p><ion-logo-github mr-2 /> @Sdju</p>
 
 <QrCodeIntro class="w-[200px] h-[200px] absolute top-[200px] right-[80px]" />
+
 
 ---
 
@@ -120,7 +114,7 @@ dragPos:
 layout: center
 ---
 
-# Особенности типизации TS
+# Особенности типизации **TS**
 
 ---
 
@@ -146,14 +140,14 @@ let name: string = 'John Doe'
 
 **Строгая типизация** - не позволяет смешивать типы данных в операциях
 
-> Не путать со статической типизацией
+<span v-click v-mark.underline.red="{at: '+0'}" class="c-red"> Не путать со статической типизацией! </span>
 
 ````md magic-move
 ```ts {*|1,2|4,5}
 const weight = 70
 const person = { name: 'John Doe', weight: 60 }
 
-console.log(weight + person.weight);
+console.log(weight + person.weight)
 // Output: 130
 ⠀
 ```
@@ -162,7 +156,7 @@ console.log(weight + person.weight);
 const weight = 70
 const person = { name: 'John Doe', weight: 60 }
 
-console.log(weight + person);
+console.log(weight + person)
 // ERROR! Operator '+' cannot be applied to types 
 // 'number' and '{ name: string; weight: number; }'
 ```
@@ -181,9 +175,13 @@ console.log(greeting + person)
 
 # Утиная
 
+<v-clicks>
+
 > "Если это выглядит как утка, плавает как утка и крякает как утка, то это, вероятно, и есть утка."
 
 **Утиная типизация** - это концепция, при которой тип объекта определяется его свойствами и методами, а не явным объявлением типа.
+
+</v-clicks>
 
 ---
 
@@ -220,8 +218,8 @@ function action(a: unknown) {
 type Duck = { eat(): void }
 type Cat = { eat(): void }
 
-type DuckIsCat = Duck extends Cat ? true : false; // true
-type CatIsDuck = Cat extends Duck ? true : false; // true
+type DuckIsCat = Duck extends Cat ? true : false // true
+type CatIsDuck = Cat extends Duck ? true : false // true
 
 let duck: Duck = { eat() }
 let cat: Cat = duck // OK!
@@ -236,8 +234,8 @@ let cat: Cat = duck // OK!
 type Duck = { eat(): void }
 type Cat = { eat(): void }
 
-type DuckIsCat = Duck extends Cat ? true : false; // true
-type CatIsDuck = Cat extends Duck ? true : false; // true
+type DuckIsCat = Duck extends Cat ? true : false // true
+type CatIsDuck = Cat extends Duck ? true : false // true
 
 let duck: Duck = { eat() }
 let cat: Cat = duck // OK!
@@ -263,8 +261,8 @@ class Cat {
   }
 }
 
-type DuckIsCat = Duck extends Cat ? true : false; // true
-type CatIsDuck = Cat extends Duck ? true : false; // true
+type DuckIsCat = Duck extends Cat ? true : false // true
+type CatIsDuck = Cat extends Duck ? true : false // true
 
 let duck: Duck = new Duck()
 let cat: Cat = duck // OK!
@@ -285,8 +283,8 @@ class Cat {
 let duck: Duck = new Duck()
 let cat: Cat = duck // OK!
 
-type DuckIsCat = Duck extends Cat ? true : false; // true
-type CatIsDuck = Cat extends Duck ? true : false; // true
+type DuckIsCat = Duck extends Cat ? true : false // true
+type CatIsDuck = Cat extends Duck ? true : false // true
 ```
 
 ```ts
@@ -304,8 +302,8 @@ class Cat {
 let duck = new Duck()
 let cat = new Cat()
 
-type DuckIsCat = Duck extends Cat ? true : false; // true
-type CatIsDuck = Cat extends Duck ? true : false; // true
+type DuckIsCat = Duck extends Cat ? true : false // true
+type CatIsDuck = Cat extends Duck ? true : false // true
 ```
 
 ```ts
@@ -323,8 +321,8 @@ class Cat {
 let duck = new Duck()
 let cat = new Cat()
 
-type DuckIsCat = duck instanceof Cat
-type CatIsDuck = cat instanceof Duck
+const DuckIsCat = duck instanceof Cat
+const CatIsDuck = cat instanceof Duck
 ```
 
 ```ts
@@ -342,8 +340,8 @@ class Cat {
 let duck = new Duck()
 let cat = new Cat()
 
-type DuckIsCat = duck instanceof Cat // false
-type CatIsDuck = cat instanceof Duck // false
+const DuckIsCat = duck instanceof Cat // false
+const CatIsDuck = cat instanceof Duck // false
 ```
 ````
 
@@ -354,12 +352,12 @@ type CatIsDuck = cat instanceof Duck // false
 - С точки зрения TS сущности совместимы
 - С точки зрения JS сущности не совместимы
 
-<v-click>
+<div v-click class="mt-8">
 
 ## Причина
 - TS использует **структурную** типизацию, а не **номинальную**
 
-</v-click>
+</div>
 
 ---
 
@@ -389,8 +387,8 @@ class Cat {
   }
 }
 
-type DuckIsCat = Duck extends Cat ? true : false; // true
-type CatIsDuck = Cat extends Duck ? true : false; // true
+type DuckIsCat = Duck extends Cat ? true : false // true
+type CatIsDuck = Cat extends Duck ? true : false // true
 
 
 
@@ -413,8 +411,8 @@ class Cat {
   }
 }
 
-type DuckIsCat = Duck extends Cat ? true : false; // true
-type CatIsDuck = Cat extends Duck ? true : false; // true
+type DuckIsCat = Duck extends Cat ? true : false // true
+type CatIsDuck = Cat extends Duck ? true : false // true
 
 
 
@@ -439,8 +437,8 @@ class Cat {
   private [brand] = 'Cat'
 }
 
-type DuckIsCat = Duck extends Cat ? true : false; // false
-type CatIsDuck = Cat extends Duck ? true : false; // false
+type DuckIsCat = Duck extends Cat ? true : false // false
+type CatIsDuck = Cat extends Duck ? true : false // false
 ```
 
 ```ts {*|8,15|1}
@@ -461,12 +459,12 @@ class Cat {
   private [brand]!: 'Cat'
 }
 
-type DuckIsCat = Duck extends Cat ? true : false; // false
-type CatIsDuck = Cat extends Duck ? true : false; // false
+type DuckIsCat = Duck extends Cat ? true : false // false
+type CatIsDuck = Cat extends Duck ? true : false // false
 ```
 
 ```ts {*|1}
-declare const brand: unique symbol;
+declare const brand: unique symbol
 
 class Duck { 
   eat() {
@@ -483,8 +481,8 @@ class Cat {
   private [brand]!: 'Cat'
 }
 
-type DuckIsCat = Duck extends Cat ? true : false; // false
-type CatIsDuck = Cat extends Duck ? true : false; // false
+type DuckIsCat = Duck extends Cat ? true : false // false
+type CatIsDuck = Cat extends Duck ? true : false // false
 ```
 
 ```ts
@@ -549,7 +547,7 @@ getOffset(widthInPercents) // OK!
 ```
 
 ```ts
-declare const brand: unique symbol;
+declare const brand: unique symbol
 
 type Pixels = number
 type Percents = number
@@ -567,7 +565,7 @@ getOffset(widthInPercents) // OK!
 ```
 
 ```ts {*|3,4|10-11|12-13|*}
-declare const brand: unique symbol;
+declare const brand: unique symbol
 
 type Pixels = number & {[brand]: 'Pixels'}
 type Percents = number & {[brand]: 'Percents'}
@@ -585,9 +583,9 @@ getOffset(widthInPercents)
 ```
 
 ```ts {*|2-5|7-8|9-11|13|*}
-declare const brand: unique symbol;
+declare const brand: unique symbol
 type Nominal<Type, Identifier> = Type & {
-  readonly [brand]: Identifier;
+  readonly [brand]: Identifier
 }
 
 type Pixels = Nominal<number, 'Pixels'>
@@ -603,9 +601,9 @@ getOffset(widthInPercents)
 ```
 
 ```ts {*|10|13}
-declare const brand: unique symbol;
+declare const brand: unique symbol
 type Nominal<Type, Identifier> = Type & {
-  readonly [brand]: Identifier;
+  readonly [brand]: Identifier
 }
 
 type Pixels = Nominal<number, 'Pixels'>
@@ -1046,7 +1044,7 @@ const brian: Dog = {
   barkAt(smallDog: SmallDog) {
     smallDog.whimper()
   },
-};
+}
 
 const normalDog: Dog = {
   barkAt() {},
@@ -1076,14 +1074,14 @@ const normalDog: Dog = {
   barkAt() {},
 }
 
-brian.barkAt(normalDog);
+brian.barkAt(normalDog)
 // RUNTIME ERROR! 'undefined' is not a function
 ⠀
 ```
 
 ```ts {*|2|2,10-12}
 interface Dog {
-  barkAt: (dog: Dog) => void;
+  barkAt: (dog: Dog) => void
 }
 
 interface SmallDog extends Dog {
@@ -1094,15 +1092,15 @@ const brian: Dog = {
   // ERROR! Type '(smallDog: SmallDog) => void' is not
   // assignable to type '(dog: Dog) => void'.
   barkAt(smallDog: SmallDog) {
-    smallDog.whimper();
+    smallDog.whimper()
   },
-};
+}
 
 const normalDog: Dog = {
   barkAt() {},
-};
+}
 
-brian.barkAt(normalDog);
+brian.barkAt(normalDog)
 ```
 ````
 
@@ -1191,7 +1189,7 @@ type Animal = {
   name: 'some animal'
 }
 
-declare var animal: Animal;
+declare var animal: Animal
 
 const handleRecord = (obj:Record<string, unknown>) => { }
 
@@ -1204,7 +1202,7 @@ interface Animal {
   name: 'some animal'
 }
 
-declare var animal: Animal;
+declare var animal: Animal
 
 const handleRecord = (obj:Record<string, unknown>) => { }
 
@@ -1217,7 +1215,7 @@ interface Animal {
   name: 'some animal'
 }
 
-declare var animal: Animal;
+declare var animal: Animal
 
 const handleRecord = (obj:Record<string, unknown>) => { }
 
@@ -1226,6 +1224,8 @@ const result = handleRecord(animal)
 ```
 ````
 
+---
+layout: center
 ---
 
 # `satisfies`
@@ -1245,8 +1245,8 @@ const result = handleRecord(animal)
 
 ````md magic-move
 ```ts
-let a = "123"
-const b = "123"
+let a = '123'
+const b = '123'
 let c: number | string = '123'
 let d = 123 as number | string
 let e = 123 satisfies number | string
@@ -1255,8 +1255,8 @@ let f = false satisfies number | string
 ```
 
 ```ts {1|2|3|4|5|6,7}
-let a = "123"; // string
-const b = "123"; // string
+let a = '123' // string
+const b = '123' // '123'
 let c: number | string = '123' // string | number
 let d = 123 as number | string // number | string
 let e = 123 satisfies number | string // number
@@ -1366,6 +1366,8 @@ const palette = {
 ````
 
 ---
+layout: center
+---
 
 # Улучшаем работу TypeScript
 
@@ -1404,7 +1406,7 @@ const palette = {
 
 ---
 
-# ts-reset
+# `ts-reset`
 
 <v-clicks>
 
@@ -1418,7 +1420,7 @@ const palette = {
 <v-click>
 
 ```ts
-import "@total-typescript/ts-reset";
+import "@total-typescript/ts-reset"
 ```
 
 </v-click>
@@ -1427,11 +1429,11 @@ import "@total-typescript/ts-reset";
 layout: center
 ---
 
-# TypeScript и рантайм
+# `TypeScript` и рантайм
 
 ---
 
-# TypeScript и рантайм
+# `TypeScript` и рантайм
 
 <v-clicks>
 
@@ -1447,10 +1449,14 @@ layout: center
 
 # Валидаторы
 
+<v-clicks>
+
 - Проверяем значение на соответствие правилам
 - Прослойка между TS и JS
 - Устраняет необходимость писать валидацию вручную
 - Проверки соответствия правилам и в рантайме и в типах
+
+</v-clicks>
 
 ---
 
@@ -1514,7 +1520,7 @@ layout: center
 layout: center
 ---
 
-TypeScript не всемогущий
+`TypeScript` не всемогущий
 
 ---
 layout: center
@@ -1532,6 +1538,8 @@ telegram: '@zede1697'
 variant: first
 ---
 
+---
+
 # Дополнение
 
 - [Лучшие и доступные статьи](https://www.totaltypescript.com/articles)
@@ -1539,6 +1547,7 @@ variant: first
 - [Ковариантность/контрвариантность/бивариантность/инвариатность](https://github.com/Microsoft/TypeScript/wiki/FAQ)
 
 ---
+
 
 ---
 
@@ -1562,67 +1571,67 @@ const greenNormalized = palette.green.toUpperCase()
 ```
 
 ```ts {*|2|5|8|9-10}
-type RGB = [red: number, green: number, blue: number];
+type RGB = [red: number, green: number, blue: number]
 const palette: Record<string, string | RGB> = {
     red: [255, 0, 0],
     green: "#00ff00",
     blue: [0, 0]
-};
+}
 
-const redComponent = palette.red.at(0);
-const redNormalized = palette.red.toUpperCase();
-const greenNormalized = palette.green.toUpperCase();
+const redComponent = palette.red.at(0)
+const redNormalized = palette.red.toUpperCase()
+const greenNormalized = palette.green.toUpperCase()
 ```
 
 ```ts
-type RGB = [red: number, green: number, blue: number];
+type RGB = [red: number, green: number, blue: number]
 const palette = {
     red: [255, 0, 0],
     green: "#00ff00",
     blue: [0, 0]
 } as Record<string, string | RGB>
 
-const redComponent = palette.red.at(0);
-const redNormalized = palette.red.toUpperCase();
-const greenNormalized = palette.green.toUpperCase();
+const redComponent = palette.red.at(0)
+const redNormalized = palette.red.toUpperCase()
+const greenNormalized = palette.green.toUpperCase()
 ```
 
 ```ts {*|5|9-10}
-type RGB = [red: number, green: number, blue: number];
+type RGB = [red: number, green: number, blue: number]
 const palette = {
     red: [255, 0, 0],
     green: "#00ff00",
     blue: [0, 0, 0] as [number, number, number | null]
 } as Record<string, string | RGB>
 
-const redComponent = palette.red.at(0);
-const redNormalized = palette.red.toUpperCase();
-const greenNormalized = palette.green.toUpperCase();
+const redComponent = palette.red.at(0)
+const redNormalized = palette.red.toUpperCase()
+const greenNormalized = palette.green.toUpperCase()
 ```
 
 ```ts {*|6|5|8|9|10|*}
-type RGB = [red: number, green: number, blue: number];
+type RGB = [red: number, green: number, blue: number]
 const palette = {
     red: [255, 0, 0],
     green: "#00ff00",
     blue: [0, 0, 0] as [number, number, number | null]
 } satisfies Record<string, string | RGB>
 
-const redComponent = palette.red.at(0);
-const redNormalized = palette.red.toUpperCase();
-const greenNormalized = palette.green.toUpperCase();
+const redComponent = palette.red.at(0)
+const redNormalized = palette.red.toUpperCase()
+const greenNormalized = palette.green.toUpperCase()
 ```
 
 ```ts {*|5}
-type RGB = [red: number, green: number, blue: number];
+type RGB = [red: number, green: number, blue: number]
 const palette = {
     red: [255, 0, 0],
     green: "#00ff00",
     blue: [0, 0]
 } satisfies Record<string, string | RGB>
 
-const redComponent = palette.red.at(0);
-const redNormalized = palette.red.toUpperCase();
-const greenNormalized = palette.green.toUpperCase();
+const redComponent = palette.red.at(0)
+const redNormalized = palette.red.toUpperCase()
+const greenNormalized = palette.green.toUpperCase()
 ```
 ````

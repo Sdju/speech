@@ -3,11 +3,15 @@
 const { 
     start, 
     end, 
-    power = 0.5 
+    power = 0.5,
+    endArrow = true,
+    startArrow = false
 } = defineProps<{
     start: { x: number, y: number }
     end: { x: number, y: number },
-    power?: number
+    power?: number,
+    endArrow?: boolean,
+    startArrow?: boolean,
 }>()
 
 function getCurve (start, end, options) {
@@ -30,6 +34,8 @@ function getCurve (start, end, options) {
     x: controlX,
     y: controlY
   }
+
+  console.log(start, control, end)
 
   return { start, control, end }
 }
@@ -75,13 +81,19 @@ function getAllCurveData(start, end, options) {
   return { curve, svgPath, endAngle, startAngle }
 }
 
-const { curve, svgPath, endAngle } = getAllCurveData(start, end, { heightRate: power })
+const { curve, svgPath, endAngle, startAngle } = getAllCurveData(start, end, { heightRate: -power })
 </script>
 
 <template>
     <path :d="svgPath" fill="none" />
     <polygon
-        points="0,-6 12,0, 0,6"
+        v-if="endArrow"
+        points="-12,-6 0,0, -12,6"
         :transform="`translate(${curve.end.x},${curve.end.y}) rotate(${endAngle})`"
+    />
+    <polygon
+        v-if="startArrow"
+        points="12,-6 0,0, 12,6"
+        :transform="`translate(${curve.start.x},${curve.start.y}) rotate(${startAngle})`"
     />
 </template>

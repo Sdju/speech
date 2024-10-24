@@ -16,7 +16,7 @@
 }
 
 [variant=main], [variant=blue] {
-    --bg-keyword: rgba(50, 98, 178, 0.55);
+    --bg-keyword: #3c5cff;
     --bg-first: #3c5cff;
     --bg-second: #4cbbc5;
     --bg-third: #5d1dff;

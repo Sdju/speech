@@ -147,7 +147,7 @@ const poly3 = usePloy(3)
 <template>
   <div
     class="bg transform-gpu overflow-hidden pointer-events-none"
-    :variant="frontmatter.variant || 'first'"
+    :variant="frontmatter.variant || 'main'"
     :style="{ filter: `blur(70px)` }"
     aria-hidden="true"
   >
