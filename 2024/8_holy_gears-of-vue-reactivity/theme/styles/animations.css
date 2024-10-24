@@ -9,6 +9,28 @@
     filter: blur(3px);
 }
 
+/* X */
+[animations] {
+    @apply animate-spin;
+}
+
+/* fx */
+
+.fx {
+    @apply transform filter;
+}
+
+.-popup-hidden {
+    @apply pointer-events-none;
+    --un-blur: blur(10px);
+    --un-scale-x: 0;
+    --un-scale-y: 0;
+}
+
+.-blur-hidden {
+    @apply pointer-events-none filter-blur-[10px] opacity-0;
+}
+
 /* fade-out */
 .fade-out-leave-active {
     transition: opacity calc(var(--slidev-transition-duration) * 0.6) ease-out, filter 200ms ease;
@@ -23,4 +45,34 @@
 .fade-out-leave-to {
     opacity: 0;
     filter: blur(5px);
+}
+
+/* fx-keyframes */
+@keyframes fx-spin {
+    from { --un-rotate-z: 0deg; }
+    to { --un-rotate-z: 360deg; }
+}
+
+@property --un-rotate-z {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@property --un-scale-x {
+    syntax: '<number>';
+    initial-value: 1;
+    inherits: false;
+}
+
+@property --un-rotate-y {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@property --un-rotate-z {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
 }

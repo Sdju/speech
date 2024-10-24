@@ -7,9 +7,11 @@
   </div>
 </div>
 <div class="text-4xl mb-[50px]">Денис Чернов</div>
-<p><file-icons-telegram /> @zede_code</p>
-<p><ion-logo-twitch /> @izede</p>
-<p><ion-logo-github /> @Sdju</p>
+<div class="grid grid-cols-[36px_1fr] gap-2 items-center">
+  <file-icons-telegram /> @zede_code
+  <ion-logo-twitch /> @izede
+  <ion-logo-github /> @Sdju
+</div>
 
 <QrCodeIntro class="w-[200px] h-[200px] absolute top-[200px] right-[80px]" />
 
@@ -24,21 +26,53 @@ layout: center
 <ion-cog-sharp v-drag="[-222,307,496,450]" class="animate-[spin_70s_linear_infinite] opacity-10" />
 
 ---
+clicks: 6
+variant: green
+---
 
-<div class="animate-spin" />
+<Timeline :steps="[{
+  logo: 'left-[50%] top-[50%] w-[176px] h-[176px]',
+  vueGear: 'left-[50%] top-[50%] -popup-hidden',
+  ref: 'left-[50%] top-[50%] -popup-hidden',
+  computed: 'left-[50%] top-[50%] -popup-hidden',
+  watch: 'left-[50%] top-[50%] -popup-hidden',
+  watchEffect: 'left-[50%] top-[50%] -popup-hidden',
+  reactive: 'left-[50%] top-[50%] -popup-hidden',
+}, {
+  logo: 'left-[50%] top-[51%] w-[46px] h-[46px]',
+  vueGear: 'left-[50%] top-[50%]',
+}, {
+  ref: 'left-[727px] top-[84px]',
+}, {
+  computed: 'left-[720px] top-[330px]',
+}, {
+  watch: 'left-[348px] top-[413px]',
+}, {
+  watchEffect: 'left-[150px] top-[258px]',
+}, {
+  reactive: 'left-[216px] top-[69px]',
+}]" v-slot="t">
 
-<material-symbols-settings-outline v-drag="[388,145,223,202]" class="animate-[spin_20s_linear_infinite]" />
-<logos-vue v-drag="[476,229,46,42]" />
+<div class="figure w-[223px] h-[202px] fx" :class="t.vueGear">
+  <material-symbols-settings-outline class="animate-[spin_20s_linear_infinite] w-full h-full" />
+</div>
 
-<Gear v-click v-drag="[727,84,103,131]" name="ref" />
+<logos-vue
+  class="figure"
+  :class="t.logo"
+/>
 
-<Gear v-click v-drag="[720,330,141,118]" name="computed" />
+<Gear class="figure fx w-[103px] h-[131px]" :class="t.ref" name="ref" />
 
-<Gear v-click v-drag="[348,413,134,105]" name="watch" />
+<Gear class="figure fx w-[141px] h-[118px]" :class="t.computed" name="computed" />
 
-<Gear v-click v-drag="[150,258,142,119]" name="watchEffect" />
+<Gear class="figure fx w-[134px] h-[105px]" :class="t.watch" name="watch" />
 
-<Gear v-click v-drag="[216,69,104,95]" name="reactive" />
+<Gear class="figure fx w-[142px] h-[119px]" :class="t.watchEffect" name="watchEffect" />
+
+<Gear class="figure fx w-[104px] h-[95px]" :class="t.reactive" name="reactive" />
+
+</Timeline>
 
 <!--
 разгоняем за что мы любим Vue
@@ -52,10 +86,7 @@ layout: center
 layout: cover
 ---
 
-<img class="center w-[740px]" src="/img/interview.png" />
-<div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
-<img class="center w-[740px]" src="/img/interview.png" />
-
+<img class="center w-[600px] rounded-[10px] border-2 border-gray-500/20" src="/img/interview.png" />
 ---
 layout: center
 ---
@@ -76,8 +107,6 @@ layout: center
 ---
 
 <img class="center w-[740px]" src="/img/computed-watch.png" />
-<div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
-<img class="center w-[740px]" src="/img/computed-watch.png" />
 
 <!--
 Если вы начинаете чустсвовать себя неуверенно, то это доклад для вас.
@@ -85,44 +114,53 @@ layout: center
 
 ---
 variant: second
-clicks: 8
+clicks: 7
 ---
 
-<script setup>
-const heights = [
-  59,
-  59,
-  116,
-  185,
-  246,
-  308,
-  363,
-  422,
-  472,
-]
-</script>
+<Timeline :steps="[{
+  height: '59px',
+  ref: 'left-[50%] top-[50%] -popup-hidden',
+  computed: 'left-[50%] top-[50%] -popup-hidden',
+  watch: 'left-[50%] top-[50%] -popup-hidden',
+  watchEffect: 'left-[50%] top-[50%] -popup-hidden',
+  reactive: 'left-[50%] top-[50%] -popup-hidden',
+}, {
+  height: '116px'
+}, {
+  height: '185px'
+}, {
+  height: '246px'
+}, {
+  height: '308px'
+}, {
+  height: '363px'
+}, {
+  height: '422px'
+}, {
+  height: '472px'
+}]" v-slot="t">
 
-<div class="center w-[340px] overflow-hidden transition-all duration-400" :style="{ maxHeight: `${heights[$clicks]}px` }" >
+<div class="center w-[340px] overflow-hidden transition-all duration-400" :style="{ maxHeight: t.height }" >
 <img src="/img/iceberg.png" />
 </div>
 <div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
-<div class="center w-[340px] overflow-hidden transition-all duration-400" :style="{ maxHeight: `${heights[$clicks]}px` }" >
+<div class="center w-[340px] overflow-hidden transition-all duration-400" :style="{ maxHeight: t.height }" >
 <img src="/img/iceberg.png" />
 </div>
 
 <div
   class="center overflow-hidden transition-all duration-400"
-  :style="{ maxHeight: `${heights[$clicks]}px` }"
+  :style="{ maxHeight: t.height }"
 >
   <div class="text-shadow-xl w-[340px] h-[472px] flex flex-col items-stretch p-r-[60px] text-center relative">
-    <div class="text-shadow-lg mt-[10px] mb-[20px]">азы реактивности</div>
-    <div class="text-shadow-lg mb-[32px]" v-click>основной функционал</div>
-    <div class="text-shadow-lg text-size-[0.75em] mb-[32px]" v-click>продвинутая реактивность</div>
-    <div class="text-shadow-lg mb-[28px]" v-click>@vue/reactivity</div>
-    <div class="text-shadow-lg mb-[25px]" v-click>@vue/runtime-core</div>
-    <div class="text-shadow-lg mb-[23px]" v-click>Закрытый API</div>
-    <div class="text-shadow-lg text-size-[0.75em] mb-[14px]" v-click>Контрибьютить во Vue</div>
-    <div class="text-shadow-lg text-size-[0.75em]" v-click>написать свою реактивность для Vapor Vue</div>
+    <div class="mt-[10px] mb-[20px]">азы реактивности</div>
+    <div class="mb-[32px]">основной функционал</div>
+    <div class="text-size-[0.75em] mb-[32px]">продвинутая реактивность</div>
+    <div class="mb-[28px]">@vue/reactivity</div>
+    <div class="mb-[25px]">@vue/runtime-core</div>
+    <div class="mb-[23px]">Закрытый API</div>
+    <div class="text-size-[0.75em] mb-[14px]">Контрибьютить во Vue</div>
+    <div class="text-size-[0.75em]">написать свою реактивность для Vapor Vue</div>
     <img class="absolute bottom-[-10px] right-0 h-[60px] w-[64px]" src="/img/jonson.jfif" />
   </div>
 </div>
@@ -144,6 +182,8 @@ const heights = [
 <Gear v-drag="[75,342,125,107]" name="customRef" />
 
 </div>
+
+</Timeline>
 
 <!--
 - вначале вам хватает простых ref computed и reactive
@@ -182,17 +222,83 @@ console.log(total.value) // 12
 -->
 
 ---
+clicks: 10
+---
 
-<h1 v-drag="[365,32,244,46]"> Реактивность </h1>
+<Timeline :steps="[{
+  title: 'top-[50%] left-[50%]',
+  model: 'left-[50%] top-[50%] -popup-hidden',
+  subscriber: 'left-[50%] top-[156px] -popup-hidden',
+  action: 'left-[50%] top-[366px] -popup-hidden',
+  scheduler: 'left-[300px] top-[50%] -popup-hidden',
+  arrow1: {
+    coords: '49%:245 49%:188',
+    class: 'fx duration-500 opacity-0'
+  },
+  arrow2: {
+    coords: '49%:245 49%:188',
+    class: 'fx duration-500 opacity-0'
+  },
+  arrow3: {
+    coords: '49%:245 49%:188',
+    class: 'fx duration-500 opacity-0'
+  },
+  arrow4: {
+    coords: '49%:245 49%:188',
+    class: 'fx duration-500 opacity-0'
+  },
+  arrow5: {
+    coords: '49%:245 49%:188',
+    class: 'fx duration-500 opacity-0'
+  },
+}, {
+  title: 'top-[10%] left-[50%]',
+  model: 'left-[50%] top-[50%]',
+}, {
+  subscriber: 'left-[50%] top-[156px]',
+  arrow1: {
+    coords: '49%:245 49%:188',
+    class: 'fx duration-500 animate'
+  },
+  arrow2: {
+    coords: '51%:188 51%:245',
+    class: 'fx duration-500 animate'
+  },
+}, {
+  action: 'left-[50%] top-[400px]',
+  arrow3: {
+    coords: '50%:372 50%:306',
+    class: 'fx duration-500 animate'
+  },
+}, {
+  scheduler: 'left-[319px] top-[50%]',
+  arrow4: {
+    coords: '409:156 319:245',
+    class: 'fx duration-500 animate'
+  },
+}, {
+  arrow5: {
+    coords: '319:306 434:400',
+    class: 'fx duration-500 animate'
+  },
+}]" v-slot="t">
 
-<VueGraph v-click v-drag="[456,258,84,NaN]" label="Model" />
-<Arrow v-click v-drag="[525,212,69,20,-58]" x1="0" y1="50%" x2="100%" y2="50%" />
-<VueGraph v-click="'+0'" v-drag="[535,156,118,NaN]" label="Subscribers" />
-<Arrow v-click v-drag="[470,317,69,20,270]" x1="0" y1="50%" x2="100%" y2="50%" />
-<VueGraph v-click="'+0'" v-drag="[456,366,100,NaN]" label="Action" />
-<Arrow v-click v-drag="[471,160,59,20,180]" x1="0" y1="50%" x2="100%" y2="50%" />
-<VueGraph v-click="'+0'" v-drag="[319,152,141,NaN]" label="Scheduler" />
-<Arrow v-click v-drag="[365,215,106,20,41]" x1="0" y1="50%" x2="100%" y2="50%" />
+<h1 class="figure fx text-center" :class="t.title"> Реактивность </h1>
+
+<Node :class="t.model">Model</Node>
+<Node :class="t.subscriber">Subscribers</Node>
+<Node :class="t.action" color="red">Action</Node>
+<Node :class="t.scheduler">Scheduler</Node>
+
+<SvgLayer>
+  <SvgArrow :class="t.arrow1.class" :coords="t.arrow1.coords" :power="0.1" />
+  <SvgArrow :class="t.arrow2.class" :coords="t.arrow2.coords" :power="0.1" />
+  <SvgArrow :class="t.arrow3.class" :coords="t.arrow3.coords" :power="0.1" />
+  <SvgArrow :class="t.arrow4.class" :coords="t.arrow4.coords" :power="-0.5" />
+  <SvgArrow :class="t.arrow5.class" :coords="t.arrow5.coords" :power="-0.5" />
+</SvgLayer>
+
+</Timeline>
 
 <!--
 - продумать сценарий объяснения
@@ -208,10 +314,10 @@ console.log(total.value) // 12
 
 <logos-vue v-drag="[445,40,119,108]" />
 
-<div v-click v-drag="[108,161,379,168]" class="text-[1em] bg-blue-5/30 rounded-2xl p-4" > 
-  @vue/reactivity 
+<div v-click v-drag="[108,161,379,188]" class="text-[1em] bg-blue-5/30 rounded-2xl px-4 py-2" > 
+  <div class="text-center"> @vue/reactivity </div>
 
-  <div class="text-size-[0.75em] flex flex-col">
+  <div class="text-size-[0.75em] flex flex-col mt-4">
     <Gear inline name="ref" />
     <Gear inline name="reactive" />
     <Gear inline name="computed" />
@@ -219,10 +325,10 @@ console.log(total.value) // 12
   </div>
 </div>
 
-<div v-click v-drag="[523,164,398,167]" class="text-[1em] bg-cyan-5/30 rounded-2xl p-2" > 
-  @vue/runtime-core
+<div v-click v-drag="[523,161,398,188]" class="text-[1em] bg-cyan-5/30 rounded-2xl px-4 py-2" > 
+  <div class="text-center"> @vue/runtime-core </div>
 
-  <div class="text-size-[0.75em] flex flex-col">
+  <div class="text-size-[0.75em] flex flex-col mt-4">
     <Gear inline name="effect" />
     <Gear inline name="scheduler" />
     <Gear inline name="nextTick" />

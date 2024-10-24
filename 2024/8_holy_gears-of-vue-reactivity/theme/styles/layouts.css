@@ -13,6 +13,10 @@
     --slidev-code-font-size: 16px;
     --slidev-code-background: #1616164f;
 
+    b, strong {
+        color: var(--bg-keyword);
+    }
+
     p {
         line-height: 120%;
     }
@@ -30,7 +34,11 @@
     }
 
     blockquote {
-        @apply mt-2 mb-4 text-6;
+        @apply mt-2 mb-4 text-6 italic;
+    }
+
+    img {
+        @apply rounded-[10px] border-2 border-gray-500/20;
     }
 
     .rough-annotation {

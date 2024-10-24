@@ -7,7 +7,7 @@
      --v-color 2.5s ease-out;
 }
 
-[variant=first], [variant=orange] {
+[variant=main], [variant=orange] {
     --bg-keyword: #cc8b00;
     --bg-first: #ffae00;
     --bg-second: #dc8e27;
@@ -15,7 +15,7 @@
     --v-color: theme('colors.amber.500');
 }
 
-[variant=second], [variant=blue] {
+[variant=blue] {
     --bg-keyword: rgba(50, 98, 178, 0.55);
     --bg-first: #3c5cff;
     --bg-second: #4cbbc5;
@@ -23,7 +23,7 @@
     --v-color: theme('colors.blue.500');
 }
 
-[variant=third], [variant=green] {
+[variant=green] {
     --bg-keyword: #5a8f298c;
     --bg-first: #49ff3c;
     --bg-second: #4cc580;

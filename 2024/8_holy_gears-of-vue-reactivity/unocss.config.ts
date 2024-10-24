@@ -7,6 +7,9 @@ export default mergeConfigs([
     shortcuts: {
       'text-gradient':
         'text-transparent bg-clip-text bg-gradient-to-tl from-green-400 via-teal-400 to-blue-500',
+      'movable': 'absolute -translate-x-1/2 -translate-y-1/2',
+      'circle': 'rounded-[100%]',
+      'figure': 'grid place-items-center movable filter text-xl font-bold duration-200 transform-origin-center',
     },
     rules: [['font-smiley', { 'font-family': 'Smiley Sans' }]],
     presets: [
