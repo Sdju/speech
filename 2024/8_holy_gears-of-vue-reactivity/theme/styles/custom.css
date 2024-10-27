@@ -16,7 +16,7 @@
 }
 
 [variant=blue] {
-    --bg-keyword: rgba(50, 98, 178, 0.55);
+    --bg-keyword: #3c5cff;
     --bg-first: #3c5cff;
     --bg-second: #4cbbc5;
     --bg-third: #5d1dff;
@@ -24,7 +24,7 @@
 }
 
 [variant=green] {
-    --bg-keyword: #5a8f298c;
+    --bg-keyword: #5a8f29;
     --bg-first: #49ff3c;
     --bg-second: #4cc580;
     --bg-third: #ceff1d;

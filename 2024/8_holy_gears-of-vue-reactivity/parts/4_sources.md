@@ -8,33 +8,42 @@ topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-5
 topTitle: Sources
 ---
 
-# Reactive
+<h1 class="text-center">Reactive</h1>
 
-<v-clicks depth="2">
-
-- Основан на работе с `Proxy`
-- Вложенные объекты оборачиваются в `Reactive`
-- может быть `shallow` / `readonly` или все сразу
-- если в объекте есть `ref` - он развернется без `.value`
-
-</v-clicks>
-
-
----
-topTitle: Sources
----
-
-<div v-drag="[75,243,100,40]" class="text-shadow-lg"> Reactive </div>
-
-<div v-drag="[304,38,302,40]" class="text-shadow-lg"> ReactiveFlags.IS_REACTIVE </div>
-
-<div v-drag="[305,145,210,40]" class="text-shadow-lg"> ReactiveFlags.SKIP </div>
-
-<div v-drag="[307,240,215,40]" class="text-shadow-lg"> ReactiveFlags.RAW </div>
-
-<div v-drag="[305,354,314,40]" class="text-shadow-lg"> ReactiveFlags.IS_READONLY </div>
-
-<div v-drag="[306,467,305,40]" class="text-shadow-lg"> ReactiveFlags.IS_SHALLOW </div>
+<div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr_1fr] gap-[14px]" mt-12>
+  <div v-click class="item">
+    <div class="item-icon">
+      <EosIconsProxy/>
+    </div>
+    <div>
+      Основан на работе с <strong>Proxy</strong>
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <UilBox/>
+    </div>
+    <div>
+      Вложенные объекты оборачиваются в <strong>Reactive</strong>
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <StreamlineAiGenerateVariationSparkSolid/>
+    </div>
+    <div>
+      <strong>shallow</strong> / <strong>readonly</strong> / <strong>shallowReadonly</strong>
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <MaterialSymbolsChipExtraction/>
+    </div>
+    <div>
+      Автоматически развернет <strong>.value</strong> 
+    </div>
+  </div>
+</div>
 
 ---
 topTitle: Sources
@@ -113,31 +122,70 @@ console.log(toRaw(obj) === data)
 ````
 
 ---
-topTitle: Источники
+topTitle: Sources
 ---
 
-# ref
+<h1 class="text-center">ref</h1>
 
-<v-clicks>
-
-- работает на основе getter / setter
-- объекты оборачиваются в `Reactive`
-- если в `ref` положить `ref` то вернется старый `ref`
-
-</v-clicks>
+<div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr_1fr] gap-[14px]" mt-12>
+  <div v-click class="item">
+    <div class="item-icon">
+      <EosIconsProxy/>
+    </div>
+    <div>
+      Работает на основе <strong>getter / setter</strong>
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <UilBox/>
+    </div>
+    <div>
+      Объекты оборачиваются в <strong>Reactive</strong>
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <HugeiconsRecycle03/>
+    </div>
+    <div>
+      Если в <strong>ref</strong> положить <strong>ref</strong> то вернется старый <strong>ref</strong>
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <MdiBikeFast/>
+    </div>
+    <div>
+      Работает быстрее чем <strong>Reactive</strong>
+    </div>
+  </div>
+</div>
 
 ---
 topTitle: Sources
 ---
 
-# shallowRef
+<h1 class="text-center">shallowRef</h1>
 
-<v-clicks>
-
-- не оборачивает объекты в `Reactive`
-- ничем не отличается от `ref` для примитивов
-
-</v-clicks>
+<div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr_1fr] gap-[14px]" mt-12>
+  <div v-click class="item">
+    <div class="item-icon">
+      <AkarIconsCross/>
+    </div>
+    <div>
+      Не оборачивает объекты в <strong>Reactive</strong>
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <Fa6RegularClone/>
+    </div>
+    <div>
+      Ничем не отличается от <strong>ref</strong> для примитивов
+    </div>
+  </div>
+</div>
 
 ---
 layout: center
@@ -145,13 +193,11 @@ layout: center
 
 # Push / Pull реактивность
 
-<img class="center w-[740px]" src="/img/push-pull.png" />
-<div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
-<img class="center w-[740px]" src="/img/push-pull.png" />
+<img class="center w-[740px] slide" src="/img/push-pull.png" />
 
-<div v-drag="[341,79,61,40]">Push</div>
+<div v-drag="[325,89,61,40]">Push</div>
 
-<div v-drag="[580,86,48,40]">Pull</div>
+<div v-drag="[570,145,48,40]">Pull</div>
 
 ---
 
@@ -163,28 +209,37 @@ layout: center
 topTitle: Scheduler
 ---
 
-<img class="center w-[540px]" src="/img/scheduler.png" />
-<div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
-<img class="center w-[540px]" src="/img/scheduler.png" />
-
-<h1 v-drag="[391,21,169,40]">Scheduler</h1>
-
----
-topTitle: Scheduler
----
-
 <img class="center w-[540px]" src="/img/cycle.png" />
 <div class="absolute top-0 left-0 w-full h-full backdrop-blur-[30px]" />
 <img class="center w-[540px]" src="/img/cycle.png" />
 
 ---
 
-# Scheduler
+<h1 class="text-center">Scheduler</h1>
 
-<v-clicks depth="2">
-
-- механизм синхронизирующий обновления
-- единственный способ с ним взаимодействовать `nextTick`
-- синхронизация старается быть вычисленной в конце списка микротасков
-
-</v-clicks>
+<div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr_1fr] gap-[14px]" mt-12>
+  <div v-click class="item">
+    <div class="item-icon">
+      <LucideRefreshCw/>
+    </div>
+    <div>
+      Механизм синхронизирующий обновления
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <IcRoundAccessTime/>
+    </div>
+    <div>
+      Доступное API: <strong>nextTick</strong>
+    </div>
+  </div>
+  <div v-click class="item">
+    <div class="item-icon">
+      <FluentPeopleQueue32Filled/>
+    </div>
+    <div>
+      Синхронизация в конце очереди микротасков
+    </div>
+  </div>
+</div>

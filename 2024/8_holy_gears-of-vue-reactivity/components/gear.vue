@@ -6,7 +6,10 @@ import claritySettingsSolid from '~icons/clarity/settings-solid'
 import mingcuteSettings7Fill from '~icons/mingcute/settings-7-fill'
 import zondiconsCog from '~icons/zondicons/cog'
 import LineiconsCog from '~icons/lineicons/cog'
-
+import LogosVue from '~icons/logos/vue'
+import LogosVueuse from '~icons/logos/vueuse'
+import LogosPinia from '~icons/logos/pinia'
+import IonGearA from '~icons/ion/gear-a'
 
 const gearsMap = {
   ref: {
@@ -45,12 +48,43 @@ const gearsMap = {
     class: 'animate-[spin_17s_linear_infinite]',
     icon: LineiconsCog
   },
+  Dep: {
+    class: 'animate-[spin_11s_linear_infinite]',
+    icon: IonGearA
+  },
+  Track: {
+    class: 'animate-[spin_31s_linear_infinite]',
+    icon: zondiconsCog
+  },
+  Trigger: {
+    class: 'animate-[spin_31s_linear_infinite]',
+    icon: heroiconsCogSolid
+  },
+  activeSub: {
+    class: 'animate-[spin_17s_linear_infinite]',
+    icon: mingcuteSettings7Fill
+  },
+
+  // special
+  Vue: {
+    class: '',
+    icon: LogosVue
+  },
+  VueUse: {
+    class: '',
+    icon: LogosVueuse
+  },
+  Pinia: {
+    class: '',
+    icon: LogosPinia
+  },
 } as const
 
 const props = defineProps<{
   name: keyof typeof gearsMap,
   pos?: [number, number, number, number],
-  inline?: boolean
+  inline?: boolean,
+  headless?: boolean,
 }>()
 
 const gear = computed(() => gearsMap[props.name] ?? gearsMap.ref)
@@ -59,7 +93,7 @@ const gear = computed(() => gearsMap[props.name] ?? gearsMap.ref)
 <template>
   <span v-if="inline" class="inline-flex flex-row items-center gap-1">
     <component :is="gear.icon" class="w-[1em] h-[1em]" :class="gear.class" />
-    {{ name }}
+    {{ headless ? '' : name }}
   </span>
   <div 
     v-else
@@ -72,7 +106,7 @@ const gear = computed(() => gearsMap[props.name] ?? gearsMap.ref)
       height: `${pos[3]}px`
     } : ''"
   >
-    <div class="text-center text-shadow-xl"> {{ name }} </div>
+    <div v-if="!headless" class="text-center text-shadow-xl"> {{ name }} </div>
     <component :is="gear.icon" class="w-full flex-1" :class="gear.class" />
   </div>
 </template>

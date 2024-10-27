@@ -37,8 +37,8 @@
         @apply mt-2 mb-4 text-6 italic;
     }
 
-    img {
-        @apply rounded-[10px] border-2 border-gray-500/20;
+    img.slide {
+        @apply rounded-[10px] border-2 border-gray-500/20 object-cover;
     }
 
     .rough-annotation {
@@ -63,6 +63,7 @@
 }
 
 .slidev-layout :not(pre) > code {
-    background-color: var(--bg-keyword);
-    font-weight: 600;
+    color: var(--bg-keyword);
+    background: none;
+    @apply font-600 text-shadow-xl text-[1.06em];
 }

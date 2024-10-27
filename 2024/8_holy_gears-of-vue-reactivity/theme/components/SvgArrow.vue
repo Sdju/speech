@@ -83,8 +83,6 @@ function getCurve(start, end, options) {
     y: controlY
   }
 
-  console.log(start, control, end)
-
   return { start, control, end }
 }
 

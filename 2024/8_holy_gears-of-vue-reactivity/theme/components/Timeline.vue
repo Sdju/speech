@@ -57,7 +57,6 @@ function useTimeline({ steps }: TimelineParams) {
     })
     return states
   })
-  console.log(precalculatedData.value)
 
   const data = computed(() => precalculatedData.value[nav.clicks.value])
 

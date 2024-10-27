@@ -38,49 +38,85 @@ interface EventEmitter {
 
 ```ts
 interface Dep {
-  track: (payload: any) => void
   trigger: (payload: any) => void
+  track: (payload: any) => void
 }
 ```
 
 ```ts
 interface Dep {
-  track: (payload: any) => void
-  trigger: (payload: any) => void
-}
-```
-
-```ts
-interface Dep {
-  track: () => void
   trigger: () => void
+  track: () => void
 }
 ```
 ````
 
 ---
 topTitle: Tracking
+clicks: 9
 ---
 
-<IonGearA v-click v-drag="[114,240,88,89]" class="animate-[spin_11s_linear_infinite]" />
-<div v-click="'+0'" v-drag="[134,204,68,40]" class="text-[1em] text-shadow-xl"> Dep </div>
+<Timeline :steps="[{
+  trigger: 'sp-165_282_103_103 -popup-hidden',
+  triggerDesc: '-blur-hidden',
+  track: 'sp-165_282_103_103 -popup-hidden',
+  trackDesc: '-blur-hidden',
+  activeSub: '-popup-hidden',
+  arrow1: {
+    coords: '205:275 324:195',
+    class: 'fx duration-500 opacity-0'
+  },
+  arrow2: {
+    coords: '432:194 617:283',
+    class: 'fx duration-500 opacity-0'
+  },
+  arrow3: {
+    coords: '617:305 431:391',
+    class: 'fx duration-500 opacity-0'
+  },
+  arrow4: {
+    coords: '338:391 201:308',
+    class: 'fx duration-500 opacity-0'
+  },
+}, {
+  track: ' sp-379_181_120_120 ',
+}, {
+  trackDesc: '',
+}, {
+  trigger: ' sp-387_378_120_120 ',
+}, {
+  triggerDesc: '',
+}, {
+  triggerDesc: '-blur-hidden',
+  trackDesc: '-blur-hidden',
+  activeSub: '',
+}, {
+  arrow1: {
+    coords: '205:275 324:195',
+    class: 'fx duration-500 animate'
+  },
+}, {
+  arrow2: {
+    coords: '432:195 617:283',
+    class: 'fx duration-500 animate'
+  },
+}, {
+  arrow3: {
+    coords: '617:305 431:391',
+    class: 'fx duration-500 animate'
+  },
+}, {
+  arrow4: {
+    coords: '338:391 201:308',
+    class: 'fx duration-500 animate'
+  },
+}]" v-slot="t">
 
-<zondicons-cog v-click v-drag="[365,169,90,83]" class="animate-[spin_31s_linear_infinite]" />
-<div v-click="'+0'" v-drag="[372,129,119,40]" class="text-[1em] text-shadow-xl"> trigger </div>
+<Gear name="Dep" class="sp-165_282_103_103 figure fx" />
 
-<div v-click="['+0', '+2']" v-drag="[490,177,384,56]" class="item">
-  <div class="item-icon">
-    <MaterialSymbolsLightNotificationsActiveRounded/>
-  </div>
-  <div>
-    Уведомляет всех подписчиков о обновлении
-  </div>
-</div>
+<Gear name="Track" class="figure fx" :class="t.track" />
 
-<heroicons-cog-solid v-click="'-1'" v-drag="[363,349,104,95]" class="animate-[spin_31s_linear_infinite]" />
-<div v-click="'+0'" v-drag="[387,319,119,40]" class="text-[1em] text-shadow-xl"> track </div>
-
-<div v-click="['+0', '+1']" v-drag="[493,366,391,54]" class="item">
+<div v-drag="[505,165,391,54]" class="item fx" :class="t.trackDesc">
   <div class="item-icon">
     <MaterialSymbolsAdd2/>
   </div>
@@ -89,8 +125,27 @@ topTitle: Tracking
   </div>
 </div>
 
-<mingcute-settings-7-fill v-click v-drag="[663,238,88,89]" class="animate-[spin_17s_linear_infinite]" />
-<div v-click="'+0'" v-drag="[653,199,120,40]" class="text-[1em] text-shadow-xl"> activeSub </div>
+<Gear name="Trigger" class="figure fx" :class="t.trigger" />
+
+<div v-drag="[502,360,393,56]" class="item fx" :class="t.triggerDesc">
+  <div class="item-icon">
+    <MaterialSymbolsLightNotificationsActiveRounded/>
+  </div>
+  <div>
+    Уведомляет всех подписчиков о обновлении
+  </div>
+</div>
+
+<Gear name="activeSub" class="figure fx sp-661_276_100_100" :class="t.activeSub" />
+
+<SvgLayer>
+  <SvgArrow :class="t.arrow1.class" :coords="t.arrow1.coords" :power="0.3" />
+  <SvgArrow :class="t.arrow2.class" :coords="t.arrow2.coords" :power="0.3" />
+  <SvgArrow :class="t.arrow3.class" :coords="t.arrow3.coords" :power="0.3" />
+  <SvgArrow :class="t.arrow4.class" :coords="t.arrow4.coords" :power="0.3" />
+</SvgLayer>
+
+</Timeline>
 
 ---
 topTitle: Tracking
