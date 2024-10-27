@@ -7,6 +7,7 @@ topTitleClass: transition-none top-[220px] left-[50%] text-[3em] translate-x-[-5
 
 ---
 topTitle: Components
+disabled: true
 ---
 
 # Setup-функция
@@ -19,6 +20,7 @@ topTitle: Components
 
 ---
 topTitle: Components
+disabled: true
 ---
 
 # Render-функция
@@ -47,6 +49,10 @@ topTitle: Components
     <NodeGraph v-click class="bg-[#ff4d4d4d]">Provide/Inject</NodeGraph>
   </div>
 </div>
+
+<!--
+- подумать про вырезание provide/inject
+-->
 
 ---
 clicks: 1

@@ -4,6 +4,10 @@ topTitle: Sources
 topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-50%]
 ---
 
+<!--
+встроить переход в сценарий
+-->
+
 ---
 topTitle: Sources
 ---
@@ -44,6 +48,11 @@ topTitle: Sources
     </div>
   </div>
 </div>
+
+<!--
+- буллеты соединить с примерами из кода (сделать примеры кода сопроводительными) / илюстрациями
+- опробьовать примеры с колонками
+-->
 
 ---
 topTitle: Sources
