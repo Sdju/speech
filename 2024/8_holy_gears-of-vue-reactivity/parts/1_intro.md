@@ -1,29 +1,29 @@
-<div class="mb-[50px] flex flex-row">
-  <div class="w-[80px] h-[80px] rd-full of-hidden">
-    <img class="w-full h-full object-cover" src="/img/photo.png" />
+<div class="mb-50px flex flex-row">
+  <div class="size-80 rd-full of-hidden">
+    <img class="size-full object-cover" src="/img/photo.png" />
   </div>
-  <div class="w-[80px] h-[80px] rd-full ml-[15px]">
-    <zede-icon class="w-full h-full" />
+  <div class="size-80 rd-full ml-15px">
+    <ZedeIcon class="size-full" />
   </div>
 </div>
-<div class="text-4xl mb-[50px]">Денис Чернов</div>
+<div class="text-4xl mb-50px">Денис Чернов</div>
 <div class="grid grid-cols-[36px_1fr] gap-2 items-center">
-  <file-icons-telegram /> @zede_code
-  <ion-logo-twitch /> @izede
-  <ion-logo-github /> @Sdju
+  <FileIconsTelegram /> @zede_code
+  <IonLogoTwitch /> @izede
+  <IonLogoGithub /> @Sdju
 </div>
 
-<QrCodeIntro class="w-[200px] h-[200px] absolute top-[200px] right-[80px]" />
+<QrCodeIntro class="sp-r80_200_200_200 absolute" />
 
 ---
 layout: center
 ---
 
-<h1 v-drag="[237,251,551,46]"> Шестеренки реактивности Vue </h1>
+<h1 center> Шестеренки реактивности Vue </h1>
 
-<ion-cog-sharp v-drag="[729,-220,496,450]" class="animate-[spin_70s_linear_infinite] opacity-20" />
+<IonCogSharp v-drag="[729,-220,496,450]" class="animate-[spin_70s_linear_infinite] opacity-20" />
 
-<ion-cog-sharp v-drag="[-222,307,496,450]" class="animate-[spin_70s_linear_infinite] opacity-10" />
+<IonCogSharp v-drag="[-222,307,496,450]" class="animate-[spin_70s_linear_infinite] opacity-10" />
 
 <!--
 > продать цель доклада / продумать спич 2 и 3 слайда
@@ -37,36 +37,33 @@ variant: green
 ---
 
 <Timeline :steps="[{
-  logo: 'left-[50%] top-[50%] w-[176px] h-[176px]',
-  vueGear: 'left-[50%] top-[50%] -popup-hidden',
-  ref: 'left-[50%] top-[50%] -popup-hidden',
-  computed: 'left-[50%] top-[50%] -popup-hidden',
-  watch: 'left-[50%] top-[50%] -popup-hidden',
-  watchEffect: 'left-[50%] top-[50%] -popup-hidden',
-  reactive: 'left-[50%] top-[50%] -popup-hidden',
+  logo: 'pos-center size-176_176',
+  vueGear: 'pos-center -popup-hidden',
+  ref: 'pos-center -popup-hidden',
+  computed: 'pos-center -popup-hidden',
+  watch: 'pos-center -popup-hidden',
+  watchEffect: 'pos-center -popup-hidden',
+  reactive: 'pos-center -popup-hidden',
 }, {
-  logo: 'left-[50%] top-[51%] w-[46px] h-[46px]',
-  vueGear: 'left-[50%] top-[50%]',
+  logo: 'pos-center size-46_46',
+  vueGear: 'pos-center ',
 }, {
-  ref: 'left-[727px] top-[84px]',
+  ref: 'pos-727_84 ',
 }, {
-  computed: 'left-[720px] top-[330px]',
+  computed: 'pos-781_356 ',
 }, {
-  watch: 'left-[348px] top-[413px]',
+  watch: 'pos-472_474 ',
 }, {
-  watchEffect: 'left-[150px] top-[258px]',
+  watchEffect: 'pos-165_356 ',
 }, {
-  reactive: 'left-[216px] top-[69px]',
+  reactive: 'pos-216_69 ',
 }]" v-slot="t">
 
-<div class="figure w-[223px] h-[202px] fx" :class="t.vueGear">
-  <material-symbols-settings-outline class="animate-[spin_20s_linear_infinite] w-full h-full" />
+<div class="figure size-223_202 fx" :class="t.vueGear">
+  <MaterialSymbolsSettingsOutline class="animate-[spin_20s_linear_infinite] w-full h-full" />
 </div>
 
-<logos-vue
-  class="figure"
-  :class="t.logo"
-/>
+<LogosVue class="figure" :class="t.logo" />
 
 <Gear class="figure fx w-[103px] h-[131px]" :class="t.ref" name="ref" />
 
@@ -116,7 +113,7 @@ layout: center
 
 ---
 
-<img class="center w-[740px]" src="/img/computed-watch.png" />
+<img class="center framed w-[740px]" src="/img/computed-watch.png" />
 
 <!--
 И если такие вопросы вас ставят в замешательство, то этот доклад для вас.
@@ -207,8 +204,8 @@ clicks: 8
   height: '479px'
 }]" v-slot="t">
 
-<div class="center w-[340px] overflow-hidden transition-all duration-400" :style="{ maxHeight: t.height }" >
-  <img src="/img/iceberg.png" class="w-full slide" />
+<div class="center w-[340px] overflow-hidden transition-all duration-400 framed" :style="{ maxHeight: t.height }" >
+  <img src="/img/iceberg.png" class="w-full" />
 </div>
 
 <div
@@ -274,9 +271,15 @@ clicks: 8
 variant: purple
 ---
 
-<h1 absolute transition-all duration-400 text-center w-full left-0 :style="{ top: $clicks < 2 ? '27px' : '90px' }"> Реактивность </h1>
+<Timeline :steps="[{
+  title: 'top-50% ',
+}, {
+  title: 'top-27px ',
+}]" v-slot="t">
 
-<img class="slide" v-click="['+1', '+1']" v-drag="[165,96,673,403]" src="/img/magic.gif" />
+<h1 class="absolute transition-all duration-400 text-center w-full left-0" :class="t.title"> Реактивность </h1>
+
+<img class="framed" v-click="['+1', '+1']" v-drag="[165,96,673,403]" src="/img/magic.gif" />
 
 <div v-click="'+0'" class="italic bg-[#00000048] p-4 rd-[8px] mb-4"> Способность системы автоматически реагировать на раздражители </div>
 
@@ -292,6 +295,8 @@ console.log(total.value) // 12
 ```
 
 </div>
+
+</Timeline>
 
 <!--
 Но для начала. Что же такое реактивность?

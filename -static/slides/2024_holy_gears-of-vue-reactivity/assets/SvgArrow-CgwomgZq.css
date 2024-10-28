@@ -1,0 +1,1 @@
+.svg-arrow{stroke:var(--color-primary);--animation-duration: .2s}.svg-arrow path{stroke-dasharray:var(--full-length);stroke-dashoffset:var(--full-length)}.svg-arrow.animate path{animation:svg-arrow-stroke var(--animation-duration) linear forwards}@keyframes svg-arrow-stroke{0%{stroke-dashoffset:var(--full-length)}to{stroke-dashoffset:0}}
