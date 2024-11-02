@@ -35,9 +35,9 @@ export default mergeConfigs([
         return `${x} ${y} w-[${width}] h-[${height}]`
       }],
       {
-        'movable': 'absolute -translate-x-1/2 -translate-y-1/2',
+        'movable': 'absolute -translate-x-1/2 -translate-y-1/2 transform-origin-center',
         'circle': 'rounded-[100%]',
-        '$obj': 'movable duration-200 ease-in-out',
+        '$obj': 'movable duration-200 ease-in-out filter',
         'figure': 'grid place-items-center movable filter text-xl font-bold duration-200 transform-origin-center',
         'pos-center': 'left-1/2 top-1/2',
         'size-full': 'w-full h-full',

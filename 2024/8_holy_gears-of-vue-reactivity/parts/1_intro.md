@@ -23,7 +23,7 @@ layout: center
 
 <IonCogSharp v-drag="[729,-220,496,450]" class="animate-[spin_70s_linear_infinite] opacity-20" />
 
-<IonCogSharp v-drag="[-222,307,496,450]" class="animate-[spin_70s_linear_infinite] opacity-10" />
+<IonCogSharp v-drag="[-222,307,496,450]" class="animate-[spin_60s_linear_infinite] opacity-10" />
 
 <!--
 > продать цель доклада / продумать спич 2 и 3 слайда
@@ -59,21 +59,21 @@ variant: green
   reactive: 'pos-216_69 ',
 }]" v-slot="t">
 
-<div class="figure size-223_202 fx" :class="t.vueGear">
-  <MaterialSymbolsSettingsOutline class="animate-[spin_20s_linear_infinite] w-full h-full" />
+<div class="$obj size-223_202 fx" :class="t.vueGear">
+  <MaterialSymbolsSettingsOutline class="animate-[spin_20s_linear_infinite] size-full" />
 </div>
 
 <LogosVue class="figure" :class="t.logo" />
 
-<Gear class="figure fx w-[103px] h-[131px]" :class="t.ref" name="ref" />
+<Gear class="figure fx size-103_131" :class="t.ref" name="ref" />
 
-<Gear class="figure fx w-[141px] h-[118px]" :class="t.computed" name="computed" />
+<Gear class="figure fx size-141_118" :class="t.computed" name="computed" />
 
-<Gear class="figure fx w-[134px] h-[105px]" :class="t.watch" name="watch" />
+<Gear class="figure fx size-134_105" :class="t.watch" name="watch" />
 
-<Gear class="figure fx w-[142px] h-[119px]" :class="t.watchEffect" name="watchEffect" />
+<Gear class="figure fx size-142_119" :class="t.watchEffect" name="watchEffect" />
 
-<Gear class="figure fx w-[104px] h-[95px]" :class="t.reactive" name="reactive" />
+<Gear class="figure fx size-104_95" :class="t.reactive" name="reactive" />
 
 </Timeline>
 
@@ -91,12 +91,13 @@ variant: green
 layout: cover
 ---
 
-<img class="center w-[600px] rounded-[10px] border-2 border-gray-500/20" src="/img/interview.png" />
+<img class="framed center w-600px" src="/img/interview.png" />
+
 ---
 layout: center
 ---
 
-<div class="text-[1.5em]">Чем отличается computed от watch?</div>
+<div class="text-1.5em">Чем отличается computed от watch?</div>
 
 <!--
 Представим ситуацию на собеседовании. Вам задают вопросы по Vue и в целом вы отвечаете хорошо.
@@ -113,7 +114,7 @@ layout: center
 
 ---
 
-<img class="center framed w-[740px]" src="/img/computed-watch.png" />
+<img class="center framed w-740px" src="/img/computed-watch.png" />
 
 <!--
 И если такие вопросы вас ставят в замешательство, то этот доклад для вас.
@@ -204,7 +205,7 @@ clicks: 8
   height: '479px'
 }]" v-slot="t">
 
-<div class="center w-[340px] overflow-hidden transition-all duration-400 framed" :style="{ maxHeight: t.height }" >
+<div class="center w-340px overflow-hidden transition-all duration-400 framed" :style="{ maxHeight: t.height }" >
   <img src="/img/iceberg.png" class="w-full" />
 </div>
 
@@ -212,16 +213,16 @@ clicks: 8
   class="center overflow-hidden transition-all duration-400"
   :style="{ maxHeight: t.height }"
 >
-  <div class="text-shadow-xl w-[338px] h-[475px] flex flex-col items-stretch p-r-[60px] text-center relative overflow-hidden rounded-[10px]">
-    <div class="mt-[10px] mb-[20px]">азы реактивности</div>
-    <div class="mb-[32px]">основной функционал</div>
-    <div class="text-size-[0.75em] mb-[32px]">продвинутая реактивность</div>
-    <div class="mb-[28px]">@vue/reactivity</div>
-    <div class="mb-[25px]">@vue/runtime-core</div>
-    <div class="mb-[23px]">Закрытый API</div>
-    <div class="text-size-[0.75em] mb-[14px]">Контрибьютить во Vue</div>
-    <div class="text-size-[0.75em]">написать свою реактивность для Vapor Vue</div>
-    <img class="absolute bottom-[-10px] right-0 h-[66px] w-[63px] object-cover" src="/img/jonson.jfif" />
+  <div class="text-shadow-xl size-338_475 flex flex-col items-stretch pr-60px text-center relative overflow-hidden rounded-10px">
+    <div class="mt-10px mb-20px">азы реактивности</div>
+    <div class="mb-32px">основной функционал</div>
+    <div class="text-size-0.75em mb-32px">продвинутая реактивность</div>
+    <div class="mb-28px">@vue/reactivity</div>
+    <div class="mb-25px">@vue/runtime-core</div>
+    <div class="mb-23px">Закрытый API</div>
+    <div class="text-size-0.75em mb-14px">Контрибьютить во Vue</div>
+    <div class="text-size-0.75em">написать свою реактивность для Vapor Vue</div>
+    <img class="absolute -bottom-10px right-0 size-66_63 object-cover" src="/img/jonson.jfif" />
   </div>
 </div>
 
@@ -281,7 +282,7 @@ variant: purple
 
 <img class="framed" v-click="['+1', '+1']" v-drag="[165,96,673,403]" src="/img/magic.gif" />
 
-<div v-click="'+0'" class="italic bg-[#00000048] p-4 rd-[8px] mb-4"> Способность системы автоматически реагировать на раздражители </div>
+<div v-click="'+0'" class="italic bg-[#00000048] p-4 rd-8px mb-4"> Способность системы автоматически реагировать на раздражители </div>
 
 <div v-click="3">
 
@@ -319,12 +320,12 @@ clicks: 8
 ---
 
 <Timeline :steps="[{
-  title: 'top-[50%] left-[50%]',
-  model: 'left-[50%] top-[50%] -popup-hidden',
-  subscriber: 'left-[50%] top-[156px] -popup-hidden',
-  action: 'left-[50%] top-[366px] -popup-hidden',
-  effect: 'left-[660px] top-[50%] -popup-hidden',
-  scheduler: 'left-[660px] top-[366px] -popup-hidden',
+  title: 'pos-center ',
+  model: 'pos-center -popup-hidden',
+  subscriber: 'pos-50%_156 -popup-hidden',
+  action: 'pos-50%_366 -popup-hidden',
+  effect: 'pos-660_50% -popup-hidden',
+  scheduler: 'pos-660_366 -popup-hidden',
   arrow1: {
     coords: '51%:245 51%:188',
     class: 'fx duration-500 opacity-0'
@@ -350,22 +351,22 @@ clicks: 8
     class: 'fx duration-500 opacity-0'
   },
 }, {
-  title: 'top-[10%] left-[50%]',
-  model: 'left-[50%] top-[50%]',
+  title: 'pos-10%_50% ',
+  model: 'pos-center ',
 }, {
-  subscriber: 'left-[50%] top-[156px]',
+  subscriber: 'pos-50%_156 ',
   arrow1: {
     coords: '51%:245 51%:188',
     class: 'fx duration-500 animate'
   },
 }, {
-  effect: 'left-[660px] top-[50%]',
+  effect: 'pos-660_50% ',
   arrow2: {
     coords: '569:156 660:245',
     class: 'fx duration-500 animate'
   },
 }, {
-  action: 'left-[50%] top-[400px]',
+  action: 'pos-50%_400 ',
   arrow3: {
     coords: '51%:372 51%:306',
     class: 'fx duration-500 animate'
@@ -384,7 +385,7 @@ clicks: 8
     coords: '660:306 660:372',
     class: 'fx duration-500 animate'
   },
-  scheduler: 'left-[660px] top-[400px]',
+  scheduler: 'pos-660_400 ',
 }, {
   arrow5: {
     coords: '588:400 543:400',
@@ -456,7 +457,7 @@ clicks: 10
 <div class="figure sp-251_274_379_210 text-[1em] bg-blue-5/30 rounded-2xl px-4 py-2" :class="t.vueReactivity" > 
   <div class="text-center"> @vue/reactivity </div>
 
-  <div class="text-size-[0.75em] flex flex-col mt-4 w-full">
+  <div class="text-size-0.75em flex flex-col mt-4 w-full">
     <Gear inline name="ref" />
     <Gear inline name="reactive" />
     <Gear inline w-min v-mark.red.strike-through="{at: 3}" name="computed" />
@@ -468,7 +469,7 @@ clicks: 10
 <div class="figure sp-719_272_398_210 text-[1em] bg-cyan-5/30 rounded-2xl px-4 py-2" :class="t.vueRuntimeCore" > 
   <div class="text-center"> @vue/runtime-core </div>
 
-  <div class="text-size-[0.75em] flex flex-col mt-4 w-full fx duration-[0.2s]" :class="t.runtimeList">
+  <div class="text-size-0.75em flex flex-col mt-4 w-full fx duration-[0.2s]" :class="t.runtimeList">
     <Gear inline name="watchers" />
     <Gear inline name="scheduler" />
     <Gear inline name="nextTick" />
@@ -538,4 +539,4 @@ graph TD
 layout: center
 ---
 
-<img class="center slide w-[600px]" src="/img/scheduler.png" />
+<img class="center slide w-600px" src="/img/scheduler.png" />

@@ -9,14 +9,36 @@ export const MouseService = (injector: ReturnType<typeof useDi>) => {
     const mousePosY = ref(0)
     const inSlide = ref(false)
     const isMouseDown = ref(false)
-    const { rect, scale, slideElement } = slideService
 
-    const localX = computed(() => (mousePosX.value - (rect.value?.left ?? 0)) / scale.value)
-    const localY = computed(() => (mousePosY.value - (rect.value?.top ?? 0)) / scale.value)
-    const localXPercent = computed(() => Math.round((localX.value / ((rect.value?.width ?? 0) / scale.value)) * 100_00) / 100)
-    const localYPercent = computed(() => Math.round((localY.value / ((rect.value?.height ?? 0) / scale.value)) * 100_00) / 100)
-    
-    const mouse = reactive({
+    const localX = computed(() => (mousePosX.value - slideService.left) / slideService.scale)
+    const localY = computed(() => (mousePosY.value - slideService.top) / slideService.scale)
+    const localXPercent = computed(() => Math.round((localX.value / (slideService.width / slideService.scale)) * 100_00) / 100)
+    const localYPercent = computed(() => Math.round((localY.value / (slideService.height / slideService.scale)) * 100_00) / 100)
+
+    useEventListener(() => slideService.slideElement, 'mouseleave', () => {
+        inSlide.value = false
+    })
+    useEventListener(() => slideService.slideElement, 'mouseenter', () => {
+        inSlide.value = true
+    })
+    useEventListener(() => slideService.slideElement, 'mousedown', () => {
+        isMouseDown.value = true
+    })
+    useEventListener(() => slideService.slideElement, 'mouseup', () => {
+        isMouseDown.value = false
+    })
+    useEventListener(window, 'mousemove', (e) => {
+        mousePosX.value = e.clientX
+        mousePosY.value = e.clientY
+    })
+
+    function globalToLocal({x, y}: {x: number, y: number}) {
+        return {
+            x: (x - slideService.left) / slideService.scale,
+            y: (y - slideService.top) / slideService.scale
+        }
+    }
+    return reactive({
         globalX: computed(() => mousePosX.value),
         globalY: computed(() => mousePosY.value),
         inSlide: computed(() => inSlide.value),
@@ -25,24 +47,7 @@ export const MouseService = (injector: ReturnType<typeof useDi>) => {
         localY,
         localXPercent,
         localYPercent,
+        globalToLocal,
     })
-
-    useEventListener(slideElement, 'mouseleave', () => {
-        inSlide.value = false
-    })
-    useEventListener(slideElement, 'mouseenter', () => {
-        inSlide.value = true
-    })
-    useEventListener(window, 'mousemove', (e) => {
-        mousePosX.value = e.clientX
-        mousePosY.value = e.clientY
-    })
-    useEventListener(slideElement, 'mousedown', () => {
-        isMouseDown.value = true
-    })
-    useEventListener(slideElement, 'mouseup', () => {
-        isMouseDown.value = false
-    })
-    return mouse
 }
 export const MOUSE_SERVICE_KEY = createServiceKey(MouseService)

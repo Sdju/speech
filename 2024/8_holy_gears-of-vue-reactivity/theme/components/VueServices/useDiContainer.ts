@@ -40,6 +40,19 @@ export function createSharedComposable<Fn extends (...args: any[]) => any>(compo
     })
 }
 
+export function createGlobalComposable<Fn extends (...args: any[]) => any>(composable: Fn): Fn {
+    let state: ReturnType<Fn> | undefined
+    let scope: EffectScope | undefined
+  
+    return <Fn>((...args) => {
+      if (!scope) {
+        scope = effectScope(true)
+        state = scope.run(() => composable(...args))
+      }
+      return state
+    })
+}
+
 export function useDiContainer() {
     const container: Container = {
         services: reactive(new Map())
@@ -49,7 +62,8 @@ export function useDiContainer() {
 
     return {
         register: <T, K = InjectionKey<T> | string>(key: K, factory: ServiceFactory<T>, options: { shared: boolean } = { shared: true }) => {
-            container.services.set(key as symbol, options.shared ? createSharedComposable(factory) : factory)
+            const service = options.shared ? createSharedComposable(factory) : createGlobalComposable(factory)
+            container.services.set(key as symbol, service)
         },
     }
 }
@@ -74,5 +88,5 @@ export function useDi() {
 }
 
 export function createServiceKey<T>(service: ServiceFactory<T>): InjectionKey<ServiceFactory<T>> {
-    return Symbol(service.name) as InjectionKey<ServiceFactory<T>>
+    return Symbol.for(service.name) as InjectionKey<ServiceFactory<T>>
 }

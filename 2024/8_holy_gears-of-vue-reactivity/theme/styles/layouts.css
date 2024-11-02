@@ -14,19 +14,19 @@
     --slidev-code-background: #1616164f;
 
     b, strong {
-        color: var(--bg-keyword);
+        @apply c-[var(--bg-keyword)];
     }
 
     p {
-        line-height: 120%;
+        @apply line-height-120%;
     }
 
     em {
-        font-weight: 600;
+        @apply font-600;
     }
 
     ul {
-        padding-left: 12px;
+        @apply pl-4;
     }
 
     h2 {
@@ -42,7 +42,7 @@
     }
 
     .rough-annotation {
-        z-index: 1000;
+        @apply z-1000;
     }
 
     .spec-example {

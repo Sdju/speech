@@ -1,5 +1,5 @@
 import { useEventListener } from '@vueuse/core'
-import { onMounted, ref, watch, type Ref } from 'vue'
+import { reactive, ref, watch, type Ref } from 'vue'
 import { createServiceKey } from '../VueServices/useDiContainer'
 
 function wait<T>(ms: number | (<No>(no: No) => T | No)): Promise<T> {
@@ -21,10 +21,13 @@ function wait<T>(ms: number | (<No>(no: No) => T | No)): Promise<T> {
 
 export const SlideService = () => {
     const slideElement = ref() as Ref<HTMLElement>
-    const scale = ref<number>(1)
+    const scale = ref(1)
     const rect = ref<DOMRect>()
+    const left = ref(0)
+    const top = ref(0)
+    const width = ref(0)
+    const height = ref(0)
     
-
     watch(() => slideElement.value, async (el) => {
         console.log('slideElement', slideElement)
         if (!el) {
@@ -32,20 +35,32 @@ export const SlideService = () => {
         }
     }, { immediate: true })
 
+    function updateSlide() {
+        const newRect = slideElement.value.getBoundingClientRect()
+        rect.value = newRect
+        left.value = newRect.left
+        top.value = newRect.top
+        width.value = slideElement.value.clientWidth / scale.value
+        height.value = slideElement.value.clientHeight / scale.value
+        scale.value = newRect.width / slideElement.value!.clientWidth
+    }
+
     watch( () => slideElement.value, () => {
-        rect.value = slideElement.value!.getBoundingClientRect()
-        scale.value = rect.value!.width / slideElement.value!.clientWidth
+        updateSlide()
     })
 
     useEventListener(window, 'resize', () => {
-        rect.value = slideElement.value!.getBoundingClientRect()
-        scale.value = rect.value!.width / slideElement.value!.clientWidth
+        updateSlide()
     })
 
-    return {
+    return reactive({
         slideElement,
         rect,
-        scale
-    }
+        scale,
+        left,
+        top,
+        width,
+        height,
+    })
 }
 export const SLIDE_SERVICE_KEY = createServiceKey(SlideService)

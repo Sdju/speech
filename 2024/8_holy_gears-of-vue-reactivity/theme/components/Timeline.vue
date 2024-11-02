@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useNav } from '@slidev/client'
-import { computed, MaybeRef, toValue, reactive } from 'vue'
+import { computed, toValue, reactive } from 'vue'
 
 type TimelineSteps = Record<string, any>[]
 
@@ -39,6 +39,7 @@ function useTimeline({ steps }: TimelineParams) {
     const states = Array.from({ length: maxClicks }, () => Object.create(stepsValue[0]))
 
     let clicks = 0
+    let aliases = {} as Record<string, [number, number]>
     toValue(steps).forEach((action) => {
       let from = 0
       let to = maxClicks
@@ -50,15 +51,26 @@ function useTimeline({ steps }: TimelineParams) {
         from = action.$clicks[0] ?? 0
         to = action.$clicks[1] ?? maxClicks
       }
+
+      if (action.$clicksAlias) {
+        if (Array.isArray(action.$clicksAlias)) {
+          action.$clicksAlias.forEach((alias) => {
+            aliases[alias] = [from, to]
+          })
+        } else {
+          aliases[action.$clicksAlias] = [from, to]
+        }
+      }
       
       for (let i = from; i < to; i++) {
         Object.assign(states[i], action)
       }
     })
-    return states
+    return { states, aliases }
   })
 
-  const data = computed(() => precalculatedData.value[nav.clicks.value])
+  const clicksAliases = computed(() => precalculatedData.value.aliases)
+  const data = computed(() => precalculatedData.value.states[nav.clicks.value])
 
   return reactive(Object.fromEntries(
     preparationData.value.keys.map((key) => [
@@ -72,7 +84,12 @@ function useTimeline({ steps }: TimelineParams) {
 
         return value
       })
-    ])
+    ]).concat(
+      Object.keys(clicksAliases.value).map((alias) => [
+        alias,
+        computed(() => clicksAliases.value[alias][nav.clicks.value])
+      ])
+    )
   ))
 }
 
