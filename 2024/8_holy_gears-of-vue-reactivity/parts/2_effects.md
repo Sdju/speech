@@ -36,7 +36,8 @@ const total = computed(() => oranges.value + apples.value)
 
 ---
 topTitle: ReactiveEffect
-topTitleClass: top-[140px] left-[50%] translate-x-[-50%]
+topTitleClass: top-[90px] left-[50%] translate-x-[-50%]
+clicks: 5
 ---
 
 <style>
@@ -49,32 +50,148 @@ topTitleClass: top-[140px] left-[50%] translate-x-[-50%]
 }
 </style>
 
-<div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr_1fr] gap-[14px]" mt-12>
-  <div v-click class="item">
+<Timeline :steps="[{
+  depsClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  notifyClasses: '-blur-hidden outline-[#00000088]',
+  storeClasses: '-blur-hidden outline-[#00000088]',
+  exampleClasses: '',
+  reactiveEffect: {
+    class: 'pos-50% size-64 p-0 text-xs text-center ',
+    color: 'blue',
+    form: 'circle',
+    title: 'Reactive\nEffect',
+  },
+  dep1: {
+    class: 'pos-85%_18% size-64 p-0 ',
+    form: 'circle',
+    title: 'Dep',
+  },
+  dep2: {
+    class: 'pos-85%_50% size-64 p-0 ',
+    form: 'circle',
+    title: 'Dep',
+  },
+  dep3: {
+    class: 'pos-85%_82% size-64 p-0 ',
+    form: 'circle',
+    title: 'Dep',
+  },
+  action: {
+    class: 'pos-15%_50% size-64 p-0 text-xs text-center',
+    form: 'circle',
+    color: 'red',
+    title: 'Action',
+  },
+  reactiveEffectToDep1: {
+    coords: '797:222 696:262',
+    class: 'fx duration-500 opacity-0',
+    power: -0.3,
+  },
+  reactiveEffectToDep2: {
+    coords: '797:298 736:298',
+    class: 'fx duration-500 opacity-0',
+    power: 0.01,
+  },
+  reactiveEffectToDep3: {
+    coords: '797:380 696:339',
+    class: 'fx duration-500 opacity-0',
+    power: 0.3,
+  },
+  actionToReactiveEffect: {
+    coords: '596:298 661:298',
+    class: 'fx duration-500 opacity-0',
+    power: 0.01,
+  },
+}, {
+  reactiveEffectToDep1: {
+    class: 'fx duration-500 animate',
+  },
+  reactiveEffectToDep2: {
+    class: 'fx duration-500 animate',
+  },
+  reactiveEffectToDep3: {
+    class: 'fx duration-500 animate',
+  },
+}, {
+  depsClasses: 'outline outline-2 outline-[#00000088]',
+  notifyClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  reactiveEffectToDep1: {
+    class: 'fx duration-500 animate opacity-0',
+  },
+  reactiveEffectToDep2: {
+    class: 'fx duration-500 animate opacity-0',
+  },
+  reactiveEffectToDep3: {
+    class: 'fx duration-500 animate opacity-0',
+  },
+}, {
+  reactiveEffectToDep1: {
+    coords: '696:262 797:222',
+    class: 'fx duration-500 animate',
+    power: 0.3,
+  },
+  reactiveEffectToDep2: {
+    coords: '736:298 797:298',
+    class: 'fx duration-500 animate',
+  },
+  reactiveEffectToDep3: {
+    coords: '696:339 797:380',
+    class: 'fx duration-500 animate',
+    power: -0.3,
+  },
+  action: {
+    class: 'pos-15%_50% size-64 p-0 text-xs text-center',
+  },
+  actionToReactiveEffect: {
+    class: 'fx duration-500 ',
+  },
+}, {
+  notifyClasses: 'outline outline-2 outline-[#00000088]',
+  storeClasses: 'outline outline-2 outline-[#CCCCCC88]',
+}]" v-slot="t">
+
+<div class="grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12">
+  <div class="item fx duration-400" :class="t.depsClasses">
     <div class="item-icon">
       <MaterialSymbolsLightShoppingBasket/>
     </div>
     <div>
-      Собирает зависимости
+      Сбор зависимостей
     </div>
   </div>
-  <div v-click class="item">
+  <div class="item fx duration-400" :class="t.notifyClasses">
     <div class="item-icon">
       <MaterialSymbolsLightNotificationsActiveRounded/>
     </div>
     <div>
-      Уведомлять зависимости об обновлении
+      Уведомление зависимостей об обновлении
     </div>
   </div>
-  <div v-click class="item">
+  <div class="item fx duration-400" :class="t.storeClasses">
     <div class="item-icon">
       <SolarMagicStickBold/>
     </div>
     <div>
-      Xранение функции-эффекта
+      Хранение функции-эффекта
     </div>
   </div>
+  <div class="text-sm border-3 border-[#CCCCCC88] p-[12px] rd-[8px] flex flex-row items-center gap-[8px] fx example row-span-4 code-back" :class="t.exampleClasses">
+    <Node v-bind="t.reactiveEffect" />
+    <Node v-bind="t.dep1" />
+    <Node v-bind="t.dep2" />
+    <Node v-bind="t.dep3" />
+    <Node v-bind="t.action" />
+  </div>
 </div>
+
+<SvgLayer>
+  <SvgArrow v-bind="t.reactiveEffectToDep1" />
+  <SvgArrow v-bind="t.reactiveEffectToDep2" />
+  <SvgArrow v-bind="t.reactiveEffectToDep3" />
+  <SvgArrow v-bind="t.actionToReactiveEffect" />
+</SvgLayer>
+
+</Timeline>
 
 ---
 topTitle: ReactiveEffect
@@ -309,12 +426,24 @@ topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-5
 
 ---
 topTitle: effectScope
-topTitleClass: top-[90px] left-[50%] translate-x-[-50%]
+topTitleClass: top-[70px] left-[50%] translate-x-[-50%]
 ---
 
 ````md magic-move
 ```ts
 const counter = ref(0)
+
+
+
+
+
+
+
+
+
+
+
+⠀
 ```
 ```ts
 const counter = ref(0)
@@ -324,6 +453,27 @@ const doubled = computed(() => counter.value * 2)
 watch(doubled, () => console.log(doubled.value))
 
 watchEffect(() => console.log('Count: ', doubled.value))
+
+
+
+
+
+⠀
+```
+```ts
+const counter = ref(0)
+
+
+
+const doubled = computed(() => counter.value * 2)
+
+watch(doubled, () => console.log(doubled.value))
+
+watchEffect(() => console.log('Count: ', doubled.value))
+
+
+
+⠀
 ```
 
 ```ts
@@ -336,6 +486,10 @@ const doubled = computed(() => counter.value * 2)
 watch(doubled, () => console.log(doubled.value))
 
 watchEffect(() => console.log('Count: ', doubled.value)⠀
+
+
+
+⠀
 ```
 
 ```ts
@@ -350,6 +504,8 @@ scope.run(() => {
 
   watchEffect(() => console.log('Count: ', doubled.value))
 })
+
+⠀
 ```
 
 ```ts
@@ -418,7 +574,12 @@ clicks: 4
 <Node class="figure sp-638_367_553_180 flex" :class="t.effectScope" color="blue">
   <div class="grid grid-cols-[1fr_1fr_1fr] grid-rows-[auto_1fr_1fr] gap-[10px] flex-1">
     <div class="col-span-3 text-center">EffectScope</div>
-    <Node color="green" class="font-size-[0.9em] transition-[all] duration-[0.5s] ease-out text-center" :class="t.reactiveEffect" inject>
+    <Node 
+      color="green" 
+      class="font-size-[0.9em] transition-[all] duration-[0.5s] ease-out text-center"
+      :class="t.reactiveEffect"
+      inject
+    >
       {{ t.texts[0] }}
     </Node>
     <Node color="green" class="font-size-[0.9em] transition-[all] duration-[0.5s] ease-out text-center" :class="t.reactiveEffect" inject>
@@ -452,7 +613,7 @@ clicks: 7
   vue: 'figure fx sp-201_282_62_63 -popup-hidden',
   vueText: 'sp-631_115_69_40 -blur-hidden',
   pinia: 'figure fx sp-201_282_62_63 -popup-hidden',
-  piniaText: 'sp-631_255_269_40 -blur-hidden',
+  piniaText: 'sp-631_275_269_40 -blur-hidden',
   vueuse: 'figure fx sp-201_282_62_63 -popup-hidden',
   vueuseText1: 'sp-631_415_69_40 -blur-hidden',
   vueuseText2: 'sp-631_465_69_40 -blur-hidden',
@@ -463,7 +624,7 @@ clicks: 7
 }, {
   pinia: 'figure fx sp-560_290_100_100 ',
 }, {
-  piniaText: ' sp-631_255_269_40 ',
+  piniaText: ' sp-631_275_269_40 ',
 }, {
   vueuse: 'figure fx sp-560_455_100_100 ',
 }, {
@@ -524,10 +685,21 @@ function myComposable() {
 
 ---
 topTitle: effectScope
+topTitleClass: top-[100px] left-[50%] translate-x-[-50%]
+clicks: 3
 ---
 
-<div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr] gap-[14px]" mt-12>
-  <div v-click class="item">
+<Timeline :steps="[{
+  effectsClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  asyncClasses: '-blur-hidden outline-[#00000088]',
+  exampleClasses: '',
+}, {
+  asyncClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  effectsClasses: 'outline-[#00000088]',
+}]" v-slot="t">
+
+<div class="grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12">
+  <div class="item fx duration-400" :class="t.effectsClasses">
     <div class="item-icon">
       <UiwComponent/>
     </div>
@@ -535,7 +707,7 @@ topTitle: effectScope
       Создание эффектов за пределами компонентов
     </div>
   </div>
-  <div v-click class="item">
+  <div class="item fx duration-400" :class="t.asyncClasses">
     <div class="item-icon">
       <MdiRunFast/>
     </div>
@@ -543,7 +715,12 @@ topTitle: effectScope
       Создание эффектов асинхронно от setup
     </div>
   </div>
+  <div class="item fx example row-span-4" :class="t.exampleClasses">
+    
+  </div>
 </div>
+
+</Timeline>
 
 <!--
 - подумать о корнер кейсе из-за async setup

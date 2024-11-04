@@ -145,7 +145,6 @@ clicks: 9
 <SvgLayer>
   <SvgArrow :class="t.arrow1.class" :coords="t.arrow1.coords" :power="0.3" />
   <SvgArrow :class="t.arrow2.class" :coords="t.arrow2.coords" :power="0.3" />
-  <SvgArrow :class="t.arrow3.class" :coords="t.arrow3.coords" :power="0.3" />
   <SvgArrow :class="t.arrow4.class" :coords="t.arrow4.coords" :power="0.3" />
 </SvgLayer>
 
@@ -157,13 +156,31 @@ clicks: 9
 
 ---
 topTitle: Tracking
+clicks: 7
 ---
 
-<mingcute-settings-7-fill v-drag="[437,138,88,89]" class="animate-[spin_17s_linear_infinite]" />
-<div v-drag="[413,166,131,40]" class="text-[1em] text-shadow-xl bg-[#00000088] px-3 rd-[8px]"> activeSub </div>
+<Timeline :steps="[{
+  effectClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  onlyOneClasses: '-blur-hidden outline-[#00000088]',
+  stackClasses: '-blur-hidden outline-[#00000088]',
+  noAccessClasses: '-blur-hidden outline-[#00000088]',
+  exampleClasses: '',
+}, {
+  onlyOneClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  effectClasses: 'outline-[#00000088]',
+}, {
+  stackClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  onlyOneClasses: 'outline-[#00000088]',
+}, {
+  noAccessClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  stackClasses: 'outline-[#00000088]',
+}]" v-slot="t">
 
-<div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr_1fr] gap-[14px]" mt-12>
-  <div v-click class="item">
+<mingcute-settings-7-fill v-drag="[447,62,88,89]" class="animate-[spin_17s_linear_infinite]" />
+<div v-drag="[425,89,131,40]" class="text-[1em] text-shadow-xl bg-[#00000088] px-3 rd-[8px]"> activeSub </div>
+
+<div class="grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12">
+  <div class="item fx duration-400" :class="t.effectClasses">
     <div class="item-icon">
       <MdiCursorPointer/>
     </div>
@@ -171,7 +188,7 @@ topTitle: Tracking
       Переменная которая указывает текущий эффект
     </div>
   </div>
-  <div v-click class="item">
+  <div class="item fx duration-400" :class="t.onlyOneClasses">
     <div class="item-icon">
       <BiTrophyFill/>
     </div>
@@ -179,7 +196,7 @@ topTitle: Tracking
       Только 1 активный эффект
     </div>
   </div>
-  <div v-click class="item">
+  <div class="item fx duration-400" :class="t.stackClasses">
     <div class="item-icon">
       <MaterialSymbolsStacks/>
     </div>
@@ -187,7 +204,7 @@ topTitle: Tracking
       Работает как стек для вложенных эффектов
     </div>
   </div>
-  <div v-click class="item">
+  <div class="item fx duration-400" :class="t.noAccessClasses">
     <div class="item-icon">
       <MdiHandBackRightOff/>
     </div>
@@ -195,7 +212,12 @@ topTitle: Tracking
       Нет ручного доступа
     </div>
   </div>
+  <div class="item fx example row-span-4" :class="t.exampleClasses">
+    
+  </div>
 </div>
+
+</Timeline>
 
 <!--
 - ПРИДУМАТЬ ИЛЛЮСТРАЦИЮ (думать о шестеренках)
@@ -240,48 +262,77 @@ topTitle: Tracking
 topTitle: Tracking
 ---
 
+<div v-drag="[105,233,392,40]" v-click="[0, 3]">
+  <div class="w-full" v-mark.underline.red="{ at: '1'}" />
+  <div font-hand c-red text-center v-click="1">Effect</div>
+</div>
+
+<div v-drag="[380,171,114,40]" v-click="[0, 3]">
+  <div font-hand c-blue text-center v-click="2">Source</div>
+  <div class="w-full" v-mark.underline.blue="{ at: '2'}" />
+</div>
+
+<div v-drag="[463,168,114,40]" v-click="[0, 6]">
+  <div font-hand c-blue text-center v-click="4">Source</div>
+  <div class="w-full" v-mark.underline.blue="{ at: '4'}" />
+</div>
+
+<div v-drag="[406,269,128,40]" v-click="[0, 6]">
+  <div class="w-full" v-mark.underline.blue="{ at: '5'}" />
+  <div font-hand c-blue text-center v-click="5">Source</div>
+</div>
+
+<div v-drag="[148,150,174,40]">
+  <div font-hand c-red text-center v-click="11">Effect</div>
+  <div class="w-full" v-mark.underline.red="{ at: '11'}" />
+</div>
+
 ````md magic-move
-```ts
+```ts {*|*|*}
 watchEffect(() => {
-  const user = fetchUsers()
+  const { user } = fetchUsers(userId.value)
 })
+
+
+
+
+
+⠀
 ```
 
-```ts {*|2}
+```ts {*|*|*}
 watchEffect(() => {
-  console.log('Loading State: ', loadingState.value)
-  const user = fetchUsers()
-})
+  const { user, loading } = fetchUsers(userId.value)
+
+  console.log('Loading State: ', loading.value)
+})  
+
+
+
+⠀
 ```
 
-```ts {*|1,4-6|*}
+```ts {*|1|6-8|*}
 import { pauseTracking, resetTracking } from '@vue/reactivity'
 
 watchEffect(() => {
+  const { user, loading } = fetchUsers(userId.value)
+
   pauseTracking()
-  console.log('Loading State: ', loadingState.value)
+  console.log('Loading State: ', loading.value)
   resetTracking()
-
-  const user = fetchUsers()
 })
 ```
 
-```ts
-import { pauseTracking, resetTracking } from '@vue/reactivity'
+```ts {*|*}
+watch(() => userId.value, (id) => {
+  const { user, loading } = fetchUsers(id)
 
-watchEffect(() => {
-  pauseTracking() // временно приостанавливает сбор зависимостей
-  console.log('Loading State: ', loadingState.value)
-  resetTracking() // востанавливает прежнее состояние
-
-  const user = fetchUsers()
+  console.log('Loading State: ', loading.value)
 })
+
+
+
+⠀
 ```
 ````
-
-<!--
-- попробовать подвести через код
-- обяъснить а на кой их добавили
-- добавить реализацию fechtUsers
-- код синтетический
--->

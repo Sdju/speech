@@ -11,7 +11,7 @@ provide('sizes', sizes)
 </script>
 
 <template>
-    <div class="absolute w-[960px] h-[552px] top-0 left-0">
+    <div class="absolute w-[960px] h-[552px] top-0 left-0 pointer-events-none">
         <svg
             ref="svg"
             viewBox="0 0 960 552"

@@ -87,6 +87,8 @@ export function useDi() {
     return injector
 }
 
+export type Injector = ReturnType<typeof useDi>
+
 export function createServiceKey<T>(service: ServiceFactory<T>): InjectionKey<ServiceFactory<T>> {
     return Symbol.for(service.name) as InjectionKey<ServiceFactory<T>>
 }

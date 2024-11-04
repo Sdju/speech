@@ -36,17 +36,17 @@ topTitle: Components
 ---
 
 <div class="grid grid-rows-3 gap-4">
-  <NodeGraph class="py-4 bg-[#4ade804d]">Component</NodeGraph>
+  <Node class="py-4" inject color="green">Component</Node>
   <div class="grid grid-cols-5 gap-4">
-    <NodeGraph v-click class="col-span-4 bg-[#3c5cff4d]">Proxy</NodeGraph>
-    <NodeGraph v-click class="col-span-1 bg-[#ff4d4d4d]">JS Prototypes</NodeGraph>
+    <Node class="col-span-4" inject color="blue">Proxy</Node>
+    <Node class="col-span-1 text-[0.7em]" inject color="red">JS Prototypes</Node>
   </div>
   <div class="grid grid-cols-5 gap-4">
-    <NodeGraph v-click class="bg-[#3c5cff4d]">Props</NodeGraph>
-    <NodeGraph v-click="'+0'" class="bg-[#3c5cff4d]">Slots</NodeGraph>
-    <NodeGraph v-click="'+0'" class="bg-[#3c5cff4d]">Attrs</NodeGraph>
-    <NodeGraph v-click="'+0'" class="bg-[#3c5cff4d]">Refs</NodeGraph>
-    <NodeGraph v-click class="bg-[#ff4d4d4d]">Provide/Inject</NodeGraph>
+    <Node inject color="blue">Props</Node>
+    <Node inject color="blue">Slots</Node>
+    <Node inject color="blue">Attrs</Node>
+    <Node inject color="blue">Refs</Node>
+    <Node inject color="red" class="text-[0.7em]">Provide/Inject</Node>
   </div>
 </div>
 
@@ -99,81 +99,71 @@ variant: blue
 </Timeline>
 
 ---
+clicks: 5
+---
+
+<Timeline :steps="[{
+  protoClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  reactiveClasses: '-blur-hidden outline-[#00000088]',
+  effectClasses: '-blur-hidden outline-[#00000088]',
+  primitiveClasses: '-blur-hidden outline-[#00000088]',
+  exampleClasses: '',
+}, {
+  protoClasses: 'outline-[#00000088]',
+  reactiveClasses: 'outline outline-2 outline-[#CCCCCC88]',
+}, {
+  reactiveClasses: 'outline-[#00000088]',
+  effectClasses: 'outline outline-2 outline-[#CCCCCC88]',
+}, {
+  effectClasses: 'outline-[#00000088]',
+  primitiveClasses: 'outline outline-2 outline-[#CCCCCC88]',
+}]" v-slot="t">
 
 <h1 class="text-center">Provide / Inject</h1>
 
-<div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr_1fr] gap-[14px]" mt-12>
-  <div v-click class="item">
+<div class="grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12">
+  <div class="item fx duration-400" :class="t.protoClasses">
     <div class="item-icon">
-      <UilBox/>
+      <UilBox />
     </div>
     <div>
       Работает на основе прототипного наследования
     </div>
   </div>
-  <div v-click class="item">
+  <div class="item fx duration-400" :class="t.reactiveClasses">
     <div class="item-icon">
-      <UilBox/>
+      <UilBox />
     </div>
     <div>
       Не обладает "прямой" реактивностью
     </div>
   </div>
-  <div v-click class="item">
+  <div class="item fx duration-400" :class="t.effectClasses">
     <div class="item-icon">
-      <UisSchedule/>
+      <UisSchedule />
     </div>
     <div>
       Почти бесплатный
     </div>
   </div>
-  <div v-click class="item">
+  <div class="item fx duration-400" :class="t.primitiveClasses">
     <div class="item-icon">
-      <UilBox/>
+      <UilBox />
     </div>
     <div>
       Используйте реактивные примитивы
     </div>
   </div>
+  <div class="item fx example row-span-4" :class="t.exampleClasses">
+    
+  </div>
 </div>
+
+</Timeline>
 
 ---
 
-# Карта реактивности
-
-```mermaid
-graph TD
-    A[getters/setters] --> B[ref]
-    A --> C[shallowRef]
-    A --> D[customRef]
-    A --> E[Dep]
-    B -.-> F[reactive]
-    E --> B
-    E --> C
-    E --> D
-    F --> G[track/trigger]
-    E --> G
-    H[Proxy] --> F
-    H --> I[props]
-    H --> J[attrs]
-    H --> K[slots]
-    I --> G
-    J --> G
-    K --> G
-    L[JS Prototypes] --> M[provide/inject]
-    E --> N[Link]
-    N <--> O[Subscriber]
-    E --> P[activeSub]
-    P -.-> O
-    E --> Q[computed]
-    R[ReactiveEffect] --> O
-    R --> S[watch]
-    R --> T[watchEffect]
-    R --> U[effect]
-    R ..-> V[effectScope]
-    W[render] --> V
-    X[setup] --> V
-```
+<VueMap />
 
 ---
 
@@ -187,5 +177,5 @@ name: 'Задавайте вопросы'
 twitch: '@izede'
 discord: '@izede'
 telegram: '@zede1697'
-variant: first
+variant: green
 ---

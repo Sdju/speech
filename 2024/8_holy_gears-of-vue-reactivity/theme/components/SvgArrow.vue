@@ -2,25 +2,25 @@
 
 import { inject, computed, ref, watch, type ComputedRef, useAttrs } from 'vue';
 
-const {
-  start,
-  end,
-  coords,
-  power = 0.5,
-  endArrow = true,
-  startArrow = false
+const { 
+    start, 
+    end,
+    coords,
+    power = 0.5,
+    endArrow = true,
+    startArrow = false,
+    dashed = false,
 } = defineProps<{
-  start?: { x: number | string, y: number | string } | string,
-  end?: { x: number | string, y: number | string } | string,
-  coords?: string,
-  power?: number,
-  endArrow?: boolean,
-  startArrow?: boolean,
+    start?: { x: number | string, y: number | string } | string,
+    end?: { x: number | string, y: number | string } | string,
+    coords?: string,
+    power?: number,
+    endArrow?: boolean,
+    startArrow?: boolean,
+    dashed?: boolean,
 }>()
 
 const curve = ref<SVGPathElement>()
-
-const fullLength = computed(() => curve.value?.getTotalLength())
 
 const sizes = inject<ComputedRef<{ width: number, height: number }>>('sizes')!
 
@@ -70,11 +70,9 @@ function getCurve(start, end, options) {
   const midX = (start.x + end.x) / 2
   const midY = (start.y + end.y) / 2
 
-  // Вычисляем перпендикулярный вектор
   const perpX = -dy / distance
   const perpY = dx / distance
-
-  // Вычисляем контрольную точку
+  
   const controlX = midX + perpX * distance * CONTROL_POINT_HEIGHT_RATE
   const controlY = midY + perpY * distance * CONTROL_POINT_HEIGHT_RATE
 
@@ -96,28 +94,11 @@ function getCurveSVGPath(bezier) {
   ].join(' ')
 }
 
-function interpolateCurveAngle({
-  start,
-  control,
-  end
-}, t: number): number {
-  const t1 = 1 - t
-
-  const tangentX = 2 * t1 * (control.x - start.x) +
-    2 * t * (end.x - control.x)
-  const tangentY = 2 * t1 * (control.y - start.y) +
-    2 * t * (end.y - control.y)
-
-  return Math.atan2(tangentY, tangentX) * (180 / Math.PI)
-}
-
 function getAllCurveData(start, end, options) {
   const curve = getCurve(start, end, options)
   const svgPath = getCurveSVGPath(curve)
-  const endAngle = interpolateCurveAngle(curve, 1)
-  const startAngle = interpolateCurveAngle(curve, 0)
 
-  return { curve, svgPath, endAngle, startAngle }
+  return { curve, svgPath }
 }
 
 const curveData = computed(() => {
@@ -128,38 +109,40 @@ const curveData = computed(() => {
   )
 })
 
-const attrs = useAttrs()
-const isAnimated = computed(() => attrs.class?.includes('animate'))
-const animateMotion = ref<SVGAnimateMotionElement>()
-watch(() => isAnimated.value, (newVal) => {
-  if (newVal) {
-    animateMotion.value?.beginElement()
-  }
-})
 
+const fullLength = ref(0)
+watch(curveData, (value) => {
+  const mockCurve = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+  mockCurve.setAttribute('d', value.svgPath)
+  fullLength.value = mockCurve.getTotalLength()
+  if (fullLength.value < 1) {
+    console.log('fullLength', { curveData: value, fullLength: fullLength.value })
+  }
+}, { flush: 'post', immediate: true })
 </script>
 
 <template>
-  <g class="svg-arrow" :style="{ '--full-length': fullLength }">
+  <g class="svg-arrow" :class="{ dashed }" :style="{ '--full-length': fullLength }">
     <path ref="curve" :d="curveData.svgPath" fill="none" />
-    <polygon 
-      v-if="endArrow" 
-      points="-12,-6 0,0, -12,6"
-      :transform="isAnimated ? undefined : `translate(${curveData.curve.end.x},${curveData.curve.end.y}) rotate(${curveData.endAngle})`"
-    >
-      <animateMotion
-        ref="animateMotion"
-        dur="200ms"
-        repeatCount="1"
-        :path="curveData.svgPath"
-        rotate="auto"
-        fill="freeze"
-      />
-    </polygon>
     <polygon
-      v-if="startArrow" 
-      points="12,-6 0,0, 12,6"
-      :transform="`translate(${curveData.curve.start.x},${curveData.curve.start.y}) rotate(${curveData.startAngle})`"
+        v-if="endArrow"
+        points="-12,-6 0,0, -12,6"
+        class="arrow-head"
+        :style="{
+            offsetPath: `path('${curveData.svgPath}')`,
+            offsetDistance: '100%',
+            offsetRotate: 'auto',
+        }"
+    />
+    <polygon
+        v-if="startArrow"
+        points="12,-6 0,0, 12,6"
+        class="arrow-tail"
+        :style="{
+            offsetPath: `path('${curveData.svgPath}')`,
+            offsetDistance: '0%',
+            offsetRotate: 'auto',
+        }"
     />
   </g>
 </template>
@@ -168,15 +151,45 @@ watch(() => isAnimated.value, (newVal) => {
 .svg-arrow {
   stroke: var(--color-primary);
   --animation-duration: 0.2s;
+  --dash-length: 10;
+  --dash-gap: 5;
+
 
   & path {
+    transition: all var(--animation-duration) ease-out;
     stroke-dasharray: var(--full-length);
     stroke-dashoffset: var(--full-length);
+
+    &:not(.animate) {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  &.dashed path {
+    stroke-dasharray: var(--dash-length) var(--dash-gap);
   }
 
   &.animate path {
     animation: svg-arrow-stroke var(--animation-duration) linear forwards;
   }
+
+  &.animate .arrow-head {
+    animation: moveAlongPath var(--animation-duration) linear normal;
+  }
+}
+
+.arrow-head,
+.arrow-tail {
+  transition: all var(--animation-duration) ease-out;
+}
+
+@keyframes moveAlongPath {
+    from {
+        offset-distance: 0%;
+    }
+    to {
+        offset-distance: 100%;
+    }
 }
 
 @keyframes svg-arrow-stroke {

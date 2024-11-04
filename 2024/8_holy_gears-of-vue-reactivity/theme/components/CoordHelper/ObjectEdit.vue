@@ -19,9 +19,24 @@ const memoryService = di.inject(MEMORY_SERVICE_KEY)
 
 memoryService.data.savedChanges = new Map()
 
+const arrowKeys = new Set(['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft'])
+
 const figureRect = computed(() => {
-  return dragRect.value ?? (objectService.hovered ?? objectService.active)?.getBoundingClientRect()
+  return dragRect.value ?? objectService.active?.getBoundingClientRect()
 })
+
+const hoveredRectStyle = computed(() => {
+  const rect = objectService.hovered?.getBoundingClientRect()
+  if (!rect) return null
+  
+  return {
+    left: `${rect.left}px`,
+    top: `${rect.top}px`,
+    width: `${rect.width}px`,
+    height: `${rect.height}px`
+  }
+})
+
 const rectStyle = computed(() => {
   if (!figureRect.value) return {}
   return {
@@ -52,6 +67,55 @@ watch(() => getObjectElement(objectService.active), (obj, oldObj) => {
       })
     }
 
+    document.body.addEventListener('keydown', (e) => {
+      console.log(e.key)
+      if (e.key === 'Escape') {
+        objectService.active = null
+        return
+      }
+
+      if (!arrowKeys.has(e.key)) {
+        return
+      }
+
+      dragRect.value = obj.element.getBoundingClientRect()
+      const rect = mouseService.globalToLocal({x: dragRect.value.left, y: dragRect.value.top})
+      rect.width = dragRect.value!.width / slideService.scale
+      rect.height = dragRect.value!.height / slideService.scale
+
+      let power = e.shiftKey ? 10 : e.altKey ? 1 : 5
+
+      if (e.key === 'ArrowDown') {
+        rect.y += power
+      } else if (e.key === 'ArrowUp') {
+        rect.y -= power
+      } else if (e.key === 'ArrowRight') {
+        rect.x += power
+      } else if (e.key === 'ArrowLeft') {
+        rect.x -= power
+      }
+      const left = rect.x + rect.width / 2
+      const top = rect.y + rect.height / 2
+      obj.element.style.transition = 'none'
+      obj.element.style.left = `${left}px`
+      obj.element.style.top = `${top}px`
+      console.log({ left: obj.element.style.left, top: obj.element.style.top })
+      dragRect.value = obj.element.getBoundingClientRect()
+      memoryService.data.savedChanges.set(obj, {
+        x: left,
+        y: top,
+        width: rect.width / slideService.scale,
+        height: rect.height / slideService.scale
+      })
+      e.stopImmediatePropagation()
+    }, { signal: activeSignal, capture: true })
+
+    document.body.addEventListener('keyup', (e: KeyboardEvent) => {
+      if (arrowKeys.has(e.key)) {
+        obj.element.style.removeProperty('transition')
+      }
+    }, { signal: activeSignal, capture: true })
+
     obj.addListener('mousedown', (e: MouseEvent) => {
       e.stopImmediatePropagation()
 
@@ -71,15 +135,21 @@ watch(() => getObjectElement(objectService.active), (obj, oldObj) => {
         obj.locked = true
         const pos = mouseService.globalToLocal({x: e.clientX, y: e.clientY})
         dragRect.value = obj.element.getBoundingClientRect()
-        const coords = {x: pos.x - dragOffset!.x, y: pos.y - dragOffset!.y}
-        obj.element.style.left = `${coords.x}px`
-        obj.element.style.top = `${coords.y}px`
-        memoryService.data.savedChanges.set(obj, coords)
+        const rect = {
+          x: pos.x - dragOffset!.x, 
+          y: pos.y - dragOffset!.y,
+          width: dragRect.value!.width / slideService.scale,
+          height: dragRect.value!.height / slideService.scale
+        }
+        obj.element.style.left = `${rect.x}px`
+        obj.element.style.top = `${rect.y}px`
+        memoryService.data.savedChanges.set(obj, rect)
       }, { signal: dragSignal })
 
       window.addEventListener('mouseup', (e) => {
         dragSignal?.abort()
         dragSignal = null
+        dragRect.value = undefined
         setTimeout(() => {
           obj.locked = false
         }, 100)
@@ -91,9 +161,9 @@ watch(() => getObjectElement(objectService.active), (obj, oldObj) => {
 
 <template>
   <div 
-    v-if="objectService.hovered"
-    class="fixed pointer-events-none border-2 z-[999] border-blue-500/50"
-    :style="rectStyle"
+    v-if="hoveredRectStyle && objectService.active !== objectService.hovered"
+    class="fixed pointer-events-none border-2 z-[999] border-blue-500"
+    :style="hoveredRectStyle"
   />
   <div 
     v-if="objectService.active"

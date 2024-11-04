@@ -181,13 +181,11 @@ const poly3 = usePloy(3)
 
 <style scoped>
 .clip {
-  transition: inherit;
+  @apply transition-inherit;
 }
 
 .bg {
-  position: absolute;
-  inset: 0;
-  z-index: -10;
+  @apply absolute inset-0 z-[-10];
 }
 
 .clip {

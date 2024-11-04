@@ -8,6 +8,18 @@ interface TimelineParams {
   steps: TimelineSteps
 }
 
+function deepMerge(target: any, source: any) {
+  if (source === null || typeof source !== 'object') return source
+  if (target === null || typeof target !== 'object') target = {}
+
+  for (const key in source) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
+      target[key] = deepMerge(target[key], source[key])
+    }
+  }
+  return target
+}
+
 function useTimeline({ steps }: TimelineParams) {
   let nav = useNav()
 
@@ -29,6 +41,8 @@ function useTimeline({ steps }: TimelineParams) {
     }, nav.clicksTotal.value)
 
     keys.delete('$clicks')
+    keys.delete('$clicksAlias')
+    keys.add('$stepsCount')
 
     return { maxClicks, keys: Array.from(keys) }
   })
@@ -36,7 +50,7 @@ function useTimeline({ steps }: TimelineParams) {
   const precalculatedData = computed(() => {
     const maxClicks = preparationData.value.maxClicks
     const stepsValue = toValue(steps)
-    const states = Array.from({ length: maxClicks }, () => Object.create(stepsValue[0]))
+      const states = Array.from({ length: maxClicks }, () => deepMerge({}, stepsValue[0]))
 
     let clicks = 0
     let aliases = {} as Record<string, [number, number]>
@@ -63,7 +77,7 @@ function useTimeline({ steps }: TimelineParams) {
       }
       
       for (let i = from; i < to; i++) {
-        Object.assign(states[i], action)
+        states[i] = deepMerge(states[i], action)
       }
     })
     return { states, aliases }
@@ -72,7 +86,7 @@ function useTimeline({ steps }: TimelineParams) {
   const clicksAliases = computed(() => precalculatedData.value.aliases)
   const data = computed(() => precalculatedData.value.states[nav.clicks.value])
 
-  return reactive(Object.fromEntries(
+  const reactiveKeys = [
     preparationData.value.keys.map((key) => [
       key,
       computed(() => {
@@ -84,13 +98,15 @@ function useTimeline({ steps }: TimelineParams) {
 
         return value
       })
-    ]).concat(
-      Object.keys(clicksAliases.value).map((alias) => [
-        alias,
-        computed(() => clicksAliases.value[alias][nav.clicks.value])
-      ])
-    )
-  ))
+    ]),
+    Object.keys(clicksAliases.value).map((alias) => [
+      alias,
+      computed(() => clicksAliases.value[alias][nav.clicks.value])
+    ]),
+    [['$stepsCount', computed(() => precalculatedData.value.states.length)]]
+  ].flat()
+
+  return reactive(Object.fromEntries(reactiveKeys))
 }
 
 const props = defineProps<{

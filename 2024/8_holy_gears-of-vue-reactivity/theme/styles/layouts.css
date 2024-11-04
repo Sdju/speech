@@ -11,7 +11,7 @@
     padding-right: 80px;
 
     --slidev-code-font-size: 16px;
-    --slidev-code-background: #1616164f;
+    --slidev-code-background: #1616167f;
 
     b, strong {
         @apply c-[var(--bg-keyword)];

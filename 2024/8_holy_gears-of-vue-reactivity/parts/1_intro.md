@@ -21,9 +21,12 @@ layout: center
 
 <h1 center> Шестеренки реактивности Vue </h1>
 
-<IonCogSharp v-drag="[729,-220,496,450]" class="animate-[spin_70s_linear_infinite] opacity-20" />
-
-<IonCogSharp v-drag="[-222,307,496,450]" class="animate-[spin_60s_linear_infinite] opacity-10" />
+<div class="$obj sp-980_4_496_450">
+  <IonCogSharp class="size-full animate-[spin_70s_linear_infinite] opacity-20" />
+</div>
+<div class="$obj sp-77_498_496_450">
+  <IonCogSharp class="size-full animate-[spin_60s_linear_infinite] opacity-10" />
+</div>
 
 <!--
 > продать цель доклада / продумать спич 2 и 3 слайда
@@ -45,7 +48,7 @@ variant: green
   watchEffect: 'pos-center -popup-hidden',
   reactive: 'pos-center -popup-hidden',
 }, {
-  logo: 'pos-center size-46_46',
+  logo: 'pos-490_281 size-46_46',
   vueGear: 'pos-center ',
 }, {
   ref: 'pos-727_84 ',
@@ -63,17 +66,13 @@ variant: green
   <MaterialSymbolsSettingsOutline class="animate-[spin_20s_linear_infinite] size-full" />
 </div>
 
-<LogosVue class="figure" :class="t.logo" />
+<LogosVue class="$obj" :class="t.logo" />
 
-<Gear class="figure fx size-103_131" :class="t.ref" name="ref" />
-
-<Gear class="figure fx size-141_118" :class="t.computed" name="computed" />
-
-<Gear class="figure fx size-134_105" :class="t.watch" name="watch" />
-
-<Gear class="figure fx size-142_119" :class="t.watchEffect" name="watchEffect" />
-
-<Gear class="figure fx size-104_95" :class="t.reactive" name="reactive" />
+<Gear class="$obj fx size-103_131" :class="t.ref" name="ref" />
+<Gear class="$obj fx size-141_118" :class="t.computed" name="computed" />
+<Gear class="$obj fx size-134_105" :class="t.watch" name="watch" />
+<Gear class="$obj fx size-142_119" :class="t.watchEffect" name="watchEffect" />
+<Gear class="$obj fx size-104_95" :class="t.reactive" name="reactive" />
 
 </Timeline>
 
@@ -95,9 +94,27 @@ layout: cover
 
 ---
 layout: center
+clicks: 3
 ---
 
-<div class="text-1.5em">Чем отличается computed от watch?</div>
+<Timeline :steps="[{
+  q1: '$obj fx text-1.5em pos-50% w-full text-center ',
+  q2: '$obj fx text-1.5em pos-50% w-full text-center -popup-hidden',
+  q3: '$obj fx text-1.5em pos-50% w-full text-center -popup-hidden',
+}, {
+  q1: '$obj fx text-1.5em pos-50% w-full text-center -popup-hidden',
+  q2: '$obj fx text-1.5em pos-50% w-full text-center',
+}, {
+  q2: '$obj fx text-1.5em pos-50% w-full text-center -popup-hidden',
+  q3: '$obj fx text-1.5em pos-50% w-full text-center ',
+}]" v-slot="t">
+
+<div :class="t.q1">Чем отличается computed от watch?</div>
+<div :class="t.q2">Можно ли реализовать свой computed используя watch?</div>
+<div :class="t.q3">Для неизменемых значений лучше использовать computed или readonly?</div>
+<div :class="t.q3">Для неизменемых значений лучше использовать computed или readonly?</div>
+
+</Timeline>
 
 <!--
 Представим ситуацию на собеседовании. Вам задают вопросы по Vue и в целом вы отвечаете хорошо.
@@ -121,11 +138,12 @@ layout: center
 -->
 
 ---
-variant: blue
+variant: lightblue
 clicks: 8
 ---
 
 <Timeline :steps="[{
+  deep: 'opacity-0',
   height: '59px',
   ref: '-popup-hidden',
   computed: '-popup-hidden',
@@ -138,12 +156,15 @@ clicks: 8
   customRef: '-popup-hidden',
   effect: '-popup-hidden',
   scheduler: '-popup-hidden',
+  tracking: '-popup-hidden',
+  effect: '-popup-hidden',
 }, {
   ref: '',
   computed: '',
   reactive: '',
   props: '',
 }, {
+  deep: 'opacity-20',
   height: '117px',
   ref: 'opacity-50 scale-50',
   computed: 'opacity-50 scale-50 blur-2',
@@ -153,6 +174,7 @@ clicks: 8
   watchEffect: '',
   vModel: '',
 }, {
+  deep: 'opacity-30',
   height: '184px',
   ref: 'opacity-25 scale-25 blur-4',
   computed: 'opacity-25 scale-25 blur-4',
@@ -165,6 +187,7 @@ clicks: 8
   customRef: '',
   render: '',
 }, {
+  deep: 'opacity-40',
   height: '245px',
   ref: 'opacity-12 scale-12 blur-6',
   computed: 'opacity-12 scale-12 blur-6',
@@ -176,34 +199,49 @@ clicks: 8
   effectScope: 'opacity-50 scale-50 blur-2',
   customRef: 'opacity-50 scale-50 blur-2',
   render: 'opacity-50 scale-50 blur-2',
+  effect: '',
+  tracking: '',
 }, {
+  deep: 'opacity-50',
   height: '306px',
   ref: 'opacity-0 scale-0',
   computed: 'opacity-0 scale-0',
   reactive: 'opacity-0 scale-0',
   props: 'opacity-0 scale-0',
-  watch: 'opacity-12 scale-12',
-  watchEffect: 'opacity-12 scale-12',
-  vModel: 'opacity-12 scale-12',
-  effectScope: 'opacity-25 scale-25',
-  customRef: 'opacity-25 scale-25',
-  render: 'opacity-25 scale-25',
+  watch: 'opacity-12 scale-12 blur-6',
+  watchEffect: 'opacity-12 scale-12 blur-6',
+  vModel: 'opacity-12 scale-12 blur-6',
+  effectScope: 'opacity-25 scale-25 blur-4',
+  customRef: 'opacity-25 scale-25 blur-4',
+  render: 'opacity-25 scale-25 blur-4',
+  effect: 'opacity-50 scale-50 blur-2',
+  tracking: 'opacity-50 scale-50 blur-2',
 }, {
+  deep: 'opacity-75',
   height: '360px',
   watch: 'opacity-0 scale-0',
   watchEffect: 'opacity-0 scale-0',
   vModel: 'opacity-0 scale-0',
-  effectScope: 'opacity-12 scale-12',
-  customRef: 'opacity-12 scale-12',
-  render: 'opacity-12 scale-12',
+  effectScope: 'opacity-12 scale-12 blur-6',
+  customRef: 'opacity-12 scale-12 blur-6',
+  render: 'opacity-12 scale-12 blur-6',
+  effect: 'opacity-25 scale-25 blur-4',
+  tracking: 'opacity-25 scale-25 blur-4',
 }, {
+  deep: 'opacity-100',
   height: '419px',
   effectScope: 'opacity-0 scale-0',
   customRef: 'opacity-0 scale-0',
   render: 'opacity-0 scale-0',
+  effect: 'opacity-12 scale-12 blur-6',
+  tracking: 'opacity-12 scale-12 blur-6',
 }, {
-  height: '479px'
+  height: '479px',
+  effect: 'opacity-0 scale-0',
+  tracking: 'opacity-0 scale-0',
 }]" v-slot="t">
+
+<div class="absolute size-full pos-0 bg-[#13151d] duration-2000 ease-in-out" :class="t.deep" />
 
 <div class="center w-340px overflow-hidden transition-all duration-400 framed" :style="{ maxHeight: t.height }" >
   <img src="/img/iceberg.png" class="w-full" />
@@ -217,29 +255,32 @@ clicks: 8
     <div class="mt-10px mb-20px">азы реактивности</div>
     <div class="mb-32px">основной функционал</div>
     <div class="text-size-0.75em mb-32px">продвинутая реактивность</div>
-    <div class="mb-28px">@vue/reactivity</div>
-    <div class="mb-25px">@vue/runtime-core</div>
+    <div class="mb-25px">@vue/reactivity</div>
+    <div class="mb-23px">@vue/runtime-core</div>
     <div class="mb-23px">Закрытый API</div>
-    <div class="text-size-0.75em mb-14px">Контрибьютить во Vue</div>
+    <div class="text-size-0.75em mb-19px">Контрибьютить во Vue</div>
     <div class="text-size-0.75em">написать свою реактивность для Vapor Vue</div>
-    <img class="absolute -bottom-10px right-0 size-66_63 object-cover" src="/img/jonson.jfif" />
+    <img class="absolute -bottom-7px right-0 size-66_63 object-cover" src="/img/jonson.jfif" />
   </div>
 </div>
 
 
-<Gear class="figure sp-742_449_103_151" :class="t.ref" name="ref" />
-<Gear class="figure sp-118_115_103_135" :class="t.computed" name="computed" />
+<Gear class="$obj sp-742_449_103_151" :class="t.ref" name="ref" />
+<Gear class="$obj sp-118_115_103_135" :class="t.computed" name="computed" />
 
 <!-- width height top left -> left top width height  -->
-<Gear class="figure sp-135_439_103_135" :class="t.reactive" name="reactive" />
-<Gear class="figure sp-812_124_103_141" :class="t.props" name="props" />
+<Gear class="$obj sp-135_439_103_135" :class="t.reactive" name="reactive" />
+<Gear class="$obj sp-812_124_103_141" :class="t.props" name="props" />
 
-<Gear class="figure sp-96_273_103_151" :class="t.watch" name="watch" />
-<Gear class="figure sp-869_321_103_151" :class="t.watchEffect" name="watchEffect" />
-<Gear class="figure sp-692_89_103_141" :class="t.vModel" name="vModel" />
+<Gear class="$obj sp-96_273_103_151" :class="t.watch" name="watch" />
+<Gear class="$obj sp-869_321_103_151" :class="t.watchEffect" name="watchEffect" />
+<Gear class="$obj sp-692_89_103_141" :class="t.vModel" name="vModel" />
 
-<Gear class="figure sp-788_101_103_151" :class="t.effectScope" name="effectScope" />
-<Gear class="figure sp-342_75_125_107" :class="t.customRef" name="customRef" />
+<Gear class="$obj sp-788_101_103_151" :class="t.effectScope" name="effectScope" />
+<Gear class="$obj sp-342_75_125_107" :class="t.customRef" name="customRef" />
+
+<Gear class="$obj sp-802_259_125_107" :class="t.effect" name="effect" />
+<Gear class="$obj sp-208_408_125_107" :class="t.tracking" name="tracking" />
 
 </Timeline>
 
@@ -316,98 +357,144 @@ console.log(total.value) // 12
 -->
 
 ---
-clicks: 8
+variant: lightblue
+clicks: 10
 ---
 
 <Timeline :steps="[{
   title: 'pos-center ',
-  model: 'pos-center -popup-hidden',
-  subscriber: 'pos-50%_156 -popup-hidden',
-  action: 'pos-50%_366 -popup-hidden',
-  effect: 'pos-660_50% -popup-hidden',
-  scheduler: 'pos-660_366 -popup-hidden',
-  arrow1: {
+  model: {
+    class: 'pos-center -popup-hidden',
+  },
+  subscriber: {
+    class: 'pos-50%_156 -popup-hidden',
+  },
+  action: {
+    class: 'pos-50%_366 -popup-hidden',
+    color: 'red',
+    form: 'circle',
+  },
+  effect: {
+    class: 'pos-660_50% -popup-hidden',
+  },
+  scheduler: {
+    class: 'pos-660_366 -popup-hidden',
+  },
+  arrowModelToSubscriber: {
     coords: '51%:245 51%:188',
-    class: 'fx duration-500 opacity-0'
+    class: 'fx duration-500 opacity-0',
+    power: 0.1,
   },
-  arrow2: {
+  arrowSubscriberToEffect: {
     coords: '569:156 660:245',
-    class: 'fx duration-500 opacity-0'
+    class: 'fx duration-500 opacity-0',
+    power: 0.5,
   },
-  arrow3: {
+  arrowActionToModel: {
     coords: '51%:372 51%:306',
-    class: 'fx duration-500 opacity-0'
+    class: 'fx duration-500 opacity-0',
+    power: 0.1,
   },
-  arrow4: {
-    coords: '660:306 660:372',
-    class: 'fx duration-500 opacity-0'
-  },
-  arrow5: {
-    coords: '588:400 543:400',
-    class: 'fx duration-500 opacity-0'
-  },
-  arrow6: {
-    coords: '660:50% 542:366',
-    class: 'fx duration-500 opacity-0'
-  },
-}, {
-  title: 'pos-10%_50% ',
-  model: 'pos-center ',
-}, {
-  subscriber: 'pos-50%_156 ',
-  arrow1: {
-    coords: '51%:245 51%:188',
-    class: 'fx duration-500 animate'
-  },
-}, {
-  effect: 'pos-660_50% ',
-  arrow2: {
-    coords: '569:156 660:245',
-    class: 'fx duration-500 animate'
-  },
-}, {
-  action: 'pos-50%_400 ',
-  arrow3: {
-    coords: '51%:372 51%:306',
-    class: 'fx duration-500 animate'
-  },
-}, {
-  arrow6: {
+  arrowEffectToX: {
     coords: '660:306 544:400',
+    class: 'fx duration-500 opacity-0',
+    power: 0.5,
+  },
+  arrowSchedulerToAction: {
+    coords: '588:400 543:400',
+    class: 'fx duration-500 opacity-0',
+    power: 0.1,
+  },
+}, {
+  title: 'pos-50%_10% ',
+  model: {
+    class: 'pos-center ',
+  },
+}, {
+  subscriber: {
+    class: 'pos-50%_156 ',
+  },
+  arrowModelToSubscriber: {
     class: 'fx duration-500 animate'
   },
 }, {
-  arrow6: {
+  effect: {
+    class: 'pos-660_50% ',
+  },
+  arrowSubscriberToEffect: {
+    class: 'fx duration-500 animate'
+  },
+}, {
+  action: {
+    class: 'pos-50%_400 ',
+  },
+  arrowActionToModel: {
+    class: 'fx duration-500 animate'
+  },
+}, {
+  arrowEffectToX: {
+    class: 'fx duration-500 animate'
+  },
+}, {
+  subscriber: {
+    multiple: true,
+  },
+}, {
+  effect: {
+    multiple: true,
+  },
+}, {
+  action: {
+    multiple: true,
+  },
+}, {
+  arrowEffectToX: {
+    coords: '660:306 660:372',
+    power: 0.1,
+  },
+  arrowSchedulerToEffect: {
     coords: '660:306 544:400',
     class: 'fx duration-500 opacity-0'
   },
-  arrow4: {
-    coords: '660:306 660:372',
-    class: 'fx duration-500 animate'
+  scheduler: {
+    class: 'pos-660_400 ',
   },
-  scheduler: 'pos-660_400 ',
+  action: {
+    multiple: false,
+  },
 }, {
-  arrow5: {
+  arrowSchedulerToAction: {
     coords: '588:400 543:400',
     class: 'fx duration-500 animate'
+  },
+  arrowSchedulerToAction: {
+    coords: '588:400 543:400',
+    class: 'fx duration-500 animate'
+  },
+}, {
+  subscriber: {
+    multiple: true,
+  },
+}, {
+  effect: {
+    multiple: true,
   },
 }]" v-slot="t">
 
-<h1 class="figure fx text-center" :class="t.title"> Реактивность </h1>
+<h1 class="$obj fx text-center" :class="t.title"> Реактивность </h1>
 
-<Node :class="t.model">Model</Node>
-<Node :class="t.subscriber">Subscribers</Node>
-<Node :class="t.effect">Effect</Node>
-<Node :class="t.action" color="red" form="circle">Action</Node>
-<Node :class="t.scheduler">Scheduler</Node>
+<Node v-bind="t.model">Model</Node>
+<Node v-bind="t.subscriber">Subscribers</Node>
+<Node v-bind="t.effect">Effect</Node>
+<Node v-bind="t.action">Action</Node>
+<Node v-bind="t.scheduler">Scheduler</Node>
 
 <SvgLayer>
-  <SvgArrow :class="t.arrow1.class" :coords="t.arrow1.coords" :power="0.1" />
-  <SvgArrow :class="t.arrow2.class" :coords="t.arrow2.coords" :power="0.5" />
-  <SvgArrow :class="t.arrow3.class" :coords="t.arrow3.coords" :power="0.1" />
-  <SvgArrow :class="t.arrow4.class" :coords="t.arrow4.coords" :power="0.1" />
-  <SvgArrow :class="t.arrow5.class" :coords="t.arrow5.coords" :power="-0.1" />
-  <SvgArrow :class="t.arrow6.class" :coords="t.arrow6.coords" :power="0.5" />
+  <SvgArrow v-bind="t.arrowModelToSubscriber" />
+  <SvgArrow v-bind="t.arrowSubscriberToEffect" />
+  <SvgArrow v-bind="t.arrowActionToModel" />
+  <SvgArrow v-bind="t.arrowEffectToX" />
+  <SvgArrow v-bind="t.arrowSchedulerToAction" />
 </SvgLayer>
 
 </Timeline>
@@ -433,7 +520,7 @@ clicks: 8
 -->
 
 ---
-clicks: 10
+clicks: 6
 ---
 
 <Timeline :steps="[{
@@ -441,37 +528,41 @@ clicks: 10
   vueRuntimeCore: '-popup-hidden',
   runtimeList: '-blur-hidden',
   vue: '',
+  computedOpacity: 1,
+  watchersOpacity: 1,
 }, {
   vueReactivity: '',
 }, {
   vueRuntimeCore: '',
 }, {
+  computedOpacity: 0.4,
+  watchersOpacity: 0.4,
 }, {
 }, {
 }, {
   runtimeList: '',
 }]" v-slot="t">
 
-<logos-vue :class="t.vue" class="figure sp-482_118_119_108" />
+<logos-vue :class="t.vue" class="$obj sp-482_118_119_108" />
 
-<div class="figure sp-251_274_379_210 text-[1em] bg-blue-5/30 rounded-2xl px-4 py-2" :class="t.vueReactivity" > 
+<div class="$obj sp-251_300_379_210 text-[1em] bg-blue-5/30 rounded-2xl px-4 py-2" :class="t.vueReactivity" > 
   <div class="text-center"> @vue/reactivity </div>
 
   <div class="text-size-0.75em flex flex-col mt-4 w-full">
     <Gear inline name="ref" />
     <Gear inline name="reactive" />
-    <Gear inline w-min v-mark.red.strike-through="{at: 3}" name="computed" />
-    <Gear inline w-min v-mark.red.strike-through="{at: 4}" name="watchers" />
+    <Gear inline w-min :style="{ opacity: t.computedOpacity }" name="computed" />
+    <Gear inline w-min :style="{ opacity: t.watchersOpacity }" name="watchers" />
     <Gear v-click="4" inline w-min v-mark.red.cross="{at: 5}" name="scheduler" />
   </div>
 </div>
 
-<div class="figure sp-719_272_398_210 text-[1em] bg-cyan-5/30 rounded-2xl px-4 py-2" :class="t.vueRuntimeCore" > 
+<div class="$obj sp-719_300_398_210 text-[1em] bg-cyan-5/30 rounded-2xl px-4 py-2" :class="t.vueRuntimeCore" > 
   <div class="text-center"> @vue/runtime-core </div>
 
   <div class="text-size-0.75em flex flex-col mt-4 w-full fx duration-[0.2s]" :class="t.runtimeList">
-    <Gear inline name="watchers" />
     <Gear inline name="scheduler" />
+    <Gear inline name="watchers" />
     <Gear inline name="nextTick" />
     <Gear inline name="components" />
   </div>
@@ -489,41 +580,7 @@ clicks: 10
 
 ---
 
-# Карта реактивности
-
-```mermaid
-graph TD
-    A[getters/setters] --> B[ref]
-    A --> C[shallowRef]
-    A --> D[customRef]
-    A --> E[Dep]
-    B -.-> F[reactive]
-    E --> B
-    E --> C
-    E --> D
-    F --> G[track/trigger]
-    E --> G
-    H[Proxy] --> F
-    H --> I[props]
-    H --> J[attrs]
-    H --> K[slots]
-    I --> G
-    J --> G
-    K --> G
-    L[JS Prototypes] --> M[provide/inject]
-    E --> N[Link]
-    N <--> O[Subscriber]
-    E --> P[activeSub]
-    P -.-> O
-    E --> Q[computed]
-    R[ReactiveEffect] --> O
-    R --> S[watch]
-    R --> T[watchEffect]
-    R --> U[effect]
-    R ..-> V[effectScope]
-    W[render] --> V
-    X[setup] --> V
-```
+<VueMap />
 
 <!--
 Но ведь можно попробовать представить карту реактивности Vue. И она выглядит примерно следующим образом:

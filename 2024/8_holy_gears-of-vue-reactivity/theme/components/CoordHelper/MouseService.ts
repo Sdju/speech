@@ -1,9 +1,9 @@
 import { computed, reactive, ref } from 'vue'
 import { useEventListener } from '@vueuse/core'
 import { SLIDE_SERVICE_KEY } from './SlideService'
-import { useDi, createServiceKey } from '../VueServices/useDiContainer'
+import { Injector, createServiceKey } from '../VueServices/useDiContainer'
 
-export const MouseService = (injector: ReturnType<typeof useDi>) => {
+export const MouseService = (injector: Injector) => {
     const slideService = injector.inject(SLIDE_SERVICE_KEY)
     const mousePosX = ref(0)
     const mousePosY = ref(0)

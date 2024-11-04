@@ -29,7 +29,6 @@ export const SlideService = () => {
     const height = ref(0)
     
     watch(() => slideElement.value, async (el) => {
-        console.log('slideElement', slideElement)
         if (!el) {
             slideElement.value = await wait(no => document.querySelector('#slide-content') as HTMLElement ?? no)
         }

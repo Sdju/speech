@@ -23,6 +23,14 @@
     --v-color: theme('colors.blue.500');
 }
 
+[variant=lightblue] {
+    --bg-keyword: #0099ff;
+    --bg-first: #0099ff;
+    --bg-second: #4cbbc5;
+    --bg-third: #5d1dff;
+    --v-color: theme('colors.blue.500');
+}
+
 [variant=green] {
     --bg-keyword: #5a8f29;
     --bg-first: #49ff3c;

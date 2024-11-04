@@ -36,13 +36,14 @@ export function ObjectService() {
   const objects = ref<Set<HTMLElement>>(new Set())
   const hovered = ref<HTMLElement | null>(null)
   const active = ref<HTMLElement | null>(null)
-  let scanInterval: NodeJS.Timeout | null = null
+  let scanInterval: number | null = null
 
   class ObjectElement implements ObjectElement {
     element: HTMLElement
     signal = abortSignal()
     hoveredSignal: CorrectSignal | null = null
     locked = false
+
     constructor(element: HTMLElement) {
       this.element = element
       this.addListener('mouseenter', this.onEnter)
@@ -57,7 +58,6 @@ export function ObjectService() {
     }
   
     onEnter() {
-      console.log('onEnter')
       this.hoveredSignal = createChainedSignal(this.signal)
       this.addListener('click', this.onClick, this.hoveredSignal)
       this.addListener('mouseleave', this.onLeave, this.hoveredSignal)
@@ -79,14 +79,13 @@ export function ObjectService() {
     }
   
     dispose() {
-      debugger
       console.log('dispose')
       this.signal.abort()
     }
   }
 
   function scanForFigures() {
-    const elements = document.querySelectorAll('#slide-content .\\$obj')
+    const elements = document.querySelectorAll(`#slide-content .\\$obj`)
     const newObjects = new Set(elements) as Set<HTMLElement>
     const addedObjects = [...newObjects].filter(o => !objects.value.has(o))
     addedObjects.forEach(o => {
