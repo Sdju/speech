@@ -47,7 +47,7 @@ const classList = computed(() => {
       'fx b-1 grid place-items-center text-xl font-bold duration-200',
       colorPresets[color].color,
       formPresets[form],
-      attrs.class,
+      attrs.class as string,
     ),
     {
       $obj: !inject,
@@ -70,9 +70,12 @@ const multipleList = computed(() => {
 
 <template>
   <div :class="classList">
-    <slot>
-      {{ title }}
-    </slot>
+    <Transition name="title" mode="out-in">
+      <slot v-if="$slots.default">
+        <slot />
+      </slot>
+      <span v-else :key="title">{{ title }}</span>
+    </Transition>
   </div>
   <TransitionGroup name="multiple">
     <div
@@ -103,5 +106,22 @@ const multipleList = computed(() => {
 
 .multiple-move {
   transition: transform 0.3s ease;
+}
+
+.title-enter-active,
+.title-leave-active {
+  transition: all 0.3s ease;
+}
+
+.title-enter-from,
+.title-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.title-enter-to,
+.title-leave-from {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>

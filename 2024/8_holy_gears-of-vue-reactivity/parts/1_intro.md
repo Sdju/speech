@@ -98,21 +98,41 @@ clicks: 3
 ---
 
 <Timeline :steps="[{
-  q1: '$obj fx text-1.5em pos-50% w-full text-center ',
-  q2: '$obj fx text-1.5em pos-50% w-full text-center -popup-hidden',
-  q3: '$obj fx text-1.5em pos-50% w-full text-center -popup-hidden',
+  q1: '$obj fx text-1.3em pos-50% w-full text-center px-10 ',
+  q1Mode: false,
+  q2: '$obj fx text-1.3em pos-50% w-full text-center px-10 -popup-hidden',
+  q2Mode: false,
+  q3: '$obj fx text-1.3em pos-50% w-full text-center px-10 -popup-hidden',
+  q3Mode: false,
 }, {
-  q1: '$obj fx text-1.5em pos-50% w-full text-center -popup-hidden',
-  q2: '$obj fx text-1.5em pos-50% w-full text-center',
+  q1Mode: true,
 }, {
-  q2: '$obj fx text-1.5em pos-50% w-full text-center -popup-hidden',
-  q3: '$obj fx text-1.5em pos-50% w-full text-center ',
+  q1: '$obj fx text-1.3em pos-50% w-full text-center px-10 -popup-hidden',
+  q1Mode: false,
+  q2: '$obj fx text-1.3em pos-50% w-full text-center px-10 ',
+  q2Mode: true,
+}, {
+  q2: '$obj fx text-1.3em pos-50% w-full text-center px-10 ',
+  q2Mode: false,
+  q3: '$obj fx text-1.3em pos-50% w-full text-center px-10 ',
+  q3Mode: true,
 }]" v-slot="t">
 
-<div :class="t.q1">Чем отличается computed от watch?</div>
-<div :class="t.q2">Можно ли реализовать свой computed используя watch?</div>
-<div :class="t.q3">Для неизменемых значений лучше использовать computed или readonly?</div>
-<div :class="t.q3">Для неизменемых значений лучше использовать computed или readonly?</div>
+<AnimatedText
+  :class="t.q1"
+  :mode="t.q1Mode"
+  words="Чем отличается computed от watch?"
+/>
+<AnimatedText
+  :class="t.q2"
+  :mode="t.q2Mode"
+  words="Можно ли реализовать свой computed используя watch?"
+/>
+<AnimatedText
+  :class="t.q3"
+  :mode="t.q3Mode"
+  words="Для неизменемых значений лучше использовать computed или readonly?"
+/>
 
 </Timeline>
 

@@ -12,7 +12,7 @@
 import { computed, ref, watch } from 'vue'
 import { useNav } from '@slidev/client'
 import seedrandom from 'seedrandom'
-import ZedeDither from '../ZedeDither.vue';
+import DitherImg from '../utils/DitherImg.vue';
 
 const { currentSlideRoute } = useNav()
 
@@ -176,7 +176,7 @@ const poly3 = usePloy(3)
       }"
     />
   </div>
-  <ZedeDither />
+  <DitherImg />
 </template>
 
 <style scoped>

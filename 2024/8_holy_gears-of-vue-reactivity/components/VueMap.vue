@@ -15,7 +15,6 @@ const nodes = {
   shallowRef: { class: 'pos-340_340', title: 'shallowRef' },
   ref: { class: 'pos-335_288', title: 'ref' },
 
-
   dep: { class: 'pos-475_360', title: 'Dep', color: 'orange' },
   trackTrigger: { class: 'pos-479_151', title: 'track/trigger', color: 'orange' },
   link: { class: 'pos-527_291', title: 'Link', color: 'orange' },
@@ -26,12 +25,12 @@ const nodes = {
   watchEffect: { class: 'pos-747_459', title: 'watchEffect', color: 'blue' },
   effect: { class: 'pos-731_505', title: 'effect', color: 'blue' },
 
-  effectScope: { class: 'pos-740_242', title: 'effectScope', color: 'purple' },
-  render: { class: 'pos-869_206', title: 'render', color: 'purple' },
-  setup: { class: 'pos-868_271', title: 'setup', color: 'purple' },
+  effectScope: { class: 'pos-737_296', title: 'effectScope', color: 'purple' },
+  render: { class: 'pos-860_296', title: 'render', color: 'orange' },
+  setup: { class: 'pos-853_242', title: 'setup', color: 'orange' },
 
-  scheduler: { class: 'pos-740_350', title: 'scheduler', color: 'orange' },
-  nextTick: { class: 'pos-870_351', title: 'nextTick', color: 'orange' },
+  scheduler: { class: 'pos-736_244', title: 'scheduler', color: 'orange' },
+  nextTick: { class: 'pos-735_347', title: 'nextTick', color: 'purple' },
 }
 
 const connections = [
@@ -45,35 +44,35 @@ const connections = [
   { coords: '228:372 296:392', power: -0.15 },
   { coords: '228:372 296:392', power: -0.15 },
   { coords: '209:381 296:451', power: -0.2 },
-  { coords: '336:241 336:269', power: 0.2 },
-  { coords: '364:67 433:133', power: 0.2 },
-  { coords: '367:115 428:144', power: 0.1 },
-  { coords: '364:168 427:158', power: -0.1 },
-  { coords: '374:223 434:170', power: -0.2 },
+  { coords: '336:241 336:269', power: 0.07 },
+  { coords: '364:67 433:133', power: 0.2, startArrow: true, dashed: true  },
+  { coords: '367:115 428:144', power: 0.1, startArrow: true, dashed: true  },
+  { coords: '364:168 427:158', power: -0.1, startArrow: true, dashed: true  },
+  { coords: '374:223 434:170', power: -0.2, startArrow: true, dashed: true },
   { coords: '474:341 472:172', power: -0.1, startArrow: true, dashed: true },
-  { coords: '357:286 452:341', power: 0.2 },
-  { coords: '387:336 447:352', power: 0.2 },
-  { coords: '389:390 447:364', power: -0.2 },
-  { coords: '386:441 452:376', power: -0.2 },
-  { coords: '634:73 734:74', power: 0.2 },
-  { coords: '374:223 434:170', power: -0.2 },
-  { coords: '374:223 434:170', power: -0.2 },
+  { coords: '452:341 357:286', power: -0.2 },
+  { coords: '447:352 387:336', power: -0.2 },
+  { coords: '447:364 389:390', power: 0.2 },
+  { coords: '452:376 386:441', power: 0.2 },
+  { coords: '631:73 738:74', power: 0.1 },
   { coords: '461:449 386:452', power: 0.1 },
   { coords: '501:358 523:310', power: -0.22, startArrow: true, dashed: true },
   { coords: '527:274 555:202', power: 0.2, startArrow: true, dashed: true },
   { coords: '541:432 600:220', power: 0.1, startArrow: true, dashed: true },
-  { coords: '559:432 688:243', power: 0.17, startArrow: true, dashed: true },
+  { coords: '559:432 692:245', power: 0.17, startArrow: true, dashed: true },
   { coords: '574:434 695:348', power: 0.1 },
   { coords: '579:446 697:406', power: 0.1 },
   { coords: '579:457 697:457', power: -0.1 },
   { coords: '573:465 697:503', power: -0.1 },
-  { coords: '788:233 834:205', power: 0.15 },
-  { coords: '788:250 836:270', power: -0.15 },
-  { coords: '783:348 828:348', power: 0.1 },
+  { coords: '568:434 690:296', power: 0.15 },
+  { coords: '784:244 822:244', power: 0.05 },
+  { coords: '785:297 825:297', power: 0.05 },
 ]
 </script>
 
 <template>
+  <img src="/img/map.png" class="absolute sp-0_0_100%_100% pointer-events-none opacity-0" />
+
   <SvgLayer>
     <SvgArrow
       v-for="(connection, i) in connections" 

@@ -313,7 +313,7 @@ disabled: true
 
 ---
 topTitle: Effect
-topTitleClass: top-[120px] left-[50%] translate-x-[-50%]
+topTitleClass: top-[110px] left-[50%] translate-x-[-50%]
 ---
 
 ````md magic-move
@@ -322,6 +322,11 @@ const oranges = ref(5)
 const apples = ref(6)
 
 const total = computed(() => oranges.value + apples.value)
+
+
+
+
+⠀
 ```
 ```ts {*|1,5-}
 import { effect } from 'vue'
@@ -579,24 +584,43 @@ clicks: 4
       class="font-size-[0.9em] transition-[all] duration-[0.5s] ease-out text-center"
       :class="t.reactiveEffect"
       inject
-    >
-      {{ t.texts[0] }}
-    </Node>
-    <Node color="green" class="font-size-[0.9em] transition-[all] duration-[0.5s] ease-out text-center" :class="t.reactiveEffect" inject>
-      {{ t.texts[1] }}
-    </Node>
-    <Node color="green" class="font-size-[0.9em] transition-[all] duration-[0.5s] ease-out text-center" :class="t.reactiveEffect" inject>
-      {{ t.texts[2] }}
-    </Node>
-    <Node color="green" class="font-size-[0.9em] transition-[all] duration-[0.5s] ease-out text-center" :class="t.reactiveEffect" inject>
-      {{ t.texts[3] }}
-    </Node>
-    <Node color="green" class="font-size-[0.9em] transition-[all] duration-[0.5s] ease-out text-center" :class="t.reactiveEffect" inject>
-      {{ t.texts[4] }}
-    </Node>
-    <Node color="green" class="font-size-[0.9em] transition-[all] duration-[0.5s] ease-out text-center" :class="t.reactiveEffect" inject>
-      {{ t.texts[5] }}
-    </Node>
+      :title="t.texts[0]"
+    />
+    <Node 
+      color="green" 
+      class="font-size-[0.9em] transition-[all] duration-[0.5s] ease-out text-center" 
+      :class="t.reactiveEffect" 
+      inject
+      :title="t.texts[1]"
+    />
+    <Node 
+      color="green" 
+      class="font-size-[0.9em] transition-[all] duration-[0.5s] ease-out text-center" 
+      :class="t.reactiveEffect" 
+      inject
+      :title="t.texts[2]"
+    />
+    <Node 
+      color="green" 
+      class="font-size-[0.9em] transition-[all] duration-[0.5s] ease-out text-center" 
+      :class="t.reactiveEffect" 
+      inject
+      :title="t.texts[3]"
+    />
+    <Node 
+      color="green" 
+      class="font-size-[0.9em] transition-[all] duration-[0.5s] ease-out text-center" 
+      :class="t.reactiveEffect" 
+      inject
+      :title="t.texts[4]"
+    />
+    <Node 
+      color="green" 
+      class="font-size-[0.9em] transition-[all] duration-[0.5s] ease-out text-center" 
+      :class="t.reactiveEffect" 
+      inject
+      :title="t.texts[5]"
+    />
   </div>
 </Node>
 
@@ -647,42 +671,6 @@ clicks: 7
 
 </Timeline>
 
-<!--
-- добавить логотипы
--->
-
----
-topTitle: effectScope
-topTitleClass: top-[140px] left-[50%] translate-x-[-50%]
----
-
-````md magic-move
-```ts
-function myComposable() {
-  // получить текущий scope
-  const scope = getCurrentScope()
-  if (!scope) {
-    throw new Error('the composable must be called inside a Vue context')
-  }
-}
-```
-
-```ts
-function myComposable() {
-  // установить обработчик на уничтожение scope
-  onScopeDispose(() => {
-    console.log('disposed')
-  })
-}
-```
-````
-
-<!--
-- добавить примеры кодом API
-- добавить визуализацию схемы для скоупов
-- сопутствующее API
--->
-
 ---
 topTitle: effectScope
 topTitleClass: top-[100px] left-[50%] translate-x-[-50%]
@@ -727,3 +715,29 @@ clicks: 3
 - очень нюансовая история ()
 - продать effectScope
 -->
+
+---
+topTitle: effectScope
+topTitleClass: top-[140px] left-[50%] translate-x-[-50%]
+---
+
+````md magic-move
+```ts
+function myComposable() {
+  // получить текущий scope
+  const scope = getCurrentScope()
+  if (!scope) {
+    throw new Error('the composable must be called inside a Vue context')
+  }
+}
+```
+
+```ts
+function myComposable() {
+  // установить обработчик на уничтожение scope
+  onScopeDispose(() => {
+    console.log('disposed')
+  })
+}
+```
+````

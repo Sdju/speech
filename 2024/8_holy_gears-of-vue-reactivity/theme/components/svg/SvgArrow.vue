@@ -72,9 +72,11 @@ function getCurve(start, end, options) {
 
   const perpX = -dy / distance
   const perpY = dx / distance
+
+  const controlHeight = distance * CONTROL_POINT_HEIGHT_RATE
   
-  const controlX = midX + perpX * distance * CONTROL_POINT_HEIGHT_RATE
-  const controlY = midY + perpY * distance * CONTROL_POINT_HEIGHT_RATE
+  const controlX = midX + perpX * controlHeight
+  const controlY = midY + perpY * controlHeight
 
   const control = {
     x: controlX,
