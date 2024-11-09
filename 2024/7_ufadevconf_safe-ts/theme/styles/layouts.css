@@ -13,6 +13,12 @@
     --slidev-code-font-size: 16px;
     --slidev-code-background: #1616167f;
 
+    .light & {
+        --slidev-code-background: #1616160f;
+        --slidev-code-font-size: 22px;
+        --slidev-code-line-height: 20px;
+    }
+
     b, strong {
         @apply c-[var(--bg-keyword)];
     }

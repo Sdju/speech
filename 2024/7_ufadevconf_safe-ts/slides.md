@@ -6,7 +6,7 @@ htmlAttrs:
 highlighter: shiki
 lineNumbers: true
 css: unocss
-colorSchema: dark
+colorSchema: light
 transition: fade-out
 contextMenu: false
 mdc: true
