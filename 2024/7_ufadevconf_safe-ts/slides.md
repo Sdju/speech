@@ -4,6 +4,7 @@ routerMode: hash
 htmlAttrs:
   lang: ru
 highlighter: shiki
+lineNumbers: true
 css: unocss
 colorSchema: dark
 transition: fade-out
@@ -15,7 +16,7 @@ title: Safe TS
 layout: center
 ---
 
-# Безопасный TypeScript
+# Безопасный `TypeScript`
 
 ---
 
@@ -43,16 +44,11 @@ layout: center
 
 <v-clicks>
 
-- Видим ошибки не запуская код
+- Видим ошибки, не запуская код
 - Проверяем соответствия на CI/CD
 - Видим несоответствия во время написания кода
 
 </v-clicks>
-
-<!--
-- Указать какие ошибки и когда обнаруживаем
-- Объяснить понятие контрактов (взаимодействие между людьми front/back)
--->
 
 ---
 
@@ -60,11 +56,11 @@ layout: center
 
 ## 2. Устанавливаем контракты
 
-> **Контракт** - договоренности между отдельными участниками
+> **Контракт** — договорённости между отдельными участниками
 
 <v-clicks>
 
-- Согласованность между Frontend и Backend-ом
+- Согласованность между Frontend'ом и Backend'ом
 - Корректная работа между библиотеками и приложениями
 - Единое представление в рамках одной кодовой базы
 
@@ -78,9 +74,9 @@ layout: center
 
 <v-clicks>
 
-- Нам не нужно гадать что и как используется
-- Четко фиксируем что ожидаем от конкретного участка кода
-- Облегчаем понимание другим разработчиком
+- Нам не нужно гадать, что и как используется
+- Четко фиксируем, что ожидаем от конкретного участка кода
+- Облегчаем понимание другим разработчикам
 
 </v-clicks>
 
@@ -92,7 +88,7 @@ layout: center
 
 <v-clicks>
 
-- Даем описание того что отдаем и что принимаем
+- Даем описание того, что отдаем и что принимаем
 - Вынуждаем разработчиков поддерживать ее в актуальном состоянии
 
 </v-clicks>
@@ -105,7 +101,7 @@ layout: center
 
 <v-clicks>
 
-- Теперь IDE четко понимает что нам предлагать
+- Теперь IDE четко понимает, что нам предлагать
 - IDE легко показывает ошибки прямо в процессе работы
 
 </v-clicks>
@@ -138,7 +134,7 @@ let name: string = 'John Doe'
 
 # Строгая
 
-**Строгая типизация** - не позволяет смешивать типы данных в операциях
+**Строгая типизация** — не позволяет смешивать типы данных в операциях
 
 <span v-click v-mark.underline.red="{at: '+0'}" class="c-red"> Не путать со статической типизацией! </span>
 
@@ -179,7 +175,7 @@ console.log(greeting + person)
 
 > "Если это выглядит как утка, плавает как утка и крякает как утка, то это, вероятно, и есть утка."
 
-**Утиная типизация** - это концепция, при которой тип объекта определяется его свойствами и методами, а не явным объявлением типа.
+**Утиная типизация** — это концепция, при которой тип объекта определяется его свойствами и методами, а не явным объявлением типа.
 
 </v-clicks>
 
@@ -222,7 +218,7 @@ type DuckIsCat = Duck extends Cat ? true : false // true
 type CatIsDuck = Cat extends Duck ? true : false // true
 
 let duck: Duck = { eat() }
-let cat: Cat = duck // OK!
+let cat: Cat = duck // Ok!
 ⠀
 ```
 ````
@@ -238,7 +234,7 @@ type DuckIsCat = Duck extends Cat ? true : false // true
 type CatIsDuck = Cat extends Duck ? true : false // true
 
 let duck: Duck = { eat() }
-let cat: Cat = duck // OK!
+let cat: Cat = duck // Ok!
 
 
 
@@ -265,7 +261,7 @@ type DuckIsCat = Duck extends Cat ? true : false // true
 type CatIsDuck = Cat extends Duck ? true : false // true
 
 let duck: Duck = new Duck()
-let cat: Cat = duck // OK!
+let cat: Cat = duck // Ok!
 ```
 
 ```ts
@@ -281,7 +277,7 @@ class Cat {
 }
 
 let duck: Duck = new Duck()
-let cat: Cat = duck // OK!
+let cat: Cat = duck // Ok!
 
 type DuckIsCat = Duck extends Cat ? true : false // true
 type CatIsDuck = Cat extends Duck ? true : false // true
@@ -365,7 +361,7 @@ const CatIsDuck = cat instanceof Duck // false
 
 <v-clicks>
 
-- Типизация основанная на связи идентификаторов
+- Типизация, основанная на связи идентификаторов
 - Не важно насколько похожи структуры, если связи между ними нет, то типы не совместимы
 - Увеличивает предсказуемость
 - Ближе по логике работы с JS
@@ -496,12 +492,12 @@ type CatIsDuck = Cat extends Duck ? true : false // false
 
 <v-clicks>
 
-- Добавили номинальную типизацию засчет брендирования
-- Кошки больше не могут быть утками
-- Решает проблему только для классов / объектов
-- Не самый удобный в использовании
+- Добавили номинальную типизацию через брендирование
+- Теперь кошки не могут быть утками
+- Решение применимо только к классам / объектам
+- Не самое удобное в использовании
 - Требует много манипуляций
-- Никак не влияет на рантайм
+- Не оказывает влияния на рантайм
 
 </v-clicks>
 
@@ -516,7 +512,7 @@ function getOffset(size: number) {
 }
 
 let widthInPercents = 10
-getOffset(widthInPercents) // OK!
+getOffset(widthInPercents) // Ok!
 
 
 
@@ -537,7 +533,7 @@ function getOffset(size: Pixels) {
 }
 
 let widthInPercents: Percents = 10
-getOffset(widthInPercents) // OK!
+getOffset(widthInPercents) // Ok!
 
 
 
@@ -557,7 +553,7 @@ function getOffset(size: Pixels) {
 }
 
 let widthInPercents: Percents = 10
-getOffset(widthInPercents) // OK!
+getOffset(widthInPercents) // Ok!
 
 
 
@@ -619,12 +615,6 @@ getOffset(widthInPercents)
 ```
 ````
 
-<!--
-- добавить заголовок с указанием на примитивы
-- можно подумать об отдельном слайде
-- разобрать понятие "брендирования"
--->
-
 ---
 
 # Брендирование
@@ -632,23 +622,16 @@ getOffset(widthInPercents)
 <v-clicks>
 
 - Работает с примитивами
-- Не создает нагрузки в рантайме
+- Не создаёт нагрузки в рантайме
 - Требует избыточного кода
 - Бренды отклеиваются после операторов
 - Брендированные значения не могут быть ключами объектов
 
 </v-clicks>
 
-<!--
-- а к чему итоги?
-- упростить выражение про нагрузку
-- иначе сказать про код в TS
-- сопроводить примерами проблемы с брендами
--->
-
 ---
 
-# Решения от самого TypeScript
+# Решения от самого `TypeScript`
 
 <v-clicks>
 
@@ -660,13 +643,9 @@ getOffset(widthInPercents)
 </v-clicks>
 
 <!--
-
-- [Пропозал](https://github.com/Microsoft/Typescript/issues/202) на добавление ключевого слова nominal
+- [Пропозал](https://github.com/Microsoft/TypeScript/issues/202) на добавление ключевого слова nominal
 - [Пропозал](https://github.com/microsoft/TypeScript/issues/58181) на добавление ключевого слова instanceof для типов
 - [issue](https://github.com/microsoft/TypeScript/issues/57767) на возможность быть ключами у брендированных строк
-
-- сопроводить кодом
-- изменить поток повествования на модель с подготовкой перед нагружением информацией
 -->
 
 ---
@@ -681,7 +660,7 @@ layout: center
 
 <v-clicks>
 
-- Единственный тип с номинальной типизацие
+- Единственный тип с номинальной типизацией
 - Единственный TS тип непосредственно влияющий на JS
 - Есть сценарии с неожиданным поведением
 
@@ -809,7 +788,7 @@ enum Roles {
 }
 
 declare function doSmth(user: Roles): void
-doSmth(10) // it's OK! (for TS4)
+doSmth(10) // it's Ok! (for TS4)
 
 
 ⠀
@@ -863,34 +842,14 @@ enum Roles {
   Reader = 'Reader'
 }
 
-enum Roles {
-  Writer = 'Writer'
-}
-
-
-⠀
-```
-
-```ts
-const enum Roles {
+enum Tags {
   Admin = 'Admin'
-  Reader = 'Reader'
 }
 
-console.log(Roles.Admin)
-console.log('Admin') // ERROR!
-
-
-
-⠀
+declare function doSmth(user: Roles): void
+doSmth(Tags.Admin) // ERROR!
 ```
 ````
-
-<!--
-- дописать в комментариях что именно доходит до doSmth
-- разделить 2 примера
-- оставить комментарий и про строки
--->
 
 ---
 
@@ -904,11 +863,6 @@ console.log('Admin') // ERROR!
 - Предпочитать строковые значения численным
 
 </v-clicks>
-
-<!--
-- вынести as const в отдельный слайд
-- подумать над заменой слову советы
--->
 
 ---
 
@@ -1004,10 +958,6 @@ export type Roles = Enum<typeof Roles>
 ```
 ````
 
-<!--
-- добавить подсветку на описание действий
--->
-
 ---
 layout: center
 ---
@@ -1028,7 +978,7 @@ interface Obj {
 
 ---
 
-# Собака гавкующая на щенков
+# Собака, лающая на щенков
 
 ````md magic-move
 ```ts {*|1-7|9-13|15-17|19}
@@ -1104,37 +1054,24 @@ brian.barkAt(normalDog)
 ```
 ````
 
-<!--
-- добавить подсветки
-- четко разделить синтаксис метода
-- синтаксис как функции
-- совпроводить код текстом
--->
-
 ---
 
 # Почему это происходит
 
 <v-clicks>
 
-- Раньше функции тоже могли принимать более широкие типы
-- Теперь при использовании `strict` это не пропускается
+- Раньше функции также могли принимать более широкие типы
+- Теперь, при использовании `strict`, это не пропускается
 - Методам оставили поддержку более широкого типа
 - Иначе все сломается
 
 </v-clicks>
 
-<!--
-([Объяснение](https://github.com/microsoft/TypeScript/wiki/FAQ#why-are-function-parameters-bivariant))
-- понятие бивариантности заменить на что-то более простое
-- добавить пример о какой работе с массивами идет речь
--->
-
 ---
 layout: center
 ---
 
-# `interface != type`
+# `interface` != `type`
 
 ---
 
@@ -1220,7 +1157,21 @@ declare var animal: Animal
 const handleRecord = (obj:Record<string, unknown>) => { }
 
 const result = handleRecord(animal)
-// Error! Index signature for type 'string' is missing in type 'Animal'
+// ERROR! Index signature for type 'string' is missing in type 'Animal'
+```
+
+```ts {*|4}
+interface Animal {
+  tag: 'animal',
+  name: 'some animal'
+  [key: string]: unknown
+}
+
+declare var animal: Animal
+
+const handleRecord = (obj:Record<string, unknown>) => { }
+
+const result = handleRecord(animal)
 ```
 ````
 
@@ -1236,8 +1187,8 @@ layout: center
 
 <v-clicks>
 
-- Не дает случайно обмануть компилятор как `as`
-- Значение важнее чем указанный тип
+- Не даёт случайно обмануть компилятор как `as`
+- Значение важнее, чем указанный тип
 
 </v-clicks>
 
@@ -1262,7 +1213,15 @@ let d = 123 as number | string // number | string
 let e = 123 satisfies number | string // number
 let f = (123 as number) satisfies 123
 // ERROR! Type number does not satisfy the expected type 123
-let f = (123 as number) as 123 // OK!
+```
+
+```ts {6}
+let a = '123' // string
+const b = '123' // '123'
+let c: number | string = '123' // string | number
+let d = 123 as number | string // number | string
+let e = 123 satisfies number | string // number
+let f = (256 as number) as 123 // Ok!
 ```
 ````
 
@@ -1279,7 +1238,20 @@ const palette = {
   green: '#00FF00',
   blue: '#0000FF',
 } as Record<Palette, string>
-// OK!
+// Ok!
+
+⠀
+```
+
+```ts {1}
+type Palette = 'red' | 'green' | 'blue' | 'yellow'
+
+const palette = {
+  red: '#FF0000',
+  green: '#00FF00',
+  blue: '#0000FF',
+} as Record<Palette, string>
+// Ok!
 
 ⠀
 ```
@@ -1292,9 +1264,9 @@ const palette = {
   green: '#00FF00',
   blue: '#0000FF',
 } as Record<Palette, string>
-// OK!
+// Ok!
 
-const yellow = palette.yellow // OK!
+const yellow = palette.yellow // Ok!
 // ERROR! Property 'yellow' does not exist on type 'Record<Palette, string>'
 ```
 
@@ -1334,7 +1306,7 @@ const palette = {
 } satisfies Record<Palette, string | number>
 
 document.body.style.backgroundColor = palette.yellow
-// OK!
+// Ok!
 ```
 
 ```ts
@@ -1348,7 +1320,7 @@ const palette = {
 } satisfies Record<Palette, string | number>
 
 document.body.style.backgroundColor = palette.yellow
-// OK!
+// Ok!
 ```
 
 ```ts
@@ -1369,17 +1341,17 @@ const palette = {
 layout: center
 ---
 
-# Улучшаем работу TypeScript
+# Улучшаем работу `TypeScript`
 
 ---
 
-# Как влиять на поведение TypeScript?
+# Как влиять на поведение `TypeScript`?
 
 <v-clicks>
 
 - Флаги и настройки в `tsconfig.json`
-- Переопределение интерфейсов методов
-- Подбирая более удачные синтаксисы в нужные моменты времени
+- Переопределяя встроенные интерфейсы методов
+- Подбирая более удачные синтаксические конструкции в нужные моменты времени
 
 </v-clicks>
 
@@ -1389,20 +1361,16 @@ layout: center
 
 <v-clicks>
 
-- `strict` - Базовая опция включающая большую часть строгих проверок
-- `exactOptionalPropertyTypes` - в случае `?:` не дает значениям быть `undefined`
-- `noFallthroughCasesInSwitch` - не дает забыть вам поставить `break` в конце `case`
-- `noUncheckedIndexedAccess` - не доверяет индексации без проверки
+- `strict` — базовая опция, включающая большую часть строгих проверок
+- `exactOptionalPropertyTypes` — в случае `?:` не даёт значениям быть `undefined`
+- `noFallthroughCasesInSwitch` — не даёт забыть вам поставить `break` в конце `case`
+- `noUncheckedIndexedAccess` — не доверяет индексации без проверки
 
 </v-clicks>
 
 ---
 
-<script setup>
-  import img from '/img/ts-reset.png'
-</script>
-
-<GlowImage :src="img" />
+<img class="center framed w-740px" src="/img/ts-reset.png" />
 
 ---
 
@@ -1438,7 +1406,7 @@ layout: center
 <v-clicks>
 
 1. У нас есть возможности JS!
-2. Делаем описание типа используя JS
+2. Делаем описание типа, используя JS
 3. Выгружаем из описания TS-схему
 4. Валидируем значения при необходимости в рантайме
 
@@ -1454,7 +1422,7 @@ layout: center
 - Проверяем значение на соответствие правилам
 - Прослойка между TS и JS
 - Устраняет необходимость писать валидацию вручную
-- Проверки соответствия правилам и в рантайме и в типах
+- Проверки соответствия правилам и в рантайме, и в типах
 
 </v-clicks>
 
@@ -1464,11 +1432,11 @@ layout: center
 
 <v-clicks>
 
-- `zod` - популярный и мощный инструмент
-- `joi` - крайне мощный инструмент
-- `yup` - популярный и мощный инструмент
-- `class-validator` - основан на декораторах
-- `valibot` - супер-легковесный инструмент
+- `zod` — популярный и мощный инструмент
+- `joi` — крайне мощный инструмент
+- `yup` — популярный и мощный инструмент
+- `class-validator` — основан на декораторах
+- `valibot` — супер-легковесный инструмент
 
 </v-clicks>
 
@@ -1508,7 +1476,7 @@ layout: center
 layout: center
 ---
 
-`Typescript` - мощный инструмент, но им нужно управлять
+`TypeScript` — мощный инструмент, но им нужно управлять
 
 ---
 layout: center
@@ -1526,7 +1494,7 @@ layout: center
 layout: center
 ---
 
-Типизация хорошо, но не слишком увлекайтесь
+Типизация — хорошо, но не слишком увлекайтесь
 
 ---
 layout: intro
@@ -1547,91 +1515,3 @@ variant: first
 - [Ковариантность/контрвариантность/бивариантность/инвариатность](https://github.com/Microsoft/TypeScript/wiki/FAQ)
 
 ---
-
-
----
-
-````md magic-move
-```ts {1|2-6|8-9|11-12|14-16|*|9|*}
-type RGB = [red: number, green: number, blue: number]
-const palette = {
-    red: [255, 0, 0],
-    green: "#00ff00",
-    blue: [0, 0],
-}
-
-// Должно быть корректно
-const redComponent = palette.red.at(0)
-
-// Должна быть ошибка
-const redNormalized = palette.red.toUpperCase()
-
-// Должно быть корректно
-const greenNormalized = palette.green.toUpperCase()
-```
-
-```ts {*|2|5|8|9-10}
-type RGB = [red: number, green: number, blue: number]
-const palette: Record<string, string | RGB> = {
-    red: [255, 0, 0],
-    green: "#00ff00",
-    blue: [0, 0]
-}
-
-const redComponent = palette.red.at(0)
-const redNormalized = palette.red.toUpperCase()
-const greenNormalized = palette.green.toUpperCase()
-```
-
-```ts
-type RGB = [red: number, green: number, blue: number]
-const palette = {
-    red: [255, 0, 0],
-    green: "#00ff00",
-    blue: [0, 0]
-} as Record<string, string | RGB>
-
-const redComponent = palette.red.at(0)
-const redNormalized = palette.red.toUpperCase()
-const greenNormalized = palette.green.toUpperCase()
-```
-
-```ts {*|5|9-10}
-type RGB = [red: number, green: number, blue: number]
-const palette = {
-    red: [255, 0, 0],
-    green: "#00ff00",
-    blue: [0, 0, 0] as [number, number, number | null]
-} as Record<string, string | RGB>
-
-const redComponent = palette.red.at(0)
-const redNormalized = palette.red.toUpperCase()
-const greenNormalized = palette.green.toUpperCase()
-```
-
-```ts {*|6|5|8|9|10|*}
-type RGB = [red: number, green: number, blue: number]
-const palette = {
-    red: [255, 0, 0],
-    green: "#00ff00",
-    blue: [0, 0, 0] as [number, number, number | null]
-} satisfies Record<string, string | RGB>
-
-const redComponent = palette.red.at(0)
-const redNormalized = palette.red.toUpperCase()
-const greenNormalized = palette.green.toUpperCase()
-```
-
-```ts {*|5}
-type RGB = [red: number, green: number, blue: number]
-const palette = {
-    red: [255, 0, 0],
-    green: "#00ff00",
-    blue: [0, 0]
-} satisfies Record<string, string | RGB>
-
-const redComponent = palette.red.at(0)
-const redNormalized = palette.red.toUpperCase()
-const greenNormalized = palette.green.toUpperCase()
-```
-````

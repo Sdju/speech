@@ -1,29 +1,33 @@
 /* v-click */
-.slidev-vclick-target:not(.vclick-custom) {
+.slidev-vclick-target {
     transition: opacity 500ms ease, filter 200ms ease;
 }
 
-.slidev-vclick-hidden:not(.vclick-custom) {
+.slidev-vclick-hidden {
     opacity: 0;
     pointer-events: none;
     filter: blur(3px);
 }
 
-.slidev-vclick-target.vclick-popup {
-    transition: transform 500ms ease;
-    transform: scale(1);
+/* X */
+[animations] {
+    @apply animate-spin;
 }
 
-.slidev-vclick-hidden.vclick-popup {
-    pointer-events: none;
-    transform: scale(0);
+/* fx */
+
+.fx {
+    @apply transform filter;
 }
 
-.fx-popup-hidden {
-    @apply pointer-events-none scale-0 filter-blur-[10px];
+.-popup-hidden {
+    @apply pointer-events-none;
+    --un-blur: blur(10px);
+    --un-scale-x: 0;
+    --un-scale-y: 0;
 }
 
-.fx-blur-hidden {
+.-blur-hidden {
     @apply pointer-events-none filter-blur-[10px] opacity-0;
 }
 
@@ -41,4 +45,34 @@
 .fade-out-leave-to {
     opacity: 0;
     filter: blur(5px);
+}
+
+/* fx-keyframes */
+@keyframes fx-spin {
+    from { --un-rotate-z: 0deg; }
+    to { --un-rotate-z: 360deg; }
+}
+
+@property --un-rotate-z {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@property --un-scale-x {
+    syntax: '<number>';
+    initial-value: 1;
+    inherits: false;
+}
+
+@property --un-rotate-y {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@property --un-rotate-z {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
 }

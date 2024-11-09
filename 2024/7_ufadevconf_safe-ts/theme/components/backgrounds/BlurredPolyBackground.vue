@@ -12,7 +12,7 @@
 import { computed, ref, watch } from 'vue'
 import { useNav } from '@slidev/client'
 import seedrandom from 'seedrandom'
-import ZedeDither from '../ZedeDither.vue';
+import DitherImg from '../utils/DitherImg.vue';
 
 const { currentSlideRoute } = useNav()
 
@@ -176,18 +176,16 @@ const poly3 = usePloy(3)
       }"
     />
   </div>
-  <ZedeDither />
+  <DitherImg />
 </template>
 
 <style scoped>
 .clip {
-  transition: inherit;
+  @apply transition-inherit;
 }
 
 .bg {
-  position: absolute;
-  inset: 0;
-  z-index: -10;
+  @apply absolute inset-0 z-[-10];
 }
 
 .clip {

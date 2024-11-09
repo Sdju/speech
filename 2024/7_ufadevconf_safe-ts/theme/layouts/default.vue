@@ -1,7 +1,7 @@
 <template>
   <div 
-    class="slidev-layout default w-full flex relative" 
-    :variant="$attrs.variant ?? 'main'"
+    class="slidev-layout default w-full flex" 
+    :class="$attrs.slideClass"
   >
     <div class="w-full flex flex-col justify-center items-stretch">
       <slot />
@@ -11,7 +11,7 @@
 <style>
 .center {
   h2 {
-    @apply my-4;
+    --at-apply: my-4;
   }
 }
 </style>
