@@ -17,6 +17,9 @@ importers:
       chroma-js:
         specifier: ^3.1.2
         version: 3.1.2
+      class-variance-authority:
+        specifier: ^0.7.0
+        version: 0.7.0
       env-cmd:
         specifier: ^10.1.0
         version: 10.1.0
@@ -26,12 +29,6 @@ importers:
       tailwind-merge:
         specifier: 2.5.4
         version: 2.5.4
-      vis-data:
-        specifier: ^7.1.9
-        version: 7.1.9(uuid@9.0.1)(vis-util@5.0.7(@egjs/hammerjs@2.0.17)(component-emitter@1.3.1))
-      vis-network:
-        specifier: ^9.1.9
-        version: 9.1.9(@egjs/hammerjs@2.0.17)(component-emitter@1.3.1)(keycharm@0.4.0)(uuid@9.0.1)(vis-data@7.1.9(uuid@9.0.1)(vis-util@5.0.7(@egjs/hammerjs@2.0.17)(component-emitter@1.3.1)))(vis-util@5.0.7(@egjs/hammerjs@2.0.17)(component-emitter@1.3.1))
       vue:
         specifier: ^3.5.12
         version: 3.5.12(typescript@5.6.3)
@@ -201,10 +198,6 @@ packages:
 
   '@drauu/core@0.4.1':
     resolution: {integrity: sha512-louDq3aq9ovgMUuwA1c1ZcLa0pJXdoDkZLFYReE13xKgG7czEZh20zJ6+dHUh1ng/3UPbGXlbAU7KGjkTNec6Q==}
-
-  '@egjs/hammerjs@2.0.17':
-    resolution: {integrity: sha512-XQsZgjm2EcVUiZQf11UBJQfmZeEmOW8DpI1gsFeln6w0ae0ii4dMQEQ0kjl6DspdWX1aGY1/loyXnP0JS06e/A==}
-    engines: {node: '>=0.8.0'}
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -742,9 +735,6 @@ packages:
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
 
-  '@types/hammerjs@2.0.46':
-    resolution: {integrity: sha512-ynRvcq6wvqexJ9brDMS4BnBLzmr0e14d6ZJTEShTBWKymQiHwlAyGu0ZPEFI2Fh1U53F7tN9ufClWM5KvqkKOw==}
-
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
 
@@ -1120,6 +1110,9 @@ packages:
   citty@0.1.6:
     resolution: {integrity: sha512-tskPPKEs8D2KPafUypv2gxwJP8h/OaJmC82QQGGDQcHvXX43xF2VDACcJVmZ0EuSxkpO9Kc4MlrA3q0+FG58AQ==}
 
+  class-variance-authority@0.7.0:
+    resolution: {integrity: sha512-jFI8IQw4hczaL4ALINxqLEXQbWcNjoSkloa4IaufXCJr6QawJyw7tuRysRsrE8w2p/4gGaxKIt/hX3qz/IbD1A==}
+
   cli-progress@3.12.0:
     resolution: {integrity: sha512-tRkV3HJ1ASwm19THiiLIXLO7Im7wlTuKnvkYaTkyoAPefqjNg7W7DHKUlGRxy9vxDvbyCYQkQozvptuMkGCg8A==}
     engines: {node: '>=4'}
@@ -1131,6 +1124,10 @@ packages:
   clone-regexp@3.0.0:
     resolution: {integrity: sha512-ujdnoq2Kxb8s3ItNBtnYeXdm07FcU0u8ARAT1lQ2YdMwQC+cdiXX8KoqMVuglztILivceTtp4ivqGSmEmhBUJw==}
     engines: {node: '>=12'}
+
+  clsx@2.0.0:
+    resolution: {integrity: sha512-rQ1+kcj+ttHG0MKVGBUXwayCCF1oh39BF5COIpRzuCEv8Mwjv0XucrI2ExNTOn9IlLifGClWQcU9BrZORvtw6Q==}
+    engines: {node: '>=6'}
 
   color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
@@ -1169,9 +1166,6 @@ packages:
 
   compatx@0.1.8:
     resolution: {integrity: sha512-jcbsEAR81Bt5s1qOFymBufmCbXCXbk0Ql+K5ouj6gCyx2yHlu6AgmGIi9HxfKixpUDO5bCFJUHQ5uM6ecbTebw==}
-
-  component-emitter@1.3.1:
-    resolution: {integrity: sha512-T0+barUSQRTUQASh8bx02dl+DhF54GtIDY13Y3m9oWTklKbb3Wv974meRpeZ3lp1JpLVECWWNHC4vaG2XHXouQ==}
 
   computeds@0.0.1:
     resolution: {integrity: sha512-7CEBgcMjVmitjYo5q8JTJVra6X5mQ20uTThdK+0kR7UEaDrAWEQcRiBtWJzga4eRpP6afNwwLsX2SET2JhVB1Q==}
@@ -1885,9 +1879,6 @@ packages:
   katex@0.16.11:
     resolution: {integrity: sha512-RQrI8rlHY92OLf3rho/Ts8i/XvjgguEjOkO1BEXcU3N8BqPpSzBNwV/G0Ukr+P/l3ivvJUE/Fa/CwbS6HesGNQ==}
     hasBin: true
-
-  keycharm@0.4.0:
-    resolution: {integrity: sha512-TyQTtsabOVv3MeOpR92sIKk/br9wxS+zGj4BG7CR8YbK4jM3tyIBaF0zhzeBUMx36/Q/iQLOKKOT+3jOQtemRQ==}
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -2750,29 +2741,6 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  vis-data@7.1.9:
-    resolution: {integrity: sha512-COQsxlVrmcRIbZMMTYwD+C2bxYCFDNQ2EHESklPiInbD/Pk3JZ6qNL84Bp9wWjYjAzXfSlsNaFtRk+hO9yBPWA==}
-    peerDependencies:
-      uuid: ^3.4.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
-      vis-util: ^5.0.1
-
-  vis-network@9.1.9:
-    resolution: {integrity: sha512-Ft+hLBVyiLstVYSb69Q1OIQeh3FeUxHJn0WdFcq+BFPqs+Vq1ibMi2sb//cxgq1CP7PH4yOXnHxEH/B2VzpZYA==}
-    peerDependencies:
-      '@egjs/hammerjs': ^2.0.0
-      component-emitter: ^1.3.0
-      keycharm: ^0.2.0 || ^0.3.0 || ^0.4.0
-      uuid: ^3.4.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
-      vis-data: ^6.3.0 || ^7.0.0
-      vis-util: ^5.0.1
-
-  vis-util@5.0.7:
-    resolution: {integrity: sha512-E3L03G3+trvc/X4LXvBfih3YIHcKS2WrP0XTdZefr6W6Qi/2nNCqZfe4JFfJU6DcQLm6Gxqj2Pfl+02859oL5A==}
-    engines: {node: '>=8'}
-    peerDependencies:
-      '@egjs/hammerjs': ^2.0.0
-      component-emitter: ^1.3.0 || ^2.0.0
-
   vite-plugin-inspect@0.8.7:
     resolution: {integrity: sha512-/XXou3MVc13A5O9/2Nd6xczjrUwt7ZyI9h8pTnUMkr5SshLcb0PJUOVq2V+XVkdeU4njsqAtmK87THZuO2coGA==}
     engines: {node: '>=14'}
@@ -3147,10 +3115,6 @@ snapshots:
   '@chevrotain/utils@11.0.3': {}
 
   '@drauu/core@0.4.1': {}
-
-  '@egjs/hammerjs@2.0.17':
-    dependencies:
-      '@types/hammerjs': 2.0.46
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
@@ -3795,8 +3759,6 @@ snapshots:
 
   '@types/estree@1.0.6': {}
 
-  '@types/hammerjs@2.0.46': {}
-
   '@types/hast@3.0.4':
     dependencies:
       '@types/unist': 3.0.3
@@ -4347,6 +4309,10 @@ snapshots:
     dependencies:
       consola: 3.2.3
 
+  class-variance-authority@0.7.0:
+    dependencies:
+      clsx: 2.0.0
+
   cli-progress@3.12.0:
     dependencies:
       string-width: 4.2.3
@@ -4360,6 +4326,8 @@ snapshots:
   clone-regexp@3.0.0:
     dependencies:
       is-regexp: 3.1.0
+
+  clsx@2.0.0: {}
 
   color-convert@1.9.3:
     dependencies:
@@ -4389,8 +4357,6 @@ snapshots:
 
   compatx@0.1.8:
     optional: true
-
-  component-emitter@1.3.1: {}
 
   computeds@0.0.1: {}
 
@@ -5142,8 +5108,6 @@ snapshots:
   katex@0.16.11:
     dependencies:
       commander: 8.3.0
-
-  keycharm@0.4.0: {}
 
   keyv@4.5.4:
     dependencies:
@@ -6212,25 +6176,6 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
-
-  vis-data@7.1.9(uuid@9.0.1)(vis-util@5.0.7(@egjs/hammerjs@2.0.17)(component-emitter@1.3.1)):
-    dependencies:
-      uuid: 9.0.1
-      vis-util: 5.0.7(@egjs/hammerjs@2.0.17)(component-emitter@1.3.1)
-
-  vis-network@9.1.9(@egjs/hammerjs@2.0.17)(component-emitter@1.3.1)(keycharm@0.4.0)(uuid@9.0.1)(vis-data@7.1.9(uuid@9.0.1)(vis-util@5.0.7(@egjs/hammerjs@2.0.17)(component-emitter@1.3.1)))(vis-util@5.0.7(@egjs/hammerjs@2.0.17)(component-emitter@1.3.1)):
-    dependencies:
-      '@egjs/hammerjs': 2.0.17
-      component-emitter: 1.3.1
-      keycharm: 0.4.0
-      uuid: 9.0.1
-      vis-data: 7.1.9(uuid@9.0.1)(vis-util@5.0.7(@egjs/hammerjs@2.0.17)(component-emitter@1.3.1))
-      vis-util: 5.0.7(@egjs/hammerjs@2.0.17)(component-emitter@1.3.1)
-
-  vis-util@5.0.7(@egjs/hammerjs@2.0.17)(component-emitter@1.3.1):
-    dependencies:
-      '@egjs/hammerjs': 2.0.17
-      component-emitter: 1.3.1
 
   vite-plugin-inspect@0.8.7(@nuxt/kit@3.13.2(rollup@4.24.0))(rollup@4.24.0)(vite@5.4.9(@types/node@18.19.57)):
     dependencies:

@@ -25,12 +25,20 @@ const nodes = {
   watchEffect: { class: 'pos-747_459', title: 'watchEffect', color: 'blue' },
   effect: { class: 'pos-731_505', title: 'effect', color: 'blue' },
 
-  effectScope: { class: 'pos-737_296', title: 'effectScope', color: 'purple' },
-  render: { class: 'pos-860_296', title: 'render', color: 'orange' },
-  setup: { class: 'pos-853_242', title: 'setup', color: 'orange' },
+  effectScope: { class: 'pos-739_296', title: 'effectScope', color: 'purple' },
+  render: { class: 'pos-730_347', title: 'render', color: 'orange' },
+  setup: { class: 'pos-859_296', title: 'setup', color: 'orange' },
 
   scheduler: { class: 'pos-736_244', title: 'scheduler', color: 'orange' },
-  nextTick: { class: 'pos-735_347', title: 'nextTick', color: 'purple' },
+  nextTick: { class: 'pos-838_197', title: 'nextTick', color: 'purple' },
+
+  legendRed: { class: 'pos-45_443', title: 'JS API', color: 'red' },
+  legendOrange: { class: 'pos-149_523', title: 'Vue Internal', color: 'orange' },
+  legendBlue: { class: 'pos-54_523', title: 'Listeners', color: 'blue' },
+  legendGreen: { class: 'pos-107_483', title: 'Data', color: 'green' },
+  legendPurple: { class: 'pos-44_483', title: 'Extra', color: 'purple' },
+  legendArrow2: { class: 'pos-70_242', title: 'Основан', color: 'transparent' },
+  legendArrow1: { class: 'pos-73_291', title: 'Взаимодействие', color: 'transparent' },
 }
 
 const connections = [
@@ -65,8 +73,10 @@ const connections = [
   { coords: '579:457 697:457', power: -0.1 },
   { coords: '573:465 697:503', power: -0.1 },
   { coords: '568:434 690:296', power: 0.15 },
-  { coords: '784:244 822:244', power: 0.05 },
-  { coords: '785:297 825:297', power: 0.05 },
+  { coords: '784:244 835:216', power: -0.5, startArrow: true, dashed: true },
+  { coords: '787:297 827:297', power: 0.05 },
+  { coords: '22:262 122:262', power: 0.1 },
+  { coords: '22:312 122:312', power: 0.1, startArrow: true, dashed: true },
 ]
 </script>
 

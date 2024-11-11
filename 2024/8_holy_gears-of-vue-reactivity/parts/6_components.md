@@ -33,22 +33,49 @@ disabled: true
 
 ---
 topTitle: Components
+clicks: 5
 ---
 
+<Timeline :steps="[{
+  component: 'fx duration-500 -popup-hidden',
+  proxy: 'fx duration-500 -popup-hidden',
+  jsPrototypes: 'fx duration-500 -popup-hidden',
+  props: 'fx duration-500 -popup-hidden',
+  slots: 'fx duration-500 -popup-hidden',
+  attrs: 'fx duration-500 -popup-hidden',
+  refs: 'fx duration-500 -popup-hidden',
+  provideInject: 'fx duration-500 -popup-hidden',
+}, {
+  component: 'fx duration-500',
+}, {
+  proxy: 'fx duration-500',
+}, {
+  jsPrototypes: 'fx duration-500',
+}, {
+  provideInject: 'fx duration-500',
+}, {
+  props: 'fx duration-500',
+  slots: 'fx duration-500',
+  attrs: 'fx duration-500',
+  refs: 'fx duration-500',
+}]" v-slot="t">
+
 <div class="grid grid-rows-3 gap-4">
-  <Node class="py-4" inject color="green">Component</Node>
+  <Node class="py-4" :class="t.component" inject color="green">Component</Node>
   <div class="grid grid-cols-5 gap-4">
-    <Node class="col-span-4" inject color="blue">Proxy</Node>
-    <Node class="col-span-1 text-[0.7em]" inject color="red">JS Prototypes</Node>
+    <Node class="col-span-4" :class="t.proxy" inject color="blue">Proxy</Node>
+    <Node class="col-span-1 text-[0.7em]" :class="t.jsPrototypes" inject color="red">JS Prototypes</Node>
   </div>
   <div class="grid grid-cols-5 gap-4">
-    <Node inject color="blue">Props</Node>
-    <Node inject color="blue">Slots</Node>
-    <Node inject color="blue">Attrs</Node>
-    <Node inject color="blue">Refs</Node>
-    <Node inject color="red" class="text-[0.7em]">Provide/Inject</Node>
+    <Node :class="t.props" inject color="blue">Props</Node>
+    <Node :class="t.slots" inject color="blue">Slots</Node>
+    <Node :class="t.attrs" inject color="blue">Attrs</Node>
+    <Node :class="t.refs" inject color="blue">Refs</Node>
+    <Node :class="t.provideInject" inject color="red" class="text-[0.7em]">Provide/Inject</Node>
   </div>
 </div>
+
+</Timeline>
 
 <!--
 - подумать про вырезание provide/inject
@@ -56,7 +83,8 @@ topTitle: Components
 
 ---
 clicks: 1
-variant: blue
+slideClass: cs-blue
+disabled: true
 ---
 
 <Timeline :steps="[{
@@ -108,15 +136,26 @@ clicks: 5
   effectClasses: '-blur-hidden outline-[#00000088]',
   primitiveClasses: '-blur-hidden outline-[#00000088]',
   exampleClasses: '',
+  example1: 'absolute pos-0 fx duration-500',
+  example2: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example3: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example4: 'absolute pos-0 fx duration-500 -blur-hidden',
+}, {
 }, {
   protoClasses: 'outline-[#00000088]',
   reactiveClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  example1: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example2: 'absolute pos-0 fx duration-500',
 }, {
   reactiveClasses: 'outline-[#00000088]',
   effectClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  example2: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example3: 'absolute pos-0 fx duration-500',
 }, {
   effectClasses: 'outline-[#00000088]',
   primitiveClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  example3: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example4: 'absolute pos-0 fx duration-500',
 }]" v-slot="t">
 
 <h1 class="text-center">Provide / Inject</h1>
@@ -143,7 +182,7 @@ clicks: 5
       <UisSchedule />
     </div>
     <div>
-      Почти бесплатный
+      Используйте реактивные примитивы
     </div>
   </div>
   <div class="item fx duration-400" :class="t.primitiveClasses">
@@ -151,11 +190,78 @@ clicks: 5
       <UilBox />
     </div>
     <div>
-      Используйте реактивные примитивы
+      Почти бесплатный
     </div>
   </div>
-  <div class="item fx example row-span-4" :class="t.exampleClasses">
+  <div class="item fx example row-span-4 no-bg" :class="t.exampleClasses">
     
+<div :class="t.example1" >
+
+````md magic-move {lines: false}
+```ts
+function provide(key, value) {
+  const self = getCurrentInstance()
+
+  if (!hasProvides(self)) {
+    self.provides = Object.create(
+      self.parent?.provides
+    )
+  }
+  
+  self.provides[key] = value
+}
+```
+```ts
+function inject(key) {
+  const self = getCurrentInstance()
+  return self.parent?.provides[key]
+}
+```
+````
+
+</div>
+
+<div :class="t.example2">
+
+```ts
+const value = inject('key')
+
+// <=>
+
+const value = object['key']
+```
+
+</div>
+
+<div :class="t.example3">
+
+```ts
+const data = provide('key', ref(10))
+
+// child.vue
+
+const parentData = inject('key')
+const computedData = computed(
+  () => parentData.value + 1
+)
+```
+
+</div>
+
+<div :class="t.example4">
+
+```ts
+const value = inject('key')
+provide('key', value2)
+
+// <=>
+
+const value = object['key']
+object['key'] = value2
+```
+
+</div>
+
   </div>
 </div>
 
@@ -177,5 +283,4 @@ name: 'Задавайте вопросы'
 twitch: '@izede'
 discord: '@izede'
 telegram: '@zede1697'
-variant: green
 ---

@@ -15,6 +15,10 @@
 
 <QrCodeIntro class="sp-r80_200_200_200 absolute" />
 
+<!--
+продумать как будет происходить взаимодействие с картой на всем протяжении с картой
+-->
+
 ---
 layout: center
 ---
@@ -36,7 +40,7 @@ layout: center
 
 ---
 clicks: 6
-variant: green
+slideClass: cs-green
 ---
 
 <Timeline :steps="[{
@@ -154,11 +158,11 @@ clicks: 3
 <img class="center framed w-740px" src="/img/computed-watch.png" />
 
 <!--
-И если такие вопросы вас ставят в замешательство, то этот доклад для вас.
+И если такие вопросы вас ставят в замешательство, то этот доклад для вас. (если с дискомфортом у вас возникло олюбопытсво то этот доклад для вас)
 -->
 
 ---
-variant: lightblue
+slideClass: cs-lightblue
 clicks: 8
 ---
 
@@ -330,7 +334,7 @@ clicks: 8
 -->
 
 ---
-variant: purple
+slideClass: cs-purple
 ---
 
 <Timeline :steps="[{
@@ -347,7 +351,7 @@ variant: purple
 
 <div v-click="3">
 
-```ts {*|*|1-3|5|6}
+```ts {*|*|1-3|4|5|6}
 let oranges = ref(5)
 let apples = ref(10)
 let total = computed(() => oranges.value + apples.value)
@@ -377,7 +381,7 @@ console.log(total.value) // 12
 -->
 
 ---
-variant: lightblue
+slideClass: cs-lightblue
 clicks: 10
 ---
 
@@ -610,10 +614,6 @@ clicks: 6
 > найти в какой момент ее можно показывать/ продумать что на ней можно говорить (это артефакт доклада/где ее достать/успокоить)
 
 > проработать переходы между слайдами (начало-конец и перебор либо плавность переходов)
+
+как ее продать
 -->
-
----
-layout: center
----
-
-<img class="center slide w-600px" src="/img/scheduler.png" />

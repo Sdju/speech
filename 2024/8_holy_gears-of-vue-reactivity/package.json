@@ -11,11 +11,10 @@
     "@iconify/json": "^2.2.260",
     "@slidev/cli": "0.50.0-beta.3",
     "chroma-js": "^3.1.2",
+    "class-variance-authority": "^0.7.0",
     "env-cmd": "^10.1.0",
     "seedrandom": "^3.0.5",
     "tailwind-merge": "2.5.4",
-    "vis-data": "^7.1.9",
-    "vis-network": "^9.1.9",
     "vue": "^3.5.12"
   },
   "devDependencies": {

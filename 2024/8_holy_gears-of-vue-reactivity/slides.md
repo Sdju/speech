@@ -4,6 +4,7 @@ routerMode: hash
 htmlAttrs:
   lang: ru
 highlighter: shiki
+lineNumbers: true
 css: unocss
 colorSchema: dark
 transition: fade-out

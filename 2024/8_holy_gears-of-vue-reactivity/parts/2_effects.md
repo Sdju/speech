@@ -15,19 +15,19 @@ const apples = ref(6)
 const total = computed(() => oranges.value + apples.value)
 ```
 
-<div v-drag="[312,243,326,40]">
+<div v-drag="[348,242,326,40]">
   <div font-hand c-red text-center v-click="2">Effect</div>
   <div class="w-full" v-mark.underline.red="{ at: '2'}" />
 </div>
 
-<div v-drag="[362,304,134,40]">
+<div v-drag="[404,305,134,40]">
   <div class="w-full" v-mark.underline.blue="{ at: '3'}" />
-  <div font-hand c-blue text-center v-click="3">Source</div>
+  <div font-hand c-blue text-center v-click="3">Dependency</div>
 </div>
 
-<div v-drag="[523,307,118,100]">
+<div v-drag="[557,305,118,40]">
   <div class="w-full" v-mark.underline.blue="{ at: '3'}" />
-  <div font-hand c-blue text-center v-click="3">Source</div>
+  <div font-hand c-blue text-center v-click="3">Dependency</div>
 </div>
 
 <!--
@@ -77,7 +77,7 @@ clicks: 5
     title: 'Dep',
   },
   action: {
-    class: 'pos-15%_50% size-64 p-0 text-xs text-center',
+    class: 'pos-15%_50% size-64 p-0 text-xs text-center -popup-hidden',
     form: 'circle',
     color: 'red',
     title: 'Action',
@@ -123,6 +123,9 @@ clicks: 5
   },
   reactiveEffectToDep3: {
     class: 'fx duration-500 animate opacity-0',
+  },
+  action: {
+    class: 'pos-15%_50% size-64 p-0 text-xs text-center',
   },
 }, {
   reactiveEffectToDep1: {
@@ -197,7 +200,7 @@ clicks: 5
 topTitle: ReactiveEffect
 topTitleClass: absolute figure top-[50%] left-[50%] text-[25px]
   translate-x-[-50%] bg-[#00000088] z-[100] rounded-md p-2
-variant: blue
+slideClass: cs-blue
 clicks: 7
 ---
 
@@ -247,64 +250,6 @@ clicks: 7
 </Timeline>
 
 ---
-topTitle: ReactiveEffect
-disabled: true
----
-
-<style>
-.item {
-  @apply text-sm bg-[#00000088] p-[12px] rd-[8px] flex flex-row items-center gap-[8px]
-}
-.item-icon {
-  @apply w-[27px] h-[27px] rd-[4px] flex items-center justify-center;
-  background-color: #D9D9D920;
-}
-</style>
-
-<h1 class="text-center">Когда использовать?</h1>
-
-<div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr_1fr] gap-[14px]" mt-12>
-  <div v-click class="item">
-    <div class="item-icon">
-      <MdiHandBackRightOff/>
-    </div>
-    <div>
-      Не нужен для ручного использования
-    </div>
-  </div>
-  <div v-click class="item">
-    <div class="item-icon">
-      <IcRoundBugReport/>
-    </div>
-    <div>
-      Для понимания при дебаге
-    </div>
-  </div>
-  <div v-click class="item">
-    <div class="item-icon">
-      <Fa6SolidGears />
-    </div>
-    <div>
-      Для понимания функционирования
-    </div>
-  </div>
-  <div v-click class="item">
-    <div class="item-icon">
-      <BxBxsFlask/>
-    </div>
-    <div>
-      Вы пишите свои реактивные примитивы
-    </div>
-  </div>
-</div>
-
-<!--
-- свои реактивные примитивы
-
-- заголовки для тем (общее для всех слайдов)
--->
-
----
 layout: center
 topTitle: Effect
 topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-50%]
@@ -340,84 +285,6 @@ effect(() => {
 })
 ```
 ````
-
----
-topTitle: Effect
-topTitleClass: top-[140px] left-[50%] translate-x-[-50%]
-disabled: true
----
-
-<div class="grid grid-cols-[1fr_1fr] grid-rows-[1fr_1fr] gap-[14px]" mt-12>
-  <div v-click class="item">
-    <div class="item-icon">
-      <MdiHumanMaleChild/>
-    </div>
-    <div>
-      Младший брат <span font-mono>watchEffect</span>
-    </div>
-  </div>
-  <div v-click class="item">
-    <div class="item-icon">
-      <MdiHandBackRightOff/>
-    </div>
-    <div>
-      обертка над <span font-mono>ReactiveEffect</span>
-    </div>
-  </div>
-  <div v-click class="item">
-    <div class="item-icon">
-      <HugeiconsRecycle03/>
-    </div>
-    <div>
-      Изменение зависимостей приводит к вызову эффекта
-    </div>
-  </div>
-  <div v-click class="item">
-    <div class="item-icon">
-      <IcOutlineTimer/>
-    </div>
-    <div>
-      Вызов эффекта в момент изменения зависимостей
-    </div>
-  </div>
-</div>
-
-<!--
-- перепродумать разгон за "сразу же"
-- объяснить что другие не сразу
--->
-
----
-topTitle: Effect
-disabled: true
----
-
-# Где используется?
-
-<v-clicks>
-
-- Тесты системы реактивности
-- ... все!
-
-</v-clicks>
-
----
-topTitle: Effect
-disabled: true
----
-
-# Когда использовать?
-
-<v-clicks>
-
-- Тесты системы реактивности
-- Альтернатива watchEffect
-
-</v-clicks>
-
-<!--
-- разгонять про замену (продать effect вместо watch)
--->
 
 ---
 layout: center
@@ -536,7 +403,7 @@ scope.stop()
 -->
 
 ---
-variant: blue
+slideClass: cs-blue
 topTitle: effectScope
 topTitleClass: top-[248px] left-[240px] text-[25px] translate-x-[-50%] z-index-[100]
 clicks: 4
@@ -627,7 +494,7 @@ clicks: 4
 </Timeline>
 
 ---
-variant: blue
+slideClass: cs-blue
 topTitle: effectScope
 topTitleClass: top-[248px] left-[240px] text-[25px] translate-x-[-50%] z-index-[100]
 clicks: 7
@@ -674,16 +541,20 @@ clicks: 7
 ---
 topTitle: effectScope
 topTitleClass: top-[100px] left-[50%] translate-x-[-50%]
-clicks: 3
+clicks: 1
 ---
 
 <Timeline :steps="[{
   effectsClasses: 'outline outline-2 outline-[#CCCCCC88]',
   asyncClasses: '-blur-hidden outline-[#00000088]',
   exampleClasses: '',
+  example1: 'absolute pos-0 fx duration-500',
+  example2: 'absolute pos-0 fx duration-500 -blur-hidden',
 }, {
   asyncClasses: 'outline outline-2 outline-[#CCCCCC88]',
   effectsClasses: 'outline-[#00000088]',
+  example1: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example2: 'absolute pos-0 fx duration-500',
 }]" v-slot="t">
 
 <div class="grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12">
@@ -703,8 +574,47 @@ clicks: 3
       Создание эффектов асинхронно от setup
     </div>
   </div>
-  <div class="item fx example row-span-4" :class="t.exampleClasses">
-    
+  <div class="item fx example row-span-4 no-bg" :class="t.exampleClasses">
+
+<div :class="t.example1">
+
+````md magic-move
+```ts
+function myStore(setup) {
+  const scope = effectScope()
+  let state
+
+  scope.run(() => state = setup())
+
+  return { 
+    state, 
+    dispose: () => scope.stop() 
+  }
+}
+```
+````
+
+</div>
+<div :class="t.example2">
+
+````md magic-move
+```ts
+function createToast(params) {
+  const scope = effectScope()
+
+  scope.run(() => {
+    const toasts = useToast()
+    toasts.add(params)
+    toasts.on('close', () => {
+      scope.stop()
+    })
+  })
+}
+```
+````
+
+</div>
+
   </div>
 </div>
 

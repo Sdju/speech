@@ -7,54 +7,6 @@
      --v-color 2.5s ease-out;
 }
 
-[variant=main], [variant=orange] {
-    --bg-keyword: #cc8b00;
-    --bg-first: #ffae00;
-    --bg-second: #dc8e27;
-    --bg-third: #a27839;
-    --v-color: theme('colors.amber.500');
-}
-
-[variant=blue] {
-    --bg-keyword: #3c5cff;
-    --bg-first: #3c5cff;
-    --bg-second: #4cbbc5;
-    --bg-third: #5d1dff;
-    --v-color: theme('colors.blue.500');
-}
-
-[variant=lightblue] {
-    --bg-keyword: #0099ff;
-    --bg-first: #0099ff;
-    --bg-second: #4cbbc5;
-    --bg-third: #5d1dff;
-    --v-color: theme('colors.blue.500');
-}
-
-[variant=green] {
-    --bg-keyword: #5a8f29;
-    --bg-first: #49ff3c;
-    --bg-second: #4cc580;
-    --bg-third: #ceff1d;
-    --v-color: theme('colors.gray.500');
-}
-
-[variant=red] {
-    --bg-keyword: #990000;
-    --bg-first: #ff4d4d;
-    --bg-second: #ff8080;
-    --bg-third: #ff9999;
-    --v-color: theme('colors.red.500');
-}
-
-[variant=purple] {
-    --bg-keyword: #990099;
-    --bg-first: #ff4dff;
-    --bg-second: #ff80ff;
-    --bg-third: #ff99ff;
-    --v-color: theme('colors.purple.500');
-}
-
 @property --v-color {
     syntax: '<color>';
     initial-value: theme('colors.gray.500');

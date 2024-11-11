@@ -8,7 +8,7 @@ const frontmatter = computed(() => currentSlideRoute.value.meta?.slide?.frontmat
 </script>
 
 <template>
-  <div :variant="frontmatter.variant ?? 'first'">
+  <div :class="frontmatter.slideClass ?? 'cs-main'">
     <BlurredPolyBackground />
   </div>
 </template>

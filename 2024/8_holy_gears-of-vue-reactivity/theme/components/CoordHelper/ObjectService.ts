@@ -72,7 +72,6 @@ export function ObjectService() {
     }
   
     onLeave() {
-      console.log('onLeave')
       this.hoveredSignal!.abort()
       this.hoveredSignal = null
       hovered.value = null
@@ -113,4 +112,5 @@ export function ObjectService() {
     active
   })
 }
+
 export const OBJECT_SERVICE_KEY = createServiceKey(ObjectService)

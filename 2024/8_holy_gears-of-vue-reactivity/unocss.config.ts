@@ -5,6 +5,16 @@ function parseValue(value: string) {
   return value.endsWith('%') ? value : `${value}px`
 }
 
+
+const variants = {
+  orange: "[--bg-keyword:#cc8b00] [--bg-first:#ffae00] [--bg-second:#dc8e27] [--bg-third:#a27839] [--v-color:theme('colors.amber.500')] ",
+  blue: "[--bg-keyword:#3c5cff] [--bg-first:#3c5cff] [--bg-second:#4cbbc5] [--bg-third:#5d1dff] [--v-color:theme('colors.blue.500')] ",
+  lightblue: "[--bg-keyword:#0099ff] [--bg-first:#0099ff] [--bg-second:#4cbbc5] [--bg-third:#5d1dff] [--v-color:theme('colors.blue.500')] ",
+  green: "[--bg-keyword:#5a8f29] [--bg-first:#49ff3c] [--bg-second:#4cc580] [--bg-third:#ceff1d] [--v-color:theme('colors.gray.500')] ",
+  red: "[--bg-keyword:#990000] [--bg-first:#ff4d4d] [--bg-second:#ff8080] [--bg-third:#ff9999] [--v-color:theme('colors.red.500')] ",
+  purple: "[--bg-keyword:#990099] [--bg-first:#ff4dff] [--bg-second:#ff80ff] [--bg-third:#ff99ff] [--v-color:theme('colors.purple.500')] ",
+}
+
 export default mergeConfigs([
   slidev,
   {
@@ -34,6 +44,9 @@ export default mergeConfigs([
         const height = parseValue(c4)
         return `${x} ${y} w-[${width}] h-[${height}]`
       }],
+      [/^cs-(\S+)/, ([, variant]) => {
+        return variants[variant]
+      }],
       {
         'movable': 'absolute -translate-x-1/2 -translate-y-1/2 transform-origin-center',
         'circle': 'rounded-[100%]',
@@ -42,6 +55,7 @@ export default mergeConfigs([
         'pos-center': 'left-1/2 top-1/2',
         'size-full': 'w-full h-full',
         'framed': 'rounded-[10px] border-2 border-gray-500/20 object-cover',
+        'cs-main': 'cs-orange',
       }
     ],
     presets: [
@@ -55,5 +69,6 @@ export default mergeConfigs([
         },
       }),
     ],
+    safelist: Object.keys(variants).map(key => `cs-${key}`),
   },
 ])

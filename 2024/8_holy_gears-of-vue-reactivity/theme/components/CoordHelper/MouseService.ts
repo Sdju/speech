@@ -1,7 +1,29 @@
-import { computed, reactive, ref } from 'vue'
+import { computed, onScopeDispose, reactive, ref } from 'vue'
 import { useEventListener } from '@vueuse/core'
 import { SLIDE_SERVICE_KEY } from './SlideService'
 import { Injector, createServiceKey } from '../VueServices/useDiContainer'
+
+export const MouseServiceSimple = (injector: Injector) => {
+    const slideService = injector.inject(SLIDE_SERVICE_KEY)
+
+    const mousePosX = ref(0)
+    const mousePosY = ref(0)
+
+    function onMouseMove(e: MouseEvent) {
+        mousePosX.value = e.clientX
+        mousePosY.value = e.clientY
+    }
+
+    slideService.slideElement.addEventListener(
+        'mousemove', 
+        onMouseMove, 
+    )
+
+    return {
+        globalX: computed(() => mousePosX.value),
+        globalY: computed(() => mousePosY.value),
+    }
+}
 
 export const MouseService = (injector: Injector) => {
     const slideService = injector.inject(SLIDE_SERVICE_KEY)
@@ -38,6 +60,7 @@ export const MouseService = (injector: Injector) => {
             y: (y - slideService.top) / slideService.scale
         }
     }
+
     return reactive({
         globalX: computed(() => mousePosX.value),
         globalY: computed(() => mousePosY.value),

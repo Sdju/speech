@@ -10,6 +10,13 @@ topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-5
 
 ---
 topTitle: Tracking
+disabled: true
+---
+
+# СЛАЙД С СРАВНЕНИЕМ EVENT EMITTER И DEP
+
+---
+topTitle: Tracking
 ---
 
 ````md magic-move
@@ -37,9 +44,9 @@ interface EventEmitter {
 ```
 
 ```ts
-interface Dep {
-  trigger: (payload: any) => void
-  track: (payload: any) => void
+interface EventEmitter {
+  emit: () => void
+  on: (listener: () => void) => void
 }
 ```
 
@@ -49,11 +56,75 @@ interface Dep {
   track: () => void
 }
 ```
+
+```ts
+interface Dep {
+  trigger: () => void // похоже на EventEmitter.emit('notify', this)
+  track: () => void // похоже на EventEmitter.on('notify', listener)
+}
+```
 ````
 
-<!--
-продумать переходы - нужно объяснить а на кой вообще я на EventEmitter смотрю. и че такое Dep
--->
+---
+topTitle: Tracking
+clicks: 3
+---
+
+<Timeline :steps="[{
+  depClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  onClasses: '-blur-hidden outline-[#00000088]',
+  emitClasses: '-blur-hidden outline-[#00000088]',
+  baseClasses: '-blur-hidden outline-[#00000088]',
+}, {
+  depClasses: 'outline-[#00000088]',
+  onClasses: 'outline outline-2 outline-[#CCCCCC88]',
+}, {
+  onClasses: 'outline-[#00000088]',
+  emitClasses: 'outline outline-2 outline-[#CCCCCC88]',
+}, {
+  emitClasses: 'outline-[#00000088]',
+  baseClasses: 'outline outline-2 outline-[#CCCCCC88]',
+}]" v-slot="t">
+
+  <Gear name="Dep" class="sp-165_282_103_103 figure fx" />
+
+  <div class="grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12">
+    <div class="fx example row-span-4" />
+    <div class="item fx duration-400" :class="t.depClasses">
+      <div class="item-icon">
+        <LucideRefreshCw/>
+      </div>
+      <div>
+        Класс реализующий функционал зависимостей
+      </div>
+    </div>
+    <div class="item fx duration-400" :class="t.onClasses">
+      <div class="item-icon">
+        <IcRoundAccessTime/>
+      </div>
+      <div>
+        На Dep можно подписаться
+      </div>
+    </div>
+    <div class="item fx duration-400" :class="t.emitClasses">
+      <div class="item-icon">
+        <FluentPeopleQueue32Filled/>
+      </div>
+      <div>
+        Уведомляет об изменениях
+      </div>
+    </div>
+    <div class="item fx duration-400" :class="t.baseClasses">
+      <div class="item-icon">
+        <FluentPeopleQueue32Filled/>
+      </div>
+      <div>
+        Лежит в основе: <strong>ref</strong> и <strong>computed</strong>
+      </div>
+    </div>
+  </div>
+
+</Timeline>
 
 ---
 topTitle: Tracking
@@ -165,12 +236,63 @@ clicks: 7
   stackClasses: '-blur-hidden outline-[#00000088]',
   noAccessClasses: '-blur-hidden outline-[#00000088]',
   exampleClasses: '',
+  example1: 'absolute pos-0 fx duration-500',
+  example2: 'absolute pos-0 fx duration-500 size-full -blur-hidden',
+  panel1: {
+    class: '$obj fx duration-500 pos-50%_200 w-40% -blur-hidden',
+    title: 'activeSub'
+  },
+  panel2: {
+    class: '$obj fx duration-500 pos-50%_100 w-40% -blur-hidden',
+    title: 'activeSub'
+  },
+  panel3: {
+    class: '$obj fx duration-500 pos-50%_80 w-40% -blur-hidden',
+    title: 'activeSub'
+  },
 }, {
   onlyOneClasses: 'outline outline-2 outline-[#CCCCCC88]',
   effectClasses: 'outline-[#00000088]',
 }, {
   stackClasses: 'outline outline-2 outline-[#CCCCCC88]',
   onlyOneClasses: 'outline-[#00000088]',
+  example1: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example2: 'absolute pos-0 fx duration-500 size-full ',
+  panel1: {
+    class: '$obj fx duration-500 w-40% pos-50%_200 ',
+  },
+}, {
+  panel1: {
+    title: 'prevSub',
+    color: 'blue',
+  },
+  panel2: {
+    class: '$obj fx duration-500 w-40% pos-50%_140 ',
+  },
+}, {
+  panel2: {
+    title: 'prevSub',
+    color: 'blue',
+  },
+  panel3: {
+    class: '$obj fx duration-500 w-40% pos-50%_80 ',
+  },
+}, {
+  panel2: {
+    title: 'activeSub',
+    color: 'green',
+  },
+  panel3: {
+    class: '$obj fx duration-500 w-40% pos-50%_80 -blur-hidden',
+  },
+}, {
+  panel1: {
+    title: 'activeSub',
+    color: 'green',
+  },
+  panel2: {
+    class: '$obj fx duration-500 w-40% pos-50%_140 -blur-hidden',
+  },
 }, {
   noAccessClasses: 'outline outline-2 outline-[#CCCCCC88]',
   stackClasses: 'outline-[#00000088]',
@@ -212,8 +334,25 @@ clicks: 7
       Нет ручного доступа
     </div>
   </div>
-  <div class="item fx example row-span-4" :class="t.exampleClasses">
-    
+  <div class="item fx example row-span-4 no-bg" :class="t.exampleClasses">
+
+<div :class="t.example1">
+
+```ts
+export let activeSub: 
+  Subscriber | undefined
+```
+
+</div>
+
+<div :class="t.example2">
+
+<Node v-bind="t.panel1" />
+<Node v-bind="t.panel2" />
+<Node v-bind="t.panel3" />
+
+</div>
+
   </div>
 </div>
 
@@ -256,33 +395,35 @@ topTitle: Tracking
 
 <!--
 Но как же связаны между собой activeSub и Dep? Раньше для этого использовались такие структуры как Map/Set и weakmap с weakset. Но операции над множествами были дорогими. Поэтому был придуман более оптимальный способ. Вместо того чтобы хранить массивы зависимостей и слушаетелей. Реализовали идею с двусвязным списком. Элемент этой структуры называется Link. Он связывает между собой Dep и подписчика. И теперь чтобы добавить еще одного подписчика достаточно создать новый Link и вставить его в начало списка. Таким образом выстраивается цепочка зависимостей. И эти действия позволили кратно снизить потребление памяти и увеличить скорость работы.
+
+(шашечки анимация шестеренок)
 -->
 
 ---
 topTitle: Tracking
 ---
 
-<div v-drag="[105,233,392,40]" v-click="[0, 3]">
+<div v-drag="[136,234,392,40]" v-click="[0, 3]">
   <div class="w-full" v-mark.underline.red="{ at: '1'}" />
   <div font-hand c-red text-center v-click="1">Effect</div>
 </div>
 
-<div v-drag="[380,171,114,40]" v-click="[0, 3]">
-  <div font-hand c-blue text-center v-click="2">Source</div>
+<div v-drag="[404,172,114,40]" v-click="[0, 3]">
+  <div font-hand c-blue text-center v-click="2">Dependency</div>
   <div class="w-full" v-mark.underline.blue="{ at: '2'}" />
 </div>
 
-<div v-drag="[463,168,114,40]" v-click="[0, 6]">
-  <div font-hand c-blue text-center v-click="4">Source</div>
+<div v-drag="[493,168,114,40]" v-click="[0, 6]">
+  <div font-hand c-blue text-center v-click="4">Dependency</div>
   <div class="w-full" v-mark.underline.blue="{ at: '4'}" />
 </div>
 
-<div v-drag="[406,269,128,40]" v-click="[0, 6]">
+<div v-drag="[434,269,128,40]" v-click="[0, 6]">
   <div class="w-full" v-mark.underline.blue="{ at: '5'}" />
-  <div font-hand c-blue text-center v-click="5">Source</div>
+  <div font-hand c-blue text-center v-click="5">Dependency</div>
 </div>
 
-<div v-drag="[148,150,174,40]">
+<div v-drag="[178,152,174,40]">
   <div font-hand c-red text-center v-click="11">Effect</div>
   <div class="w-full" v-mark.underline.red="{ at: '11'}" />
 </div>
@@ -336,3 +477,7 @@ watch(() => userId.value, (id) => {
 ⠀
 ```
 ````
+
+<!--
+сделать иллюстрацию либо ответси к коллбеку (показать замкнутость цикла)
+-->

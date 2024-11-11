@@ -32,6 +32,9 @@ const colorPresets = {
   purple: {
     color: 'bg-purple/40 b-purple c-purple',
   },
+  transparent: {
+    color: 'bg-transparent b-transparent c-white',
+  },
 }
 
 const formPresets = {

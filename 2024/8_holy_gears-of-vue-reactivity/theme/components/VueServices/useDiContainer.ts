@@ -81,7 +81,7 @@ export function useDi() {
                 throw new Error(`Service with key ${String(key)} not found`)
             }
             return factory(injector)
-        }
+        },
     }
 
     return injector

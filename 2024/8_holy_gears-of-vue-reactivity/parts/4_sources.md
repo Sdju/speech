@@ -1,6 +1,6 @@
 ---
 layout: center
-topTitle: Sources
+topTitle: Dependencies
 topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-50%]
 ---
 
@@ -9,8 +9,8 @@ topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-5
 -->
 
 ---
-topTitle: Sources
-clicks: 7
+topTitle: Dependencies
+clicks: 10
 ---
 
 <Timeline :steps="[{
@@ -19,15 +19,31 @@ clicks: 7
   shallowClasses: '-blur-hidden outline-[#00000088]',
   autoClasses: '-blur-hidden outline-[#00000088]',
   exampleClasses: '',
+  example1: 'absolute pos-0 fx duration-500',
+  example2: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example3: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example4: 'absolute pos-0 fx duration-500 -blur-hidden',
 }, {
   proxyClasses: 'outline-[#00000088]',
   nestedClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  example1: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example2: 'absolute pos-0 fx duration-500',
 }, {
+  $clicksAlias: 'example3Start',
   nestedClasses: 'outline-[#00000088]',
   shallowClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  example2: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example3: 'absolute pos-0 fx duration-500',
+}, {
+}, {
+}, {
+}, {
+}, {
 }, {
   shallowClasses: 'outline-[#00000088]',
   autoClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  example3: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example4: 'absolute pos-0 fx duration-500',
 }]" v-slot="t">
 
 <h1 class="text-center">Reactive</h1>
@@ -65,8 +81,157 @@ clicks: 7
       Автоматически развернет <strong>.value</strong> 
     </div>
   </div>
-  <div class="item fx example row-span-4" :class="t.exampleClasses">
+  <div class="item fx example row-span-4 no-bg" :class="t.exampleClasses">
     
+<div :class="t.example1">
+
+```ts
+new Proxy(target, {
+  get(tg, key, receiver) { 
+    // ...
+  },
+  set(tg, key, value, receiver) { 
+    // ...
+  }
+  // ...
+})
+```
+
+</div>
+<div :class="t.example2">
+
+```ts
+const obj = reactive({
+  a: 1,
+  b: 2,
+})
+console.log(obj === reactive(obj))
+// true
+```
+
+</div>
+<div :class="t.example3">
+
+````md magic-move {at: 3, lines: false}
+```ts
+const obj = reactive({
+  a: 1,
+  b: 2,
+})
+const sum = computed(
+  () => obj.a + obj.b
+)
+
+console.log(sum.value) // 3
+
+obj.a = 10
+console.log(sum.value) // 12
+```
+```ts
+const obj = shallowReactive({
+  a: 1,
+  b: 2,
+})
+const sum = computed(
+  () => obj.a + obj.b
+)
+
+console.log(sum.value) // 3
+
+obj.a = 10
+console.log(sum.value) // 12
+```
+```ts
+const obj = shallowReactive({
+  a: [1],
+  b: [2],
+})
+const sum = computed(
+  () => obj.a[0] + obj.b[0]
+)
+
+console.log(sum.value) // 3
+
+obj.a[0] = 10
+console.log(sum.value) // 3
+```
+```ts
+const obj = readonly({
+  a: 1,
+  b: 2,
+})
+const sum = computed(
+  () => obj.a + obj.b
+)
+
+console.log(sum.value) // 3
+
+obj.a = 10 // ERROR!
+console.log(sum.value)
+```
+```ts
+const obj = shallowReadonly({
+  a: 1,
+  b: 2,
+})
+const sum = computed(
+  () => obj.a + obj.b
+)
+
+console.log(sum.value) // 3
+
+obj.a = 10 // ERROR!
+console.log(sum.value)
+```
+```ts
+const obj = shallowReadonly({
+  a: [1],
+  b: [2],
+})
+const sum = computed(
+  () => obj.a[0] + obj.b[0]
+)
+
+console.log(sum.value) // 3
+
+obj.a[0] = 10
+console.log(sum.value) // 3
+```
+````
+
+</div>
+<div :class="t.example4">
+
+````md magic-move {at: 9, lines: false}
+```ts
+const a = ref(2)
+const b = ref(3)
+const c = computed(
+  () => a.value + b.value
+)
+
+const obj = reactive({ a, b, c })
+console.log(obj.a, obj.b, obj.c)
+// 2 3 5
+```
+```ts
+const a = ref(2)
+const b = ref(3)
+const c = computed(
+  () => a.value + b.value
+)
+
+const obj = shallowReactive({ a, b, c })
+console.log(
+  obj.a.value, // 2
+  obj.b.value, // 3
+  obj.c.value // 5
+)
+```
+````
+
+</div>
+
   </div>
 </div>
 
@@ -74,11 +239,13 @@ clicks: 7
 
 <!--
 - буллеты соединить с примерами из кода (сделать примеры кода сопроводительными) / илюстрациями
-- опробьовать примеры с колонками
+
+ ИЛЛЮСТРАЦИИ! (мем если не придумался пример)
 -->
 
 ---
-topTitle: Sources
+topTitle: Dependencies
+disabled: true
 ---
 
 ````md magic-move {at: 1}
@@ -154,8 +321,8 @@ console.log(toRaw(obj) === data)
 ````
 
 ---
-topTitle: Sources
-clicks: 8
+topTitle: Dependencies
+clicks: 5
 ---
 
 <Timeline :steps="[{
@@ -164,15 +331,27 @@ clicks: 8
   refClasses: '-blur-hidden outline-[#00000088]',
   speedClasses: '-blur-hidden outline-[#00000088]',
   exampleClasses: '',
+  example1: 'absolute pos-0 fx duration-500',
+  example2: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example3: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example4: 'absolute pos-0 fx duration-500 -blur-hidden',
 }, {
   getterClasses: 'outline-[#00000088]',
   objectClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  example1: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example2: 'absolute pos-0 fx duration-500',
 }, {
   objectClasses: 'outline-[#00000088]',
   refClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  example2: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example3: 'absolute pos-0 fx duration-500',
+}, {
+}, {
 }, {
   refClasses: 'outline-[#00000088]',
   speedClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  example3: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example4: 'absolute pos-0 fx duration-500',
 }]" v-slot="t">
 
 <h1 class="text-center">ref</h1>
@@ -210,15 +389,79 @@ clicks: 8
       Работает быстрее чем <strong>Reactive</strong>
     </div>
   </div>
-  <div class="item fx example row-span-3" :class="t.exampleClasses">
+  <div class="item fx example row-span-4 no-bg" :class="t.exampleClasses">
     
+<div :class="t.example1">
+
+```ts {lines: false}
+class RefImpl {
+  // ...
+  get value() {
+    this.dep.track()
+    return this._value
+  },
+  set value(v) {
+    this._value = v
+    if (hasChanged(this._value, v)) {
+      this.dep.trigger()
+    }
+  }
+}
+```
+
+</div>
+<div :class="t.example2">
+
+  ```ts
+  const a = ref({ a: 1 })
+  console.log(
+    a.value === reactive(a.value) // true
+  )
+  
+  ```
+
+</div>
+
+<div :class="t.example3">
+
+````md magic-move {at: 3, lines: false}
+```ts
+const a = ref(2)
+console.log(
+  a === ref(a) // true
+)
+```
+```ts
+const a = ref(2)
+console.log(
+  a === shallowRef(a)
+)
+```
+```ts
+const a = ref(2)
+console.log(
+  a === shallowRef(a) // true
+)
+```
+````
+
+</div>
+
+<div :class="t.example4">
+
+  ```ts
+  // ВСТАВИТЬ ЗАМЕРЫ
+  ```
+
+</div>
+
   </div>
 </div>
 
 </Timeline>
 
 ---
-topTitle: Sources
+topTitle: Dependencies
 clicks: 5
 ---
 
@@ -228,15 +471,16 @@ clicks: 5
   refClasses: '-blur-hidden outline-[#00000088]',
   speedClasses: '-blur-hidden outline-[#00000088]',
   exampleClasses: '',
+  example1: 'absolute pos-0 fx duration-500',
+  example2: 'absolute pos-0 fx duration-500 -blur-hidden',
+}, {
+}, {
+}, {
 }, {
   getterClasses: 'outline-[#00000088]',
   objectClasses: 'outline outline-2 outline-[#CCCCCC88]',
-}, {
-  objectClasses: 'outline-[#00000088]',
-  refClasses: 'outline outline-2 outline-[#CCCCCC88]',
-}, {
-  refClasses: 'outline-[#00000088]',
-  speedClasses: 'outline outline-2 outline-[#CCCCCC88]',
+  example1: 'absolute pos-0 fx duration-500 -blur-hidden',
+  example2: 'absolute pos-0 fx duration-500',
 }]" v-slot="t">
 
 <h1 class="text-center">shallowRef</h1>
@@ -258,325 +502,58 @@ clicks: 5
       Ничем не отличается от <strong>ref</strong> для примитивов
     </div>
   </div>
-  <div class="item fx example row-span-4" :class="t.exampleClasses">
+  <div class="item fx example row-span-4 no-bg" :class="t.exampleClasses">
     
-  </div>
+<div :class="t.example1">
+
+````md magic-move {lines: false}
+```ts
+const a = ref({ a: 1 })
+const b = reactive(a.value)
+console.log(a.value === b) // true
+```
+```ts
+const a = shallowRef({ a: 1 })
+const b = reactive(a.value)
+console.log(a.value === b) // false
+```
+```ts
+const a = shallowRef({ a: 1 })
+const b = computed(() => a.value.a + 5)
+console.log(b.value) // 6
+a.value.a = 10
+console.log(b.value) // 6
+```
+```ts
+const a = shallowRef({ a: 1 })
+const b = computed(() => a.value.a + 5)
+console.log(b.value) // 6
+a.value = { a: 10 }
+console.log(b.value) // 15
+```
+````
+
 </div>
 
-</Timeline>
+<div :class="t.example2">
 
----
-layout: center
----
+```ts {lines: false}
+export const toReactive = (value) =>
+  isObject(value)
+    ? reactive(value)
+    : value
 
-# Push / Pull реактивность
+class RefImpl {
+  constructor(value, isShallow) {
+    this.value = isShallow 
+      ? value
+      : toReactive(value)
+  }
+}
+```
 
-<img class="center w-[740px] slide" src="/img/push-pull.png" />
-
-<div v-drag="[325,89,61,40]">Push</div>
-
-<div v-drag="[570,145,48,40]">Pull</div>
-
----
-clicks: 10
----
-
-<Timeline :steps="[{
-  node1_1: {
-    class: 'pos-290_290 size-48 -popup-hidden',
-    form: 'circle',
-  },
-  arrow1_1To2_1: {
-    coords: '307:265 370:215',
-    class: 'fx duration-500 opacity-0',
-    power: 0.3,
-  },
-  arrow1_1To2_2: {
-    coords: '307:312 370:355',
-    class: 'fx duration-500 opacity-0',
-    power: -0.3,
-  },
-  node2_1: {
-    class: 'pos-400_215 size-48 -popup-hidden',
-    form: 'circle',
-  },
-  arrow2_1To3_1: {
-    coords: '417:192 482:140',
-    class: 'fx duration-500 opacity-0',
-    power: 0.3,
-  },
-  arrow2_1To3_2: {
-    coords: '417:235 482:290',
-    class: 'fx duration-500 opacity-0',
-    power: -0.3,
-  },
-  node2_2: {
-    class: 'pos-400_355 size-48 -popup-hidden',
-    form: 'circle',
-  },
-  arrow2_2To3_3: {
-    coords: '417:376 482:430',
-    class: 'fx duration-500 opacity-0',
-    power: -0.3,
-  },
-  node3_1: {
-    class: 'pos-510_140 size-48 -popup-hidden',
-    form: 'circle',
-  },
-  node3_2: {
-    class: 'pos-510_290 size-48 -popup-hidden',
-    form: 'circle',
-  },
-  node3_3: {
-    class: 'pos-510_430 size-48 -popup-hidden',
-    form: 'circle',
-  },
-}, {
-  node1_1: {
-    class: 'pos-290_290 size-48 ',
-  },
-}, {
-  arrow1_1To2_1: {
-    class: 'fx duration-500 animate'
-  },
-  arrow1_1To2_2: {
-    class: 'fx duration-500 animate'
-  },
-  node2_1: {
-    class: 'pos-400_215 size-48 ',
-  },
-  node2_2: {
-    class: 'pos-400_355 size-48 ',
-  },
-}, {
-  arrow2_1To3_1: {
-    class: 'fx duration-500 animate'
-  },
-  arrow2_1To3_2: {
-    class: 'fx duration-500 animate'
-  },
-  arrow2_2To3_3: {
-    class: 'fx duration-500 animate'
-  },
-  node3_1: {
-    class: 'pos-510_140 size-48 ',
-  },
-  node3_2: {
-    class: 'pos-510_290 size-48 ',
-  },
-  node3_3: {
-    class: 'pos-510_430 size-48 ',
-  },
-}, {
-  node1_1: {
-    color: 'red',
-  },
-}, {
-  node2_1: {
-    color: 'red',
-  },
-  node2_2: {
-    color: 'red',
-  },
-}, {
-  node3_1: {
-    color: 'red',
-  },
-  node3_2: {
-    color: 'red',
-  },
-  node3_3: {
-    color: 'red',
-  },
-}]" v-slot="t">
-
-<Node v-bind="t.node1_1" />
-<Node v-bind="t.node2_1" />
-<Node v-bind="t.node2_2" />
-<Node v-bind="t.node3_1" />
-<Node v-bind="t.node3_2" />
-<Node v-bind="t.node3_3" />
-
-<SvgLayer>
-  <SvgArrow v-bind="t.arrow1_1To2_1" />
-  <SvgArrow v-bind="t.arrow1_1To2_2" />
-  <SvgArrow v-bind="t.arrow2_1To3_1" />
-  <SvgArrow v-bind="t.arrow2_1To3_2" />
-  <SvgArrow v-bind="t.arrow2_2To3_3" />
-</SvgLayer>
-
-</Timeline>
-
----
-topTitle: Scheduler
-clicks: 7
----
-
-<Timeline :steps="[{
-  update: {
-    class: 'pos-287_292 -popup-hidden',
-  },
-  arrowUpdateToSync: {
-    coords: '287:265 358:186',
-    class: 'fx duration-500 opacity-0',
-    power: 0.5,
-  },
-  sync: {
-    class: 'pos-402_183 -popup-hidden',
-    color: 'red',
-    form: 'circle',
-  },
-  arrowSyncToScheduler: {
-    coords: '445:182 492:182',
-    class: 'fx duration-500 opacity-0',
-    power: 0.1,
-  },
-  scheduler: {
-    class: 'pos-645_274 -popup-hidden',
-  },
-  arrowSchedulerToPre: {
-    coords: '632:186 700:265',
-    class: 'fx duration-500 opacity-0',
-    power: 0.4,
-  },
-  pre: {
-    class: 'pos-700_292 -popup-hidden',
-    color: 'red',
-    form: 'circle',
-  },
-  arrowPreToDOM: {
-    coords: '700:319 616:396',
-    class: 'fx duration-500 opacity-0',
-    power: 0.5,
-  },
-  dom: {
-    class: 'pos-570_394 -popup-hidden',
-  },
-  arrowDomToPost: {
-    coords: '525:394 448:394',
-    class: 'fx duration-500 opacity-0',
-    power: 0.1,
-  },
-  post: {
-    class: 'pos-407_394 -popup-hidden',
-    color: 'red',
-    form: 'circle',
-  },
-  arrowPostToUpdate: {
-    coords: '366:394 287:319',
-    class: 'fx duration-500 opacity-0',
-    power: 0.5,
-  },
-}, {
-  update: {
-    class: 'pos-287_292 ',
-  },
-}, {
-  sync: {
-    class: 'pos-402_183 ',
-  },
-  arrowUpdateToSync: {
-    class: 'fx duration-500 animate'
-  },
-}, {
-  scheduler: {
-    class: 'pos-563_177 ',
-  },
-  arrowSyncToScheduler: {
-    class: 'fx duration-500 animate'
-  },
-}, {
-  pre: {
-    class: 'pos-700_292 ',
-  },
-  arrowSchedulerToPre: {
-    class: 'fx duration-500 animate'
-  },
-}, {
-  dom: {
-    class: 'pos-570_394 ',
-  },
-  arrowPreToDOM: {
-    class: 'fx duration-500 animate'
-  },
-}, {
-  post: {
-    class: 'pos-407_394 ',
-  },
-  arrowDomToPost: {
-    class: 'fx duration-500 animate'
-  },
-}, {
-  arrowPostToUpdate: {
-    class: 'fx duration-500 animate'
-  },
-}]" v-slot="t">
-
-<Node v-bind="t.update">Update</Node>
-<Node v-bind="t.sync">Sync</Node>
-<Node v-bind="t.scheduler">Scheduler</Node>
-<Node v-bind="t.pre">Pre</Node>
-<Node v-bind="t.dom">DOM</Node>
-<Node v-bind="t.post">Post</Node>
-
-<SvgLayer>
-  <SvgArrow v-bind="t.arrowUpdateToSync" />
-  <SvgArrow v-bind="t.arrowSyncToScheduler" />
-  <SvgArrow v-bind="t.arrowSchedulerToPre" />
-  <SvgArrow v-bind="t.arrowPreToDOM" />
-  <SvgArrow v-bind="t.arrowDomToPost" />
-  <SvgArrow v-bind="t.arrowPostToUpdate" />
-</SvgLayer>
-
-</Timeline>
-
----
-clicks: 5
----
-
-<Timeline :steps="[{
-  syncClasses: 'outline outline-2 outline-[#CCCCCC88]',
-  tickClasses: '-blur-hidden outline-[#00000088]',
-  queueClasses: '-blur-hidden outline-[#00000088]',
-  exampleClasses: '',
-}, {
-  syncClasses: 'outline-[#00000088]',
-  tickClasses: 'outline outline-2 outline-[#CCCCCC88]',
-}, {
-  tickClasses: 'outline-[#00000088]',
-  queueClasses: 'outline outline-2 outline-[#CCCCCC88]',
-}]" v-slot="t">
-
-<h1 class="text-center">Scheduler</h1>
-
-<div class="grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12">
-  <div class="item fx duration-400" :class="t.syncClasses">
-    <div class="item-icon">
-      <LucideRefreshCw/>
-    </div>
-    <div>
-      Механизм синхронизирующий обновления
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.tickClasses">
-    <div class="item-icon">
-      <IcRoundAccessTime/>
-    </div>
-    <div>
-      Доступное API: <strong>nextTick</strong>
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.queueClasses">
-    <div class="item-icon">
-      <FluentPeopleQueue32Filled/>
-    </div>
-    <div>
-      Синхронизация в конце очереди микротасков
-    </div>
-  </div>
-  <div class="item fx example row-span-4" :class="t.exampleClasses">
-    
-  </div>
 </div>
 
+  </div>
+</div>
 </Timeline>
