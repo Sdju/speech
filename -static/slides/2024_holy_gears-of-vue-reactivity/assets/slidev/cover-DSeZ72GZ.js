@@ -1,0 +1,1 @@
+import{o,b as t,f as s}from"../modules/vue-BI1vma93.js";import{_ as r}from"../index-C5KNoWhn.js";const c={},n={class:"slidev-layout cover"};function a(e,_){return o(),t("div",n,[s(e.$slots,"default")])}const f=r(c,[["render",a]]);export{f as I};
