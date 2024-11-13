@@ -10,12 +10,12 @@ topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-5
 
 ---
 topTitle: Dependencies
-clicks: 10
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   proxyClasses: 'outline outline-2 outline-[#CCCCCC88]',
   nestedClasses: '-blur-hidden outline-[#00000088]',
+  createClasses: '-blur-hidden outline-[#00000088]',
   shallowClasses: '-blur-hidden outline-[#00000088]',
   autoClasses: '-blur-hidden outline-[#00000088]',
   exampleClasses: '',
@@ -29,7 +29,7 @@ clicks: 10
   example1: 'absolute pos-0 fx duration-500 -blur-hidden',
   example2: 'absolute pos-0 fx duration-500',
 }, {
-  $clicksAlias: 'example3Start',
+}, {
   nestedClasses: 'outline-[#00000088]',
   shallowClasses: 'outline outline-2 outline-[#CCCCCC88]',
   example2: 'absolute pos-0 fx duration-500 -blur-hidden',
@@ -100,6 +100,14 @@ new Proxy(target, {
 </div>
 <div :class="t.example2">
 
+````md magic-move {at: 2, lines: false}
+```ts
+const obj = reactive({
+  a: { b: 1 },
+})
+console.log(isReactive(obj))
+// true
+```
 ```ts
 const obj = reactive({
   a: 1,
@@ -108,6 +116,7 @@ const obj = reactive({
 console.log(obj === reactive(obj))
 // true
 ```
+````
 
 </div>
 <div :class="t.example3">
@@ -235,7 +244,7 @@ console.log(
   </div>
 </div>
 
-</Timeline>
+</Timeline2>
 
 <!--
 - буллеты соединить с примерами из кода (сделать примеры кода сопроводительными) / илюстрациями
@@ -324,10 +333,9 @@ console.log(toRaw(obj) === data)
 
 ---
 topTitle: Dependencies
-clicks: 5
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   getterClasses: 'outline outline-2 outline-[#CCCCCC88]',
   objectClasses: '-blur-hidden outline-[#00000088]',
   refClasses: '-blur-hidden outline-[#00000088]',
@@ -460,14 +468,13 @@ console.log(
   </div>
 </div>
 
-</Timeline>
+</Timeline2>
 
 ---
 topTitle: Dependencies
-clicks: 5
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   getterClasses: 'outline outline-2 outline-[#CCCCCC88]',
   objectClasses: '-blur-hidden outline-[#00000088]',
   refClasses: '-blur-hidden outline-[#00000088]',
@@ -558,4 +565,4 @@ class RefImpl {
 
   </div>
 </div>
-</Timeline>
+</Timeline2>

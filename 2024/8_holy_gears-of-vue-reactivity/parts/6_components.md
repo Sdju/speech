@@ -33,10 +33,9 @@ disabled: true
 
 ---
 topTitle: Components
-clicks: 5
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   component: 'fx duration-500 -popup-hidden',
   proxy: 'fx duration-500 -popup-hidden',
   jsPrototypes: 'fx duration-500 -popup-hidden',
@@ -75,7 +74,7 @@ clicks: 5
   </div>
 </div>
 
-</Timeline>
+</Timeline2>
 
 <!--
 - подумать про вырезание provide/inject
@@ -87,7 +86,7 @@ slideClass: cs-blue
 disabled: true
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   parent: 'top-[200px] left-[50%]',
   child1: 'left-[414px] top-[289px]',
   child2: 'left-[570px] top-[289px]',
@@ -124,13 +123,13 @@ disabled: true
   <SvgArrow :class="t.arrowChild1Child4.class" :coords="t.arrowChild1Child4.coords" :power="0.2" />
 </SvgLayer>
 
-</Timeline>
+</Timeline2>
 
 ---
 clicks: 5
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   protoClasses: 'outline outline-2 outline-[#CCCCCC88]',
   reactiveClasses: '-blur-hidden outline-[#00000088]',
   effectClasses: '-blur-hidden outline-[#00000088]',
@@ -163,7 +162,7 @@ clicks: 5
 <div class="grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12">
   <div class="item fx duration-400" :class="t.protoClasses">
     <div class="item-icon">
-      <UilBox />
+      <TablerBinaryTree/>
     </div>
     <div>
       Работает на основе прототипного наследования
@@ -179,7 +178,7 @@ clicks: 5
   </div>
   <div class="item fx duration-400" :class="t.effectClasses">
     <div class="item-icon">
-      <UisSchedule />
+      <FluentStarHalf16Filled/>
     </div>
     <div>
       Используйте реактивные примитивы
@@ -187,7 +186,7 @@ clicks: 5
   </div>
   <div class="item fx duration-400" :class="t.primitiveClasses">
     <div class="item-icon">
-      <UilBox />
+      <IcRoundMoneyOffCsred/>
     </div>
     <div>
       Почти бесплатный
@@ -265,7 +264,7 @@ object['key'] = value2
   </div>
 </div>
 
-</Timeline>
+</Timeline2>
 
 ---
 

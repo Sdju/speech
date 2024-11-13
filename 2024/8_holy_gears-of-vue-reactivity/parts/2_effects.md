@@ -37,7 +37,6 @@ const total = computed(() => oranges.value + apples.value)
 ---
 topTitle: ReactiveEffect
 topTitleClass: top-[90px] left-[50%] translate-x-[-50%]
-clicks: 5
 ---
 
 <style>
@@ -50,7 +49,7 @@ clicks: 5
 }
 </style>
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   depsClasses: 'outline outline-2 outline-[#CCCCCC88]',
   notifyClasses: '-blur-hidden outline-[#00000088]',
   storeClasses: '-blur-hidden outline-[#00000088]',
@@ -194,17 +193,16 @@ clicks: 5
   <SvgArrow v-bind="t.actionToReactiveEffect" />
 </SvgLayer>
 
-</Timeline>
+</Timeline2>
 
 ---
 topTitle: ReactiveEffect
 topTitleClass: absolute figure top-[50%] left-[50%] text-[25px]
   translate-x-[-50%] bg-[#00000088] z-[100] rounded-md p-2
 slideClass: cs-blue
-clicks: 7
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
     logo: 'left-[50%] top-[50%]',
     watch: 'left-[50%] top-[50%] -popup-hidden',
     watchEffect: 'left-[50%] top-[50%] -popup-hidden',
@@ -247,7 +245,7 @@ clicks: 7
 
 <Gear class="figure w-[151px] h-[111px]" :class="t.effect" name="effect" />
 
-</Timeline>
+</Timeline2>
 
 ---
 layout: center
@@ -406,10 +404,9 @@ scope.stop()
 slideClass: cs-blue
 topTitle: effectScope
 topTitleClass: top-[248px] left-[240px] text-[25px] translate-x-[-50%] z-index-[100]
-clicks: 4
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   effectScope: '-popup-hidden',
   reactiveEffect: '-popup-hidden',
   texts: [
@@ -491,16 +488,15 @@ clicks: 4
   </div>
 </Node>
 
-</Timeline>
+</Timeline2>
 
 ---
 slideClass: cs-blue
 topTitle: effectScope
 topTitleClass: top-[248px] left-[240px] text-[25px] translate-x-[-50%] z-index-[100]
-clicks: 7
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   vue: 'figure fx sp-201_282_62_63 -popup-hidden',
   vueText: 'sp-631_115_69_40 -blur-hidden',
   pinia: 'figure fx sp-201_282_62_63 -popup-hidden',
@@ -536,15 +532,14 @@ clicks: 7
 <div :class="t.vueuseText1" class="absolute fx transition-[all] duration-[0.5s] ease-out text-[1em] text-shadow-xl font-mono"> createSharedComposable </div>
 <div :class="t.vueuseText2" class="absolute fx transition-[all] duration-[0.5s] ease-out text-[1em] text-shadow-xl font-mono"> createGlobalState </div>
 
-</Timeline>
+</Timeline2>
 
 ---
 topTitle: effectScope
 topTitleClass: top-[100px] left-[50%] translate-x-[-50%]
-clicks: 1
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   effectsClasses: 'outline outline-2 outline-[#CCCCCC88]',
   asyncClasses: '-blur-hidden outline-[#00000088]',
   exampleClasses: '',
@@ -618,7 +613,7 @@ function createToast(params) {
   </div>
 </div>
 
-</Timeline>
+</Timeline2>
 
 <!--
 - подумать о корнер кейсе из-за async setup

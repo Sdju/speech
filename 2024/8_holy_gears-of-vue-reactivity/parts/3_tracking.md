@@ -67,10 +67,9 @@ interface Dep {
 
 ---
 topTitle: Tracking
-clicks: 3
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   depClasses: 'outline outline-2 outline-[#CCCCCC88]',
   onClasses: '-blur-hidden outline-[#00000088]',
   emitClasses: '-blur-hidden outline-[#00000088]',
@@ -92,7 +91,7 @@ clicks: 3
     <div class="fx example row-span-4" />
     <div class="item fx duration-400" :class="t.depClasses">
       <div class="item-icon">
-        <LucideRefreshCw/>
+        <IconParkTwotoneTreeDiagram/>
       </div>
       <div>
         Класс реализующий функционал зависимостей
@@ -100,7 +99,7 @@ clicks: 3
     </div>
     <div class="item fx duration-400" :class="t.onClasses">
       <div class="item-icon">
-        <IcRoundAccessTime/>
+        <AkarIconsRss/>
       </div>
       <div>
         На Dep можно подписаться
@@ -116,7 +115,7 @@ clicks: 3
     </div>
     <div class="item fx duration-400" :class="t.baseClasses">
       <div class="item-icon">
-        <FluentPeopleQueue32Filled/>
+        <GisPyramid/>
       </div>
       <div>
         Лежит в основе: <strong>ref</strong> и <strong>computed</strong>
@@ -124,14 +123,13 @@ clicks: 3
     </div>
   </div>
 
-</Timeline>
+</Timeline2>
 
 ---
 topTitle: Tracking
-clicks: 9
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   trigger: 'sp-165_282_103_103 -popup-hidden',
   triggerDesc: '-blur-hidden',
   track: 'sp-165_282_103_103 -popup-hidden',
@@ -219,7 +217,7 @@ clicks: 9
   <SvgArrow :class="t.arrow4.class" :coords="t.arrow4.coords" :power="0.3" />
 </SvgLayer>
 
-</Timeline>
+</Timeline2>
 
 <!--
 дать понимание что происходит через код
@@ -227,10 +225,9 @@ clicks: 9
 
 ---
 topTitle: Tracking
-clicks: 7
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   effectClasses: 'outline outline-2 outline-[#CCCCCC88]',
   onlyOneClasses: '-blur-hidden outline-[#00000088]',
   stackClasses: '-blur-hidden outline-[#00000088]',
@@ -356,7 +353,7 @@ export let activeSub:
   </div>
 </div>
 
-</Timeline>
+</Timeline2>
 
 <!--
 - ПРИДУМАТЬ ИЛЛЮСТРАЦИЮ (думать о шестеренках)

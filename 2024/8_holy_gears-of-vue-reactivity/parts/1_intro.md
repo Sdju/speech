@@ -39,11 +39,10 @@ layout: center
 -->
 
 ---
-clicks: 6
 slideClass: cs-green
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   logo: 'pos-center size-176_176',
   vueGear: 'pos-center -popup-hidden',
   ref: 'pos-center -popup-hidden',
@@ -78,7 +77,7 @@ slideClass: cs-green
 <Gear class="$obj fx size-142_119" :class="t.watchEffect" name="watchEffect" />
 <Gear class="$obj fx size-104_95" :class="t.reactive" name="reactive" />
 
-</Timeline>
+</Timeline2>
 
 <!--
 Если спросить за что вы любите Vue, то чаще всего будет хороший DX и классная реактивность. Но что же скрыто за этой реактивностью?
@@ -98,10 +97,9 @@ layout: cover
 
 ---
 layout: center
-clicks: 3
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   q1: '$obj fx text-1.3em pos-50% w-full text-center px-10 ',
   q1Mode: false,
   q2: '$obj fx text-1.3em pos-50% w-full text-center px-10 -popup-hidden',
@@ -138,7 +136,7 @@ clicks: 3
   words="Для неизменемых значений лучше использовать computed или readonly?"
 />
 
-</Timeline>
+</Timeline2>
 
 <!--
 Представим ситуацию на собеседовании. Вам задают вопросы по Vue и в целом вы отвечаете хорошо.
@@ -163,10 +161,9 @@ clicks: 3
 
 ---
 slideClass: cs-lightblue
-clicks: 8
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   deep: 'opacity-0',
   height: '59px',
   ref: '-popup-hidden',
@@ -306,7 +303,7 @@ clicks: 8
 <Gear class="$obj sp-802_259_125_107" :class="t.effect" name="effect" />
 <Gear class="$obj sp-208_408_125_107" :class="t.tracking" name="tracking" />
 
-</Timeline>
+</Timeline2>
 
 <!--
 Но что вообще скрывается во тьме воды?
@@ -337,10 +334,12 @@ clicks: 8
 slideClass: cs-purple
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   title: 'top-50% ',
 }, {
-  title: 'top-27px ',
+  title: 'top-40px ',
+}, {
+  title: 'top-90px ',
 }]" v-slot="t">
 
 <h1 class="absolute transition-all duration-400 text-center w-full left-0" :class="t.title"> Реактивность </h1>
@@ -362,7 +361,7 @@ console.log(total.value) // 12
 
 </div>
 
-</Timeline>
+</Timeline2>
 
 <!--
 Но для начала. Что же такое реактивность?
@@ -382,10 +381,9 @@ console.log(total.value) // 12
 
 ---
 slideClass: cs-lightblue
-clicks: 10
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   title: 'pos-center ',
   model: {
     class: 'pos-center -popup-hidden',
@@ -495,14 +493,6 @@ clicks: 10
     coords: '588:400 543:400',
     class: 'fx duration-500 animate'
   },
-}, {
-  subscriber: {
-    multiple: true,
-  },
-}, {
-  effect: {
-    multiple: true,
-  },
 }]" v-slot="t">
 
 <h1 class="$obj fx text-center" :class="t.title"> Реактивность </h1>
@@ -521,7 +511,7 @@ clicks: 10
   <SvgArrow v-bind="t.arrowSchedulerToAction" />
 </SvgLayer>
 
-</Timeline>
+</Timeline2>
 
 <!--
 Таким образом я бы хотел выделить следующую схему реактивности, которая будет нам полезна для понимания того как работает реактивность во Vue:
@@ -547,7 +537,7 @@ clicks: 10
 clicks: 6
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   vueReactivity: '-popup-hidden',
   vueRuntimeCore: '-popup-hidden',
   runtimeList: '-blur-hidden',
@@ -592,7 +582,7 @@ clicks: 6
   </div>
 </div>
 
-</Timeline>
+</Timeline2>
 
 <!--
 Вернемся непосредственно ко Vue. Сама реактивность Vue разделена на два пакета: @vue/reactivity и @vue/runtime-core. Во vue reactivity можно ожидать различные реактивные примитивы... Но на деле там лежит далеко не все что вы ожидаете там увидеть.

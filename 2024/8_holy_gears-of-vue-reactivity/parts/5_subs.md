@@ -6,10 +6,9 @@ topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-5
 
 ---
 topTitle: Subscribers
-clicks: 6
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   effectClasses: 'outline outline-2 outline-[#CCCCCC88]',
   schedulerClasses: '-blur-hidden outline-[#00000088]',
   batchClasses: '-blur-hidden outline-[#00000088]',
@@ -141,14 +140,13 @@ a.value++
   </div>
 </div>
 
-</Timeline>
+</Timeline2>
 
 ---
 topTitle: Subscribers
-clicks: 8
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   effectClasses: 'outline outline-2 outline-[#CCCCCC88]',
   schedulerClasses: '-blur-hidden outline-[#00000088]',
   batchClasses: '-blur-hidden outline-[#00000088]',
@@ -193,7 +191,7 @@ clicks: 8
   </div>
   <div class="item fx duration-400" :class="t.batchClasses">
     <div class="item-icon">
-      <MaterialSymbolsArrowSplit/>
+      <MaterialSymbolsWeightOutline/>
     </div>
     <div>
       При передаче значения напрямую, то будет глубокая реактивность
@@ -276,14 +274,13 @@ watch(() => a.value, (value) => {
   </div>
 </div>
 
-</Timeline>
+</Timeline2>
 
 ---
 topTitle: Subscribers
-clicks: 5
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   syncClasses: 'outline outline-2 outline-[#CCCCCC88]',
   tickClasses: '-blur-hidden outline-[#00000088]',
   queueClasses: '-blur-hidden outline-[#00000088]',
@@ -330,7 +327,7 @@ clicks: 5
       Синхронизация в очереди микротасков
     </div>
   </div>
-  <div class="item fx example row-span-4 overflow-hidden" :class="t.exampleClasses">
+  <div class="item fx example row-span-4 overflow-hidden no-bg" :class="t.exampleClasses">
 
 <div :class="t.example1">
   <img src="/img/schedule.gif" class="absolute pos-0 size-full framed" />
@@ -360,14 +357,13 @@ console.log('await nextTick')
   </div>
 </div>
 
-</Timeline>
+</Timeline2>
 
 ---
 topTitle: Scheduler
-clicks: 7
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   update: {
     class: 'pos-287_292 -popup-hidden',
   },
@@ -483,14 +479,13 @@ clicks: 7
   <SvgArrow v-bind="t.arrowPostToUpdate" />
 </SvgLayer>
 
-</Timeline>
+</Timeline2>
 
 ---
 topTitle: Subscribers
-clicks: 2
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   domClasses: 'outline outline-2 outline-[#CCCCCC88]',
   defaultClasses: '-blur-hidden outline-[#00000088]',
   exampleClasses: '',
@@ -508,7 +503,7 @@ clicks: 2
 <div class="grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12">
   <div class="item fx duration-400" :class="t.domClasses">
     <div class="item-icon">
-      <MaterialSymbolsContentCopyRounded/>
+      <MdiWeatherSunset/>
     </div>
     <div>
       Исполнение до обновления DOM
@@ -516,7 +511,7 @@ clicks: 2
   </div>
   <div class="item fx duration-400" :class="t.defaultClasses">
     <div class="item-icon">
-      <UisSchedule/>
+      <IcOutlineInsertDriveFile/>
     </div>
     <div>
       Режим работы по-умолчанию
@@ -555,14 +550,13 @@ watchEffect(() => {
   </div>
 </div>
 
-</Timeline>
+</Timeline2>
 
 ---
 topTitle: Subscribers
-clicks: 2
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   afterClasses: 'outline outline-2 outline-[#CCCCCC88]',
   postClasses: '-blur-hidden outline-[#00000088]',
   ssrClasses: '-blur-hidden outline-[#00000088]',
@@ -587,7 +581,7 @@ clicks: 2
 <div class="grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12">
   <div class="item fx duration-400" :class="t.afterClasses">
     <div class="item-icon">
-      <MaterialSymbolsContentCopyRounded/>
+      <MynauiConfig/>
     </div>
     <div>
       Требует опции <strong>flush: post</strong>
@@ -595,7 +589,7 @@ clicks: 2
   </div>
   <div class="item fx duration-400" :class="t.postClasses">
     <div class="item-icon">
-      <UisSchedule/>
+      <PhClockAfternoonBold/>
     </div>
     <div>
       Исполнение после обновления DOM
@@ -603,7 +597,7 @@ clicks: 2
   </div>
   <div class="item fx duration-400" :class="t.ssrClasses">
     <div class="item-icon">
-      <UisSchedule/>
+      <MdiServerNetwork/>
     </div>
     <div>
       Не работает в SSR
@@ -639,14 +633,13 @@ watchEffect(() => {
   </div>
 </div>
 
-</Timeline>
+</Timeline2>
 
 ---
 topTitle: Subscribers
-clicks: 2
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   syncClasses: 'outline outline-2 outline-[#CCCCCC88]',
   optionClasses: '-blur-hidden outline-[#00000088]',
   batchClasses: '-blur-hidden outline-[#00000088]',
@@ -671,7 +664,7 @@ clicks: 2
 <div class="grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12">
   <div class="item fx duration-400" :class="t.syncClasses">
     <div class="item-icon">
-      <MaterialSymbolsContentCopyRounded/>
+      <MynauiConfig/>
     </div>
     <div>
       Требует опции <strong>flush: sync</strong>
@@ -679,7 +672,7 @@ clicks: 2
   </div>
   <div class="item fx duration-400" :class="t.optionClasses">
     <div class="item-icon">
-      <UisSchedule/>
+      <MaterialSymbolsRefresh/>
     </div>
     <div>
       Исполнение в синхронном режиме
@@ -687,7 +680,7 @@ clicks: 2
   </div>
   <div class="item fx duration-400" :class="t.batchClasses">
     <div class="item-icon">
-      <UisSchedule/>
+      <StreamlineInterfaceSettingMenu2ButtonParallelHorizontalLinesMenuNavigationStaggeredThreeHamburger/>
     </div>
     <div>
       Игнорирует возможности батчинга
@@ -741,7 +734,7 @@ watchEffect(() => {
   </div>
 </div>
 
-</Timeline>
+</Timeline2>
 
 ---
 layout: center
@@ -756,11 +749,10 @@ layout: center
 <div v-drag="[570,145,48,40]">Pull</div>
 
 ---
-clicks: 10
 disabled: true
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   node1_1: {
     class: 'pos-290_290 size-48 -popup-hidden',
     form: 'circle',
@@ -884,14 +876,13 @@ disabled: true
   <SvgArrow v-bind="t.arrow2_2To3_3" />
 </SvgLayer>
 
-</Timeline>
+</Timeline2>
 
 ---
 topTitle: Subscribers
-clicks: 5
 ---
 
-<Timeline :steps="[{
+<Timeline2 :steps="[{
   pullClasses: 'outline outline-2 outline-[#CCCCCC88]',
   noSubsClasses: '-blur-hidden outline-[#00000088]',
   callClasses: '-blur-hidden outline-[#00000088]',
@@ -923,7 +914,7 @@ clicks: 5
 <div class="grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12">
   <div class="item fx duration-400" :class="t.pullClasses">
     <div class="item-icon">
-      <UilBox/>
+      <CarbonContainerImagePushPull/>
     </div>
     <div>
       Работает по принципу <strong>Pull-реактивности</strong>
@@ -931,7 +922,7 @@ clicks: 5
   </div>
   <div class="item fx duration-400" :class="t.noSubsClasses">
     <div class="item-icon">
-      <UilBox/>
+      <MaterialSymbolsHourglassEmptyRounded/>
     </div>
     <div>
       Нет подписчиков - нет и обновлений
@@ -939,7 +930,7 @@ clicks: 5
   </div>
   <div class="item fx duration-400" :class="t.callClasses">
     <div class="item-icon">
-      <UisSchedule/>
+      <MynauiRefresh/>
     </div>
     <div>
       Пересчет в момент вызова
@@ -1013,4 +1004,4 @@ console.log(c.value)
   </div>
 </div>
 
-</Timeline>
+</Timeline2>
