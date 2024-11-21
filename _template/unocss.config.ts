@@ -15,14 +15,42 @@ const variants = {
   purple: "[--bg-keyword:#990099] [--bg-first:#ff4dff] [--bg-second:#ff80ff] [--bg-third:#ff99ff] [--v-color:theme('colors.purple.500')] ",
 }
 
+const modifiers = {
+  r: 'right',
+  l: 'left',
+  b: 'bottom',
+  t: 'top',
+}
+
 export default mergeConfigs([
   slidev,
   {
     shortcuts: [
       [/^pos-(\S+)$/, ([, c1]) => {
-        const x = c1.startsWith('r') ? `right-[${parseValue(c1.slice(1))}]` : `left-[${parseValue(c1)}]`
-        const y = c1.startsWith('b') ? `bottom-[${parseValue(c1.slice(1))}]` : `top-[${parseValue(c1)}]`
-        return `${x} ${y}`
+        const [mod1, mod2] = c1.slice(0, 2)
+        let modifiersCount = 0
+        let x = 'left'
+        let y = 'top'
+        if (mod2 in modifiers) {
+          modifiersCount = 2
+          const mod = modifiers[mod2]
+          if (mod2 === 'r') {
+            x = mod
+          } else if (mod2 === 'b') {
+            y = mod
+          }
+        }
+        if (mod1 in modifiers) {
+          modifiersCount = 1
+          const mod = modifiers[mod1]
+          if (mod1 === 'r') {
+            x = mod
+          } else if (mod1 === 'b') {
+            y = mod
+          }
+        }
+        const value = c1.slice(modifiersCount)
+        return `${x}-[${parseValue(value)}] ${y}-[${parseValue(value)}]`
       }],
       [/^pos-(\S+)_(\S+)$/, ([, c1, c2]) => {
         const x = c1.startsWith('r') ? `right-[${parseValue(c1.slice(1))}]` : `left-[${parseValue(c1)}]`
@@ -70,6 +98,9 @@ export default mergeConfigs([
         },
       }),
     ],
-    safelist: Object.keys(variants).map(key => `cs-${key}`),
+    safelist: [
+      ...Object.keys(variants).map(key => `cs-${key}`),
+      'cs-main',
+    ],
   },
 ])

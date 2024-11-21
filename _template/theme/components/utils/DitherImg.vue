@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import dither from '../image/Dither.png'
+import dither from '../../image/dither.png'
 </script>
 
 <template>

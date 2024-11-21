@@ -1,15 +1,14 @@
- <script setup>
- import BlurredPolyBackground from "./theme/components/backgrounds/BlurredPolyBackground.vue";
- import {useNav} from "@slidev/client";
+<script setup>
+import { useNav } from "@slidev/client"
+import { computed } from "vue"
+import BlurredPolyBackground from "./theme/components/backgrounds/BlurredPolyBackground.vue"
 
- const {currentSlideNo} = useNav()
- </script>
+const { currentSlideRoute } = useNav()
+const frontmatter = computed(() => currentSlideRoute.value.meta?.slide?.frontmatter || {})
+</script>
 
- <template>
-   <div>
-     <BlurredPolyBackground />
-     <div class="absolute right-[20px] bottom-[20px] text-lg opacity-50">{{ currentSlideNo }}</div>
-   </div>
-
-
- </template>
+<template>
+  <div :class="frontmatter.slideClass">
+    <BlurredPolyBackground />
+  </div>
+</template>

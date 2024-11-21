@@ -1,27 +1,38 @@
 [variant] {
-    transition: all 3.5s ease-out;
+    transition: all 2.5s ease-out,
+     --bg-keyword 2.5s ease-out,
+     --bg-first 2.5s ease-out,
+     --bg-second 2.5s ease-out,
+     --bg-third 2.5s ease-out,
+     --v-color 2.5s ease-out;
 }
 
-[variant=first] {
-    --bg-keyword: #cca300;
-    --bg-first: #cce796;
-    --bg-second: #c7c414;
-    --bg-third: #a24c39;
-    --v-color: theme('colors.amber.500');
+@property --v-color {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: true;
 }
 
-[variant=second] {
-    --bg-keyword: rgba(50, 98, 178, 0.55);
-    --bg-first: #3c5cff;
-    --bg-second: #4cbbc5;
-    --bg-third: #5d1dff;
-    --v-color: theme('colors.blue.500');
+@property --bg-keyword {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: true;
 }
 
-[variant=third] {
-    --bg-keyword: #5a8f298c;
-    --bg-first: #49ff3c;
-    --bg-second: #4cc580;
-    --bg-third: #ceff1d;
-    --v-color: theme('colors.gray.500');
+@property --bg-first {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: true;
+}
+
+@property --bg-second {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: true;
+}
+
+@property --bg-third {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: false;
 }

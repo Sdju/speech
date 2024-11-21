@@ -7,13 +7,12 @@
  * Properties:
  * - grow: 'left' | 'right' | 'top' | 'bottom' | 'full' -  Distribution of the polygons points
  * - growOpacity: number - Opacity of the polygons (4)
- * - growHue: number - Hue shift for the polygons (default: 0)
  * - growSeed: string | false - Seed for the stable random distribution (default: 'default')
  */
 import { computed, ref, watch } from 'vue'
 import { useNav } from '@slidev/client'
 import seedrandom from 'seedrandom'
-import ZedeDither from '../ZedeDither.vue';
+import DitherImg from '../utils/DitherImg.vue';
 
 const { currentSlideRoute } = useNav()
 
@@ -34,7 +33,6 @@ export type Distribution =
 const frontmatter = computed(() => (currentSlideRoute.value.meta?.slide as any)?.frontmatter || {})
 const distribution = computed(() => (frontmatter.value.grow || 'full') as Distribution)
 const opacity = computed<number>(() => +(frontmatter.value.growOpacity || 0.4))
-const hue = computed<number>(() => +(frontmatter.value.growHue || 0))
 const seed = computed<string>(() => (frontmatter.value.growSeed === 'false' || frontmatter.value.growSeed === false)
   ? Date.now().toString()
   : frontmatter.value.growSeed || 'default',
@@ -149,8 +147,8 @@ const poly3 = usePloy(3)
 <template>
   <div
     class="bg transform-gpu overflow-hidden pointer-events-none"
-    :variant="frontmatter.variant || 'first'"
-    :style="{ filter: `blur(70px) hue-rotate(${hue}deg)` }"
+    :variant="frontmatter.variant || 'main'"
+    :style="{ filter: `blur(70px)` }"
     aria-hidden="true"
   >
     <div
@@ -178,19 +176,16 @@ const poly3 = usePloy(3)
       }"
     />
   </div>
-  <ZedeDither />
+  <DitherImg />
 </template>
 
 <style scoped>
-.bg,
 .clip {
-  transition: all 2.5s ease;
+  @apply transition-inherit;
 }
 
 .bg {
-  position: absolute;
-  inset: 0;
-  z-index: -10;
+  @apply absolute inset-0 z-[-10];
 }
 
 .clip {

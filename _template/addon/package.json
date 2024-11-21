@@ -1,7 +1,7 @@
 {
-  "name": "@zede/theme",
+  "name": "@zede/slidev-addon",
   "version": "0.0.2",
-  "description": "Zede theme for Slidev",
+  "description": "Zede addon for Slidev",
   "author": "Zede <zede169778@gmail.com>",
   "license": "MIT",
   "homepage": "https://sli.dev",
@@ -11,7 +11,7 @@
   },
   "bugs": "https://github.com/slidevjs/themes/issues",
   "keywords": [
-    "slidev-theme",
+    "slidev-addon",
     "slidev"
   ],
   "engines": {
@@ -28,8 +28,6 @@
     }
   },
   "dependencies": {
-    "@slidev/types": "^0.47.0",
-    "codemirror-theme-vars": "^0.1.2",
-    "prism-theme-vars": "^0.2.4"
+    "@slidev/types": "^0.47.0"
   }
 }
