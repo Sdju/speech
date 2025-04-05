@@ -1,6 +1,6 @@
 ---
 theme: ./theme
-addons: 
+addons:
   - ./_template/addon
 routerMode: hash
 htmlAttrs:
