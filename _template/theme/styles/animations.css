@@ -54,15 +54,15 @@
 }
 
 /* Apply the custom animation to the old and new page states */
-::view-transition-old(*) {
+:not(.vt) ::view-transition-old(*) {
   animation: var(--slidev-transition-duration) ease-in both fade-out;
 }
 
-::view-transition-new(*) {
+:not(.vt) ::view-transition-new(*) {
   animation: var(--slidev-transition-duration) ease-in both fade-in;
 }
 
-::view-transition-image-pair(*) {
+:not(.vt) ::view-transition-image-pair(*) {
   isolation: auto;
 }
 

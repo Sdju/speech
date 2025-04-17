@@ -1,13 +1,19 @@
 <script lang="ts" setup>
-import { useNav } from '@slidev/client'
-import { useSlots } from 'vue';
+import { useSlots } from 'vue'
+import { useXSlides } from '../../module/XSlides/XSlidesService'
 
-const slots = useSlots()
+const props = defineProps<{
+  slot: string
+}>()
 
+const slots =defineSlots<{
+  default: (props: any) => any
+}>()
+
+const { register } = useXSlides()
+
+register(props.slot, slots.default)
 </script>
 
 <template>
-  <div v-if="isCurrent">
-    <slot />
-  </div>
 </template>

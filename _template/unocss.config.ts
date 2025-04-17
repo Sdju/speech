@@ -76,15 +76,19 @@ export default mergeConfigs([
       [/^cs-(\S+)/, ([, variant]) => {
         return variants[variant]
       }],
+      [/^view-(\S+)$/, ([, variant]) => {
+        return `[view-transition-name:${variant}]`
+      }],
       {
         'movable': 'absolute -translate-x-1/2 -translate-y-1/2 transform-origin-center',
         'circle': 'rounded-[100%]',
-        '$obj': 'movable duration-200 ease-in-out filter',
+        '$obj': 'movable fx',
         'figure': 'grid place-items-center movable filter text-xl font-bold duration-200 transform-origin-center',
         'pos-center': 'left-1/2 top-1/2',
         'size-full': 'w-full h-full',
         'framed': 'rounded-[10px] border-2 border-gray-500/20 object-cover',
         'cs-main': 'cs-orange',
+        'fx': 'transform filter duration-[var(--slidev-transition-duration)]',
       }
     ],
     presets: [
@@ -101,6 +105,8 @@ export default mergeConfigs([
     safelist: [
       ...Object.keys(variants).map(key => `cs-${key}`),
       'cs-main',
+      'duration-200',
+      'ease-in-out',
     ],
   },
 ])

@@ -14,11 +14,13 @@ contextMenu: false
 mdc: true
 growSeed: 4
 title: Тесты
-class: text-center
+layout: center
 ---
 
-# Добро пожаловать в Slidev!
-Презентации для разработчиков
+<XSlide slot="title" #="{ title, className, style }">
+  <h1 :class="className" :style> {{ title }} </h1>
+</XSlide>
+<XSlideOut slot="title" title="Добро пожаловать в Slidev!" class="text-center" />
 
 <div class="pt-12">
   <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
@@ -35,7 +37,7 @@ layout: center
 class: text-center
 ---
 
-# Что такое Slidev?
+<XSlideOut slot="title" title="Что такое Slidev?" class="text-center" />
 
 Slidev - это инструмент для создания слайдов, созданный для разработчиков
 
@@ -51,11 +53,11 @@ timeline:
   - portable:
 ---
 
-# Возможности
+<XSlideOut slot="title" title="Возможности" class="" />
 
 <ul>
-<li :class="[t.mdFirst, 'fx duration-200 ease-in-out']" > <b>Markdown-based</b> - используйте привычный markdown </li>
-<li :class="[t.themes, 'fx duration-200 ease-in-out']" > <b>Темы</b> - легко настраиваемый внешний вид </li>
-<li :class="[t.developer, 'fx duration-200 ease-in-out']" > <b>Разработчикам</b> - подсветка кода, live coding </li>
-<li :class="[t.portable, 'fx duration-200 ease-in-out']" > <b>Портативность</b> - экспорт в PDF, PNG или SPA </li>
+<li :class="[t.mdFirst, 'fx']" > <b>Markdown-based</b> - используйте привычный markdown </li>
+<li :class="[t.themes, 'fx']" > <b>Темы</b> - легко настраиваемый внешний вид </li>
+<li :class="[t.developer, 'fx']" > <b>Разработчикам</b> - подсветка кода, live coding </li>
+<li :class="[t.portable, 'fx']" > <b>Портативность</b> - экспорт в PDF, PNG или SPA </li>
 </ul>

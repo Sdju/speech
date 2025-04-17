@@ -44,6 +44,10 @@
     @apply mt-2 my-4 line-height-none;
   }
 
+  h1, h2, h3, h4, h5, h6 {
+    @apply w-[fit-content];
+  }
+
   blockquote {
     @apply mt-2 mb-4 text-6 italic;
   }
