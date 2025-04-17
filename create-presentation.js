@@ -71,10 +71,6 @@ function createPresentation() {
     console.log('Generating .env file...');
     generateEnvFile(presentationPath, targetPath);
 
-    // Initialize git repository
-    console.log('Initializing git repository...');
-    execSync('git init', { cwd: targetPath });
-
     // Install dependencies
     console.log('Installing dependencies...');
     execSync('pnpm install', { cwd: targetPath });
