@@ -40,10 +40,22 @@ class: text-center
 Slidev - это инструмент для создания слайдов, созданный для разработчиков
 
 ---
+timeline:
+  - mdFirst: -popup-hidden
+    themes: -popup-hidden
+    developer: -popup-hidden
+    portable: -popup-hidden
+  - mdFirst:
+  - themes:
+  - developer:
+  - portable:
+---
 
 # Возможности
 
-- 📝 **Markdown-based** - используйте привычный markdown
-- 🎨 **Темы** - легко настраиваемый внешний вид
-- 🧑‍💻 **Разработчикам** - подсветка кода, live coding
-- 📤 **Портативность** - экспорт в PDF, PNG или SPA
+<ul>
+<li :class="[t.mdFirst, 'fx duration-200 ease-in-out']" > <b>Markdown-based</b> - используйте привычный markdown </li>
+<li :class="[t.themes, 'fx duration-200 ease-in-out']" > <b>Темы</b> - легко настраиваемый внешний вид </li>
+<li :class="[t.developer, 'fx duration-200 ease-in-out']" > <b>Разработчикам</b> - подсветка кода, live coding </li>
+<li :class="[t.portable, 'fx duration-200 ease-in-out']" > <b>Портативность</b> - экспорт в PDF, PNG или SPA </li>
+</ul>

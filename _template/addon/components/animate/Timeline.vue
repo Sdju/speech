@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useNav, useSlideContext } from '@slidev/client'
-import { computed, ref, reactive, watch, onMounted, onUnmounted } from 'vue'
+import { computed, reactive, onMounted, onUnmounted, useTemplateRef } from 'vue'
 
 interface TimelineStep {
   $duration?: number
@@ -10,11 +10,11 @@ interface TimelineStep {
 
 type TimelineSteps = TimelineStep[]
 
-const root = ref()
-
-const { steps } = defineProps<{
-  steps: TimelineSteps
+const props = defineProps<{
+  steps?: TimelineSteps
 }>()
+
+const root = useTemplateRef('root')
 
 function deepMerge(target: any, source: any) {
   if (source === null || typeof source !== 'object') return source
@@ -30,23 +30,24 @@ function deepMerge(target: any, source: any) {
 
 let nav = useNav()
 let slide = useSlideContext()
+const steps = computed(() => props.steps ?? slide.$frontmatter.timeline)
 
 const keys = computed(() => {
-  let baseKeys = new Set(Object.keys(steps[0]))
+  let baseKeys = new Set(Object.keys(steps.value[0]))
   baseKeys.delete('$clicksAlias')
   baseKeys.add('$stepsCount')
   return Array.from(baseKeys)
 })
 
-let totalClicks = computed(() => steps.length)
+let totalClicks = computed(() => steps.value.length)
 
 const precalculatedData = computed(() => {
   const totalClicksValue = totalClicks.value
-  const states = Array.from({ length: totalClicksValue }, () => deepMerge({}, steps[0]))
+  const states = Array.from({ length: totalClicksValue }, () => deepMerge({}, steps.value[0]))
 
   let click = 0
   let aliases = {} as Record<string, [number, number]>
-  steps.forEach((action) => {
+  steps.value.forEach((action) => {
     let from = 0
     let to = totalClicksValue
     from = click++
@@ -95,12 +96,11 @@ const reactiveKeys = [
 const params = reactive(Object.fromEntries(reactiveKeys))
 
 onMounted(() => {
-  console.log(slide.$clicksContext.calculateSince(0, totalClicks.value))
-  slide.$clicksContext.register(root.value, slide.$clicksContext.calculateSince(0, totalClicks.value))
+  slide.$clicksContext.register(root.value!, slide.$clicksContext.calculateSince(0, totalClicks.value))
 })
 
 onUnmounted(() => {
-  slide.$clicksContext.unregister(root.value)
+  slide.$clicksContext.unregister(root.value!)
 })
 </script>
 

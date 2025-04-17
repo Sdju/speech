@@ -8,13 +8,13 @@
     "export": "slidev export --with-clicks"
   },
   "dependencies": {
-    "@iconify/json": "^2.2.323",
+    "@iconify/json": "^2.2.328",
     "@slidev/cli": "51.5.0",
     "chroma-js": "^3.1.2",
     "class-variance-authority": "^0.7.1",
     "env-cmd": "^10.1.0",
     "seedrandom": "^3.0.5",
-    "tailwind-merge": "3.1.0",
+    "tailwind-merge": "3.2.0",
     "vue": "^3.5.13"
   },
   "devDependencies": {

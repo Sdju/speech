@@ -12,7 +12,7 @@
 /* fx */
 
 .fx {
-    @apply transform filter;
+    --at-apply: transform filter duration-[var(--slidev-transition-duration)];
 }
 
 .-popup-hidden {
