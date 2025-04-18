@@ -1,0 +1,97 @@
+/* v-click */
+.slidev-vclick-target {
+    transition: opacity 500ms ease, filter 200ms ease;
+}
+
+.slidev-vclick-hidden {
+    opacity: 0;
+    pointer-events: none;
+    filter: blur(3px);
+}
+
+/* fx */
+
+.fx {
+    @apply transform filter;
+}
+
+.-popup-hidden {
+    @apply pointer-events-none;
+    --un-blur: blur(10px);
+    --un-scale-x: 0;
+    --un-scale-y: 0;
+}
+
+.-blur-hidden {
+    @apply pointer-events-none filter-blur-[10px] opacity-0;
+}
+
+.-slide-down-hidden {
+    @apply pointer-events-none translate-y-full opacity-0;
+}
+
+/* fade-out */
+@keyframes fade-out {
+    from {
+        opacity: 1;
+        filter: blur(0px);
+    }
+    to {
+        opacity: 0;
+        filter: blur(5px);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        filter: blur(5px);
+    }
+    to {
+        opacity: 1;
+        filter: blur(0px);
+    }
+}
+
+/* Apply the custom animation to the old and new page states */
+::view-transition-old(*) {
+  animation: var(--slidev-transition-duration) ease-in both fade-out;
+}
+
+::view-transition-new(*) {
+  animation: var(--slidev-transition-duration) ease-in both fade-in;
+}
+
+::view-transition-image-pair(*) {
+  isolation: auto;
+}
+
+/* fx-keyframes */
+@keyframes fx-spin {
+    from { --un-rotate-z: 0deg; }
+    to { --un-rotate-z: 360deg; }
+}
+
+@property --un-rotate-z {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@property --un-scale-x {
+    syntax: '<number>';
+    initial-value: 1;
+    inherits: false;
+}
+
+@property --un-rotate-y {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@property --un-rotate-z {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}

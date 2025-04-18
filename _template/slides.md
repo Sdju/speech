@@ -13,51 +13,117 @@ transition: view-transition
 contextMenu: false
 mdc: true
 growSeed: 4
-title: Тесты
+title: Расширенный Slidev
 layout: center
 ---
 
 <XSlide slot="title" #="{ title, className, style }">
-  <h1 :class="className" :style> {{ title }} </h1>
+  <h1 :class="className" :style="style"> {{ title }} </h1>
 </XSlide>
-<XSlideOut slot="title" title="Добро пожаловать в Slidev!" class="text-center" />
+
+<XSlideOut slot="title" title="Добро пожаловать в Расширенный Slidev!" class="text-center" />
 
 <div class="pt-12">
   <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
-    Нажмите пробел для перехода к следующему слайду <carbon:arrow-right class="inline"/>
+    Нажмите пробел для начала демонстрации <carbon:rocket class="inline"/>
   </span>
 </div>
-
-<!--
-Заметки презентатора здесь
--->
 
 ---
 layout: center
 class: text-center
 ---
 
-<XSlideOut slot="title" title="Что такое Slidev?" class="text-center" />
+<XSlideOut slot="title" title="Плавные переходы!" class="text-4xl mb-4" />
 
-Slidev - это инструмент для создания слайдов, созданный для разработчиков
+<div :class="className">
+  <div class="text-2xl text-blue-400">View Transitions API</div>
+</div>
 
 ---
+layout: center
 timeline:
-  - mdFirst: -popup-hidden
-    themes: -popup-hidden
-    developer: -popup-hidden
-    portable: -popup-hidden
-  - mdFirst:
-  - themes:
-  - developer:
-  - portable:
+  - first: -popup-hidden
+    second: -popup-hidden
+    third: -popup-hidden
+  - first:
+  - second:
+  - third:
 ---
 
-<XSlideOut slot="title" title="Возможности" class="" />
+<XSlide slot="features" #="{ className }">
+  <div :class="className">
+    <h1 class="mb-8">Возможности Аддона</h1>
+    <ul class="text-xl space-y-4">
+      <li :class="[t.first, 'fx']">🎭 <b>Кросс-слайдовые переходы</b> - плавная анимация между слайдами</li>
+      <li :class="[t.second, 'fx']">🎨 <b>Слоты и компоненты</b> - XSlide и XSlideOut для управления контентом</li>
+      <li :class="[t.third, 'fx']">✨ <b>View Transitions</b> - современные веб-анимации</li>
+    </ul>
+  </div>
+</XSlide>
 
-<ul>
-<li :class="[t.mdFirst, 'fx']" > <b>Markdown-based</b> - используйте привычный markdown </li>
-<li :class="[t.themes, 'fx']" > <b>Темы</b> - легко настраиваемый внешний вид </li>
-<li :class="[t.developer, 'fx']" > <b>Разработчикам</b> - подсветка кода, live coding </li>
-<li :class="[t.portable, 'fx']" > <b>Портативность</b> - экспорт в PDF, PNG или SPA </li>
-</ul>
+<XSlideOut slot="features" title="Возможности" class="text-center" />
+
+---
+layout: two-cols
+---
+
+<XSlide slot="code" #="{ className }">
+  <div :class="className" class="pr-4">
+    <h1 class="mb-4">Пример использования</h1>
+    
+```vue
+<XSlide slot="demo" #="{ className }">
+  <div :class="className">
+    <h1>Ваш контент</h1>
+  </div>
+</XSlide>
+
+<XSlideOut 
+  slot="demo" 
+  title="Заголовок" 
+  class="text-center" 
+/>
+```
+
+  </div>
+</XSlide>
+
+::right::
+
+<XSlide slot="result" #="{ className }">
+  <div :class="className" class="pl-4">
+    <h2 class="mb-4">Результат</h2>
+    <div class="border p-4 rounded">
+      <h3 class="text-2xl mb-2">Плавный переход</h3>
+      <p class="text-gray-400">Контент анимируется между слайдами</p>
+    </div>
+  </div>
+</XSlide>
+
+<XSlideOut slot="code" title="Код" />
+<XSlideOut slot="result" title="Результат" />
+
+---
+layout: center
+class: text-center
+---
+
+<XSlide slot="end" #="{ className }">
+  <div :class="className">
+    <h1 class="mb-8">Попробуйте сами!</h1>
+    <div class="text-xl opacity-75">
+      Расширьте возможности ваших презентаций с помощью нашего аддона
+    </div>
+    <div class="mt-8 flex justify-center gap-4">
+      <a href="https://sli.dev" target="_blank" class="px-4 py-2 bg-blue-500 rounded hover:bg-blue-600">
+        Документация
+      </a>
+      <a href="https://github.com/slidevjs/themes" target="_blank" class="px-4 py-2 bg-gray-500 rounded hover:bg-gray-600">
+        GitHub
+      </a>
+    </div>
+  </div>
+</XSlide>
+
+<XSlideOut slot="end" title="Начните сейчас!" />
