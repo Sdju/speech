@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-defineProps<{
+const {
+  imageUrl,
+  preset,
+  params,
+} = defineProps<{
   imageUrl: string;
   preset: 'blur' | 'vignette';
   params: any;
@@ -76,10 +80,10 @@ const createProgram = (gl: WebGLRenderingContext, vertexShader: WebGLShader, fra
 };
 
 const loadImage = () => {
-  if (!imageUrl.value || !canvasRef.value) return;
+  if (!imageUrl || !canvasRef.value) return;
   const img = new Image();
   img.crossOrigin = 'anonymous';
-  img.src = imageUrl.value;
+  img.src = imageUrl;
   img.onload = () => {
     if (!canvasRef.value) return;
     canvasRef.value.width = img.width;
@@ -91,8 +95,8 @@ const loadImage = () => {
       return;
     }
 
-    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+    const vertexShader = createShader(gl, gl.VERTEX_SHADER, presets[preset].vertexShader);
+    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, presets[preset].fragmentShader);
     if (!vertexShader || !fragmentShader) return;
 
     const program = createProgram(gl, vertexShader, fragmentShader);
@@ -144,7 +148,6 @@ const loadImage = () => {
 
 <template>
   <div>
-    <input v-model="imageUrl" placeholder="Enter Image URL" />
     <button @click="loadImage">Load Image</button>
     <canvas ref="canvasRef"></canvas>
   </div>

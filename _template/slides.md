@@ -21,7 +21,7 @@ layout: center
   <h1 :class="className" :style="style"> {{ title }} </h1>
 </XSlide>
 
-<XSlideOut slot="title" title="Добро пожаловать в Расширенный Slidev!" class="text-center" />
+<XSlideOut slot="title" title="Welcome to Slidev+!" class="text-center" />
 
 <div class="pt-12">
   <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
