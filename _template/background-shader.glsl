@@ -4,7 +4,7 @@ precision highp float;
 
 uniform float u_time;
 uniform vec2 u_resolution;
-
+uniform vec4 u_baseColor;
 #define PI 3.14159265359
 
 const float overallSpeed = 0.2;
@@ -28,8 +28,6 @@ const float offsetSpeed = 1.33 * overallSpeed;
 const float minOffsetSpread = 0.6;
 const float maxOffsetSpread = 2.0;
 const int linesPerGroup = 3;
-
-const vec4 lineColor = vec4(0.1216, 0.4196, 0.0941, 1.0);
 
 float drawCircle(vec2 pos, float radius, vec2 coord) {
     return smoothstep(radius + gridSmoothWidth, radius, length(coord - pos));
@@ -95,11 +93,11 @@ void main() {
         float circle = drawCircle(circlePosition, 0.01, space) * 4.0;
         
         line = line + circle;
-        lines += line * lineColor * rand;
+        lines += line * u_baseColor * rand;
     }
     
-    vec4 bgColor1 = lineColor * 0.2;
-    vec4 bgColor2 = lineColor * 0.1;
+    vec4 bgColor1 = u_baseColor * 0.2;
+    vec4 bgColor2 = u_baseColor * 0.1;
     vec4 fragColor = mix(bgColor1, bgColor2, uv.x);
     fragColor *= verticalFade;
     fragColor.a = 1.0;

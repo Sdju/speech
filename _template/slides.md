@@ -31,13 +31,13 @@ layout: center
 
 ---
 layout: center
-class: text-center
+class: text-center cs-blue
 ---
 
 <XSlideOut slot="title" title="Плавные переходы!" class="text-4xl mb-4" />
 
 <div :class="className">
-  <div class="text-2xl text-blue-400">View Transitions API</div>
+  <div class="text-2xl c-[--v-color]">View Transitions API</div>
 </div>
 
 ---
