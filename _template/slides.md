@@ -25,7 +25,7 @@ layout: center
 
 <div class="pt-12">
   <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
-    Нажмите пробел для начала демонстрации <carbon:rocket class="inline"/>
+    Let's go <carbon:rocket class="inline"/>
   </span>
 </div>
 
@@ -34,10 +34,10 @@ layout: center
 class: text-center cs-blue
 ---
 
-<XSlideOut slot="title" title="Плавные переходы!" class="text-4xl mb-4" />
+<XSlideOut slot="title" title="Smooth transitions!" class="text-7xl! mb-20! text-shadow-lg" />
 
 <div :class="className">
-  <div class="text-2xl c-[--v-color]">View Transitions API</div>
+  <div class="text-2xl c-[--v-color] text-shadow-lg">View Transitions API</div>
 </div>
 
 ---
