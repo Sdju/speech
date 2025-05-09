@@ -14,8 +14,31 @@ contextMenu: false
 mdc: true
 growSeed: 4
 title: Магия композаблов
-layout: center
-class: text-center cs-green
+src: ./parts/1_intro.md
+---
+
+---
+src: ./parts/2_what_is_composable.md
+---
+
+---
+src: ./parts/3_basic_techniques.md
+---
+
+---
+src: ./parts/4_main_patterns.md
+---
+
+---
+src: ./parts/5_specific_techniques.md
+---
+
+---
+src: ./parts/6_complex_patterns.md
+---
+
+---
+src: ./parts/7_conclusion.md
 ---
 
 <XSlide slot="title" #="{ title, className, style }">
