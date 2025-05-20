@@ -1,30 +1,27 @@
 ---
 layout: center
-class: text-center cs-green
+class: text-center
 ---
 
-# Магия композаблов во Vue
-
-Чернов Денис
+<div class="mb-50px flex flex-row justify-center">
+  <div class="size-80 rd-full of-hidden">
+    <img class="size-full object-cover" src="/img/photo.png" />
+  </div>
+  <div class="size-80 rd-full ml-15px">
+    <ZedeIcon class="size-full" />
+  </div>
+</div>
+<div class="text-4xl mb-50px">Чернов Денис</div>
+<div class="grid grid-cols-[36px_1fr] gap-2 items-center">
+  <FileIconsTelegram /> @zede_code
+  <IonLogoGithub /> @Sdju
+</div>
 
 ---
-layout: center
----
 
-# Что сегодня узнаем
-
-- Что такое композаблы и почему они важны
-- Основные приемы и паттерны использования
-- Как создавать композаблы разной сложности
-- Продвинутые техники для системного и прикладного кода
+<LogosVue class="$obj sp-486_278_400_400" />
 
 ---
-layout: center
-transition: slide-up
----
 
-# О докладчике
+<img src="../img/holy.png" class="$obj pos-486_278" />
 
-- Разработчик с опытом во Vue экосистеме
-- Работа над проектами разного масштаба
-- Особый интерес к архитектуре и организации кода 

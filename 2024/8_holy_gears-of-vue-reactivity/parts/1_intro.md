@@ -58,7 +58,7 @@ slideClass: cs-green
 }, {
   computed: 'pos-781_356 ',
 }, {
-  watch: 'pos-472_474 ',
+  watch: 'pos-472_474',
 }, {
   watchEffect: 'pos-165_356 ',
 }, {

@@ -1,81 +1,145 @@
 ---
-layout: default
+layout: center
+topTitle: Что такое композабл?
+topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-50%] w-max
 ---
 
-# Что есть композабл
-
 ---
-layout: two-cols
+topTitle: Что такое композабл?
+topTitleClass: top-[30px] left-[50%] translate-x-[-50%]
+timeline:
+  - optionsAPI: ' fx text-left'
+    compositionAPI: 'fx text-left -popup-hidden'
+  - optionsAPI: 'fx text-left'
+    compositionAPI: 'fx text-left'
 ---
 
-# Введение в композаблы
+<div class="grid grid-cols-2 gap-4 mt-15">
 
-- Переиспользуемая логика во Vue
-- Появились с выходом Composition API
-- Решают проблемы Options API:
-  - Смешивание логических аспектов
-  - Сложность переиспользования кода
-  - Трудности при масштабировании
-
-::right::
+<div :class="t.optionsAPI">
+<h2 class="mb-4 text-center block w-full">Options API</h2>
 
 ```js
-// Options API (до Vue 3)
 export default {
   data() {
-    return { count: 0 }
+    return { lupa: 0, pupa: 0 }
+  },
+  computed: {
+    salaryLupa() { ... },
+    salaryPupa() { ... },
   },
   methods: {
-    increment() {
-      this.count++
+    giveSalary() {
+      this.lupa += this.salaryPupa
+      this.pupa += this.salaryLupa
     }
+  },
+  mounted() {
+    this.giveSalary()
   }
-}
-
-// Composition API (Vue 3+)
-import { ref } from 'vue'
-
-export function useCounter() {
-  const count = ref(0)
-  function increment() {
-    count.value++
-  }
-  return { count, increment }
 }
 ```
 
----
+</div>
 
-# Vue Composition API
+<div :class="t.compositionAPI">
+<h2 class="mb-4 text-center block w-full">Composition API</h2>
 
-- Представлен с Vue 3
-- Альтернатива Options API
-- Главные концепции:
-  - reactive, ref для реактивного состояния
-  - computed для вычисляемых свойств
-  - watch, watchEffect для побочных эффектов
-  - lifecycle hooks (onMounted, onUnmounted и т.д.)
+```js
+const lupa = ref(0)
+const pupa = ref(0)
+const salaryLupa = computed( ... )
+const salaryPupa = computed( ... )
 
----
+function giveSalary() {
+  lupa.value += salaryPupa.value
+  pupa.value += salaryLupa.value
+}
 
-## Отсылка на доклад Holy.js
+onMounted(() => {
+  giveSalary()
+})
+```
 
-<div class="flex justify-center">
-  <div class="text-center p-4 border rounded">
-    <h3>"Шестеренки реактивности Vue"</h3>
-    <p>Подробное объяснение внутренней работы реактивной системы Vue</p>
-    <p class="text-xs">Holy.js 2024 - для глубокого понимания основ</p>
-  </div>
+</div>
 </div>
 
 ---
+topTitle: Что такое композабл?
+---
 
-# Разъяснение термина "композабл"
+````md magic-move
+```js
+export default {
+  mixins: [i18nMixin],
 
-- **Composable** - функция, использующая Composition API
-- Позволяет извлекать и переиспользовать логику с сохранением реактивности
-- Основан на функциональном подходе
-- Отличия от:
-  - Mixins (более изолированы и прозрачны)
-  - Utility функций (сохраняют реактивный контекст)
-  - Custom Hooks в React (похожи, но работают с Vue экосистемой) 
+  computed: {
+    title() {
+      return this.$i18n.$t('title')
+    }
+  }
+}
+```
+
+```js
+const { t } = useI18n()
+
+const title = computed(() => t('title'))
+```
+````
+
+---
+topTitle: Что такое композабл?
+---
+
+````md magic-move
+```js
+const lupa = ref(0)
+const pupa = ref(0)
+const salaryLupa = computed( ... )
+const salaryPupa = computed( ... )
+
+function giveSalary() {
+  lupa.value += salaryPupa.value
+  pupa.value += salaryLupa.value
+}
+
+onMounted(() => {
+  giveSalary()
+})
+```
+
+```js
+const lupa = useEmployee( ... )
+const pupa = useEmployee( ... )
+
+onMounted(() => {
+  lupa.giveSalary()
+  pupa.giveSalary()
+})
+```
+````
+
+---
+topTitle: Что такое композабл?
+---
+
+> Композабл - это паттерн!
+
+- Функция
+- Используется для переиспользования и инкапсуляции реактивных состояний в компонентах
+- Начинается с `use`
+- Обычно синхронная
+- Обычно возвращает нереактивный объект с реактивными свойствами
+
+---
+topTitle: Что не является композаблом?
+---
+
+- Функция не использует никакие реактивные свойства
+- Функция не предназначенная для использования в `setup`
+
+---
+topTitle: Что не является композаблом?
+---
+

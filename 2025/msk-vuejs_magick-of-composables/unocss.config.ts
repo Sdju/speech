@@ -87,7 +87,7 @@ export default mergeConfigs([
         'pos-center': 'left-1/2 top-1/2',
         'size-full': 'w-full h-full',
         'framed': 'rounded-[10px] border-2 border-gray-500/20 object-cover',
-        'cs-main': 'cs-orange',
+        'cs-main': 'cs-green',
         'fx': 'transform filter duration-[var(--slidev-transition-duration)]',
       }
     ],

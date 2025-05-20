@@ -100,8 +100,8 @@ void main() {
     vec4 bgColor2 = u_baseColor * 0.1;
     vec4 fragColor = mix(bgColor1, bgColor2, uv.x);
     fragColor *= verticalFade;
-    fragColor.a = 0.8;
     fragColor += lines;
+    fragColor.rgb *= 0.5;
     
     gl_FragColor = fragColor;
 }
