@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useNav, useSlideContext } from '@slidev/client'
-import { computed, reactive, onMounted, onUnmounted, useTemplateRef } from 'vue'
+import { computed, reactive, onMounted, onUnmounted, useTemplateRef, onUpdated, onBeforeUpdate, getCurrentInstance, watch } from 'vue'
 
 interface TimelineStep {
   $duration?: number
@@ -48,7 +48,7 @@ if (slide.$frontmatter.timeline) {
       let to = totalClicksValue
       from = click++
 
-      if (action.$clicksAlias) {
+      if (action?.$clicksAlias) {
         if (Array.isArray(action.$clicksAlias)) {
           action.$clicksAlias.forEach((alias) => {
             aliases[alias] = [from, to]
@@ -59,14 +59,23 @@ if (slide.$frontmatter.timeline) {
       }
       
       for (let i = from; i < to; i++) {
-        states[i] = deepMerge(states[i], action)
+        states[i] = deepMerge(states[i], action ?? {})
       }
     })
     return { states, aliases }
   })
 
   const clicksAliases = computed(() => precalculatedData.value.aliases)
-  const click = computed(() => Math.min(nav.clicks.value, totalClicks.value - 1))
+  const click = computed(() => {
+    const diff = nav.currentSlideNo.value - slide.$page.value
+    if (diff > 0) {
+      return totalClicks.value - 1
+    }
+    if (diff < 0) {
+      return 0
+    }
+    return Math.min(nav.clicks.value, totalClicks.value - 1)
+  })
   const data = computed(() => precalculatedData.value.states[click.value])
 
   const reactiveKeys = [
@@ -89,9 +98,12 @@ if (slide.$frontmatter.timeline) {
     [['$stepsCount', computed(() => precalculatedData.value.states.length)]]
   ].flat()
 
-  // @ts-expect-error
-  slide.$clicksContext.timeline = reactive(Object.fromEntries(reactiveKeys))
-  console.log('make timeline')
+  const instance = getCurrentInstance()?.parent?.parent?.props
+  watch(() => instance?.clicksContext, () => {
+    console.log('instance', instance)
+    // @ts-expect-error
+    instance.clicksContext.timeline = reactive(Object.fromEntries(reactiveKeys))
+  }, { immediate: true, flush: 'sync' })
 
   onMounted(() => {
     slide.$clicksContext.register(root.value!, slide.$clicksContext.calculateSince(0, totalClicks.value))

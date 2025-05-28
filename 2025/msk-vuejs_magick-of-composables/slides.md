@@ -79,8 +79,6 @@ class: text-center
     - нужно понимать что используемые с onUnmounted могут быть использованы только в компонентах
   - computed vs readonly vs ref + TS readonly - как передать неизменяемое значение
     - утилита которая на этапе сборки выбирает между readonly и TS readonly
-  - случаи для shallowRef
-    - компоненты / тяжеловесные компоненты
 
 - Приемы для системного кода
   - выбор между object/reactive
@@ -128,19 +126,19 @@ src: ./parts/2_what_is_composable.md
 ---
 
 ---
-# src: ./parts/3_basic_techniques.md
+src: ./parts/3_basic_techniques.md
 ---
 
 ---
-# src: ./parts/4_main_patterns.md
+src: ./parts/4_specific_techniques.md
 ---
 
 ---
-# src: ./parts/5_specific_techniques.md
+src: ./parts/5_complex_patterns.md
 ---
 
 ---
-# src: ./parts/6_complex_patterns.md
+src: ./parts/6_conclusion.md
 ---
 
 ---

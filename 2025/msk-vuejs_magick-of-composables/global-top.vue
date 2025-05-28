@@ -15,7 +15,7 @@ const frontmatter = computed(() => currentSlideRoute.value.meta?.slide?.frontmat
       <ObjectEdit />
       <MemoryEditor />
     </CoordHelper>
-    <div class="pos-br20 absolute text-lg opacity-50">{{ currentSlideNo }}</div>
+    <div class="absolute right-[20px] bottom-[20px] text-lg opacity-50">{{ currentSlideNo }}</div>
     <div
       :class="twMerge([
         'absolute pos-20 text-[2.5em] transition-all duration-500',

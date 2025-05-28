@@ -36,3 +36,17 @@
     initial-value: theme('colors.gray.500');
     inherits: false;
 }
+
+.item {
+  @apply text-sm bg-[#00000088] p-[12px] rd-[8px] flex flex-row items-center gap-[8px]
+}
+.item-example {
+  @apply text-sm bg-[#00000088] p-[12px] rd-[8px] flex flex-col gap-[8px]
+}
+.item-icon {
+  @apply w-[27px] h-[27px] rd-[4px] flex items-center justify-center;
+  background-color: #D9D9D920;
+}
+.items-grid {
+  @apply grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12;
+}

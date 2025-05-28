@@ -5,7 +5,7 @@ topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-5
 ---
 
 ---
-topTitle: Что такое композабл?
+topTitle: Как было раньше?
 topTitleClass: top-[30px] left-[50%] translate-x-[-50%]
 timeline:
   - optionsAPI: ' fx text-left'
@@ -64,82 +64,222 @@ onMounted(() => {
 </div>
 </div>
 
+
 ---
-topTitle: Что такое композабл?
+layout: default
 ---
+
+# От миксинов к композаблам
 
 ````md magic-move
 ```js
 export default {
-  mixins: [i18nMixin],
-
+  data() {
+    return { lupa: 0, pupa: 0 }
+  },
   computed: {
-    title() {
-      return this.$i18n.$t('title')
+    salaryLupa() { ... },
+    salaryPupa() { ... },
+  },
+  methods: {
+    giveSalary() {
+      this.lupa += this.salaryPupa
+      this.pupa += this.salaryLupa
     }
+  },
+  mounted() {
+    this.giveSalary()
   }
 }
 ```
 
 ```js
-const { t } = useI18n()
-
-const title = computed(() => t('title'))
-```
-````
-
----
-topTitle: Что такое композабл?
----
-
-````md magic-move
-```js
-const lupa = ref(0)
-const pupa = ref(0)
-const salaryLupa = computed( ... )
-const salaryPupa = computed( ... )
-
-function giveSalary() {
-  lupa.value += salaryPupa.value
-  pupa.value += salaryLupa.value
+export const accountingMixin = {
+  data() {
+    return { lupa: 0, pupa: 0 }
+  },
+  computed: {
+    salaryLupa() { ... },
+    salaryPupa() { ... },
+  },
+  methods: {
+    giveSalary() {
+      this.lupa += this.salaryPupa
+      this.pupa += this.salaryLupa
+    }
+  },
+  mounted() {
+    this.giveSalary()
+  }
 }
 
-onMounted(() => {
-  giveSalary()
-})
+export default {
+  name: 'HornsAndHooves',
+  mixins: [accountingMixin],
+  // ...
+}
 ```
 
 ```js
-const lupa = useEmployee( ... )
-const pupa = useEmployee( ... )
+export const employeeMixin = (name) => {
+  data() {
+    return { [name]: 0 }
+  },
+  computed: {
+    [`salary${name}`]() { ... },
+  },
+  methods: {
+    [`giveSalary${name}`]() {
+      this[name] += this[`salary${name}`]
+    }
+  },
+  mounted() {
+    this[`giveSalary${name}`]()
+  }
+}
 
-onMounted(() => {
-  lupa.giveSalary()
-  pupa.giveSalary()
-})
+export default {
+  name: 'HornsAndHooves',
+  mixins: [employeeMixin('lupa'), employeeMixin('pupa')],
+  // ...
+}
+```
+
+```js
+export const useEmployee = () => {
+  const employee = ref(0)
+  const salary = computed(() => { /* ... */ })
+  onMounted(() => {
+    giveSalary()
+  }
+  return { employee, salary }
+}
+
+// HornsAndHooves
+const lupa = useEmployee('lupa')
+const pupa = useEmployee('pupa')
 ```
 ````
 
 ---
-topTitle: Что такое композабл?
+layout: default
 ---
 
-> Композабл - это паттерн!
+# Что такое композабл?
 
-- Функция
-- Используется для переиспользования и инкапсуляции реактивных состояний в компонентах
-- Начинается с `use`
-- Обычно синхронная
-- Обычно возвращает нереактивный объект с реактивными свойствами
+> `Композабл` - это `Vue-паттерн` для инкапсуляции и гибкого переиспользования логики, в виде `функции` оперирующей `реактивными данными`.
 
 ---
-topTitle: Что не является композаблом?
+timeline:
+  - point1: 'outline outline-2 outline-[#CCCCCC88]'
+    point2: '-blur-hidden outline-[#00000088]'
+    point3: '-blur-hidden outline-[#00000088]'
+    point4: '-blur-hidden outline-[#00000088]'
+    example: 'pos-0 fx duration-500'
+  - point1: 'outline-[#00000088]'
+    point2: 'outline outline-2 outline-[#CCCCCC88]'
+  - point2: 'outline-[#00000088]'
+    point3: 'outline outline-2 outline-[#CCCCCC88]'
+  - point3: 'outline-[#00000088]'
+    point4: 'outline outline-2 outline-[#CCCCCC88]'
 ---
 
-- Функция не использует никакие реактивные свойства
-- Функция не предназначенная для использования в `setup`
+<h1 class="text-center">Композабл:</h1>
+
+<div class="items-grid">
+  <div class="item fx duration-400" :class="t.point1">
+    <div class="item-icon">
+      <MaterialSymbolsCycle/>
+    </div>
+    <div>
+      Функция, для инкапсуляции и переиспользования логики
+    </div>
+  </div>
+  <div class="item fx duration-400" :class="t.point2">
+    <div class="item-icon">
+      <LineiconsBricks/>
+    </div>
+    <div>
+      Использует <strong>Composition API</strong>
+    </div>
+  </div>
+    <div class="item fx duration-400" :class="t.point3">
+    <div class="item-icon">
+      <MingcuteAsteriskFill/>
+    </div>
+    <div>
+      Следует соглашению именования <strong>use*</strong>
+    </div>
+  </div>
+  <div class="item fx duration-400" :class="t.point4">
+    <div class="item-icon">
+      <FlowbiteVueSolid/>
+    </div>
+    <div>
+      Работает с <strong>реактивными данными</strong> или хуками
+    </div>
+  </div>
+  <div class="item-example fx example row-span-4 no-bg" :class="t.example">
+
+<div :class="t.example">
+
+````md magic-move {lines: false}
+```ts
+function useCounter() {
+  const count = ref(0)
+  const increment = () => count.value++
+  return { count, increment }
+}
+```
+```ts
+function useCounter() {}
+function useI18n() {}
+function useFetch() {}
+```
+```ts
+const [
+  advanced, 
+  setAdvanced
+] = useLearnComposable({
+  basics: 'learn'
+})
+setAdvanced(true)
+```
+```ts
+const { advanced } = useLearnComposable({
+  basics: 'learn'
+})
+advanced.value = true
+```
+````
+
+</div>
+
+  </div>
+</div>
 
 ---
-topTitle: Что не является композаблом?
+layout: default
 ---
 
+# Что НЕ является композаблом?
+
+````md magic-move
+```ts
+// ❌ Обычная утилита
+export function formatDate(date) {
+  return new Date(date).toLocaleDateString()
+}
+```
+```ts
+// ❌ Обычная утилита
+export function formatDate(date) {
+  return new Date(date).toLocaleDateString()
+}
+
+// ❌ Тоже утилита, хоть и с реактивными данными
+export function getValue(value: Ref<number>) {
+  return value.value
+}
+```
+````
