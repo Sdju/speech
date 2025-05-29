@@ -64,7 +64,7 @@ timeline:
     point3: '-blur-hidden outline-[#00000088]'
     point4: '-blur-hidden outline-[#00000088]'
     example1: 'pos-0 fx duration-500'
-    example2: '-blur-hidden pos-0 fx duration-500'
+    example2: '-blur-hidden absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
   - point1: 'outline-[#00000088]'
     point2: 'outline outline-2 outline-[#CCCCCC88]'
   - point2: 'outline-[#00000088]'
@@ -72,7 +72,7 @@ timeline:
   - point3: 'outline-[#00000088]'
     point4: 'outline outline-2 outline-[#CCCCCC88]'
     example1: '-blur-hidden absolute pos-0 fx duration-500'
-    example2: 'pos-0 fx duration-500'
+    example2: 'absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
 ---
 
 <h1 class="text-center"><strong>provide/inject</strong>:</h1>
@@ -80,7 +80,7 @@ timeline:
 <div class="items-grid">
   <div class="item fx duration-400" :class="t.point1">
     <div class="item-icon">
-      <MaterialSymbolsCycle/>
+      <MaterialSymbolsKeyOutline/>
     </div>
     <div>
       Используйте <strong>Symbol</strong> как ключ
@@ -88,7 +88,7 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point2">
     <div class="item-icon">
-      <LineiconsBricks/>
+      <MajesticonsRestrictedLine/>
     </div>
     <div>
       Не экспортируйте ключ!
@@ -96,7 +96,7 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point3">
     <div class="item-icon">
-      <FlowbiteVueSolid/>
+      <BiBricks/>
     </div>
     <div>
       Всегда уносите в композабл
@@ -104,7 +104,7 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point4">
     <div class="item-icon">
-      <MingcuteAsteriskFill/>
+      <MaterialSymbolsStateful/>
     </div>
     <div>
       Не используйте <strong>provide/inject</strong> вместо стейт менеджера
@@ -141,7 +141,7 @@ export const useColorTheme = () => {
 
 </div>
 <div :class="t.example2">
-  <img src="../img/sun.png" class="absolute pos-15_10 w-370px" />
+  <img src="../img/sun.png" class="w-full h-full object-contain" />
 </div>
 
   </div>
@@ -178,7 +178,7 @@ watch(() => props.userId, async (newUserId) => {
 
 ```js
 // VueUse: useFetch
-const { data: user, loading } = useFetch(() => `/api/users/${props.userId}`)
+const { data: user, isFetching } = useFetch(() => `/api/users/${props.userId}`)
 ```
 
 ```js
@@ -199,6 +199,9 @@ const { isPending, isError, data: user } = useQuery({
 })
 ```
 ````
+
+<LogosVueuse v-click="[5,7]" class="$obj pos-779_125 size-150" />
+<img src="../img/tanstack.png" v-click="7" class="$obj pos-779_125 size-150" />
 
 ---
 timeline:
@@ -223,7 +226,7 @@ timeline:
 <div class="items-grid">
   <div class="item fx duration-400" :class="t.point1">
     <div class="item-icon">
-      <MaterialSymbolsCycle/>
+      <MdiAtomVariant/>
     </div>
     <div>
       Асинхронные реактивные данные
@@ -231,7 +234,7 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point2">
     <div class="item-icon">
-      <LineiconsBricks/>
+      <RiSparkling2Line/>
     </div>
     <div>
       Реализованные возможности
@@ -239,7 +242,7 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point3">
     <div class="item-icon">
-      <FlowbiteVueSolid/>
+      <MaterialSymbolsWarningRounded/>
     </div>
     <div>
       Возможно усложнение понимания кода
@@ -247,7 +250,7 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point4">
     <div class="item-icon">
-      <MingcuteAsteriskFill/>
+      <IcBaselineAutoFixHigh/>
     </div>
     <div>
       Становится стандартом в реактивных системах
@@ -310,17 +313,77 @@ const vFocus = {
 ```
 
 ---
+timeline:
+  - point1: 'outline outline-2 outline-[#CCCCCC88]'
+    point2: '-blur-hidden outline-[#00000088]'
+    point3: '-blur-hidden outline-[#00000088]'
+    point4: '-blur-hidden outline-[#00000088]'
+    example: 'pos-0 fx duration-500'
+  - point1: 'outline-[#00000088]'
+    point2: 'outline outline-2 outline-[#CCCCCC88]'
+  - point2: 'outline-[#00000088]'
+    point3: 'outline outline-2 outline-[#CCCCCC88]'
+  - point3: 'outline-[#00000088]'
+    point4: 'outline outline-2 outline-[#CCCCCC88]'
+---
 
-# Директива:
+<h1 class="text-center">Директива</h1>
 
-<v-clicks>
+<Points>
+  <Point icon="i-mdi-chat-question-outline" :class="t.point1">
+    Спорное API
+  </Point>
+  <Point icon="i-material-symbols-weight-outline" :class="t.point2">
+    Низкая гибкость
+  </Point>
+  <Point icon="i-fluent-slow-mode-16-regular" :class="t.point3">
+    Нельзя снимать/добавлять в рантайме
+  </Point>
+  <Point icon="i-ic-outline-palette" :class="t.point4">
+    Декларативны
+  </Point>
+  <Point full :class="t.example">
+    <Example :class="t.example">
 
-- Сложно управлять
-- Низкая гибкость
-- Нельзя снимать/добавлять в рантайме
-- Декларативны
+````md magic-move {lines: false}
+```js
+const vFocus = {
+  created(el, binding, vnode) {},
+  beforeMount() {},
+  mounted() {},
+  beforeUpdate() {},
+  updated() {},
+  beforeUnmount() {},
+  unmounted() {},
+}
+```
+```ts
+useLearnComposable({
+  basics: 'learn'
+})
+```
+```ts
+const [
+  advanced, 
+  setAdvanced
+] = useLearnComposable({
+  basics: 'learn'
+})
+setAdvanced(true)
+```
+```ts
+const { 
+  advanced
+} = useLearnComposable({
+  basics: 'learn'
+})
+advanced.value = true
+```
+````
 
-</v-clicks>
+</Example>
+</Point>
+</Points>
 
 ---
 
@@ -520,18 +583,3 @@ const { count, increment, decrement } = useCounter()
 count.value++ // Ошибка TS
 ```
 ````
-
----
-
-# Утилита для неизменяемых значений
-
-```ts
-const smartReadonly = <T>(value: Ref<T>) => {
-  if (import.meta.env.DEV) {
-    return readonly(value)
-  }
-  return ref(value) as Readonly<Ref<T>>
-}
-
-const readonlyCount = smartReadonly(count)
-```

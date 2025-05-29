@@ -151,13 +151,13 @@ const useStoreTooltip = () => { ... }
 ```ts
 const useTooltip = () => { ... }
 const useStoreTooltip = () => { ... }
-const useMainStore = () => { ... }
+const useMainTooltip = () => { ... }
 ```
 
 ```ts
 const useTooltip = () => { ... }
 const useStoreTooltip = () => { ... }
-const useMainStore = () => { ... }
+const useMainTooltip = () => { ... }
 const useSiteTooltip = () => { ... }
 ```
 ````
@@ -169,18 +169,18 @@ timeline:
     point3: '-blur-hidden outline-[#00000088]'
     point4: '-blur-hidden outline-[#00000088]'
     example1: 'pos-0 fx duration-500'
-    example2: '-blur-hidden pos-0 absolute fx duration-500'
-    example3: '-blur-hidden pos-0 absolute fx duration-500'
+    example2: '-blur-hidden w-[calc(100%-24px)] h-[calc(100%-24px)] absolute fx duration-500'
+    example3: '-blur-hidden w-[calc(100%-24px)] h-[calc(100%-24px)] absolute fx duration-500'
   - point1: 'outline-[#00000088]'
-    point2: 'outline outline-2 outline-[#CCCCCC88]'
+    point2: 'outline outline-2 h-full  outline-[#CCCCCC88]'
   - point2: 'outline-[#00000088]'
     point3: 'outline outline-2 outline-[#CCCCCC88]'
-    example1: '-blur-hidden pos-0 absolute fx duration-500'
-    example2: 'pos-0 absolute fx duration-500'
+    example1: '-blur-hidden w-full pos-0 fx duration-500'
+    example2: 'absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
   - point3: 'outline-[#00000088]'
     point4: 'outline outline-2 outline-[#CCCCCC88]'
-    example2: '-blur-hidden pos-0 absolute fx duration-500'
-    example3: 'pos-0 absolute fx duration-500'
+    example2: '-blur-hidden w-[calc(100%-24px)] h-[calc(100%-24px)] absolute fx duration-500'
+    example3: 'absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
 ---
 
 <h1 class="text-center">Композаблы здорового человека:</h1>
@@ -188,7 +188,7 @@ timeline:
 <div class="items-grid">
   <div class="item fx duration-400" :class="t.point1">
     <div class="item-icon">
-      <MaterialSymbolsCycle/>
+      <MaterialSymbolsAssignmentAdd/>
     </div>
     <div>
       Не создают абстракцию ради абстракции
@@ -196,7 +196,7 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point2">
     <div class="item-icon">
-      <LineiconsBricks/>
+      <PajamasHook/>
     </div>
     <div>
       Минимально полагаются на хуки жизненного цикла
@@ -204,7 +204,7 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point3">
     <div class="item-icon">
-      <MingcuteAsteriskFill/>
+      <MaterialSymbolsClearDayRounded/>
     </div>
     <div>
       Не делают неявных действий
@@ -212,13 +212,13 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point4">
     <div class="item-icon">
-      <FlowbiteVueSolid/>
+      <CarbonFoundationModel/>
     </div>
     <div>
       Практики хорошего кода как SOLID работают и в композаблах
     </div>
   </div>
-  <div class="item-example fx example row-span-4 no-bg" :class="t.example">
+  <div class="item-example fx example row-span-4 relative" :class="t.example">
 
 <div :class="t.example1">
 
@@ -226,7 +226,7 @@ timeline:
 ```ts
 const useTooltip = () => { ... }
 const useStoreTooltip = () => { ... }
-const useMainStore = () => { ... }
+const useMainTooltip = () => { ... }
 const useSiteTooltip = () => { ... }
 ```
 ```ts
@@ -243,10 +243,10 @@ function useCounter() {
 
 </div>
 <div :class="t.example2">
-  <img src="../img/bread.png" class="$obj pos-50%" />
+  <img src="../img/bread.png" class="w-full h-full object-contain" />
 </div>
 <div :class="t.example3">
-  <img src="../img/dry.png" class="$obj pos-50%" />
+  <img src="../img/dry.png" class="w-full h-full object-contain" />
 </div>
 
   </div>
@@ -473,7 +473,7 @@ timeline:
 <div class="items-grid">
   <div class="item fx duration-400" :class="t.point1">
     <div class="item-icon">
-      <MaterialSymbolsCycle/>
+      <MdiBrain/>
     </div>
     <div>
       Принимайте решения осознанно
@@ -489,7 +489,7 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point3">
     <div class="item-icon">
-      <MingcuteAsteriskFill/>
+      <MaterialSymbolsServiceToolboxOutline/>
     </div>
     <div>
       Используйте объекты как входные параметры
@@ -497,7 +497,7 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point4">
     <div class="item-icon">
-      <FlowbiteVueSolid/>
+      <MaterialSymbolsDataObject/>
     </div>
     <div>
       Старайтесь возвращать обычные объекты

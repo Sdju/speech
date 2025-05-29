@@ -3,7 +3,7 @@ layout: center
 ---
 
 # Продвинутое использование
-## Object vs Reactive
+## `Object` vs `Reactive`
 
 ---
 
@@ -30,7 +30,7 @@ console.log(name.value)
 
 # Reactive как результата композабла
 
-```vue {*| 15-21|7-12}
+```vue {*|15-21|7-12}
 <script setup lang="ts">
 const useStore = () => {
   const name = ref('John')
@@ -62,7 +62,7 @@ layout: center
 
 ---
 
-```ts {*|13,14|7-10}
+```ts {*|13,14|7-10|13,14}
 // vueuse: makeDestructurable
 
 export function useCounter() {
@@ -103,7 +103,7 @@ timeline:
 <div class="items-grid">
   <div class="item fx duration-400" :class="t.point1">
     <div class="item-icon">
-      <MaterialSymbolsCycle/>
+      <FeImport/>
     </div>
     <div>
       Композабл как аргумент
@@ -111,7 +111,7 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point2">
     <div class="item-icon">
-      <LineiconsBricks/>
+      <FeExport/>
     </div>
     <div>
       Возвращают новый композабл
@@ -119,10 +119,10 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point3">
     <div class="item-icon">
-      <FlowbiteVueSolid/>
+      <QlementineIconsMatchRegexp16/>
     </div>
     <div>
-      `use*` => `create*`/`define*`
+      <strong>use*</strong> → <strong>create*</strong>/<strong>define*</strong>
     </div>
   </div>
   <div class="item-example fx example row-span-4 no-bg" :class="t.example">
@@ -149,7 +149,7 @@ createSharedComposable()
 
 ---
 
-```js
+```js {*|2-10|3-9|6-8|13}
 // Композабл, возвращающий композабл
 export function createSafeComposable(composable, fallback) {
   return () => {
@@ -162,10 +162,12 @@ export function createSafeComposable(composable, fallback) {
 }
 
 // Использование
-const onMountedSafe = createSafeComposable(onMounted)
+const useMountedSafe = createSafeComposable(onMounted)
 ```
 
 ---
+
+<DeviconVeevalidate class="size-150 $obj pos-779_125" />
 
 ```ts
 // vee-validate
@@ -232,14 +234,7 @@ function createSharedComposable<F extends AnyF>(composable: F): ReturnType<F> {
 }
 ```
 
----
-
-```ts
-const useSharedMouse = createSharedComposable(useMouse)
-
-// ...
-const { x, y } = useSharedMouse()
-```
+<LogosVueuse class="size-150 $obj pos-834_414" />
 
 ---
 
@@ -258,12 +253,30 @@ const { name, age, isAdmin } = useUserStore()
 
 <v-clicks>
 
-- Позволяет `оптимизировать доступ` к данным
-- Может вести себя как `стейт менеджер`
-- Очищает себя `самостоятельно` если никто не использует
-- Не дружит с `SSR`
-- Легко получить `циклические зависимости`
-- Легко сделать `хрупкую конструкцию`
+<div>
+  <AntDesignSmileFilled class="c-green"/>
+  Позволяет <strong>оптимизировать доступ</strong> к данным
+</div>
+<div>
+  <AntDesignSmileFilled class="c-green"/>
+  Может вести себя как <strong>стейт менеджер</strong>
+</div>
+<div>
+  <AntDesignSmileFilled class="c-green"/>
+  Очищает себя <strong>самостоятельно</strong> если никто не использует
+</div>
+<div>
+  <MaterialSymbolsSentimentSadRounded class="c-red"/>
+  Не дружит с <strong>SSR</strong>
+</div>
+<div>
+  <MaterialSymbolsSentimentSadRounded class="c-red"/>
+  Легко получить <strong>циклические зависимости</strong>
+</div>
+<div>
+  <MaterialSymbolsSentimentSadRounded class="c-red"/>
+  Легко сделать <strong>хрупкую конструкцию</strong>
+</div>
 
 </v-clicks>
 
@@ -278,7 +291,7 @@ layout: center
 # Порождающие `"композаблы"`  
 
 ````md magic-move
-```js
+```js {*|2|4-7|8-11|16}
 export function useRef<T>(value: T) {
   return customRef((track, trigger) => {
     return {
@@ -294,9 +307,9 @@ export function useRef<T>(value: T) {
   })
 }
 
-const customCount = useDebouncedRef(0)
+const customCount = useRef(0)
 ```
-```ts
+```ts {*|1|2|10-14|20}
 export function useDebouncedRef<T>(value: T, delay: number = 200) {
   let timeout
   return customRef((track, trigger) => {
@@ -317,6 +330,28 @@ export function useDebouncedRef<T>(value: T, delay: number = 200) {
 }
 
 const customCount = useDebouncedRef(0)
+```
+```ts {*|20}
+export function useDebouncedRef<T>(value: T, delay: number = 200) {
+  let timeout
+  return customRef((track, trigger) => {
+    return {
+      get() {
+        track()
+        return value
+      },
+      set(newValue: T) {
+        clearTimeout(timeout)
+        timeout = setTimeout(() => {
+          value = newValue
+          trigger()
+        }, delay)
+      }
+    }
+  })
+}
+
+const customCount = createDebouncedRef(0)
 ```
 ````
 

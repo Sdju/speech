@@ -1,10 +1,13 @@
 
 <div class="mb-50px flex flex-row">
-  <div class="size-80 rd-full of-hidden">
+  <div class="size-120 rd-full of-hidden">
     <img class="size-full object-cover" src="/img/photo.png" />
   </div>
-  <div class="size-80 rd-full ml-15px">
+  <div class="size-120 rd-full ml-15px">
     <ZedeIcon class="size-full" />
+  </div>
+  <div class="size-120 rd-full ml-15px of-hidden">
+    <img src="../img/vueist.png" class="size-full" />
   </div>
 </div>
 <div class="text-4xl mb-50px">Денис Чернов</div>
@@ -14,6 +17,7 @@
   <IonLogoGithub /> @Sdju
 </div>
 
+<img src="../img/holyjs.png" class="$obj pos-800_104" />
 <QrCodeIntro class="sp-r80_200_200_200 absolute" />
 
 ---
@@ -39,46 +43,23 @@ timeline:
     point4: 'outline outline-2 outline-[#CCCCCC88]'
 ---
 
-{{ console.log(t) }}
-
 <h1 class="text-center">План на сегодня</h1>
 
-<div class="items-grid">
-  <div class="item fx duration-400" :class="t.point1">
-    <div class="item-icon">
-      <LineiconsBricks/>
-    </div>
-    <div>
-      Что такое <strong>композаблы</strong> и зачем они нужны
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point2">
-    <div class="item-icon">
-      <MingcuteBabyFill/>
-    </div>
-    <div>
-      Базовые приемы использования
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point3">
-    <div class="item-icon">
-      <RiGraduationCapFill/>
-    </div>
-    <div>
-      Продвинутые техники и паттерны
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point4">
-    <div class="item-icon">
-      <GameIconsTrophyCup/>
-    </div>
-    <div>
-      Приправляем бест практисами
-    </div>
-  </div>
-  <div class="item-example fx example row-span-4 no-bg" :class="t.example">
-
-<div :class="t.example">
+<Points>
+  <Point icon="i-lineicons-bricks" :class="t.point1">
+    Что такое <strong>композаблы</strong> и зачем они нужны
+  </Point>
+  <Point icon="i-mingcute-baby-fill" :class="t.point2">
+    Базовые приемы использования
+  </Point>
+  <Point icon="i-ri-graduation-cap-fill" :class="t.point3">
+    Продвинутые техники и паттерны
+  </Point>
+  <Point icon="i-game-icons-trophy-cup" :class="t.point4">
+    Приправляем бест практисами
+  </Point>
+  <Point full :class="t.example">
+    <Example :class="t.example">
 
 ````md magic-move {lines: false}
 ```ts
@@ -99,17 +80,18 @@ const [
 setAdvanced(true)
 ```
 ```ts
-const { advanced } = useLearnComposable({
+const { 
+  advanced
+} = useLearnComposable({
   basics: 'learn'
 })
 advanced.value = true
 ```
 ````
 
-</div>
-
-  </div>
-</div>
+</Example>
+</Point>
+</Points>
 
 ---
 layout: center

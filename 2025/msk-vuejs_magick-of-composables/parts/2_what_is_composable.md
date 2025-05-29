@@ -5,14 +5,14 @@ topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-5
 ---
 
 ---
-topTitle: Как было раньше?
-topTitleClass: top-[30px] left-[50%] translate-x-[-50%]
 timeline:
   - optionsAPI: ' fx text-left'
     compositionAPI: 'fx text-left -popup-hidden'
   - optionsAPI: 'fx text-left'
     compositionAPI: 'fx text-left'
 ---
+
+<h1 class="text-center $obj pos-509_60">Как было раньше?</h1>
 
 <div class="grid grid-cols-2 gap-4 mt-15">
 
@@ -246,10 +246,14 @@ const [
 setAdvanced(true)
 ```
 ```ts
-const { advanced } = useLearnComposable({
-  basics: 'learn'
-})
-advanced.value = true
+function useHello() {
+  onMounted(() => {
+    alert('Hello Vue!')
+  })
+  onUnmounted(() => {
+    alert('Goodbye Vue!')
+  })
+}
 ```
 ````
 

@@ -18,7 +18,7 @@ timeline:
 <div class="items-grid">
   <div class="item fx duration-400" :class="t.point1">
     <div class="item-icon">
-      <MaterialSymbolsCycle/>
+      <MdiTestTube/>
     </div>
     <div>
       Тестирование композаблов
@@ -26,7 +26,7 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point2">
     <div class="item-icon">
-      <LineiconsBricks/>
+      <MingcuteInjectionLine/>
     </div>
     <div>
       DI в композаблах
@@ -34,15 +34,15 @@ timeline:
   </div>
   <div class="item fx duration-400" :class="t.point3">
     <div class="item-icon">
-      <MingcuteAsteriskFill/>
+      <MdiServerNetworkOutline/>
     </div>
     <div>
-      Используйте объекты как входные параметры
+      SSR
     </div>
   </div>
   <div class="item fx duration-400" :class="t.point4">
     <div class="item-icon">
-      <FlowbiteVueSolid/>
+      <CodiconSymbolClass/>
     </div>
     <div>
       Классы вместо композаблов
@@ -54,33 +54,39 @@ timeline:
 
 ````md magic-move {lines: false}
 ```ts
-const [count, increment] = useCounter()
-const [data, loading] = useFetch()
-```
-```ts
-computed(() => toValue(url))
-computed(() => unref(method))
-const mutableUrl = toRef(urlValue)
-const param = isReadonly(urlValue)
-// ...
-```
-```ts
-useSmokersFetch(url, method, headers)
-useHealthFetch({ url, method, headers })
-useNiceFetch(url, { method, headers })
-// ...
-```
-```ts
-function useFetch() {
-  // ...
+it("isn't lazy", async () => {
+    const func = vi.fn(
+      () => Promise.resolve('data')
+    )
 
-  return {
-    data,
-    isLoading,
-    // ...
-  }
-}
-// ...
+    const data = computedAsync(func)
+
+    expect(func).toBeCalledTimes(1)
+
+    expect(data.value).toBeUndefined()
+    await nextTick()
+    expect(data.value).toBe('data')
+  })
+```
+```ts
+useUserProvider(
+  mockUserService()
+)
+
+const { user } = useUser()
+console.log(user)
+// {MOCK_DATA}
+```
+```ts
+const user = await useAsyncData(
+  'user',
+  () => loadUser(userUrl)
+)
+```
+```ts
+const user = useUserStore()
+// vs
+const user = new UserService()
 ```
 ````
 
@@ -95,17 +101,17 @@ timeline:
     point2: '-blur-hidden outline-[#00000088]'
     point3: '-blur-hidden outline-[#00000088]'
     point4: '-blur-hidden outline-[#00000088]'
-    example1: 'absolute pos-0 fx duration-500'
-    example2: 'absolute -blur-hidden pos-0 fx duration-500'
-    example3: 'absolute -blur-hidden pos-0 fx duration-500'
+    example1: 'absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
+    example2: '-blur-hidden absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
+    example3: '-blur-hidden absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
   - point1: 'outline-[#00000088]'
     point2: 'outline outline-2 outline-[#CCCCCC88]'
-    example1: 'absolute -blur-hidden pos-0 fx duration-500'
-    example2: 'absolute pos-0 fx duration-500'
+    example1: '-blur-hidden absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
+    example2: 'absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
   - point2: 'outline-[#00000088]'
     point3: 'outline outline-2 outline-[#CCCCCC88]'
-    example2: 'absolute -blur-hidden pos-0 fx duration-500'
-    example3: 'absolute pos-0 fx duration-500'
+    example2: '-blur-hidden absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
+    example3: 'absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
 ---
 
 <h1 class="text-center">Что посмотреть:</h1>
@@ -145,13 +151,13 @@ timeline:
   <div class="item-example fx example row-span-4 no-bg" :class="t.example">
 
 <div :class="t.example1">
-  <img src="../img/vueuse.png" class="w-full" />
+  <img src="../img/vueuse.png" class="w-full h-full object-contain" />
 </div>
 <div :class="t.example2">
-  <img src="../img/vueuse.png" class="w-full" />
+  <img src="../img/modal.png" class="w-full h-full object-contain" />
 </div>
 <div :class="t.example3">
-  <img src="../img/vueuse.png" class="w-full" />
+  <img src="../img/vee.png" class="w-full h-full object-contain" />
 </div>
 
 </div>
@@ -179,7 +185,67 @@ layout: center
 layout: center
 ---
 
-# `Не бойтесь экспериментировать!` {.animate-pulse-alt .text-center .$obj .left-0 .w-full}
+<span class="text-center w-full text-7xl rainbow-text">
+  Не бойтесь экспериментировать!
+</span>
+
+<LogosVueuse class="$obj pos-712_51 size-150 swinging" />
+<VscodeIconsFileTypeNuxt class="$obj pos-492_444 size-150 drift" />
+<LogosPinia class="$obj pos-85_70 size-150 pinia" />
+
+<style>
+.rainbow-text{
+	position: relative;
+  
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  padding: 2px 4px 6px;
+  margin: -2px -4px -6px;
+	background: linear-gradient(90deg in hsl, rgb(255, 75, 75), rgb(81, 255, 75), rgb(123, 130, 255), rgb(255, 75, 75));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: move 1s linear infinite, pulse-alt 2s ease-in-out infinite;
+}
+
+.swinging {
+  animation: swinging 2s linear infinite;
+}
+
+.pinia {
+  animation: hue-rotate 1.7s linear infinite, shake 0.5s linear infinite;
+}
+
+.drift {
+  animation: drift 1.7s linear infinite;
+}
+
+@keyframes move{
+  0%{background-position: 0 0;}
+  100%{background-position: 1000px 0;}
+}
+
+@keyframes shake {
+  0%{transform: rotate(7deg) scale(1.05);}
+  50%{transform: rotate(20deg) scale(1.1);}
+  100%{transform: rotate(7deg) scale(1.05);}
+}
+
+@keyframes hue-rotate {
+  0%{filter: hue-rotate(0deg); }
+  100%{filter: hue-rotate(360deg);}
+  200%{filter: hue-rotate(720deg);}
+}
+
+@keyframes swinging {
+  0%{transform: rotate(0deg) scale(1);}
+  50%{transform: rotate(180deg) scale(70%);}
+  100%{transform: rotate(360deg) scale(1);}
+}
+
+@keyframes drift {
+  0%{transform: skew(0deg) translate(-500px, -50%);}
+  100%{transform: skew(40deg) translate(500px, -50%);}
+}
+</style>
 
 ---
 layout: center
