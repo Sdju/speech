@@ -1,0 +1,1 @@
+import{f as s,o as t,g as l,j as a,n as o}from"./modules/vue-PCAd3Trh.js";import{u as r}from"./slidev/context-CechxT7s.js";const n={class:"w-full flex flex-col justify-center items-center"},d={__name:"center",setup(c){return r(),(e,i)=>(t(),s("div",{class:o(["slidev-layout center w-full flex",e.$attrs.slideClass])},[l("div",n,[a(e.$slots,"default")])],2))}};export{d as _};

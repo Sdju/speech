@@ -13,9 +13,10 @@ export default defineAppSetup(({ app }) => {
   provideXSlides(app)
   app.mixin({
     data() {
-      if (this._.setupState?.InjectedLayout && this._.setupState.$clicksContext?.timeline) {
+      if (this._.provides['$$slidev-clicks-context']?.value?.timeline) {
+        console.log('this._.setupState', this._.provides['$$slidev-clicks-context'].value.timeline)
         return {
-          t: computed(() => this._.setupState.$clicksContext?.timeline)
+          t: computed(() => this._.provides['$$slidev-clicks-context'].value.timeline)
         }
       }
       return {}
