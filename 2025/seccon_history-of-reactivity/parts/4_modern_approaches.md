@@ -1,284 +1,693 @@
-# Современная эра (2019-2024)
+---
+layout: center
+---
 
-## Svelte: compile-time реактивность (2019)
+# Современные подходы
+<h2 class="text-xl opacity-80">2016-2020: Зрелость экосистемы</h2>
 
-```svelte
-<script>
-  let todos = [];
-  let newTodo = '';
-  
-  // Reactive statement - компилируется в оптимизированный код
-  $: completedCount = todos.filter(todo => todo.completed).length;
-  
-  function addTodo() {
-    if (newTodo.trim()) {
-      todos = [...todos, {
-        id: Date.now(),
-        text: newTodo,
-        completed: false
-      }];
-      newTodo = '';
-    }
-  }
-</script>
+---
+layout: center
+---
 
-<input bind:value={newTodo} on:keydown={(e) => e.key === 'Enter' && addTodo()} />
-<button on:click={addTodo}>Add Todo</button>
-
-{#each todos as todo (todo.id)}
-  <li>
-    <input type="checkbox" bind:checked={todo.completed} />
-    <span class:completed={todo.completed}>{todo.text}</span>
-  </li>
-{/each}
-
-<p>Completed: {completedCount}</p>
-```
-
-**Радикальная идея:** компиляция вместо runtime, нет виртуального DOM, минимальный bundle
-
-**Преимущества:** производительность, размер бандла, простота синтаксиса
-
-<!-- Последние 5 лет принесли революционные изменения. Появились подходы, которые переосмысливают саму концепцию реактивности. От compile-time оптимизаций Svelte до signals, которые становятся стандартом. -->
+# Переосмысление реактивности
 
 ---
 
-# Vue 3: Composition API (2020)
+# Контекст 2016-2020
+
+## 📱 Mobile-first
+- Производительность критична
+- Bundle size имеет значение
+- Offline capabilities
+
+## 🎯 Developer Experience
+- Лучшие инструменты разработки
+- TypeScript становится мейнстримом
+- Hot reloading, DevTools
+
+## ⚡ Производительность
+- 60 FPS как стандарт
+- Core Web Vitals
+- Progressive Enhancement
+
+---
+
+# Проблемы решенные к 2016
+
+## ✅ Что работает:
+- Компонентная архитектура
+- Управление состоянием
+- Виртуальный DOM концепция
+- Однонаправленный поток данных
+
+## ❌ Что нужно улучшить:
+- Размер бандлов
+- Время первой загрузки
+- Сложность настройки
+- TypeScript интеграция
+
+---
+layout: center
+---
+
+# Vue.js: прогрессивный фреймворк
+
+---
+
+# Vue.js (2014): баланс и простота
+
+<div class="definition-box">
+
+**Vue.js** — прогрессивный фреймворк для создания пользовательских интерфейсов, сочетающий лучшее от Angular и React
+
+</div>
+
+**Создатель:** Evan You (ex-Google)  
+**Философия:** прогрессивное внедрение
+
+---
+
+# Vue: архитектура реактивности
+
+```mermaid
+graph TB
+    Data[Data Object] --> Getter[Getter/Setter]
+    Getter --> Dep[Dependency Collector]
+    Dep --> Watcher[Watcher]
+    Watcher --> Component[Component Re-render]
+    
+    Template[Template] --> Watcher
+    Computed[Computed Properties] --> Watcher
+    
+    style Getter fill:#ff9999
+    style Dep fill:#99ff99
+    style Watcher fill:#9999ff
+```
+
+**Принцип:** автоматическое отслеживание зависимостей через геттеры
+
+---
+
+# Vue 2: Object.defineProperty
+
+```javascript
+// Как Vue делает данные реактивными
+function defineReactive(obj, key, val) {
+  const dep = new Dep(); // Коллектор зависимостей
+  
+  Object.defineProperty(obj, key, {
+    get() {
+      // Если есть активный watcher, добавляем зависимость
+      if (Dep.target) {
+        dep.depend();
+      }
+      return val;
+    },
+    
+    set(newVal) {
+      if (newVal === val) return;
+      val = newVal;
+      // Уведомляем всех подписчиков
+      dep.notify();
+    }
+  });
+}
+
+// Пример использования
+const data = { count: 0 };
+defineReactive(data, 'count', 0);
+
+// Теперь доступ к data.count отслеживается
+```
+
+---
+
+# Vue: Single File Components
 
 ```vue
-<script setup>
-import { ref, computed } from 'vue';
-
-const todos = ref([]);
-const newTodo = ref('');
-
-const completedCount = computed(() => 
-  todos.value.filter(todo => todo.completed).length
-);
-
-function addTodo() {
-  if (newTodo.value.trim()) {
-    todos.value.push({
-      id: Date.now(),
-      text: newTodo.value,
-      completed: false
-    });
-    newTodo.value = '';
-  }
-}
-</script>
-
 <template>
-  <input v-model="newTodo" @keyup.enter="addTodo" />
-  <button @click="addTodo">Add Todo</button>
-  
-  <ul>
-    <li v-for="todo in todos" :key="todo.id">
-      <input type="checkbox" v-model="todo.completed" />
-      <span :class="{ completed: todo.completed }">{{ todo.text }}</span>
-    </li>
-  </ul>
-  
-  <p>Completed: {{ completedCount }}</p>
+  <div class="todo-app">
+    <input v-model="newTodo" @keyup.enter="addTodo" 
+           placeholder="Новая задача" />
+    <button @click="addTodo">Добавить</button>
+    
+    <ul>
+      <li v-for="todo in todos" :key="todo.id"
+          :class="{ completed: todo.completed }">
+        <input type="checkbox" v-model="todo.completed" />
+        <span>{{ todo.text }}</span>
+        <button @click="removeTodo(todo.id)">×</button>
+      </li>
+    </ul>
+    
+    <p>Выполнено: {{ completedCount }}</p>
+  </div>
 </template>
+
+<script>
+export default {
+  data: () => ({ todos: [], newTodo: '', nextId: 1 }),
+  
+  computed: {
+    completedCount() {
+      return this.todos.filter(todo => todo.completed).length;
+    }
+  },
+  
+  methods: {
+    addTodo() {
+      if (this.newTodo.trim()) {
+        this.todos.push({
+          id: this.nextId++,
+          text: this.newTodo,
+          completed: false
+        });
+        this.newTodo = '';
+      }
+    }
+  }
+};
+</script>
 ```
 
-**Инновации:** Composition API, реактивность на Proxy, script setup синтаксис
-
-<!-- Vue 3 принес Composition API - новый способ организации логики компонентов. Вместо Options API теперь можно группировать связанную логику вместе. Но главное - под капотом появилась новая реактивная система на Proxy. -->
+**Инновация:** template, script, style в одном файле
 
 ---
 
-# Solid.js: fine-grained реактивность (2021)
+# Vue: достижения
 
-```jsx
-import { createSignal, createMemo, For } from 'solid-js';
+## ✅ Сильные стороны:
+- Простота изучения
+- Автоматическое отслеживание зависимостей
+- Отличная производительность
+- Гибкость внедрения
 
-function TodoApp() {
-  const [todos, setTodos] = createSignal([]);
-  const [newTodo, setNewTodo] = createSignal('');
+## 🎯 Инновации:
+- Template синтаксис как у Angular
+- Компонентность как у React  
+- Реактивность лучше чем у обоих
+- Single File Components
+
+---
+
+# Vue 2: ограничения
+
+## ❌ Object.defineProperty проблемы:
+```javascript
+// Не работает
+vm.items[indexOfItem] = newValue; // ❌
+vm.items.length = newLength; // ❌
+
+// Workarounds
+Vue.set(vm.items, indexOfItem, newValue); // ✅
+vm.items.splice(newLength); // ✅
+
+// Новые свойства не реактивны
+vm.newProperty = 'value'; // ❌
+Vue.set(vm, 'newProperty', 'value'); // ✅
+```
+
+## 🚫 Другие ограничения:
+- IE8+ только
+- TypeScript поддержка неполная
+- Некоторая "магичность"
+
+---
+layout: center
+---
+
+# Angular 2+: полная перепись
+
+---
+
+# Angular 2+ (2016): новая эра
+
+<div class="definition-box">
+
+**Angular 2+** — полная перепись AngularJS с TypeScript, компонентной архитектурой и zone-based change detection
+
+</div>
+
+**Команда:** Google Angular Team  
+**Кардинальные изменения:** полная несовместимость с AngularJS
+
+---
+
+# Zone.js: автоматическое отслеживание
+
+```mermaid
+graph TB
+    BrowserAPI[Browser APIs] --> ZonePatch[Zone.js Patches]
+    ZonePatch --> ZoneTask[Zone Tasks]
+    ZoneTask --> ChangeDetection[Change Detection]
+    ChangeDetection --> ComponentTree[Component Tree]
+    
+    subgraph "Patched APIs"
+        Timer[setTimeout/setInterval]
+        Promise[Promise.then]
+        Event[addEventListener]
+        XHR[XMLHttpRequest]
+    end
+    
+    Timer --> ZonePatch
+    Promise --> ZonePatch
+    Event --> ZonePatch
+    XHR --> ZonePatch
+```
+
+**Идея:** патчим все асинхронные API для автоматического запуска проверок
+
+---
+
+# Angular: компонентная архитектура
+
+```typescript
+import { Component } from '@angular/core';
+
+interface Todo {
+  id: number;
+  text: string;
+  completed: boolean;
+}
+
+@Component({
+  selector: 'todo-app',
+  template: `
+    <div class="todo-app">
+      <input [(ngModel)]="newTodo" (keyup.enter)="addTodo()" 
+             placeholder="Новая задача" />
+      <button (click)="addTodo()">Добавить</button>
+      
+      <ul>
+        <li *ngFor="let todo of todos; trackBy: trackByFn"
+            [class.completed]="todo.completed">
+          <input type="checkbox" [(ngModel)]="todo.completed" />
+          <span>{{ todo.text }}</span>
+          <button (click)="removeTodo(todo.id)">×</button>
+        </li>
+      </ul>
+      
+      <p>Выполнено: {{ completedCount }}</p>
+    </div>
+  `
+})
+export class TodoComponent {
+  todos: Todo[] = [];
+  newTodo = '';
+  private nextId = 1;
   
-  const completedCount = createMemo(() =>
-    todos().filter(todo => todo.completed()).length
-  );
+  get completedCount(): number {
+    return this.todos.filter(todo => todo.completed).length;
+  }
   
-  const addTodo = () => {
-    if (newTodo().trim()) {
-      setTodos(prev => [...prev, {
-        id: Date.now(),
-        text: newTodo(),
-        completed: createSignal(false)[0]
-      }]);
-      setNewTodo('');
+  addTodo(): void {
+    if (this.newTodo.trim()) {
+      this.todos.push({
+        id: this.nextId++,
+        text: this.newTodo,
+        completed: false
+      });
+      this.newTodo = '';
     }
-  };
+  }
+}
+```
+
+**Особенности:** TypeScript-first, декораторы, двусторонний binding
+
+---
+
+# Change Detection стратегии
+
+```typescript
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+
+@Component({
+  selector: 'optimized-component',
+  changeDetection: ChangeDetectionStrategy.OnPush, // Оптимизация
+  template: `
+    <div>{{ data.value }}</div>
+    <child-component [input]="data"></child-component>
+  `
+})
+export class OptimizedComponent {
+  data = { value: 'test' };
+  
+  updateData() {
+    // Мутация - не сработает с OnPush
+    this.data.value = 'new value'; // ❌
+    
+    // Иммутабельное обновление - сработает
+    this.data = { ...this.data, value: 'new value' }; // ✅
+  }
+}
+```
+
+**OnPush:** проверяем изменения только при изменении input'ов
+
+---
+
+# Angular: экосистема
+
+## 🏗️ Полная платформа:
+- Angular CLI для генерации
+- Angular Router для SPA
+- Angular Forms для валидации
+- Angular HTTP для API
+
+## 🎯 TypeScript первым классом:
+- Декораторы для метаданных
+- Строгая типизация
+- Отличная IDE поддержка
+
+## 📱 Кроссплатформенность:
+- Angular Universal (SSR)
+- Ionic (мобильные)
+- Electron (десктоп)
+
+---
+
+# Angular: достижения и проблемы
+
+## ✅ Достижения:
+- Полная экосистема
+- Отличная типизация
+- Автоматическое отслеживание
+- Enterprise-ready
+
+## ❌ Проблемы:
+- Zone.js может быть непредсказуемым
+- Сложность изучения
+- Большой bundle size
+- Vendor lock-in
+
+---
+layout: center
+---
+
+# React эволюция: Hooks
+
+---
+
+# React Hooks (2018): новая эра
+
+<div class="definition-box">
+
+**React Hooks** — функции, позволяющие использовать состояние и другие возможности React без написания классов
+
+</div>
+
+**Проблема:** сложность переиспользования логики между компонентами
+
+---
+
+# До Hooks: классы и HOC
+
+```javascript
+// Классовый компонент
+class TodoApp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { todos: [], newTodo: '' };
+  }
+  
+  componentDidMount() {
+    // Загрузка данных
+    this.loadTodos();
+  }
+  
+  componentDidUpdate(prevProps) {
+    if (prevProps.userId !== this.props.userId) {
+      this.loadTodos();
+    }
+  }
+  
+  // Higher-Order Component для переиспользования
+  function withTodos(WrappedComponent) {
+    return class extends React.Component {
+      state = { todos: [] };
+      
+      componentDidMount() {
+        this.loadTodos();
+      }
+      
+      render() {
+        return <WrappedComponent {...this.props} todos={this.state.todos} />;
+      }
+    };
+  }
+}
+```
+
+**Проблемы:** дублирование логики, wrapper hell, сложность
+
+---
+
+# React Hooks: переиспользование логики
+
+```javascript
+// Кастомный Hook для переиспользования логики
+function useTodos(userId) {
+  const [todos, setTodos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    async function loadTodos() {
+      setLoading(true);
+      try {
+        const data = await api.getTodos(userId);
+        setTodos(data);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadTodos();
+  }, [userId]); // Перезагрузка при изменении userId
+  
+  const addTodo = useCallback((text) => {
+    setTodos(prev => [...prev, { id: Date.now(), text, completed: false }]);
+  }, []);
+  
+  return { todos, loading, addTodo };
+}
+
+// Использование в любом компоненте
+function TodoApp({ userId }) {
+  const { todos, loading, addTodo } = useTodos(userId);
+  
+  if (loading) return <div>Загрузка...</div>;
   
   return (
     <div>
-      <input
-        value={newTodo()}
-        onInput={(e) => setNewTodo(e.target.value)}
-      />
-      <button onClick={addTodo}>Add</button>
-      
-      <For each={todos()}>
-        {(todo) => (
-          <li>
-            <input type="checkbox" checked={todo.completed()} />
-            <span>{todo.text}</span>
-          </li>
-        )}
-      </For>
-      
-      <p>Completed: {completedCount()}</p>
+      {todos.map(todo => (
+        <TodoItem key={todo.id} todo={todo} />
+      ))}
     </div>
   );
 }
 ```
 
-**Особенности:** signals для реактивности, нет виртуального DOM, точечные обновления
-
-<!-- Solid.js от Ryan Carniato предложил радикально новый подход. Никакого виртуального DOM, никаких перерендеров компонентов. Только точечные обновления DOM на основе signals. Производительность как у vanilla JS, но с удобством фреймворка. -->
+**Преимущество:** логика отделена от компонентов
 
 ---
 
-# Angular Signals (2024)
+# Основные Hooks
 
-```typescript
-import { Component, signal, computed } from '@angular/core';
-
-@Component({
-  selector: 'todo-app',
-  template: `
-    <input [value]="newTodo()" (input)="updateNewTodo($event)" />
-    <button (click)="addTodo()">Add Todo</button>
-    
-    <ul>
-      <li *ngFor="let todo of todos(); trackBy: trackByFn">
-        <input
-          type="checkbox"
-          [checked]="todo.completed()"
-          (change)="toggleTodo(todo)"
-        />
-        <span [class.completed]="todo.completed()">{{ todo.text() }}</span>
-      </li>
-    </ul>
-    
-    <p>Completed: {{ completedCount() }}</p>
-  `
-})
-export class TodoComponent {
-  todos = signal<TodoItem[]>([]);
-  newTodo = signal('');
-  
-  completedCount = computed(() =>
-    this.todos().filter(todo => todo.completed()).length
-  );
-  
-  addTodo() {
-    if (this.newTodo().trim()) {
-      this.todos.update(todos => [...todos, {
-        id: Date.now(),
-        text: signal(this.newTodo()),
-        completed: signal(false)
-      }]);
-      this.newTodo.set('');
-    }
-  }
-}
+## 🔄 useState
+```javascript
+const [count, setCount] = useState(0);
 ```
 
-**Преимущества:** оптимальная производительность, совместимость с Zone.js, TypeScript integration
+## ⚡ useEffect
+```javascript
+useEffect(() => {
+  // Побочные эффекты
+  return () => {
+    // Cleanup
+  };
+}, [dependencies]);
+```
 
-<!-- Angular не остался в стороне от signal-революции. В 2024 году signals стали стабильной частью Angular. Это позволило избавиться от некоторых проблем Zone.js и получить более предсказуемую производительность. -->
+## 💡 useMemo & useCallback
+```javascript
+const expensiveValue = useMemo(() => heavyCalculation(a, b), [a, b]);
+const stableCallback = useCallback(() => doSomething(a), [a]);
+```
+
+## 🎯 useContext
+```javascript
+const theme = useContext(ThemeContext);
+```
 
 ---
 
-# Svelte 5: Runes эра (2024)
+# Hooks: правила и ограничения
+
+## 📏 Правила Hooks:
+1. Только в функциональных компонентах
+2. Только на верхнем уровне (не в циклах/условиях)
+3. Только в React функциях
 
 ```javascript
-let todos = $state([]);
-let newTodo = $state('');
-
-// Derived state - автоматически обновляется при изменении todos
-let completedCount = $derived(
-  todos.filter(todo => todo.completed).length
-);
-
-function addTodo() {
-  if (newTodo.trim()) {
-    todos.push({
-      id: Date.now(),
-      text: newTodo,
-      completed: false
-    });
-    newTodo = '';
+// ❌ Неправильно
+function Component({ condition }) {
+  if (condition) {
+    const [state, setState] = useState(0); // Нарушение правила 2
+  }
+  
+  for (let i = 0; i < 5; i++) {
+    useEffect(() => {}); // Нарушение правила 2
   }
 }
 
-// Effect - выполняется при изменении зависимостей
-$effect(() => {
-  console.log(`Completed todos: ${completedCount}`);
-});
+// ✅ Правильно  
+function Component({ condition }) {
+  const [state, setState] = useState(0);
+  
+  useEffect(() => {
+    if (condition) {
+      // Условие внутри Hook
+    }
+  }, [condition]);
+}
 ```
-
-```svelte
-<input bind:value={newTodo} onkeydown={(e) => e.key === 'Enter' && addTodo()} />
-<button onclick={addTodo}>Add Todo</button>
-
-{#each todos as todo (todo.id)}
-  <li>
-    <input type="checkbox" bind:checked={todo.completed} />
-    <span class:completed={todo.completed}>{todo.text}</span>
-  </li>
-{/each}
-
-<p>Completed: {completedCount}</p>
-```
-
-**Runes система:** $state, $derived, $effect для более явного управления реактивностью
-
-<!-- Svelte тоже эволюционировал. Svelte 5 представил "runes" - новый синтаксис для реактивности, который делает компилятор еще умнее и дает разработчику больше контроля. -->
 
 ---
 
-# Конвергенция к Signals
+# React: современные возможности
 
-**Signals в разных фреймворках:**
+## ⚡ Concurrent Mode (2021)
+- Прерывание рендеринга
+- Приоритизация обновлений
+- Лучшая производительность
 
-| Фреймворк | Синтаксис | Статус |
-|-----------|-----------|---------|
-| Vue 3 | `ref()` / `computed()` | Стабильно |
-| Solid | `createSignal()` | Стабильно |
-| Angular | `signal()` | Стабильно (2024) |
-| Svelte 5 | `$state` / `$derived` | Preview |
+## 🎯 Suspense
+```javascript
+function UserProfile({ userId }) {
+  return (
+    <Suspense fallback={<Loading />}>
+      <UserData userId={userId} />
+      <UserPosts userId={userId} />
+    </Suspense>
+  );
+}
+```
 
-**Общие принципы:**
-- Fine-grained реактивность
-- Автоматическое отслеживание зависимостей  
-- Оптимальная производительность
-- Композиция и переиспользование логики
-
-<!-- И вот мы подходим к ключевому тренду 2024 года - все фреймворки движутся к signals. Это не случайность. Signals решают фундаментальные проблемы реактивности: они обеспечивают точность обновлений, предсказуемость поведения и отличную производительность. -->
+## 🔄 Server Components (2023)
+- Рендеринг на сервере
+- Уменьшение bundle size
+- Прямой доступ к БД
 
 ---
 
-# Производительность: сравнение подходов
+---
+layout: center
+---
 
-**JS Framework Benchmark (2024):**
+# Современные state managers (2018-2020)
 
-| Подход | Bundle Size | Memory Usage | Performance Score |
-|--------|-------------|--------------|-------------------|
-| Vanilla JS | 0KB | Низкое | 1.00x |
-| Solid | ~7KB | Низкое | 1.05x |
-| Svelte | ~10KB | Низкое | 1.10x |
-| Vue 3 | ~40KB | Среднее | 1.15x |
-| React | ~45KB | Высокое | 1.30x |
-| Angular | ~130KB | Высокое | 1.40x |
+---
 
-**Тренды:**
-- Signals обеспечивают near-native производительность
-- Compile-time оптимизации снижают runtime overhead
-- Fine-grained обновления минимизируют work load
+# Zustand (2019): простота прежде всего
 
-<!-- Давайте посмотрим на цифры. Современные подходы показывают впечатляющие результаты в бенчмарках. Signals позволяют достичь производительности, близкой к vanilla JavaScript, сохраняя при этом удобство фреймворка. -->
+<div class="definition-box">
+
+**Zustand** — маленькая, быстрая и масштабируемая библиотека для управления состоянием
+
+</div>
+
+**Создатель:** Daishi Kato  
+**Размер:** ~2KB  
+**Философия:** простота без компромиссов
+
+```javascript
+import create from 'zustand';
+
+const useStore = create((set) => ({
+  count: 0,
+  increment: () => set(state => ({ count: state.count + 1 })),
+  decrement: () => set(state => ({ count: state.count - 1 })),
+}));
+
+// Использование
+function Counter() {
+  const { count, increment, decrement } = useStore();
+  return (
+    <div>
+      <span>{count}</span>
+      <button onClick={increment}>+</button>
+      <button onClick={decrement}>-</button>
+    </div>
+  );
+}
+```
+
+---
+
+# Context API: встроенное решение React
+
+```javascript
+// Создание контекста
+const TodoContext = createContext();
+
+// Provider
+function TodoProvider({ children }) {
+  const [todos, setTodos] = useState([]);
+  
+  const addTodo = (text) => {
+    setTodos(prev => [...prev, { id: Date.now(), text, completed: false }]);
+  };
+  
+  return (
+    <TodoContext.Provider value={{ todos, addTodo }}>
+      {children}
+    </TodoContext.Provider>
+  );
+}
+
+// Потребление
+function TodoList() {
+  const { todos, addTodo } = useContext(TodoContext);
+  
+  return (
+    <div>
+      {todos.map(todo => (
+        <TodoItem key={todo.id} todo={todo} />
+      ))}
+    </div>
+  );
+}
+```
+
+**Преимущество:** встроено в React, не нужны дополнительные библиотеки
+
+---
+
+# Итоги современной эпохи (2016-2020)
+
+## 🚀 Достижения:
+- TypeScript стал стандартом
+- Hooks революционизировали React
+- Zone.js решил автоматизацию в Angular
+- Vue показал баланс простоты и мощности
+- Появились lightweight state managers
+
+---
+
+# Итоги современной эпохи (2016-2020)
+
+## 💡 Тренды:
+- Функциональное программирование
+- Переиспользование логики
+- Лучшая типизация
+- Минимизация boilerplate кода
+
+---
+
+# Итоги современной эпохи (2016-2020)
+
+## 🔮 К чему пришли:
+- Зрелые экосистемы
+- Стабильные API
+- Хорошая документация
+- Разнообразие подходов для разных задач

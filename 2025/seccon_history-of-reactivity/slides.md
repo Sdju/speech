@@ -38,7 +38,11 @@ src: ./parts/2_early_reactivity.md
 ---
 
 ---
-src: ./parts/3_popular_frameworks.md
+src: ./parts/3_frameworks_era.md
+---
+
+---
+src: ./parts/3.5_state_management.md
 ---
 
 ---
@@ -46,5 +50,9 @@ src: ./parts/4_modern_approaches.md
 ---
 
 ---
-src: ./parts/5_conclusion.md
+src: ./parts/5_signals_era.md
+---
+
+---
+src: ./parts/6_conclusion.md
 ---
