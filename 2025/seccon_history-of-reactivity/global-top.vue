@@ -8,7 +8,7 @@ const frontmatter = computed(() => currentSlideRoute.value.meta?.slide?.frontmat
 </script>
 
 <template>
-  <div class="absolute top-0 left-0 w-full h-full" :class="frontmatter.slideClass">
+  <div class="absolute top-0 left-0 w-full h-full pointer-events-none" :class="frontmatter.slideClass">
     <CoordHelper>
       <MousePosTooltip />
       <MouseSizeSelect />

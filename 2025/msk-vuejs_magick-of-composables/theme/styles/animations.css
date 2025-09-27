@@ -11,10 +11,6 @@
 
 /* fx */
 
-.fx {
-    --at-apply: transform filter duration-[var(--slidev-transition-duration)];
-}
-
 .-popup-hidden {
     @apply pointer-events-none;
     --un-blur: blur(10px);

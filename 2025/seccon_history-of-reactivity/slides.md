@@ -21,11 +21,11 @@ layout: center
   <h1 :class="className" :style="style"> {{ title }} </h1>
 </XSlide>
 
-<XSlideOut slot="title" title="История реактивности Frontend" class="text-center text-4xl" />
+<XSlideOut slot="title" title="Реактивность и все все все" class="text-center text-4xl" />
 
 <div class="pt-12 text-center">
   <div class="text-xl opacity-75 mb-8">
-    От спагетти-кода до signals: эволюция подходов к управлению состоянием
+    От спагетти-кода до сигналов: эволюция подходов к управлению состоянием
   </div>
 </div>
 
@@ -38,23 +38,19 @@ src: ./parts/1_intro.md
 ---
 
 ---
-src: ./parts/2_early_reactivity.md
+src: ./parts/2_static-model.md
 ---
 
 ---
-src: ./parts/3_frameworks_era.md
+src: ./parts/3_mv-model.md
 ---
 
 ---
-src: ./parts/3.5_state_management.md
+src: ./parts/4_state-management.md
 ---
 
 ---
-src: ./parts/4_modern_approaches.md
----
-
----
-src: ./parts/5_signals_era.md
+src: ./parts/5_modern.md
 ---
 
 ---
