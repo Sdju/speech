@@ -97,10 +97,107 @@
 </div>
 
 ---
+timeline:
+  - block1:
+      class: 'pos-492_159'
+      color: 'green'
+      form: 'rect'
+    block2:
+      class: 'pos-328_274'
+      color: 'blue'
+      form: 'rect'
+    block3:
+      class: 'pos-637_274'
+      color: 'red'
+      form: 'rect'
+    block4:
+      class: 'pos-328_274 -blur-hidden'
+      color: 'red'
+      form: 'rect'
+    title: ''
+    arrow1To2:
+      coords: '324:245 425:158'
+      power: 0.5
+      class: 'fx duration-500'
+    arrow1To3:
+      coords: '559:156 637:245'
+      class: 'fx duration-500'
+      power: 0.5
+    arrow3To1:
+      coords: '568:272 51%:188'
+      class: 'fx duration-500'
+      power: 0.5
+    arrow3To2:
+      coords: '568:272 427:272'
+      class: 'fx duration-500'
+      power: 0.05
+      dashed: true
+    text1: Система
+    text2: Раздражитель
+    text3: Реакция
+    text4: ''
+  - text2: Action
+    arrow3To2:
+      coords: '568:272 382:272'
+  - text1: Store
+    arrow1To2:
+      coords: '324:245 440:158'
+    arrow1To3:
+      coords: '540:156 637:245'
+  - text3: View
+    arrow3To1:
+      coords: '590:272 51%:188'
+    arrow3To2:
+      coords: '590:272 381:272'
+  - block1:
+      multiple: true
+  - text4: Dispatcher
+    block4:
+      class: 'pos-328_274'
+    block2:
+      class: 'pos-328_374'
+    arrow3To2:
+      coords: '637:302 382:374'
+      class: 'fx duration-500'
+      power: 0.4
+    arrow3To1:
+      coords: '330:345 330:301'
+      power: 0.1
+  - title: 'Flux'
+  - block1:
+      multiple: false
+  - text4: 'Reducers'
+    block4:
+      multiple: true
+  - title: 'Redux'
+---
 
-# Flux
+<div class="text-center text-3xl font-bold $obj pos-50%_50%">{{ t.title }}</div>
 
+<Node v-bind="t.block1">{{ t.text1 }}</Node>
+<Node v-bind="t.block2">{{ t.text2 }}</Node>
+<Node v-bind="t.block3">{{ t.text3 }}</Node>
+<Node v-bind="t.block4">{{ t.text4 }}</Node>
 
+<SvgLayer>
+  <SvgArrow v-bind="t.arrow1To2" />
+  <SvgArrow v-bind="t.arrow1To3" />
+  <SvgArrow v-bind="t.arrow3To1" />
+  <SvgArrow v-bind="t.arrow3To2" />
+</SvgLayer>
+
+---
+
+# Плюсы
+
+- Легко тестировать
+- Понятная ментальная модель
+
+# Минусы
+
+- Огромное количество бойлерплейта
+- Крайни низкая оптимизация
+- Сложно распиливается на отдельные части
 
 ---
 
@@ -168,20 +265,161 @@
 </div>
 
 ---
+timeline:
+  - block1:
+      class: 'pos-280_50% [--un-scale-x:0] [--un-scale-y:0] opacity-0'
+      color: 'red'
+      form: 'circle'
+      solid: true
+    block2:
+      class: 'pos-50%_50% opacity-0'
+      solid: true
+      color: blue
+    text: '1'
+  - block1:
+      class: 'pos-320_50%'
+  - block1:
+      class: 'pos-692_50%'
+  - block1:
+      class: 'pos-760_50% [--un-scale-x:0] [--un-scale-y:0] opacity-0'
+  - block1:
+      class: 'pos-280_50% [--un-scale-x:0] [--un-scale-y:0] opacity-0'
+    block2:
+      class: 'pos-50%_50%'
+  - block1:
+      class: 'pos-320_50%'
+  - block1:
+      class: 'pos-420_50%'
+  - block1:
+      class: 'pos-50%_50%  [--un-scale-x:0] [--un-scale-y:0] opacity-0'
+  - block1:
+      class: 'pos-540_50%'
+    text: '2'
+  - block1:
+      class: 'pos-692_50%'
+  - block1:
+      class: 'pos-760_50% [--un-scale-x:0] [--un-scale-y:0] opacity-0'
+---
 
-<div class="grid grid-cols-12 grid-rows-[1fr_70px_70px_70px] gap-4">
+<SvgLayer>
+  <SvgArrow coords="283:50% 733:50%" :power="0.001" />
+</SvgLayer>
+
+<Node class="pos-200_50%" form="circle">Observable</Node>
+<Node v-bind="t.block1">{{t.text}}</Node>
+<Node v-bind="t.block2">*2</Node>
+<Node class="pos-800_50%" form="circle">Observer</Node>
+
+---
+
+<div class="mb-8 text-4xl"> <DeviconRxjs/> Rxjs </div>
+
+<v-clicks>
+
+- **Oberserver** это **EventListener** маминой подруги
+- Концентрируемся асинхронном на **потоке данных**(**Stream**)
+- Мы не реагируем на изменении модели, а реагируем на события
+
+</v-clicks>
+
+---
+
+# Rxjs
+
+```js
+const numbers$ = of(1, 2, 3, 4, 5);
+numbers$.pipe(
+  map(x => x * 2),
+  filter(x => x > 5),
+)
+numbers$.subscribe(x => console.log(x));
+```
+
+---
+
+# Push reactivity
+
+<v-clicks>
+
+- Push - значения проталкиваются
+- Не важно хочет подписчик обновляться или нет
+- Если есть зависимые значения они все будут уведомлены
+- Без оптимизаций произойдет полное перевычисление
+
+</v-clicks>
+
+<div class="box box--rich" v-click>
+  Подобен почте, придет вне зависимости от вашего желания забирать ее
+</div>
+
+---
+
+# Pull reactivity
+
+<v-clicks>
+
+- Pull - значения вытягиваются из источника
+- Мы сами запрашиваем данные, если нет запроса, то и значение не дойдет
+- Без оптимизаций, мы опрашиваем все источники всегда
+
+</v-clicks>
+
+<div class="box box--rich" v-click>
+  Подобен магазину, вы сами идете и выбираете, что вам нужно
+</div>
+
+---
+
+# PushPull reactivity
+
+<v-clicks>
+
+- PushPull - уведомление проталкивается, значение вытягивается
+- Источник уведомляет о существовании обновления
+- Источник отдает/вычисляет значение только по запросу
+- Наиболее оптимальная стратегия по перфомансу
+
+</v-clicks>
+
+<div class="box box--rich" v-click>
+  Подобен ПВЗ маркетплейса, он вас уведомит о поступлении товара, но вам нужно за ним сходить
+</div>
+
+---
+
+````md magic-move
+```js
+const numbers$ = of(1, 2, 3, 4, 5);
+numbers$.pipe(
+  map(x => x * 2),
+  filter(x => x > 5),
+)
+numbers$.subscribe(x => console.log(x));
+```
+```js
+const numbers = [1, 2, 3, 4, 5];
+numbers.values()
+  .map(x => x * 2)
+  .filter(x => x > 5)
+[...numbers].forEach(x => console.log(x));
+```
+````
+
+---
+
+<div class="grid grid-cols-12 grid-rows-[1fr_70px_70px] gap-4">
   <div class="col-span-8 row-span-3 box box--rich cs-orange">
-    <div class="flex items-center gap-6 p-6 mb-6">
-      <div class="text-[100px] text-orange-300">📱</div>
+    <div class="flex items-center gap-6 p-6">
+      <div class="text-[100px] text-orange-300"><DeviconMobx/></div>
       <div>
         <h2 class="text-4xl font-bold text-orange-300 mb-2">MobX</h2>
-        <p class="text-orange-400/80 text-lg">Simple, scalable state management</p>
+        <p class="text-white text-lg">Simple, scalable state management</p>
       </div>
     </div>
     <div class="px-6">
       <h4 class="text-xl font-semibold text-orange-300 mb-4 flex items-center gap-2">
         <span class="text-2xl">🎯</span>
-        Реактивная философия
+        Реактивность с налетом ООП
       </h4>
       <div class="grid grid-cols-2 gap-4">
         <div class="space-y-3">
@@ -189,14 +427,14 @@
             <span class="text-xl">👁️</span>
             <div>
               <div class="text-yellow-200 font-medium">Observable</div>
-              <div class="text-yellow-400/70 text-sm">Наблюдаемое состояние</div>
+              <div class="text-yellow-400 text-sm">Наблюдаемое состояние</div>
             </div>
           </div>
           <div class="flex items-center gap-3 p-3 box box--rich cs-green">
             <span class="text-xl">⚡</span>
             <div>
               <div class="text-green-200 font-medium">Action</div>
-              <div class="text-green-400/70 text-sm">Изменения состояния</div>
+              <div class="text-green-400 text-sm">Изменения состояния</div>
             </div>
           </div>
         </div>
@@ -205,17 +443,33 @@
             <span class="text-xl">🧮</span>
             <div>
               <div class="text-blue-200 font-medium">Computed</div>
-              <div class="text-blue-400/70 text-sm">Вычисляемые значения</div>
+              <div class="text-blue-400 text-sm">Вычисляемые значения</div>
             </div>
           </div>
           <div class="flex items-center gap-3 p-3 box box--rich cs-purple">
             <span class="text-xl">👀</span>
             <div>
               <div class="text-purple-200 font-medium">Reaction</div>
-              <div class="text-purple-400/70 text-sm">Побочные эффекты</div>
+              <div class="text-purple-400 text-sm">Побочные эффекты</div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-span-4 row-span-1 box box--rich cs-indigo">
+    <div class="flex flex-col justify-around items-center h-full">
+      <div class="text-center">
+        <div class="text-lg font-bold text-indigo-300">🚀</div>
+        <div class="text-xs text-white">Простота</div>
+      </div>
+      <div class="text-center">
+        <div class="text-lg font-bold text-indigo-300">⚡</div>
+        <div class="text-xs text-white">Производительность</div>
+      </div>
+      <div class="text-center">
+        <div class="text-lg font-bold text-indigo-300">🔄</div>
+        <div class="text-xs text-white">Автоматичность</div>
       </div>
     </div>
   </div>
@@ -229,25 +483,43 @@
   </div>
   <div class="col-span-4 row-span-1 box box--rich cs-pink flex-center">
     <div class="text-center">
-      <div class="text-2xl mb-1">🪄</div>
       <div class="text-sm text-pink-200 font-medium">Transparent</div>
-      <div class="text-xs text-pink-400/70">Прозрачная реактивность</div>
-    </div>
-  </div>
-  <div class="col-span-4 row-span-1 box box--rich cs-indigo">
-    <div class="flex justify-around items-center h-full">
-      <div class="text-center">
-        <div class="text-lg font-bold text-indigo-300">🚀</div>
-        <div class="text-xs text-indigo-400/70">Простота</div>
-      </div>
-      <div class="text-center">
-        <div class="text-lg font-bold text-indigo-300">⚡</div>
-        <div class="text-xs text-indigo-400/70">Производительность</div>
-      </div>
-      <div class="text-center">
-        <div class="text-lg font-bold text-indigo-300">🔄</div>
-        <div class="text-xs text-indigo-400/70">Автоматичность</div>
-      </div>
+      <div class="text-xs text-pink-400/70">Мутабельная реактивность</div>
     </div>
   </div>
 </div>
+
+---
+
+```js {*|3-9|6-8|11-13|15-16}
+var mobx = require("mobx");
+
+var person = mobx.observable({
+  name: "Alice",
+  age: 20,
+  birthday: mobx.action(function () {
+    this.age++;
+  })
+});
+
+mobx.autorun(function () {
+  console.log(person.name + " is " + person.age);
+});
+
+person.name = "Bob";
+person.birthday();  
+```
+
+---
+
+# Ключевые моменты
+
+<v-clicks>
+
+- **PushPull** реактивность
+- Автоматический трекинг зависимостей
+- Мутабельность
+- Лакончиность
+- Сложная отладка
+
+</v-clicks>

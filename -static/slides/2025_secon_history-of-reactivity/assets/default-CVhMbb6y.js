@@ -1,0 +1,1 @@
+import{f as s,o as t,g as l,j as a,n as o}from"./modules/vue-B5pjl96G.js";import{u as r}from"./slidev/context-B1edYdcO.js";const c={class:"w-full flex flex-col justify-center items-stretch"},d={__name:"default",setup(f){return r(),(e,n)=>(t(),s("div",{class:o(["slidev-layout default w-full flex",e.$attrs.slideClass])},[l("div",c,[a(e.$slots,"default")])],2))}};export{d as _};
