@@ -66,7 +66,18 @@ if (slide.$frontmatter.timeline) {
   })
 
   const clicksAliases = computed(() => precalculatedData.value.aliases)
-  const click = computed(() => Math.min(nav.clicks.value, totalClicks.value - 1))
+  const click = computed(() => {
+    const diff = slide.$page.value - nav.currentSlideNo.value
+    if (diff === 0) {
+      return Math.min(nav.clicks.value, totalClicks.value - 1) 
+    }
+    if (diff < 0) {
+      console.log('diff < 0', nav.currentSlideNo.value, slide.$page.value)
+      return totalClicks.value - 1
+    }
+    console.log('lol > 0', nav.currentSlideNo.value, slide.$page.value)
+    return 0
+  })
   const data = computed(() => precalculatedData.value.states[click.value])
 
   const reactiveKeys = [

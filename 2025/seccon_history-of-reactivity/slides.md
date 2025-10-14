@@ -9,7 +9,7 @@ highlighter: shiki
 lineNumbers: true
 css: unocss
 colorSchema: dark
-transition: view-transition
+transition: fade-out
 contextMenu: false
 mdc: true
 growSeed: 4

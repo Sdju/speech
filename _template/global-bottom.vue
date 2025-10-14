@@ -1,51 +1,30 @@
-<script setup lang="ts">
+<script setup>
 import { useNav } from "@slidev/client"
-import { computed, ref, watch, nextTick } from "vue"
-import { TransitionPresets, useTransition } from '@vueuse/core'
-// import BlurredPolyBackground from "./theme/components/backgrounds/BlurredPolyBackground.vue"
-import GlslBackground from "./theme/components/backgrounds/GlslBackground.vue"
-import shader from "./background-shader.glsl?raw"
+import { computed } from "vue"
+import { twMerge } from 'tailwind-merge'
 
-const { currentSlideRoute, currentSlideNo } = useNav()
+const { currentSlideNo, currentSlideRoute } = useNav()
 const frontmatter = computed(() => currentSlideRoute.value.meta?.slide?.frontmatter || {})
 
-const color = ref([0, 0, 0, 1])
-const shaderColor = useTransition(color, {
-  duration: 2000,
-  transition: TransitionPresets.linear,
-})
-
-function wait(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
-watch(currentSlideNo, async () => {
-  const selector = `[data-slidev-no="${currentSlideNo.value}"] .slidev-layout`
-  while(!document.querySelector(selector)) {
-    await wait(10)
-    console.log(selector)
-  }
-  const element = document.querySelector(selector)!
-  const baseColor = getComputedStyle(element).getPropertyValue('--v-color')
-  color.value = baseColor
-    .replace('rgb(', '')
-    .replace(')', '')
-    .split(',')
-    .map(value => Number(value) / 255)
-    .concat(1)
-}, { immediate: true })
+const isDev = import.meta.env.DEV
 </script>
 
 <template>
-  <div :class="frontmatter.slideClass">
-    <GlslBackground 
-      :fragmentShader="shader"
-      :uniforms="{
-        u_baseColor: {
-          type: 'vec4',
-          value: shaderColor
-        }
-      }"
-    />
+  <div class="absolute top-0 left-0 w-full h-full pointer-events-none" :class="frontmatter.slideClass">
+    <CoordHelper v-if="isDev">
+      <MousePosTooltip />
+      <MouseSizeSelect />
+      <ObjectEdit />
+      <MemoryEditor />
+    </CoordHelper>
+    <div class="right-5 bottom-5 absolute text-lg opacity-50">{{ currentSlideNo }}</div>
+    <div
+      :class="twMerge([
+        'absolute pos-20 text-[2.5em] transition-all duration-500',
+        frontmatter.topTitleClass,
+      ])"
+    >
+      {{ frontmatter.topTitle }}
+    </div>
   </div>
 </template>

@@ -23,7 +23,7 @@ void main() {
   vec4 o;
   
   // FIX: Declare loop counter directly in the for statement
-  for (float i = 0.0; i < 60.0; i++) {
+  for (float i = 0.0; i < 40.0; i++) {
     // Ray setup: convert 2D screen coordinate C to 3D ray direction
     p = z * normalize(vec3(C - 0.5 * r, r.y));  // Create ray from camera through pixel
     p.z -= 4.0;  // Move camera back 4 units from origin

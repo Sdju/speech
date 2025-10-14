@@ -23,7 +23,6 @@ watch(currentSlideNo, async () => {
   const selector = `[data-slidev-no="${currentSlideNo.value}"] .slidev-layout`
   while(!document.querySelector(selector)) {
     await wait(10)
-    console.log(selector)
   }
   const element = document.querySelector(selector)!
   const baseColor = getComputedStyle(element).getPropertyValue('--v-color')
