@@ -13,6 +13,7 @@ declare module 'virtual:slides-parts-info' {
     position: number
     name: string
     src: string
+    hidden: boolean
   }
   
   export const slidesParts: SlidePart[]
@@ -20,14 +21,18 @@ declare module 'virtual:slides-parts-info' {
 }
 
 declare module 'virtual:slides-parts-api' {
-  export interface RenameResult {
+  export interface OperationResult {
     success: boolean
     newPath?: string
     error?: string
   }
   
   export const slidesPartsApi: {
-    renamePart(oldSrc: string, newName: string): Promise<RenameResult>
+    renamePart(oldSrc: string, newName: string): Promise<OperationResult>
+    createPart(name: string, position?: number): Promise<OperationResult>
+    deletePart(src: string): Promise<OperationResult>
+    movePart(src: string, direction: 'up' | 'down'): Promise<OperationResult>
+    toggleHide(src: string): Promise<OperationResult>
   }
   
   export default slidesPartsApi

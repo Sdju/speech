@@ -11,9 +11,9 @@ const isDev = computed(() => import.meta.env.DEV)
 
 <template>
   <div :class="frontmatter.slideClass">
-    <PartsManager class="absolute top-0 left-0 w-full h-full" />
 
     <CoordHelper v-if="isDev">
+      <PartsManager class="absolute top-0 left-0 w-full h-full" />
       <MousePosTooltip />
       <MouseSizeSelect />
       <ObjectEdit />

@@ -35,4 +35,10 @@ layout: center
 
 ---
 src: ./parts/1_palette.md
+hide: true
+---
+
+
+---
+src: ./parts/2_advanced.md
 ---
