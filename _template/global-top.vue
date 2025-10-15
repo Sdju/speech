@@ -5,11 +5,15 @@ import { twMerge } from 'tailwind-merge'
 
 const { currentSlideNo, currentSlideRoute } = useNav()
 const frontmatter = computed(() => currentSlideRoute.value.meta?.slide?.frontmatter || {})
+
+const isDev = computed(() => import.meta.env.DEV)
 </script>
 
 <template>
   <div :class="frontmatter.slideClass">
-    <CoordHelper>
+    <PartsManager class="absolute top-0 left-0 w-full h-full" />
+
+    <CoordHelper v-if="isDev">
       <MousePosTooltip />
       <MouseSizeSelect />
       <ObjectEdit />

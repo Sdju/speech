@@ -75,7 +75,6 @@ if (slide.$frontmatter.timeline) {
       console.log('diff < 0', nav.currentSlideNo.value, slide.$page.value)
       return totalClicks.value - 1
     }
-    console.log('lol > 0', nav.currentSlideNo.value, slide.$page.value)
     return 0
   })
   const data = computed(() => precalculatedData.value.states[click.value])

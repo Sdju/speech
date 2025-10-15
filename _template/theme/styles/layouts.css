@@ -1,7 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-
 .slidev-layout {
-  font-family: "Open Sans", sans-serif;
+  font-family: sans, sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
@@ -19,13 +17,17 @@
     --slidev-code-line-height: 20px;
   }
 
+  code {
+    @apply font-mono;
+  }
+
   .no-bg {
     --slidev-code-background: transparent;
   }
 
   b,
   strong {
-    @apply c-[var(--bg-keyword)];
+    @apply font-strong c-[var(--bg-keyword)];
   }
 
   p {
@@ -49,7 +51,7 @@
   }
 
   blockquote {
-    @apply mt-2 mb-4 text-6 italic;
+    @apply mt-2 mb-4 text-6 italic font-hand b-[var(--bg-keyword)] b-l-2;
   }
 
   img.slide {
@@ -80,5 +82,5 @@
 .slidev-layout :not(pre)>code {
   color: var(--bg-keyword);
   background: none;
-  @apply font-600 text-shadow-xl text-[1.06em];
+  @apply font-600 font-mono text-shadow-xl text-[1.06em];
 }

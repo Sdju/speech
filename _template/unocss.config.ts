@@ -7,6 +7,7 @@ function parseValue(value: string) {
 
 const variants = {
   orange: "[--bg-keyword:#cc8b00] [--bg-first:#ffae00] [--bg-second:#dc8e27] [--bg-third:#a27839] [--v-color:theme('colors.amber.500')] ",
+  gold: "[--bg-keyword:#ffd700] [--bg-first:#ffc300] [--bg-second:#ffb200] [--bg-third:#ff9c00] [--v-color:theme('colors.yellow.500')] ",
   blue: "[--bg-keyword:#3c5cff] [--bg-first:#3c5cff] [--bg-second:#4cbbc5] [--bg-third:#5d1dff] [--v-color:theme('colors.blue.500')] ",
   lightblue: "[--bg-keyword:#0099ff] [--bg-first:#0099ff] [--bg-second:#4cbbc5] [--bg-third:#5d1dff] [--v-color:theme('colors.blue.500')] ",
   green: "[--bg-keyword:#5a8f29] [--bg-first:#49ff3c] [--bg-second:#4cc580] [--bg-third:#ceff1d] [--v-color:theme('colors.green.500')] ",
@@ -87,6 +88,7 @@ export default mergeConfigs([
         'framed': 'rounded-[10px] border-2 border-gray-500/20 object-cover',
         'cs-main': 'cs-orange',
         'fx': 'transform filter duration-[var(--slidev-transition-duration)]',
+        'center': 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
       }
     ],
     presets: [
@@ -94,9 +96,9 @@ export default mergeConfigs([
         fonts: {
           mono: 'DM Mono',
           sans: 'DM Sans',
-          strong: 'Rubik Iso',
+          strong: 'SUSE Mono',
           fast: 'Ubuntu',
-          hand: 'Caveat',
+          hand: 'Bentham',
         },
       }),
     ],

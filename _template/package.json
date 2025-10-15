@@ -4,12 +4,11 @@
   "private": true,
   "scripts": {
     "build": "env-cmd -x slidev build --out $STATIC_ROOT$PRJ_NAME --base $BASE_ROOT$PRJ_NAME",
-    "dev": "slidev",
-    "export": "slidev export --with-clicks"
+    "dev": "slidev"
   },
   "dependencies": {
-    "@iconify/json": "2.2.391",
-    "@slidev/cli": "52.2.4",
+    "@iconify/json": "2.2.395",
+    "@slidev/cli": "52.2.5",
     "chroma-js": "3.1.2",
     "class-variance-authority": "0.7.1",
     "env-cmd": "11.0.0",

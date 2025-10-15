@@ -1,11 +1,39 @@
-.center {
-    @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+@function --set-alpha(--color, --alpha) {
+  result: oklch(from var(--color) l c h / var(--alpha))
 }
 
-.s-container {
-    @apply relative pt-[0.5px];
+@function --shift-hue(--color, --shift) {
+  result: oklch(from var(--color) l c calc(h + var(--shift)))
 }
 
-.s-container > :not(:first-child) {
-    @apply absolute top-0 w-full;
+.flex-center {
+  @apply flex flex-col items-center justify-center;
+}
+.flex-center-row {
+  @apply flex flex-row items-center justify-center;
+}
+
+.box {
+  background-color: --set-alpha(var(--bg-keyword), 40%);
+  @apply b-[var(--bg-first)] c-[var(--v-color)] rounded-[8px] px-4 py-2 b-1;
+}
+.box--center {
+  @apply grid place-items-center;
+}
+.box-text {
+  @apply c-[var(--v-color)];
+}
+
+.box--rich {
+  --un-gradient-shape: 45deg in oklch;
+  --un-gradient: var(--un-gradient-shape), var(--un-gradient-stops);
+  --un-gradient-from-position: 0%;
+  --un-gradient-from: --set-alpha(var(--bg-keyword), 30%) var(--un-gradient-from-position);
+  --un-gradient-to-position: 100%;
+  --un-gradient-to: --set-alpha(--shift-hue(var(--bg-first), 70), 30%) var(--un-gradient-to-position);
+  --un-gradient-stops: var(--un-gradient-from), var(--un-gradient-to);
+  border-color: --set-alpha(var(--bg-first), 30%);
+  background-color: transparent;
+  background-image: linear-gradient(var(--un-gradient));
+  backdrop-filter: blur(10px);
 }
