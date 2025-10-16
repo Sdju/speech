@@ -79,3 +79,9 @@ timeline:
   <SvgArrow v-bind="t.arrow3To1" />
   <SvgArrow v-bind="t.arrow3To2" />
 </SvgLayer>
+
+---
+usePostProcessing: true
+---
+
+Just a text of post processing

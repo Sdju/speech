@@ -4,15 +4,65 @@ import { computed, ref, watch } from "vue"
 import { TransitionPresets, useTransition } from '@vueuse/core'
 import GlslBackground from "./theme/components/backgrounds/GlslBackground.vue"
 import shader from "./background-shader.glsl?raw"
+import { 
+  grainFilterShader, 
+  turbulenceFilterShader, 
+  vignetteFilterShader,
+  type PostProcessingPipeline
+} from "./addon/utils/shaders"
 
 const { currentSlideRoute, currentSlideNo } = useNav()
-const frontmatter = computed(() => currentSlideRoute.value.meta?.slide?.frontmatter || {})
+const frontmatter = computed(() => {
+  const meta = (currentSlideRoute.value.meta?.slide as any)?.frontmatter || {}
+  return meta as { slideClass?: string }
+})
 
 const color = ref([0, 0, 0, 1])
 const shaderColor = useTransition(color, {
   duration: 2000,
   transition: TransitionPresets.linear,
 })
+
+const postProcessingPipeline = computed((): PostProcessingPipeline => ({
+  stages: [
+    {
+      fragmentShader: shader,
+      uniforms: {
+        u_baseColor: {
+          type: 'vec4' as const,
+          value: shaderColor.value
+        }
+      }
+    },
+    {
+      fragmentShader: grainFilterShader,
+      uniforms: {
+        u_grainIntensity: {
+          type: 'float' as const,
+          value: 0.05
+        }
+      }
+    },
+    {
+      fragmentShader: turbulenceFilterShader,
+      uniforms: {
+        u_turbulenceIntensity: {
+          type: 'float' as const,
+          value: 0.3
+        }
+      }
+    },
+    {
+      fragmentShader: vignetteFilterShader,
+      uniforms: {
+        u_vignetteIntensity: {
+          type: 'float' as const,
+          value: 1
+        }
+      }
+    }
+  ]
+}))
 
 function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -36,14 +86,6 @@ watch(currentSlideNo, async () => {
 
 <template>
   <div :class="frontmatter.slideClass">
-    <GlslBackground 
-      :fragmentShader="shader"
-      :uniforms="{
-        u_baseColor: {
-          type: 'vec4',
-          value: shaderColor
-        }
-      }"
-    />
+    <GlslBackground :postProcessing="postProcessingPipeline" />
   </div>
 </template>
