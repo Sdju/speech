@@ -3,12 +3,13 @@ import { useEventListener } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import { useNav } from '@slidev/client'
 import { showTimelineEditor, isTimelineEditorVertical as vertical, timelineEditorWidth, timelineEditorHeight } from '../state/timeline'
+import PropertyDiff from './timeline/PropertyDiff.vue'
 
 const props = defineProps<{
   resize?: boolean
 }>()
 const { clicks, currentSlideRoute, go } = useNav()
-const frontmatter = computed(() => currentSlideRoute.value.meta?.slide?.frontmatter || {})
+const frontmatter = computed(() => (currentSlideRoute.value.meta?.slide?.frontmatter || {}) as any)
 const timeline = computed(() => frontmatter.value.timeline ?? [])
 const hasTimeline = computed(() => (frontmatter.value.timeline ?? []).length > 0)
 
@@ -29,21 +30,58 @@ const currentStep = computed(() => {
   return Math.min(clicks.value, timeline.value.length - 1)
 })
 
+// Состояние сворачивания для каждого шага
+const expandedSteps = ref<Set<number>>(new Set())
+
+function toggleStepExpanded(stepIndex: number) {
+  if (expandedSteps.value.has(stepIndex)) {
+    expandedSteps.value.delete(stepIndex)
+  } else {
+    expandedSteps.value.add(stepIndex)
+  }
+}
+
+function isStepExpanded(stepIndex: number): boolean {
+  return expandedSteps.value.has(stepIndex)
+}
+
+// Подсчет количества изменений в шаге
+function getChangesCount(stepIndex: number): number {
+  return allKeys.value.filter(key => isKeyChanged(stepIndex, key)).length
+}
+
+// Проверка, нужно ли сворачивать шаг по умолчанию (>3 изменений)
+function shouldCollapseByDefault(stepIndex: number): boolean {
+  return getChangesCount(stepIndex) > 3
+}
+
 function goToStep(stepIndex: number) {
   if (stepIndex >= 0 && stepIndex < timeline.value.length) {
     go(currentSlideRoute.value.no, stepIndex, true)
   }
 }
 
-function getStepValue(stepIndex: number, key: string): string {
+function getStepValue(stepIndex: number, key: string): any {
   const step = timeline.value[stepIndex]
-  return step?.[key] || '-'
+  return step?.[key]
+}
+
+function getPrevStepValue(stepIndex: number, key: string): any {
+  if (stepIndex === 0) return undefined
+  const prevStep = timeline.value[stepIndex - 1]
+  return prevStep?.[key]
 }
 
 function isKeyChanged(stepIndex: number, key: string): boolean {
   if (stepIndex === 0) return true
   const currentValue = timeline.value[stepIndex]?.[key]
   const prevValue = timeline.value[stepIndex - 1]?.[key]
+  
+  // Deep comparison for objects
+  if (typeof currentValue === 'object' && typeof prevValue === 'object') {
+    return JSON.stringify(currentValue) !== JSON.stringify(prevValue)
+  }
+  
   return currentValue !== undefined && currentValue !== prevValue
 }
 
@@ -138,9 +176,8 @@ if (props.resize) {
               'step-past': index < currentStep,
               'step-future': index > currentStep
             }"
-            @click="goToStep(index)"
           >
-            <div class="step-header">
+            <div class="step-header" @click="goToStep(index)">
               <span class="step-number">{{ index + 1 }}</span>
               <span class="step-title">
                 Шаг {{ index + 1 }}
@@ -149,19 +186,37 @@ if (props.resize) {
                 </span>
               </span>
               <div class="flex-auto" />
-              <div v-if="index === currentStep" class="current-badge">
-                ▶
-              </div>
+              <span class="changes-badge">{{ getChangesCount(index) }}</span>
+              <button
+                class="expand-btn"
+                @click.stop="toggleStepExpanded(index)"
+              >
+                <div v-if="isStepExpanded(index)" class="i-carbon:chevron-up" />
+                <div v-else class="i-carbon:chevron-down" />
+              </button>
             </div>
             
-            <div class="step-content">
-              <div
+            <div
+              v-if="!shouldCollapseByDefault(index) || isStepExpanded(index)"
+              class="step-content"
+            >
+              <PropertyDiff
                 v-for="key in allKeys.filter(key => isKeyChanged(index, key))"
                 :key="key"
-                class="step-property property-changed"
-              >
-                <span class="property-key">{{ key }}:</span>
-                <span class="property-value">{{ getStepValue(index, key) }}</span>
+                :name="key"
+                :value="getStepValue(index, key)"
+                :prev-value="getPrevStepValue(index, key)"
+                :show-diff="index > 0"
+              />
+            </div>
+            
+            <div
+              v-else
+              class="step-content-collapsed"
+              @click="toggleStepExpanded(index)"
+            >
+              <div class="text-xs text-white/50">
+                {{ getChangesCount(index) }} изменений • Клик для раскрытия
               </div>
             </div>
           </div>
@@ -190,7 +245,7 @@ if (props.resize) {
 }
 
 .step-header {
-  @apply flex items-center gap-2 p-2 bg-white/5;
+  @apply flex items-center gap-2 p-2 bg-white/5 cursor-pointer;
 }
 
 .step-number {
@@ -206,28 +261,24 @@ if (props.resize) {
   @apply text-white text-sm font-mono;
 }
 
+.changes-badge {
+  @apply px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full font-mono;
+}
+
+.expand-btn {
+  @apply flex items-center justify-center w-5 h-5 rounded hover:bg-white/10 text-white/70 hover:text-white;
+}
+
 .current-badge {
   @apply text-blue-400 text-lg animate-pulse;
 }
 
 .step-content {
-  @apply p-2 flex flex-col gap-1;
+  @apply p-2 flex flex-col gap-2;
 }
 
-.step-property {
-  @apply flex gap-2 text-xs font-mono text-white/50;
-}
-
-.step-property.property-changed {
-  @apply text-green-400 font-bold;
-}
-
-.property-key {
-  @apply min-w-[80px];
-}
-
-.property-value {
-  @apply flex-1 truncate;
+.step-content-collapsed {
+  @apply p-2 text-center cursor-pointer hover:bg-white/5 border-t border-white/5;
 }
 
 @keyframes pulse {
