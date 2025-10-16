@@ -81,7 +81,5 @@ timeline:
 </SvgLayer>
 
 ---
-usePostProcessing: true
----
 
 Just a text of post processing

@@ -6,8 +6,7 @@ import GlslBackground from "./theme/components/backgrounds/GlslBackground.vue"
 import shader from "./background-shader.glsl?raw"
 import { 
   grainFilterShader, 
-  turbulenceFilterShader, 
-  vignetteFilterShader,
+  fancyDitheringShader,
   type PostProcessingPipeline
 } from "./addon/utils/shaders"
 
@@ -39,28 +38,10 @@ const postProcessingPipeline = computed((): PostProcessingPipeline => ({
       uniforms: {
         u_grainIntensity: {
           type: 'float' as const,
-          value: 0.05
+          value: 0.03
         }
       }
     },
-    {
-      fragmentShader: turbulenceFilterShader,
-      uniforms: {
-        u_turbulenceIntensity: {
-          type: 'float' as const,
-          value: 0.3
-        }
-      }
-    },
-    {
-      fragmentShader: vignetteFilterShader,
-      uniforms: {
-        u_vignetteIntensity: {
-          type: 'float' as const,
-          value: 1
-        }
-      }
-    }
   ]
 }))
 

@@ -30,7 +30,6 @@ const currentStep = computed(() => {
   return Math.min(clicks.value, timeline.value.length - 1)
 })
 
-// Состояние сворачивания для каждого шага
 const expandedSteps = ref<Set<number>>(new Set())
 
 function toggleStepExpanded(stepIndex: number) {
@@ -45,12 +44,10 @@ function isStepExpanded(stepIndex: number): boolean {
   return expandedSteps.value.has(stepIndex)
 }
 
-// Подсчет количества изменений в шаге
 function getChangesCount(stepIndex: number): number {
   return allKeys.value.filter(key => isKeyChanged(stepIndex, key)).length
 }
 
-// Проверка, нужно ли сворачивать шаг по умолчанию (>3 изменений)
 function shouldCollapseByDefault(stepIndex: number): boolean {
   return getChangesCount(stepIndex) > 3
 }
