@@ -103,7 +103,7 @@ if (slide.$frontmatter.timeline) {
   slide.$clicksContext.timeline = reactive(Object.fromEntries(reactiveKeys))
 
   onMounted(() => {
-    slide.$clicksContext.register(root.value!, slide.$clicksContext.calculateSince(0, totalClicks.value))
+    slide.$clicksContext.register(root.value!, slide.$clicksContext.calculateSince(1, totalClicks.value))
   })
 
   onUnmounted(() => {

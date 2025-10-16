@@ -1,21 +1,30 @@
 <script setup>
 import { useNav } from "@slidev/client"
-import { computed, onMounted, watch } from "vue"
+import { computed, onMounted, watch, nextTick, ref } from "vue"
 import { twMerge } from 'tailwind-merge'
 import { showPartsManager, isPartsManagerVertical } from './addon/state/partsManager'
+import { showTimelineEditor, isTimelineEditorVertical } from './addon/state/timeline'
 
 const { currentSlideNo, currentSlideRoute } = useNav()
 const frontmatter = computed(() => currentSlideRoute.value.meta?.slide?.frontmatter || {})
 
 const isDev = computed(() => import.meta.env.DEV)
 
+const anyPanelOpen = computed(() => showPartsManager.value || showTimelineEditor.value)
+
 // Apply grid layout to page-root
 function applyGridLayout() {
   const pageRoot = document.getElementById('page-root')
   if (pageRoot) {
-    if (showPartsManager.value) {
+    if (anyPanelOpen.value) {
       pageRoot.style.display = 'grid'
-      if (isPartsManagerVertical.value) {
+      
+      // Определяем ориентацию по открытой панели
+      const isVertical = showPartsManager.value 
+        ? isPartsManagerVertical.value 
+        : isTimelineEditorVertical.value
+      
+      if (isVertical) {
         pageRoot.style.gridTemplateColumns = ''
         pageRoot.style.gridTemplateRows = '1fr max-content'
       } else {
@@ -30,19 +39,27 @@ function applyGridLayout() {
   }
 }
 
-onMounted(() => {
+watch([showPartsManager, isPartsManagerVertical, showTimelineEditor, isTimelineEditorVertical], () => {
   applyGridLayout()
 })
 
-watch([showPartsManager, isPartsManagerVertical], () => {
+const pageRendered = ref(false)
+
+onMounted(async () => {
+  await nextTick()
+  do {
+    await new Promise(resolve => setTimeout(resolve, 100))
+  } while (!document.getElementById('page-root'))
   applyGridLayout()
+  pageRendered.value = true
 })
 </script>
 
 <template>
   <div :class="frontmatter.slideClass">
-    <Teleport to="#page-root">
-      <SidePartsManager v-if="showPartsManager" :resize="true" />
+    <Teleport to="#page-root" defer :disabled="!pageRendered">
+      <SidePartsManager v-if="showPartsManager" resize />
+      <SideTimelineEditor v-if="showTimelineEditor" resize />
     </Teleport>
     
     <CoordHelper v-if="isDev">

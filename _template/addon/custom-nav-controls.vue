@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { showPartsManager } from './state/partsManager'
+import { showTimelineEditor } from './state/timeline'
 
 function togglePartsManager() {
   showPartsManager.value = !showPartsManager.value
+}
+
+function toggleTimelineEditor() {
+  showTimelineEditor.value = !showTimelineEditor.value
 }
 </script>
 
@@ -15,6 +19,15 @@ function togglePartsManager() {
     @click="togglePartsManager"
   >
     <div class="i-carbon:document-multiple-01" />
+  </button>
+  
+  <button
+    class="icon-btn"
+    :class="{ 'text-primary': showTimelineEditor }"
+    title="Timeline Editor"
+    @click="toggleTimelineEditor"
+  >
+    <div class="i-tdesign:animation" />
   </button>
 </template>
 
