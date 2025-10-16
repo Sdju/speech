@@ -23,7 +23,6 @@ watch(currentSlideNo, async () => {
   while(!document.querySelector(selector)) {
     await wait(100)
   }
-  console.log(selector, document.querySelector(selector))
   const element = document.querySelector(selector)!
   const baseColor = getComputedStyle(element).getPropertyValue('--v-color')
   color.value = baseColor

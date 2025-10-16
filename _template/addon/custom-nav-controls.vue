@@ -12,8 +12,10 @@ function toggleTimelineEditor() {
 </script>
 
 <template>
+  <div class="w-1px opacity-10 bg-current m-1 lg:m-2" />
+
   <button
-    class="icon-btn"
+    class="slidev-icon-btn"
     :class="{ 'text-primary': showPartsManager }"
     title="Parts Manager"
     @click="togglePartsManager"
@@ -22,7 +24,7 @@ function toggleTimelineEditor() {
   </button>
   
   <button
-    class="icon-btn"
+    class="slidev-icon-btn"
     :class="{ 'text-primary': showTimelineEditor }"
     title="Timeline Editor"
     @click="toggleTimelineEditor"
@@ -32,10 +34,6 @@ function toggleTimelineEditor() {
 </template>
 
 <style scoped>
-.icon-btn {
-  @apply flex items-center justify-center w-8 h-8 rounded cursor-pointer hover:bg-gray/10 active:bg-gray/20;
-}
-
 .text-primary {
   @apply text-blue-500;
 }

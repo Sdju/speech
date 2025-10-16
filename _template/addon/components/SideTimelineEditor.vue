@@ -98,19 +98,19 @@ if (props.resize) {
     } : {}"
   >
     <div class="flex pb-2 text-xl -mt-1 items-center">
-      <span class="text-2xl pt-1 font-mono">
+      <span class="text-2xl pt-1">
         Timeline
       </span>
       <div class="flex-auto" />
       <template v-if="resize">
-        <button v-if="vertical" title="Dock to right" class="icon-btn" @click="vertical = false">
+        <button v-if="vertical" title="Dock to right" class="slidev-icon-btn" @click="vertical = false">
           <div class="i-carbon:open-panel-right" />
         </button>
-        <button v-else title="Dock to bottom" class="icon-btn" @click="vertical = true">
+        <button v-else title="Dock to bottom" class="slidev-icon-btn" @click="vertical = true">
           <div class="i-carbon:open-panel-bottom" />
         </button>
       </template>
-      <button title="Close" class="icon-btn" @click="close">
+      <button title="Close" class="slidev-icon-btn" @click="close">
         <div class="i-carbon:close" />
       </button>
     </div>
@@ -123,7 +123,6 @@ if (props.resize) {
       
       <div v-else class="flex flex-col gap-2">
         <div class="bg-blue-500/20 rounded p-2 border border-blue-500/50">
-          <div class="text-white/70 text-xs mb-1">Текущий шаг:</div>
           <div class="text-white font-bold text-lg font-mono">
             {{ currentStep + 1 }} / {{ timeline.length }}
           </div>
@@ -157,10 +156,9 @@ if (props.resize) {
             
             <div class="step-content">
               <div
-                v-for="key in allKeys"
+                v-for="key in allKeys.filter(key => isKeyChanged(index, key))"
                 :key="key"
-                class="step-property"
-                :class="{ 'property-changed': isKeyChanged(index, key) }"
+                class="step-property property-changed"
               >
                 <span class="property-key">{{ key }}:</span>
                 <span class="property-value">{{ getStepValue(index, key) }}</span>
@@ -174,10 +172,6 @@ if (props.resize) {
 </template>
 
 <style scoped>
-.icon-btn {
-  @apply flex items-center justify-center w-8 h-8 rounded cursor-pointer hover:bg-gray/10 active:bg-gray/20;
-}
-
 .step-card {
   @apply bg-white/5 rounded border border-white/10 overflow-hidden cursor-pointer 
          hover:bg-white/10 transition-all duration-200;

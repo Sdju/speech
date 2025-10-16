@@ -147,22 +147,22 @@ if (props.resize) {
     } : {}"
   >
     <div class="flex pb-2 text-xl -mt-1 items-center">
-      <span class="text-2xl pt-1 font-mono">
+      <span class="text-2xl pt-1">
         Parts
       </span>
       <div class="flex-auto" />
       <template v-if="resize">
-        <button v-if="vertical" title="Dock to right" class="icon-btn" @click="vertical = false">
+        <button v-if="vertical" title="Dock to right" class="slidev-icon-btn" @click="vertical = false">
           <div class="i-carbon:open-panel-right" />
         </button>
-        <button v-else title="Dock to bottom" class="icon-btn" @click="vertical = true">
+        <button v-else title="Dock to bottom" class="slidev-icon-btn" @click="vertical = true">
           <div class="i-carbon:open-panel-bottom" />
         </button>
       </template>
-      <button title="Create part" class="icon-btn" @click="createPart">
+      <button title="Create part" class="slidev-icon-btn" @click="createPart">
         <div class="i-carbon:add" />
       </button>
-      <button title="Close" class="icon-btn" @click="close">
+      <button title="Close" class="slidev-icon-btn" @click="close">
         <div class="i-carbon:close" />
       </button>
     </div>
@@ -230,10 +230,6 @@ if (props.resize) {
 </template>
 
 <style scoped>
-.icon-btn {
-  @apply flex items-center justify-center w-8 h-8 rounded cursor-pointer hover:bg-gray/10 active:bg-gray/20;
-}
-
 .part-row {
   @apply flex items-center justify-between gap-2 bg-blue-500/20 rounded-full overflow-hidden hover:bg-blue-500/30 duration-100 text-sm;
 }
