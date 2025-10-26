@@ -19,7 +19,11 @@ const frontmatter = computed(() => {
 const color = ref([0, 0, 0, 1])
 const shaderColor = useTransition(color, {
   duration: 2000,
-  transition: TransitionPresets.linear,
+  transition: TransitionPresets.easeOutSine,
+})
+const shaderSlideNumber = useTransition(currentSlideNo, {
+  duration: 2000,
+  transition: TransitionPresets.easeOutSine,
 })
 
 const postProcessingPipeline = computed((): PostProcessingPipeline => ({
@@ -30,18 +34,30 @@ const postProcessingPipeline = computed((): PostProcessingPipeline => ({
         u_baseColor: {
           type: 'vec4' as const,
           value: shaderColor.value
-        }
-      }
-    },
-    {
-      fragmentShader: grainFilterShader,
-      uniforms: {
-        u_grainIntensity: {
+        },
+        u_slideNumber: {
           type: 'float' as const,
-          value: 0.03
+          value: shaderSlideNumber.value
         }
       }
     },
+    // {
+    //   fragmentShader: grainFilterShader,
+    //   uniforms: {
+    //     u_colorNum: {
+    //       type: 'float' as const,
+    //       value: 16
+    //     },
+    //     u_blockSize: {
+    //       type: 'float' as const,
+    //       value: 8
+    //     },
+    //     u_grainIntensity: {
+    //       type: 'float' as const,
+    //       value: 0.05
+    //     }
+    //   }
+    // },
   ]
 }))
 

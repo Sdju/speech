@@ -70,20 +70,5 @@ void main()
 	}
 	v=mix(vec3(length(v)),v,saturation); //color adjust
 
-  vec3 stars[6];
-  vec3 vuePos = from + dir * 2.5;
-  stars[0] = vec3(-0.5, 0.5, 2.0) + vuePos;
-  stars[1] = vec3(-0.3, 0.2, 2.0) + vuePos;
-  stars[2] = vec3(-0.1, -0.1, 2.0) + vuePos;
-  stars[3] = vec3(0.0, 0.1, 2.0) + vuePos;
-  stars[4] = vec3(0.2, 0.4, 2.0) + vuePos;
-  stars[5] = vec3(0.4, 0.7, 2.0) + vuePos;
-
-  for (int i = 0; i < 6; i++) {
-    float d = length(dir * 2.0 - (stars[i] - from)); // приближение к "лучу"
-    float star = exp(-d * 40.0); // резкое затухание
-    v += vec3(0.2, 0.9, 0.3) * star * 400.; // ярко-зелёный цвет Vue
-  }
-
 	gl_FragColor = vec4(v*.01,1.);	
 }

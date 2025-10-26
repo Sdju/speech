@@ -1,12 +1,21 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import ObjectViewer from './ObjectViewer.vue'
+import EditableValue from './EditableValue.vue'
+import { simulateFileUpdateWithSlidev, type TimelineChange } from '../../utils/fileEditor'
 
 const props = defineProps<{
   name: string
   value: any
   prevValue?: any
   showDiff?: boolean
+  stepIndex: number
+  path: string
+  slideMeta: { filepath: string; start: number }
+}>()
+
+const emit = defineEmits<{
+  update: [path: string, oldValue: any, newValue: any, stepIndex: number, propertyName: string]
 }>()
 
 const hasChanged = computed(() => {
@@ -22,6 +31,23 @@ const changeType = computed(() => {
 
 function isSimpleValue(value: any): boolean {
   return typeof value !== 'object' || value === null
+}
+
+async function handleValueUpdate(path: string, oldValue: any, newValue: any, stepIndex: number, propertyName: string) {
+  // Создаем объект изменения
+  const change: TimelineChange = {
+    path,
+    stepIndex,
+    propertyName,
+    oldValue,
+    newValue
+  }
+  
+  // Симулируем обновление файла с использованием данных Slidev
+  await simulateFileUpdateWithSlidev(change, props.slideMeta)
+  
+  // Передаем событие наверх
+  emit('update', path, oldValue, newValue, stepIndex, propertyName)
 }
 </script>
 
@@ -41,7 +67,18 @@ function isSimpleValue(value: any): boolean {
     </div>
     
     <div class="property-content">
-      <ObjectViewer :data="value" :depth="0" />
+      <!-- Для простых значений используем EditableValue -->
+      <EditableValue
+        v-if="isSimpleValue(value)"
+        :value="value"
+        :path="path"
+        :step-index="stepIndex"
+        :property-name="name"
+        @update="handleValueUpdate"
+      />
+      
+      <!-- Для сложных объектов используем ObjectViewer -->
+      <ObjectViewer v-else :data="value" :depth="0" />
     </div>
 
     <!-- Показываем предыдущее значение если есть изменение -->

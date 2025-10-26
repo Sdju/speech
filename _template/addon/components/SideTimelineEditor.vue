@@ -9,7 +9,30 @@ const props = defineProps<{
   resize?: boolean
 }>()
 const { clicks, currentSlideRoute, go } = useNav()
-const frontmatter = computed(() => (currentSlideRoute.value.meta?.slide?.frontmatter || {}) as any)
+
+// Получаем данные о слайде из Slidev
+const slideMeta = computed(() => {
+  const slide = currentSlideRoute.value.meta?.slide as any
+  const meta = {
+    filepath: slide?.filepath || 'slides.md',
+    start: slide?.start || 0
+  }
+  
+  // Отладочная информация
+  console.log('🔍 Данные слайда из Slidev:', {
+    slide: slide,
+    filepath: meta.filepath,
+    start: meta.start,
+    currentSlideRoute: currentSlideRoute.value
+  })
+  
+  return meta
+})
+
+const frontmatter = computed(() => {
+  const meta = currentSlideRoute.value.meta?.slide as any
+  return meta?.frontmatter || {}
+})
 const timeline = computed(() => frontmatter.value.timeline ?? [])
 const hasTimeline = computed(() => (frontmatter.value.timeline ?? []).length > 0)
 
@@ -84,6 +107,19 @@ function isKeyChanged(stepIndex: number, key: string): boolean {
 
 function close() {
   showTimelineEditor.value = false
+}
+
+function handlePropertyUpdate(path: string, oldValue: any, newValue: any, stepIndex: number, propertyName: string) {
+  console.log('🔄 Обновление свойства в timeline:', {
+    path,
+    stepIndex,
+    propertyName,
+    oldValue,
+    newValue
+  })
+  
+  // TODO: Здесь будет логика обновления данных в памяти
+  // Пока что просто логируем изменение
 }
 
 const handlerDown = ref(false)
@@ -204,6 +240,10 @@ if (props.resize) {
                 :value="getStepValue(index, key)"
                 :prev-value="getPrevStepValue(index, key)"
                 :show-diff="index > 0"
+                :step-index="index"
+                :path="`timeline.${index}.${key}`"
+                :slide-meta="slideMeta"
+                @update="handlePropertyUpdate"
               />
             </div>
             
