@@ -17,14 +17,27 @@ title: Что такое композаблы?
 layout: center
 ---
 
-<img src="./img/vue-cons.png" class="$obj pos-center" />
+<script setup>
+import shader from './shaders/vue.glsl?raw'
+</script>
+
+<GlslImageEffect 
+  :stages="[{
+    fragmentShader: shader,
+    textures: [{
+      source: './img/vue-cons.png',
+      options: {
+        objectFit: 'cover'
+      }
+    }]
+  }]"
+/>
 
 <XSlide slot="title" #="{ title, className, style }">
   <h1 :class="className" :style="style"> {{ title }} </h1>
 </XSlide>
 
 <XSlideOut slot="title" title="Созвездия композаблов" class="text-center text-4xl" />
-
 
 ---
 src: ./parts/2_intro.md

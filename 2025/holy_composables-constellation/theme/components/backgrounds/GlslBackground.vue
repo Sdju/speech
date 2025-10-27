@@ -7,15 +7,22 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { 
-  type PostProcessingPipeline
+  type PostProcessingPipeline,
+  type PostProcessingStage
 } from '../../../addon/utils/webgl'
 import { PostProcessingManager } from '../../../addon/utils/postprocessing'
+import { normalizeStages, type StagesInput } from '../../../addon/utils/presets'
 
 interface Props {
-    postProcessing: PostProcessingPipeline
+    stages: StagesInput
 }
 
 const props = defineProps<Props>()
+
+const getPipeline = (): PostProcessingPipeline => {
+  const normalizedStages = normalizeStages(props.stages)
+  return { stages: normalizedStages }
+}
 
 const container = ref<HTMLDivElement | null>(null)
 const canvas = ref<HTMLCanvasElement | null>(null)
@@ -24,13 +31,14 @@ let postProcessingManager: PostProcessingManager | null = null
 let animationFrameId: number | null = null
 
 const initPostProcessing = async (): Promise<void> => {
-    if (!gl || !canvas.value || !props.postProcessing) return
+    if (!gl || !canvas.value) return
 
+    const pipeline = getPipeline()
     postProcessingManager = new PostProcessingManager(gl, canvas.value.width, canvas.value.height)
-    await postProcessingManager.initialize(props.postProcessing)
+    await postProcessingManager.initialize(pipeline)
 }
 
-const resizeCanvas = (): void => {
+const resizeCanvas = async (): Promise<void> => {
     if (!canvas.value || !gl || !container.value) return
 
     const width = container.value.clientWidth
@@ -43,8 +51,11 @@ const resizeCanvas = (): void => {
     gl.viewport(0, 0, width, height)
     
     if (postProcessingManager) {
-        postProcessingManager.resize(width, height)
+        postProcessingManager.destroy()
+        postProcessingManager = null
     }
+    
+    await initPostProcessing()
 }
 
 const render = (): void => {
@@ -59,7 +70,8 @@ const render = (): void => {
     gl.clear(gl.COLOR_BUFFER_BIT)
 
     if (postProcessingManager) {
-        postProcessingManager.render(props.postProcessing)
+        const pipeline = getPipeline()
+        postProcessingManager.render(pipeline, undefined, {})
     }
     
     animationFrameId = requestAnimationFrame(render)
@@ -98,7 +110,7 @@ onBeforeUnmount(() => {
     }
 })
 
-watch(() => props.postProcessing, async () => {
+watch(() => props.stages, async () => {
     if (!gl) return
     
     if (postProcessingManager) {

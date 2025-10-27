@@ -9,6 +9,7 @@ import {
   shadingShader,
   noopShader
 } from "./addon/utils/shaders"
+import { PostProcessingStage } from "./addon/utils/webgl"
 
 const { currentSlideRoute, currentSlideNo } = useNav()
 const frontmatter = computed(() => {
@@ -30,32 +31,30 @@ const shaderShading = useTransition(computed(() => frontmatter.value.shading ? 0
   transition: TransitionPresets.easeOutSine,
 })
 
-const postProcessingPipeline = computed((): PostProcessingPipeline => ({
-  stages: [
-    {
-      fragmentShader: shader,
-      uniforms: {
-        u_baseColor: {
-          type: 'vec4' as const,
-          value: shaderColor.value
-        },
-        u_slideNumber: {
-          type: 'float' as const,
-          value: shaderSlideNumber.value
-        }
-      }
-    },
-    {
-      fragmentShader: shadingShader,
-      uniforms: {
-        u_shading: {
-          type: 'float' as const,
-          value: shaderShading.value
-        }
+const postProcessingPipeline = computed((): PostProcessingStage[] => [
+  {
+    fragmentShader: shader,
+    uniforms: {
+      u_baseColor: {
+        type: 'vec4' as const,
+        value: shaderColor.value
+      },
+      u_slideNumber: {
+        type: 'float' as const,
+        value: shaderSlideNumber.value
       }
     }
-  ]
-}))
+  },
+  {
+    fragmentShader: shadingShader,
+    uniforms: {
+      u_shading: {
+        type: 'float' as const,
+        value: shaderShading.value
+      }
+    }
+  }
+])
 
 function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -79,6 +78,6 @@ watch(currentSlideNo, async () => {
 
 <template>
   <div :class="frontmatter.slideClass">
-    <GlslBackground :postProcessing="postProcessingPipeline" />
+    <GlslBackground :stages="postProcessingPipeline" />
   </div>
 </template>

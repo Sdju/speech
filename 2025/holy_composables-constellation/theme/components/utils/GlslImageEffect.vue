@@ -8,23 +8,39 @@
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { 
   type PostProcessingPipeline,
-  type ShaderTexture,
-  type ShaderUniform
+  type PostProcessingStage
 } from '../../../addon/utils/webgl'
 import { PostProcessingManager } from '../../../addon/utils/postprocessing'
+import { normalizeStages, type StagesInput } from '../../../addon/utils/presets'
 
 interface Props {
-  imageUrl: string
-  postProcessing?: PostProcessingPipeline
-  preset?: 'none' | 'vignette' | 'blur'
-  params?: Record<string, any>
+  imageUrl?: string
+  stages: StagesInput
+  objectFit?: 'contain' | 'cover' | 'fill' | 'none' | 'scale-down'
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  postProcessing: undefined,
-  preset: 'none',
-  params: () => ({})
+  objectFit: 'contain'
 })
+
+const getPipeline = (): PostProcessingPipeline => {
+  const normalizedStages = normalizeStages(props.stages, props.imageUrl, { objectFit: props.objectFit })
+  return { stages: normalizedStages }
+}
+
+const imageSize = ref<[number, number]>([0, 0])
+
+const loadImageSize = async (url: string): Promise<void> => {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      imageSize.value = [img.width, img.height]
+      resolve()
+    }
+    img.onerror = () => resolve()
+    img.src = url
+  })
+}
 
 const container = ref<HTMLDivElement | null>(null)
 const canvas = ref<HTMLCanvasElement | null>(null)
@@ -32,122 +48,15 @@ let gl: WebGLRenderingContext | null = null
 let postProcessingManager: PostProcessingManager | null = null
 let animationFrameId: number | null = null
 
-// Предустановленные эффекты
-const getPresetPipeline = (): PostProcessingPipeline => {
-  const texture: ShaderTexture = {
-    source: props.imageUrl
-  }
-  
-  const uniforms: Record<string, ShaderUniform> = {}
-  
-  // Применяем параметры из props.params
-  if (props.params) {
-    Object.entries(props.params).forEach(([key, value]) => {
-      uniforms[key] = {
-        type: typeof value === 'number' ? 'float' : 'float',
-        value: value as number
-      }
-    })
-  }
-  
-  switch (props.preset) {
-    case 'vignette':
-      return {
-        stages: [{
-          fragmentShader: `
-            precision mediump float;
-            varying vec2 v_texCoord;
-            uniform sampler2D u_texture0_0;
-            ${props.params.borderSize !== undefined ? 'uniform float u_borderSize;' : ''}
-            ${props.params.blurWidth !== undefined ? 'uniform float u_blurWidth;' : ''}
-            
-            void main() {
-              vec4 color = texture2D(u_texture0_0, v_texCoord);
-              
-              float borderSize = ${props.params.borderSize ?? 0.2};
-              float blurWidth = ${props.params.blurWidth ?? 0.1};
-              
-              float left = smoothstep(0.0, blurWidth, v_texCoord.x);
-              float right = smoothstep(1.0, 1.0 - blurWidth, v_texCoord.x);
-              float top = smoothstep(0.0, blurWidth, v_texCoord.y);
-              float bottom = smoothstep(1.0, 1.0 - blurWidth, v_texCoord.y);
-              
-              float vignette = min(min(left, right), min(top, bottom));
-              
-              gl_FragColor = vec4(color.rgb, color.a * vignette);
-            }
-          `,
-          textures: [texture],
-          uniforms
-        }]
-      }
-    
-    case 'blur':
-      return {
-        stages: [{
-          fragmentShader: `
-            precision mediump float;
-            varying vec2 v_texCoord;
-            uniform sampler2D u_texture0_0;
-            uniform vec2 u_resolution;
-            ${props.params.blurAmount !== undefined ? 'uniform float u_blurAmount;' : ''}
-            
-            void main() {
-              vec4 color = texture2D(u_texture0_0, v_texCoord);
-              float blurAmount = ${props.params.blurAmount ?? 1.0};
-              vec2 offset = blurAmount / u_resolution;
-              
-              vec4 sum = vec4(0.0);
-              sum += texture2D(u_texture0_0, v_texCoord + vec2(-2.0 * offset.x, -2.0 * offset.y)) * 0.0625;
-              sum += texture2D(u_texture0_0, v_texCoord + vec2(-1.0 * offset.x, -1.0 * offset.y)) * 0.125;
-              sum += texture2D(u_texture0_0, v_texCoord) * 0.25;
-              sum += texture2D(u_texture0_0, v_texCoord + vec2(1.0 * offset.x, 1.0 * offset.y)) * 0.125;
-              sum += texture2D(u_texture0_0, v_texCoord + vec2(2.0 * offset.x, 2.0 * offset.y)) * 0.0625;
-              
-              gl_FragColor = sum;
-            }
-          `,
-          textures: [texture],
-          uniforms
-        }]
-      }
-    
-    default:
-      return {
-        stages: [{
-          fragmentShader: `
-            precision mediump float;
-            varying vec2 v_texCoord;
-            uniform sampler2D u_texture0_0;
-            
-            void main() {
-              gl_FragColor = texture2D(u_texture0_0, v_texCoord);
-            }
-          `,
-          textures: [texture]
-        }]
-      }
-  }
-}
-
-const getPipeline = (): PostProcessingPipeline | null => {
-  if (props.postProcessing) {
-    return props.postProcessing
-  }
-  
-  if (props.preset && props.preset !== 'none') {
-    return getPresetPipeline()
-  }
-  
-  return null
-}
-
 const initPostProcessing = async (): Promise<void> => {
   if (!gl || !canvas.value) return
   
-  const pipeline = getPipeline()
-  if (!pipeline) return
+  // Load image size first if imageUrl is provided
+  if (props.imageUrl) {
+    await loadImageSize(props.imageUrl)
+  }
   
+  const pipeline = getPipeline()
   postProcessingManager = new PostProcessingManager(gl, canvas.value.width, canvas.value.height)
   await postProcessingManager.initialize(pipeline)
 }
@@ -181,12 +90,16 @@ const render = (): void => {
   }
   
   const pipeline = getPipeline()
-  if (!pipeline || !postProcessingManager) return
+  if (!postProcessingManager) return
   
   gl.clearColor(0.0, 0.0, 0.0, 1.0)
   gl.clear(gl.COLOR_BUFFER_BIT)
   
-  postProcessingManager.render(pipeline)
+  const extraData = props.imageUrl && imageSize.value[0] > 0 
+    ? { imageSize: imageSize.value }
+    : {}
+  
+  postProcessingManager.render(pipeline, undefined, extraData)
   
   animationFrameId = requestAnimationFrame(render)
 }
@@ -224,7 +137,7 @@ onBeforeUnmount(() => {
   }
 })
 
-watch(() => props.postProcessing, async () => {
+watch(() => props.stages, async () => {
   if (!gl) return
   
   if (postProcessingManager) {
@@ -236,18 +149,7 @@ watch(() => props.postProcessing, async () => {
 })
 
 watch(() => props.imageUrl, async () => {
-  if (!gl) return
-  
-  if (postProcessingManager) {
-    postProcessingManager.destroy()
-    postProcessingManager = null
-  }
-  
-  await initPostProcessing()
-})
-
-watch(() => props.preset, async () => {
-  if (!gl) return
+  if (!gl || !props.imageUrl) return
   
   if (postProcessingManager) {
     postProcessingManager.destroy()
