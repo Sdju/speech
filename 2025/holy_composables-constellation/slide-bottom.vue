@@ -48,6 +48,8 @@ if (slide.$frontmatter.timeline) {
       let to = totalClicksValue
       from = click++
 
+      action ??= {}
+
       if (action.$clicksAlias) {
         if (Array.isArray(action.$clicksAlias)) {
           action.$clicksAlias.forEach((alias) => {
@@ -66,7 +68,17 @@ if (slide.$frontmatter.timeline) {
   })
 
   const clicksAliases = computed(() => precalculatedData.value.aliases)
-  const click = computed(() => Math.min(nav.clicks.value, totalClicks.value - 1))
+  const click = computed(() => {
+    const diff = slide.$page.value - nav.currentSlideNo.value
+    if (diff === 0) {
+      return Math.min(nav.clicks.value, totalClicks.value - 1) 
+    }
+    if (diff < 0) {
+      console.log('diff < 0', nav.currentSlideNo.value, slide.$page.value)
+      return totalClicks.value - 1
+    }
+    return 0
+  })
   const data = computed(() => precalculatedData.value.states[click.value])
 
   const reactiveKeys = [
@@ -91,10 +103,9 @@ if (slide.$frontmatter.timeline) {
 
   // @ts-expect-error
   slide.$clicksContext.timeline = reactive(Object.fromEntries(reactiveKeys))
-  console.log('make timeline')
 
   onMounted(() => {
-    slide.$clicksContext.register(root.value!, slide.$clicksContext.calculateSince(0, totalClicks.value))
+    slide.$clicksContext.register(root.value!, slide.$clicksContext.calculateSince(1, totalClicks.value))
   })
 
   onUnmounted(() => {

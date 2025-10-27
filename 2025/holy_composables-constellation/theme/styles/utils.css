@@ -1,11 +1,61 @@
-.center {
-    @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+@function --set-alpha(--color, --alpha) {
+  result: oklch(from var(--color) l c h / var(--alpha))
 }
 
-.s-container {
-    @apply relative pt-[0.5px];
+@function --shift-hue(--color, --shift) {
+  result: oklch(from var(--color) l c calc(h + var(--shift)))
 }
 
-.s-container > :not(:first-child) {
-    @apply absolute top-0 w-full;
+@function --shift-lightness(--color, --shift) {
+  result: oklch(from var(--color) calc(l + var(--shift)) c h)
+}
+
+.flex-center {
+  @apply flex flex-col items-center justify-center;
+}
+.flex-center-row {
+  @apply flex flex-row items-center justify-center;
+}
+
+.box {
+  background-color: --set-alpha(var(--bg-keyword), 40%);
+  @apply b-[var(--bg-first)] c-[var(--v-color)] rounded-[8px] px-4 py-2 b-1;
+}
+.box--center {
+  @apply grid place-items-center;
+}
+.box-text {
+  @apply c-[var(--v-color)];
+}
+
+.box--rich {
+  --un-gradient-shape: 45deg in oklch;
+  --un-gradient: var(--un-gradient-shape), var(--un-gradient-stops);
+  --un-gradient-from-position: 0%;
+  --un-gradient-from: --set-alpha(var(--bg-keyword), 30%) var(--un-gradient-from-position);
+  --un-gradient-to-position: 100%;
+  --un-gradient-to: --set-alpha(--shift-hue(var(--bg-first), 70), 30%) var(--un-gradient-to-position);
+  --un-gradient-stops: var(--un-gradient-from), var(--un-gradient-to);
+  border-color: --set-alpha(var(--bg-first), 30%);
+  background-color: transparent;
+  background-image: linear-gradient(var(--un-gradient));
+  backdrop-filter: blur(10px);
+}
+.box--rich-active {
+  border-color: --set-alpha(var(--bg-first), 70%);
+  color: --shift-lightness(var(--v-color), 0.1);
+}
+
+.item {
+  @apply text-sm bg-[#00000088] p-[12px] rd-[8px] flex flex-row items-center gap-[8px]
+}
+.item-example {
+  @apply text-sm bg-[#00000088] p-[12px] rd-[8px] flex flex-col gap-[8px]
+}
+.item-icon {
+  @apply w-[27px] h-[27px] rd-[4px] flex items-center justify-center;
+  background-color: #D9D9D920;
+}
+.items-grid {
+  @apply grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12;
 }

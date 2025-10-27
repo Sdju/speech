@@ -18,15 +18,6 @@
     "node": ">=14.0.0",
     "slidev": ">=v0.47.0"
   },
-  "slidev": {
-    "defaults": {
-      "fonts": {
-        "mono": "Fira Code",
-        "sans": "Avenir Next,Nunito Sans",
-        "local": "Avenir Next"
-      }
-    }
-  },
   "dependencies": {
     "@slidev/types": "^0.47.0"
   }

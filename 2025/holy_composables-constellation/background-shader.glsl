@@ -42,7 +42,7 @@ void main()
 	mat2 rot2=mat2(cos(a2),sin(a2),-sin(a2),cos(a2));
 	dir.xz*=rot1;
 	dir.xy*=rot2;
-	vec3 from=vec3(1.,.5,0.5);
+	vec3 from=vec3(1.,.5,0.3);
 	from+=vec3(time*2.,time,-2.);
 	from.xz*=rot1;
 	from.xy*=rot2;

@@ -1,23 +1,61 @@
 <script setup lang="ts">
 import { useNav } from "@slidev/client"
-import { computed, ref, watch, nextTick } from "vue"
+import { computed, ref, watch } from "vue"
 import { TransitionPresets, useTransition } from '@vueuse/core'
-// import BlurredPolyBackground from "./theme/components/backgrounds/BlurredPolyBackground.vue"
 import GlslBackground from "./theme/components/backgrounds/GlslBackground.vue"
 import shader from "./background-shader.glsl?raw"
+import { 
+  type PostProcessingPipeline,
+  shadingShader,
+  noopShader
+} from "./addon/utils/shaders"
 
 const { currentSlideRoute, currentSlideNo } = useNav()
-const frontmatter = computed(() => currentSlideRoute.value.meta?.slide?.frontmatter || {})
+const frontmatter = computed(() => {
+  const meta = (currentSlideRoute.value.meta?.slide as any)?.frontmatter || {}
+  return meta as { slideClass?: string, shading?: boolean }
+})
 
 const color = ref([0, 0, 0, 1])
 const shaderColor = useTransition(color, {
   duration: 2000,
-  transition: TransitionPresets.linear,
+  transition: TransitionPresets.easeOutSine,
 })
 const shaderSlideNumber = useTransition(currentSlideNo, {
   duration: 2000,
-  transition: TransitionPresets.easeOutBack,
+  transition: TransitionPresets.easeOutSine,
 })
+const shaderShading = useTransition(computed(() => frontmatter.value.shading ? 0.4 : 0.25), {
+  duration: 2000,
+  transition: TransitionPresets.easeOutSine,
+})
+
+const postProcessingPipeline = computed((): PostProcessingPipeline => ({
+  stages: [
+    {
+      fragmentShader: shader,
+      uniforms: {
+        u_baseColor: {
+          type: 'vec4' as const,
+          value: shaderColor.value
+        },
+        u_slideNumber: {
+          type: 'float' as const,
+          value: shaderSlideNumber.value
+        }
+      }
+    },
+    {
+      fragmentShader: shadingShader,
+      uniforms: {
+        u_shading: {
+          type: 'float' as const,
+          value: shaderShading.value
+        }
+      }
+    }
+  ]
+}))
 
 function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -26,8 +64,7 @@ function wait(ms: number) {
 watch(currentSlideNo, async () => {
   const selector = `[data-slidev-no="${currentSlideNo.value}"] .slidev-layout`
   while(!document.querySelector(selector)) {
-    await wait(10)
-    console.log(selector)
+    await wait(100)
   }
   const element = document.querySelector(selector)!
   const baseColor = getComputedStyle(element).getPropertyValue('--v-color')
@@ -42,18 +79,6 @@ watch(currentSlideNo, async () => {
 
 <template>
   <div :class="frontmatter.slideClass">
-    <GlslBackground 
-      :fragmentShader="shader"
-      :uniforms="{
-        u_baseColor: {
-          type: 'vec4',
-          value: shaderColor
-        },
-        u_slideNumber: {
-          type: 'float',
-          value: shaderSlideNumber
-        }
-      }"
-    />
+    <GlslBackground :postProcessing="postProcessingPipeline" />
   </div>
 </template>
