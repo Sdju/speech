@@ -1,77 +1,70 @@
 <template>
-  <div ref="container" class="absolute inset-0 z-0 w-full h-full">
-    <canvas ref="canvas"></canvas>
-  </div>
+  <ObjectContainer
+    :objectWidth="imageSize[0]"
+    :objectHeight="imageSize[1]"
+    :mode="objectFit"
+    v-slot="{ class: canvasClass }"
+  >
+    <canvas ref="canvas" :class="canvasClass" />
+  </ObjectContainer>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
-import { 
-  type PostProcessingPipeline,
-  type PostProcessingStage
-} from '../../../addon/utils/webgl'
+import { ref, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue'
+import { useElementSize } from '@vueuse/core'
 import { PostProcessingManager } from '../../../addon/utils/postprocessing'
 import { normalizeStages, type StagesInput } from '../../../addon/utils/presets'
 
 interface Props {
-  imageUrl?: string
+  image: string
   stages: StagesInput
-  objectFit?: 'contain' | 'cover' | 'fill' | 'none' | 'scale-down'
+  objectFit?: 'contain' | 'cover' | 'fill' | 'none'
 }
 
 const props = withDefaults(defineProps<Props>(), {
   objectFit: 'contain'
 })
 
-const getPipeline = (): PostProcessingPipeline => {
-  const normalizedStages = normalizeStages(props.stages, props.imageUrl, { objectFit: props.objectFit })
-  return { stages: normalizedStages }
-}
+const pipeline = computed(() => {
+  return { stages: normalizeStages(props.stages, props.image) }
+})
 
 const imageSize = ref<[number, number]>([0, 0])
 
-const loadImageSize = async (url: string): Promise<void> => {
-  return new Promise((resolve) => {
+const loadImageSize = async (image: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
     const img = new Image()
     img.onload = () => {
       imageSize.value = [img.width, img.height]
       resolve()
     }
-    img.onerror = () => resolve()
-    img.src = url
+    img.onerror = (error) => reject(error)
+    img.src = image
   })
 }
 
-const container = ref<HTMLDivElement | null>(null)
 const canvas = ref<HTMLCanvasElement | null>(null)
 let gl: WebGLRenderingContext | null = null
 let postProcessingManager: PostProcessingManager | null = null
 let animationFrameId: number | null = null
 
+const { width: canvasWidth, height: canvasHeight } = useElementSize(canvas)
+
 const initPostProcessing = async (): Promise<void> => {
   if (!gl || !canvas.value) return
-  
-  // Load image size first if imageUrl is provided
-  if (props.imageUrl) {
-    await loadImageSize(props.imageUrl)
-  }
-  
-  const pipeline = getPipeline()
+
+  await loadImageSize(props.image)
+
   postProcessingManager = new PostProcessingManager(gl, canvas.value.width, canvas.value.height)
-  await postProcessingManager.initialize(pipeline)
+  await postProcessingManager.initialize(pipeline.value)
 }
 
 const resizeCanvas = async (): Promise<void> => {
-  if (!canvas.value || !gl || !container.value) return
+  if (!canvas.value || !gl) return
   
-  const width = container.value.clientWidth
-  const height = container.value.clientHeight
-  
-  if (width === 0 || height === 0) return
-  
-  canvas.value.width = width
-  canvas.value.height = height
-  gl.viewport(0, 0, width, height)
+  canvas.value.width = canvasWidth.value
+  canvas.value.height = canvasHeight.value
+  gl.viewport(0, 0, canvasWidth.value, canvasHeight.value)
   
   if (postProcessingManager) {
     postProcessingManager.destroy()
@@ -89,17 +82,16 @@ const render = (): void => {
     return
   }
   
-  const pipeline = getPipeline()
   if (!postProcessingManager) return
   
   gl.clearColor(0.0, 0.0, 0.0, 1.0)
   gl.clear(gl.COLOR_BUFFER_BIT)
   
-  const extraData = props.imageUrl && imageSize.value[0] > 0 
+  const extraData = props.image && imageSize.value[0] > 0 
     ? { imageSize: imageSize.value }
     : {}
   
-  postProcessingManager.render(pipeline, undefined, extraData)
+  postProcessingManager.render(pipeline.value, undefined, extraData)
   
   animationFrameId = requestAnimationFrame(render)
 }
@@ -113,6 +105,8 @@ onMounted(async () => {
     return
   }
   
+  await loadImageSize(props.image)
+  await new Promise((resolve) => setTimeout(resolve, 0))
   resizeCanvas()
   
   if (canvas.value.width === 0 || canvas.value.height === 0) {
@@ -120,36 +114,20 @@ onMounted(async () => {
     return
   }
   
-  window.addEventListener('resize', resizeCanvas)
-  
   await initPostProcessing()
   render()
 })
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', resizeCanvas)
   if (animationFrameId !== null) {
     cancelAnimationFrame(animationFrameId)
   }
   
-  if (postProcessingManager) {
-    postProcessingManager.destroy()
-  }
+  postProcessingManager?.destroy()
 })
 
-watch(() => props.stages, async () => {
+watch(() => [props.stages, props.image], async () => {
   if (!gl) return
-  
-  if (postProcessingManager) {
-    postProcessingManager.destroy()
-    postProcessingManager = null
-  }
-  
-  await initPostProcessing()
-})
-
-watch(() => props.imageUrl, async () => {
-  if (!gl || !props.imageUrl) return
   
   if (postProcessingManager) {
     postProcessingManager.destroy()
@@ -163,7 +141,5 @@ watch(() => props.imageUrl, async () => {
 <style scoped>
 canvas {
   display: block;
-  width: 100%;
-  height: 100%;
 }
 </style>

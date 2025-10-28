@@ -21,11 +21,11 @@ layout: center
 import shader from './shaders/vue.glsl?raw'
 </script>
 
-<GlslImageEffect 
+<GlslImageEffect
+  :image="'./img/vue-cons.png'"
   :stages="[{
     fragmentShader: shader,
     textures: [{
-      source: './img/vue-cons.png',
       options: {
         objectFit: 'cover'
       }
