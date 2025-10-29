@@ -25,7 +25,10 @@
 
   .no-bg {
     --slidev-code-background: transparent;
-    backdrop-filter: none;
+
+    .slidev-code {
+      backdrop-filter: none;
+    }
   }
 
   .slidev-code {
