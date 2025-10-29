@@ -2,7 +2,7 @@
 precision highp float;
 #endif
 
-// https://www.shadertoy.com/view/XlfGRj
+// Original author: https://www.shadertoy.com/view/XlfGRj
 
 uniform float u_time;
 uniform vec2 u_resolution;

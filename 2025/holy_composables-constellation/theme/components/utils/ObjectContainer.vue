@@ -48,8 +48,8 @@ watch(() => [width.value, height.value], ([newWidth, newHeight]) => {
 
   /* main */
   container-type: size;
-  --container-ar: v-bind('width / height');
-  --object-ar: v-bind('objectWidth / objectHeight');
+  --container-ar: v-bind('width / height || 0');
+  --object-ar: v-bind('objectWidth / objectHeight || 0');
   --min-ar: min(var(--container-ar), var(--object-ar));
 }
 

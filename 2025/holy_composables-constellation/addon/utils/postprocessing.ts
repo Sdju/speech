@@ -42,6 +42,12 @@ export class PostProcessingManager {
     this.width = width
     this.height = height
     this.quadBuffer = createQuadBuffer(gl)
+    
+    // Включаем блендинг для корректной работы с прозрачностью
+    this.gl.enable(this.gl.BLEND)
+    this.gl.getExtension("OES_standard_derivatives");
+    this.gl.getExtension("EXT_shader_texture_lod");
+    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
   }
 
   /**
@@ -139,8 +145,8 @@ export class PostProcessingManager {
       
       this.gl.viewport(0, 0, this.width, this.height)
       
-      // Clear the screen
-      this.gl.clearColor(0.0, 0.0, 0.0, 1.0)
+      // Clear with transparency (alpha = 0.0)
+      this.gl.clearColor(0.0, 0.0, 0.0, 0.0)
       this.gl.clear(this.gl.COLOR_BUFFER_BIT)
       
       // Set uniforms

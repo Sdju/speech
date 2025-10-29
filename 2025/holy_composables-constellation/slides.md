@@ -22,14 +22,10 @@ import shader from './shaders/vue.glsl?raw'
 </script>
 
 <GlslImageEffect
+  class="pos-center $obj absolute size-full opacity-70"
   :image="'./img/vue-cons.png'"
   :stages="[{
-    fragmentShader: shader,
-    textures: [{
-      options: {
-        objectFit: 'cover'
-      }
-    }]
+    fragmentShader: shader
   }]"
 />
 

@@ -139,6 +139,39 @@ export function normalizeStages(
   }
   
   // Otherwise, stages are already in PostProcessingStage[] format
+  // If imageUrl is provided but stages don't have textures with source, add it
+  if (imageUrl) {
+    return (stages as PostProcessingStage[]).map(stage => {
+      // Only add texture if stage doesn't have textures with source
+      const hasSource = stage.textures && stage.textures.some(t => typeof t.source !== 'undefined')
+      if (!hasSource) {
+        return {
+          ...stage,
+          textures: [
+            ...(stage.textures || []),
+            {
+              source: imageUrl,
+              options: {
+                flipY: true
+              }
+            }
+          ]
+        }
+      }
+      // If textures exist but don't have source, add source to first texture
+      if (stage.textures && stage.textures.length > 0 && !stage.textures[0].source) {
+        return {
+          ...stage,
+          textures: [{
+            ...stage.textures[0],
+            source: imageUrl
+          }]
+        }
+      }
+      return stage
+    })
+  }
+  
   return stages as PostProcessingStage[]
 }
 

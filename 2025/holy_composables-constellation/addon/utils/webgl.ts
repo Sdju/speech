@@ -128,8 +128,9 @@ export async function loadTexture(gl: WebGLRenderingContext, textureInfo: Shader
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filterMode)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filterMode)
     
-    // Load image
+    // Load image with proper alpha handling
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1)
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 0)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
     
     return texture

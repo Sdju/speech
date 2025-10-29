@@ -1,5 +1,6 @@
 <template>
   <ObjectContainer
+    v-if="!isOverview"
     :objectWidth="imageSize[0]"
     :objectHeight="imageSize[1]"
     :mode="objectFit"
@@ -7,13 +8,18 @@
   >
     <canvas ref="canvas" :class="canvasClass" />
   </ObjectContainer>
+  <img v-else :src="image" style="{objectFit: objectFit}" />
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue'
-import { useElementSize } from '@vueuse/core'
+import { useSlideContext } from '@slidev/client'
+import { useElementSize, until } from '@vueuse/core'
 import { PostProcessingManager } from '../../../addon/utils/postprocessing'
 import { normalizeStages, type StagesInput } from '../../../addon/utils/presets'
+
+const slideContext = useSlideContext()
+const isOverview = computed(() => slideContext.$renderContext.value === 'overview')
 
 interface Props {
   image: string
@@ -84,7 +90,8 @@ const render = (): void => {
   
   if (!postProcessingManager) return
   
-  gl.clearColor(0.0, 0.0, 0.0, 1.0)
+  // Очистка с прозрачным фоном (альфа = 0.0)
+  gl.clearColor(0.0, 0.0, 0.0, 0.0)
   gl.clear(gl.COLOR_BUFFER_BIT)
   
   const extraData = props.image && imageSize.value[0] > 0 
@@ -97,19 +104,28 @@ const render = (): void => {
 }
 
 onMounted(async () => {
-  if (!canvas.value) return
+  await loadImageSize(props.image)
+  await until(() => canvasWidth.value > 0 && canvasHeight.value > 0).toBeTruthy()
   
-  gl = canvas.value.getContext('webgl')
+  // Создаём WebGL контекст с поддержкой прозрачности
+  gl = canvas.value!.getContext('webgl', {
+    alpha: true,
+    premultipliedAlpha: false,
+    preserveDrawingBuffer: false,
+    antialias: true
+  })
   if (!gl) {
     console.error('Unable to initialize WebGL')
     return
   }
   
-  await loadImageSize(props.image)
-  await new Promise((resolve) => setTimeout(resolve, 0))
+  // Включаем блендинг для корректной работы с прозрачностью
+  gl.enable(gl.BLEND)
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+  
   resizeCanvas()
   
-  if (canvas.value.width === 0 || canvas.value.height === 0) {
+  if (canvas.value!.width === 0 || canvas.value!.height === 0) {
     console.error('Canvas has zero size after resize')
     return
   }
@@ -135,6 +151,12 @@ watch(() => [props.stages, props.image], async () => {
   }
   
   await initPostProcessing()
+})
+watch(() => [canvasWidth, canvasHeight], async () => {
+  if (!postProcessingManager) {
+    return
+  }
+  await resizeCanvas()
 })
 </script>
 
