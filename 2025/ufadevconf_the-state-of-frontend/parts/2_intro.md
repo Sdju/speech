@@ -66,7 +66,7 @@ timeline:
 ---
 
 <script setup lang="ts">
-import imgUfa from '../img/ufa.png'
+import imgUfa from '../img/ufaqr.png'
 import imgStack from '../img/stack.png'
 import imgHoly from '../img/holy.png'
 import imgMorning from '../img/utro.jpg'
@@ -74,7 +74,7 @@ import imgMorning from '../img/utro.jpg'
 
 <Points>
   <Point icon="i-game-icons-dripping-honey" :attrs="t.point1" class="cs-gold">
-    UfaJS
+    UfaJS (@ufajs)
   </Point>
   <Point icon="i-openmoji-loudspeaker" :attrs="t.point2" class="cs-green">
     ПК Стачка
@@ -86,7 +86,7 @@ import imgMorning from '../img/utro.jpg'
     Подкаст Тяжелое утро
   </Point>
   <Point full :class="t.example">
-    <ImgExample v-if="t.exampleId === 1" :src="imgUfa" />
+    <ImgExample v-if="t.exampleId === 1" :src="imgUfa" :cover="false" class="bg-contain bg-no-repeat bg-[#f7df1f]" />
     <ImgExample v-if="t.exampleId === 2" :src="imgStack" />
     <ImgExample v-if="t.exampleId === 3" :src="imgHoly" />
     <ImgExample v-if="t.exampleId === 4" :src="imgMorning" />

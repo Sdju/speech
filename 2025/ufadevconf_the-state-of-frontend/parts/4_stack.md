@@ -9,7 +9,7 @@ timeline:
 <AnimatedText
   :class="t.q1"
   :mode="t.q1Mode"
-  words="AI AI AI AI AI AI"
+  words="Современный стек и тенденции"
 />
 
 ---
@@ -867,3 +867,54 @@ layout: center
 ---
 
 # Спасибо за внимание!
+
+---
+
+<div class="grid grid-cols-12 grid-rows-[120px_120px_1fr] gap-4 h-full relative top-[-12px] wut">
+  <div class="bento-6_3 box box--rich cs-blue">
+    <img class="absolute inset-0 w-full h-full object-cover" src="../img/utro2.png" />
+    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--bg-keyword)] to-transparent p-6">
+      <p class="text-4xl font-bold text-center text-white mb-2">Тяжелое утро</p>
+    </div>
+  </div>
+  <div class="bento-3_2 box box--rich cs-purple flex-center fx">
+    <QrCodeIntro class="size-180" />
+    <p class="text-white text-center text-lg">@zede_code</p>
+  </div>
+  <div class="bento-3_1 box box--rich cs-orange flex items-center gap-4 fx">
+    <div class="size-80 rd-xl">
+      <ZedeIcon class="size-full" />
+    </div>
+    <div>
+      <h4 class="text-xl font-semibold text-orange-300 mb-1">Zede</h4>
+      <p class="text-sm text-orange-400/70">@zede_code</p>
+    </div>
+  </div>
+  <div class="bento-3_1 box box--rich cs-green flex items-center gap-4 fx">
+    <div class="size-80 rd-xl of-hidden">
+      <img src="../img/vueist.png" class="size-full object-cover" />
+    </div>
+    <div>
+      <h4 class="text-xl font-semibold text-green-300 mb-1">Vueist</h4>
+      <p class="text-sm text-green-400/70">@vueist</p>
+    </div>
+  </div>
+  <div class="bento-3_1 box box--rich cs-gold flex items-center gap-4 fx">
+    <ImgExample src="../img/ufaqr.png" />
+  </div>
+  <div class="bento-3_1 box box--rich cs-gold flex items-center gap-4 fx">
+    <div class="size-80 rd-xl of-hidden">
+      <img src="../img/ufajs.jpg" class="size-full object-cover" />
+    </div>
+    <div>
+      <h4 class="text-xl font-semibold text-yellow-300 mb-1">UfaJS</h4>
+      <p class="text-sm text-yellow-400/70">@ufajs</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.wut {
+  text-shadow: 0 0 7px #000000;
+}
+</style>
