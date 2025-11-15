@@ -1,58 +1,44 @@
+---
+timeline:
+  - box1: '-blur-hidden'
+    box2: '-blur-hidden'
+    box3: '-blur-hidden'
+  - box1: ''
+  - box2: ''
+  - box3: ''
+---
 
-<div class="grid grid-cols-12 grid-rows-[120px_120px_1fr_120px] gap-4 h-full relative top-[-12px]">
-  <!-- Фото докладчика - крупный блок с текстом снизу и градиентом -->
-  <div class="col-span-6 row-span-3 box box--rich cs-blue relative of-hidden">
+<div class="grid grid-cols-12 grid-rows-[120px_120px_1fr] gap-4 h-full relative top-[-12px]">
+  <div class="bento-6_3 box box--rich cs-blue">
     <img class="absolute inset-0 w-full h-full object-cover" src="/img/photo.png" />
-    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-blue-900/90 to-transparent p-6">
+    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[var(--bg-keyword)] to-transparent p-6">
       <p class="text-4xl font-bold text-center text-white mb-2">Денис Чернов</p>
-      <p class="text-blue-300 text-center text-lg">SM Lab</p>
     </div>
   </div>
-  
-  <!-- QR код -->
-  <div class="col-span-3 row-span-2 box box--rich cs-purple flex-center">
+  <div class="bento-3_2 box box--rich cs-purple flex-center fx" :class="t.box1">
     <QrCodeIntro class="size-180" />
     <p class="text-white text-center text-lg">@zede_code</p>
   </div>
-  
-  <!-- Логотипы организаций -->
-  <div class="col-span-3 row-span-1 box box--rich cs-orange flex items-center gap-4">
+  <div class="bento-3_1 box box--rich cs-orange flex items-center gap-4 fx" :class="t.box2">
     <div class="size-80 rd-xl">
       <ZedeIcon class="size-full" />
     </div>
     <div>
       <h4 class="text-xl font-semibold text-orange-300 mb-1">Zede</h4>
-      <p class="text-sm text-orange-400/70">Разработка</p>
+      <p class="text-sm text-orange-400/70">@zede_code</p>
     </div>
   </div>
-  
-  <div class="col-span-3 row-span-1 box box--rich cs-green flex items-center gap-4">
+  <div class="bento-3_1 box box--rich cs-green flex items-center gap-4 fx" :class="t.box2">
     <div class="size-80 rd-xl of-hidden">
       <img src="../img/vueist.png" class="size-full object-cover" />
     </div>
     <div>
       <h4 class="text-xl font-semibold text-green-300 mb-1">Vueist</h4>
-      <p class="text-sm text-green-400/70">Комьюнити</p>
+      <p class="text-sm text-green-400/70">@vueist</p>
     </div>
   </div>
-  
-  <!-- Контакты -->
-  <div class="col-span-6 row-span-1 box box--rich cs-purple">
-    <h4 class="text-lg font-semibold text-purple-300 mb-4">Контакты</h4>
-    <div class="space-y-3">
-      <div class="flex items-center gap-3 p-2 box box--rich text-[17px] cs-purple">
-        <FileIconsTelegram />
-        <span class="text-purple-200">@zede_code</span>
-      </div>
-      <div class="flex items-center gap-3 p-2 box box--rich text-[17px] cs-blue">
-        <FileIconsTelegram />
-        <span class="text-blue-200">@vueist</span>
-      </div>
-      <div class="flex items-center gap-3 p-2 box box--rich text-[17px] cs-green">
-        <IonLogoGithub />
-        <span class="text-green-200">@Sdju</span>
-      </div>
-    </div>
+  <div class="col-span-6 row-span-1 box box--rich cs-purple fx" :class="t.box3">
+    <h4 class="text-lg font-semibold text-purple-300 mb-4">SM Lab</h4>
   </div>
 </div>
 
@@ -71,13 +57,16 @@ timeline:
     point2: 'hidden'
     point3: 'hidden'
     point4: 'hidden'
-    example: 'pos-0 fx duration-500'
+    example: 'pos-0 fx duration-500 cs-red'
   - point1: ''
     point2: 'active'
+    example: 'cs-blue'
   - point2: ''
     point3: 'active'
+    example: 'cs-green'
   - point3: ''
     point4: 'active'
+    example: 'cs-purple'
 ---
 
 <h1 class="text-center">План на сегодня</h1>
@@ -86,16 +75,16 @@ timeline:
   <Point icon="i-lineicons-bricks" :attrs="t.point1" class="cs-red">
     Что такое же композаблы
   </Point>
-  <Point icon="i-mingcute-baby-fill" :attrs="t.point2">
+  <Point icon="i-mingcute-baby-fill" :attrs="t.point2" class="cs-blue">
     Овладеем основами
   </Point>
-  <Point icon="i-ri-graduation-cap-fill" :attrs="t.point3">
+  <Point icon="i-ri-graduation-cap-fill" :attrs="t.point3" class="cs-green">
     Познакомимся с паттернами
   </Point>
-  <Point icon="i-game-icons-trophy-cup" :attrs="t.point4">
+  <Point icon="i-game-icons-trophy-cup" :attrs="t.point4" class="cs-purple">
     Приправляем бест практисами
   </Point>
-  <Point full :attrs="t.example">
+  <Point full :class="t.example">
     <Example>
 
 ````md magic-move {lines: false}

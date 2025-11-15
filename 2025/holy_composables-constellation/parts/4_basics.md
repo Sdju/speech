@@ -30,6 +30,7 @@ export const useAdminPanel = defineStore('admin-panel', () => {
     
     // ...
 })
+⠀
 ```
 
 ```js
@@ -40,6 +41,7 @@ router.beforeEach(async (to) => {
 
     // ...
 })
+⠀
 ```
 
 ```js
@@ -50,6 +52,7 @@ export function useAdminPanel() {
 
     // ...
 }
+⠀
 ```
 ````
 
@@ -67,6 +70,10 @@ function onClick() {
   const { user } = useUser()
   // ...
 }
+
+
+
+⠀
 ```
 
 ```js
@@ -74,6 +81,10 @@ function onClick() {
   const { user } = useUser()
   // watcher-ы не будут уничтожены!
 }
+
+
+
+⠀
 ```
 
 ```js
@@ -82,6 +93,9 @@ function onClick() {
   // watcher-ы не будут уничтожены!
   // утечка памяти!
 }
+
+
+⠀
 ```
 
 ```js
@@ -129,6 +143,8 @@ const props = defineProps<{
 const { ... } = useTooltip({
   target: () => hasTooltip ? props.target : null,
 })
+
+⠀
 ```
 ````
 
@@ -141,17 +157,23 @@ layout: default
 ````md magic-move
 ```ts
 const useTooltip = () => { ... }
+
+
+⠀
 ```
 
 ```ts
 const useTooltip = () => { ... }
 const useStoreTooltip = () => { ... }
+
+⠀
 ```
 
 ```ts
 const useTooltip = () => { ... }
 const useStoreTooltip = () => { ... }
 const useMainTooltip = () => { ... }
+⠀
 ```
 
 ```ts
@@ -164,63 +186,42 @@ const useSiteTooltip = () => { ... }
 
 ---
 timeline:
-  - point1: 'outline outline-2 outline-[#CCCCCC88]'
-    point2: '-blur-hidden outline-[#00000088]'
-    point3: '-blur-hidden outline-[#00000088]'
-    point4: '-blur-hidden outline-[#00000088]'
-    example1: 'pos-0 fx duration-500'
-    example2: '-blur-hidden w-[calc(100%-24px)] h-[calc(100%-24px)] absolute fx duration-500'
-    example3: '-blur-hidden w-[calc(100%-24px)] h-[calc(100%-24px)] absolute fx duration-500'
-  - point1: 'outline-[#00000088]'
-    point2: 'outline outline-2 h-full  outline-[#CCCCCC88]'
-  - point2: 'outline-[#00000088]'
-    point3: 'outline outline-2 outline-[#CCCCCC88]'
-    example1: '-blur-hidden w-full pos-0 fx duration-500'
-    example2: 'absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
-  - point3: 'outline-[#00000088]'
-    point4: 'outline outline-2 outline-[#CCCCCC88]'
-    example2: '-blur-hidden w-[calc(100%-24px)] h-[calc(100%-24px)] absolute fx duration-500'
-    example3: 'absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
+  - point1: 'active'
+    point2: 'hidden'
+    point3: 'hidden'
+    point4: 'hidden'
+    example: 'pos-0 fx duration-500 cs-red'
+    exampleId: 1
+  - point1: ''
+    point2: 'active'
+    example: 'cs-blue'
+  - point2: ''
+    point3: 'active'
+    example: 'cs-green'
+    exampleId: 2
+  - point3: ''
+    point4: 'active'
+    exampleId: 3
+    example: 'cs-purple
 ---
 
 <h1 class="text-center">Композаблы здорового человека:</h1>
 
-<div class="items-grid">
-  <div class="item fx duration-400" :class="t.point1">
-    <div class="item-icon">
-      <MaterialSymbolsAssignmentAdd/>
-    </div>
-    <div>
-      Не создают абстракцию ради абстракции
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point2">
-    <div class="item-icon">
-      <PajamasHook/>
-    </div>
-    <div>
-      Минимально полагаются на хуки жизненного цикла
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point3">
-    <div class="item-icon">
-      <MaterialSymbolsClearDayRounded/>
-    </div>
-    <div>
-      Не делают неявных действий
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point4">
-    <div class="item-icon">
-      <CarbonFoundationModel/>
-    </div>
-    <div>
-      Практики хорошего кода как SOLID работают и в композаблах
-    </div>
-  </div>
-  <div class="item-example fx example row-span-4 relative" :class="t.example">
-
-<div :class="t.example1">
+<Points>
+  <Point icon="i-material-symbols-cycle" :attrs="t.point1" class="cs-red">
+    Не создают абстракцию ради абстракции
+  </Point>
+  <Point icon="i-mingcute-baby-fill" :attrs="t.point2" class="cs-blue">
+    Минимально полагаются на хуки жизненного цикла
+  </Point>
+  <Point icon="i-material-symbols-clear-day-rounded" :attrs="t.point3" class="cs-green">
+    Не делают неявных действий
+  </Point>
+  <Point icon="i-carbon-foundation-model" :attrs="t.point4" class="cs-purple">
+    Практики хорошего кода как SOLID работают и в композаблах
+  </Point>
+  <Point full :class="t.example">
+    <Example v-if="t.exampleId === 1">
 
 ````md magic-move {lines: false}
 ```ts
@@ -228,6 +229,10 @@ const useTooltip = () => { ... }
 const useStoreTooltip = () => { ... }
 const useMainTooltip = () => { ... }
 const useSiteTooltip = () => { ... }
+
+
+
+⠀
 ```
 ```ts
 function useCounter() {
@@ -241,16 +246,12 @@ function useCounter() {
 ```
 ````
 
-</div>
-<div :class="t.example2">
-  <img src="../img/bread.png" class="w-full h-full object-contain" />
-</div>
-<div :class="t.example3">
-  <img src="../img/dry.png" class="w-full h-full object-contain" />
-</div>
+</Example>
+<img v-if="t.exampleId === 2" src="../img/bread.png" class="w-full h-full object-contain" />
+<img v-if="t.exampleId === 3" src="../img/dry.png" class="w-full h-full object-contain" />
 
-  </div>
-</div>
+  </Point>
+</Points>
 
 ---
 layout: default
@@ -266,21 +267,44 @@ const useFetch = (url: string) => {
   // ...
 }
 
-useFetch('https://api.example.com/data')
+useFetch('https://api.example.com/data') // ✅ 
+
+
+
+
+
+
+
+
+
+
+
+⠀
 ```
 
-```ts {7-8}
+```ts {*|8-9}
 const useFetch = (url: string) => {
-    // ...
+  // ...
   fetch(url)
   // ...
 }
 
+useFetch('https://api.example.com/data') // ✅ 
 const url = ref('https://api.example.com/data')
-useFetch(url.value) // не реактивно
+useFetch(url.value) // ❌ 
+
+
+
+
+
+
+
+
+
+⠀
 ```
 
-```ts {7-8}
+```ts {1|3-6|11-12|10}
 const useFetch = (url: Ref<string>) => {
     // ...
   watch(() => unref(url), (newUrl) => {
@@ -290,11 +314,19 @@ const useFetch = (url: Ref<string>) => {
   // ...
 }
 
+useFetch('https://api.example.com/data') // ❌  
 const url = ref('https://api.example.com/data')
-useFetch(url.value) // не реактивно
+useFetch(url) // ✅
+
+
+
+
+
+
+⠀⠀⠀
 ```
 
-```ts {*|1|2-5|2|9-10}
+```ts {*|1|2|2|9-11}
 const useFetch = (url: MaybeRef<string>) => {
   watch(() => unref(url), (newUrl) => {
     fetch(newUrl)
@@ -303,11 +335,20 @@ const useFetch = (url: MaybeRef<string>) => {
   // ...
 }
 
+useFetch('https://api.example.com/data') // ✅
 const url = ref('https://api.example.com/data')
-useFetch(url) // все работает
+useFetch(url) // ✅
+
+
+
+
+
+
+
+⠀
 ```
 
-```ts {*|10-11|12}
+```ts {-13|12-13|14}
 const useFetch = (url: MaybeRef<string>) => {
   watch(() => unref(url), (newUrl) => {
     fetch(newUrl)
@@ -316,13 +357,20 @@ const useFetch = (url: MaybeRef<string>) => {
   // ...
 }
 
+useFetch('https://api.example.com/data') // ✅
 const url = ref('https://api.example.com/data')
+useFetch(url) // ✅
 const userUrl = computed(() => url.value + '/user')
-useFetch(userUrl) // громоздко
-useFetch(computed(() => url.value + '/user')) // не то 
+useFetch(userUrl) // ✅
+useFetch(computed(() => url.value + '/user')) // 🤔
+
+
+
+
+⠀
 ```
 
-```ts {*|1|2|11-12}
+```ts {*|1|2|14|*}
 const useFetch = (url: MaybeRefOrGetter<string>) => {
   watch(() => toValue(url), (newUrl) => {
     fetch(newUrl)
@@ -331,12 +379,20 @@ const useFetch = (url: MaybeRefOrGetter<string>) => {
   // ...
 }
 
+useFetch('https://api.example.com/data') // ✅
 const url = ref('https://api.example.com/data')
-useFetch(url) // ок
-useFetch(() => url.value + '/user') // ок
+useFetch(url) // ✅
+const userUrl = computed(() => url.value + '/user')
+useFetch(userUrl) // ✅
+useFetch(() => url.value + '/user') // ✅
+
+
+
+
+⠀
 ```
 
-```ts
+```ts {*|1-4,6|7-10|13-14|15}
 interface UseFetchOptions {
   url: MaybeRefOrGetter<string>,
   method: MaybeRefOrGetter<'GET' | 'POST' | 'PUT' | 'DELETE'>
@@ -364,7 +420,7 @@ const useFetch = (options: UseFetchOptions) => {
 # Возвращаемые значения
 
 ````md magic-move
-```ts
+```ts {*|11|5-8}
 export function useCounter() {
   const count = ref(0)
   const increment = () => count.value++
@@ -376,38 +432,18 @@ export function useCounter() {
 }
 
 const { count, increment } = useCounter()
+
+
+
+
+
+
+
+
+⠀
 ```
 
-```ts
-export function useCounter() {
-  const count = ref(0)
-  const increment = () => count.value++
-  
-  return [
-    count, 
-    increment
-  ]
-}
-
-const [count, increment] = useCounter()
-```
-
-```ts
-export function useCounter() {
-  const count = ref(0)
-  const increment = () => count.value++
-  
-  return [
-    count, 
-    increment
-  ]
-}
-
-const [clicks, incrementClicks] = useCounter()
-const [keys, incrementKeys] = useCounter()
-```
-
-```ts
+```ts {*|11-13|5-8}
 export function useCounter() {
   const count = ref(0)
   const increment = () => count.value++
@@ -419,10 +455,41 @@ export function useCounter() {
 }
 
 const { count: clicks, increment: incrementClicks } = useCounter()
-const { count: keys, increment: incrementKeys } = useCounter()
+const { count: composables, increment: incrementComposables } = useCounter()
+const { count: counters, increment: incrementCounters } = useCounter()
+
+
+
+
+
+
+⠀
 ```
 
-```ts
+```ts {*|11-13|5-8}
+export function useCounter() {
+  const count = ref(0)
+  const increment = () => count.value++
+  
+  return [
+    count, 
+    increment
+  ]
+}
+
+const [clicks, incrementClicks] = useCounter()
+const [composables, incrementComposables] = useCounter()
+const [counters, incrementCounters] = useCounter()
+
+
+
+
+
+
+⠀
+```
+
+```ts {5-8|11-13|}
 export function useCounter() {
   const count = ref(0)
   const increment = () => count.value++
@@ -434,12 +501,18 @@ export function useCounter() {
 }
 
 const clicks = useCounter()
-const keys = useCounter()
+const composables = useCounter()
+const counters = useCounter()
 
-clicks.increment()
+console.log(clicks.count.value)
+console.log(composables.increment())
+console.log(counters)
+
+
+⠀
 ```
 
-```vue
+```vue {9,10|14|15,17-18}
 <script setup lang="ts">
 export function useCounter() {
   const count = ref(0)
@@ -449,15 +522,61 @@ export function useCounter() {
 }
 
 const clicks = useCounter()
-const keys = useCounter()
+const composables = useCounter()
 </script>
 
 <template>
-  <button @click="clicks.increment">
-    {{ clicks.count.value }}
+  <button @click="clicks.increment ✅">  
+    {{ clicks.count }} ❌ 
   </button>
-  <button @click="clicks.count.value--">
-    {{ clicks.count.value }}
+  <button @click="clicks.count.value-- ❌ ">
+    {{ clicks.count }} ❌ 
+  </button>
+</template>
+```
+
+```vue {*|14-15,17-18}
+<script setup lang="ts">
+export function useCounter() {
+  const count = ref(0)
+  const increment = () => count.value++
+  
+  return { count, increment }
+}
+
+const clicks = useCounter()
+const composables = useCounter()
+</script>
+
+<template>
+  <button @click="clicks.increment"> ✅
+    {{ clicks.count.value }} ✅
+  </button>
+  <button @click="clicks.count.value--"> ✅
+    {{ clicks.count.value }} ✅
+  </button>
+</template>
+```
+
+```vue {*|14-18|9-10|*}
+<script setup lang="ts">
+export function useCounter() {
+  const count = ref(0)
+  const increment = () => count.value++
+  
+  return { count, increment }
+}
+
+const clicks = reactive(useCounter())
+const composables = reactive(useCounter())
+</script>
+
+<template>
+  <button @click="clicks.increment"> ✅
+    {{ clicks.count }} ✅
+  </button>
+  <button @click="clicks.count--"> ✅
+    {{ clicks.count }} ✅
   </button>
 </template>
 ```
@@ -465,57 +584,39 @@ const keys = useCounter()
 
 ---
 timeline:
-  - point1: 'outline outline-2 outline-[#CCCCCC88]'
-    point2: '-blur-hidden outline-[#00000088]'
-    point3: '-blur-hidden outline-[#00000088]'
-    point4: '-blur-hidden outline-[#00000088]'
-    example: 'pos-0 fx duration-500'
-  - point1: 'outline-[#00000088]'
-    point2: 'outline outline-2 outline-[#CCCCCC88]'
-  - point2: 'outline-[#00000088]'
-    point3: 'outline outline-2 outline-[#CCCCCC88]'
-  - point3: 'outline-[#00000088]'
-    point4: 'outline outline-2 outline-[#CCCCCC88]'
+  - point1: 'active'
+    point2: 'hidden'
+    point3: 'hidden'
+    point4: 'hidden'
+    example: 'pos-0 fx duration-500 cs-red'
+  - point1: ''
+    point2: 'active'
+    example: 'cs-blue'
+  - point2: ''
+    point3: 'active'
+    example: 'cs-green'
+  - point3: ''
+    point4: 'active'
+    example: 'cs-purple'
 ---
 
 <h1 class="text-center">Как писать композаблы:</h1>
 
-<div class="items-grid">
-  <div class="item fx duration-400" :class="t.point1">
-    <div class="item-icon">
-      <MdiBrain/>
-    </div>
-    <div>
-      Принимайте решения осознанно
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point2">
-    <div class="item-icon">
-      <LineiconsBricks/>
-    </div>
-    <div>
-      Используйте встроенные хелперы
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point3">
-    <div class="item-icon">
-      <MaterialSymbolsServiceToolboxOutline/>
-    </div>
-    <div>
-      Используйте объекты как входные параметры
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point4">
-    <div class="item-icon">
-      <MaterialSymbolsDataObject/>
-    </div>
-    <div>
-      Старайтесь возвращать обычные объекты
-    </div>
-  </div>
-  <div class="item-example fx example row-span-4 no-bg" :class="t.example">
-
-<div :class="t.example1">
+<Points>
+  <Point icon="i-lineicons-bricks" :attrs="t.point1" class="cs-red">
+    Принимайте решения осознанно
+  </Point>
+  <Point icon="i-lineicons-bricks" :attrs="t.point2" class="cs-blue">
+    Используйте встроенные хелперы
+  </Point>
+  <Point icon="i-material-symbols-service-toolbox-outline" :attrs="t.point3" class="cs-green">
+    Используйте объекты как входные параметры
+  </Point>
+  <Point icon="i-material-symbols-data-object" :attrs="t.point4" class="cs-purple">
+    Старайтесь возвращать обычные объекты
+  </Point>
+  <Point full :class="t.example">
+    <Example>
 
 ````md magic-move {lines: false}
 ```ts
@@ -549,7 +650,6 @@ function useFetch() {
 ```
 ````
 
-</div>
-
-  </div>
-</div>
+</Example>
+  </Point>
+</Points>

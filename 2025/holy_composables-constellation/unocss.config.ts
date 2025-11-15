@@ -78,6 +78,9 @@ export default mergeConfigs([
       [/^view-(\S+)$/, ([, variant]) => {
         return `[view-transition-name:${variant}]`
       }],
+      [/^bento-(\S+)_(\S+)$/, ([, cols, rows]) => {
+        return `col-span-${cols} row-span-${rows} relative of-hidden`
+      }],
       {
         'movable': 'absolute -translate-x-1/2 -translate-y-1/2 transform-origin-center',
         'circle': 'rounded-[100%]',
@@ -86,7 +89,7 @@ export default mergeConfigs([
         'pos-center': 'left-1/2 top-1/2',
         'size-full': 'w-full h-full',
         'framed': 'rounded-[10px] border-2 border-gray-500/20 object-cover',
-        'cs-main': 'cs-blue',
+        'cs-main': 'cs-green',
         'fx': 'transform filter duration-[var(--slidev-transition-duration)]',
         'center': 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
       }

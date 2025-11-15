@@ -2,8 +2,8 @@
 layout: center
 ---
 
-# Разработка композаблов
-## `Provide/Inject`
+# `Provide/Inject`
+## 
 
 ---
 
@@ -16,24 +16,102 @@ layout: default
 ````md magic-move
 ```js
 const colorTheme = inject('colorTheme')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+⠀
 ```
 
 ```js
 const colorTheme = inject('colorTheme')
-// нет типизации
-// есть вероятность конфликта ключей
-// нет гарантий, что значение будет доступно
-// явное использования ключа
+// ❌ Вероятность конфликта ключей
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+⠀
+```
+
+```js
+const colorTheme = inject(Symbol('colorTheme'))
+// ✅ Вероятность конфликта ключей
+// ❌ Нет типизации
+
+
+
+
+
+
+
+
+
+
+
+
+
+⠀
 ```
 
 ```js
 const colorThemeKey: InjectionKey<string> = Symbol('colorTheme')
-
 const colorTheme = inject(colorThemeKey)
-//  ̶н̶е̶т̶ ̶т̶и̶п̶и̶з̶а̶ц̶и̶и̶
-//  ̶е̶с̶т̶ь̶ ̶в̶е̶р̶о̶я̶т̶н̶о̶с̶т̶ь̶ ̶к̶о̶н̶ф̶л̶и̶к̶т̶а̶ ̶к̶л̶ю̶ч̶е̶й̶
-// нет гарантий, что значение будет доступно
-// явное использования ключа
+// ✅ Вероятность конфликта ключей
+// ✅ Типизация
+
+
+
+
+
+
+
+
+
+
+
+
+⠀
+```
+
+```js
+const colorThemeKey: InjectionKey<string> = Symbol('colorTheme')
+const colorTheme = inject(colorThemeKey)
+// ✅ Вероятность конфликта ключей
+// ✅ Типизация
+// ❌ Может не быть ключа
+// ❌ Нужно экспортировать ключ
+
+
+
+
+
+
+
+
+
+
+⠀
 ```
 
 ```js {*|1-2|4-6|8-15|17}
@@ -59,60 +137,41 @@ const { colorTheme } = useColorTheme()
 
 ---
 timeline:
-  - point1: 'outline outline-2 outline-[#CCCCCC88]'
-    point2: '-blur-hidden outline-[#00000088]'
-    point3: '-blur-hidden outline-[#00000088]'
-    point4: '-blur-hidden outline-[#00000088]'
-    example1: 'pos-0 fx duration-500'
-    example2: '-blur-hidden absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
-  - point1: 'outline-[#00000088]'
-    point2: 'outline outline-2 outline-[#CCCCCC88]'
-  - point2: 'outline-[#00000088]'
-    point3: 'outline outline-2 outline-[#CCCCCC88]'
-  - point3: 'outline-[#00000088]'
-    point4: 'outline outline-2 outline-[#CCCCCC88]'
-    example1: '-blur-hidden absolute pos-0 fx duration-500'
-    example2: 'absolute w-[calc(100%-24px)] h-[calc(100%-24px)] fx duration-500'
+  - point1: 'active'
+    point2: 'hidden'
+    point3: 'hidden'
+    point4: 'hidden'
+    example: 'pos-0 fx duration-500 cs-red'
+    exampleId: 1
+  - point1: ''
+    point2: 'active'
+    example: 'cs-blue'
+  - point2: ''
+    point3: 'active'
+    example: 'cs-green'
+  - point3: ''
+    point4: 'active'
+    exampleId: 2
+    example: 'cs-purple'
 ---
 
 <h1 class="text-center"><strong>provide/inject</strong>:</h1>
 
-<div class="items-grid">
-  <div class="item fx duration-400" :class="t.point1">
-    <div class="item-icon">
-      <MaterialSymbolsKeyOutline/>
-    </div>
-    <div>
-      Используйте <strong>Symbol</strong> как ключ
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point2">
-    <div class="item-icon">
-      <MajesticonsRestrictedLine/>
-    </div>
-    <div>
-      Не экспортируйте ключ!
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point3">
-    <div class="item-icon">
-      <BiBricks/>
-    </div>
-    <div>
-      Всегда уносите в композабл
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point4">
-    <div class="item-icon">
-      <MaterialSymbolsStateful/>
-    </div>
-    <div>
-      Не используйте <strong>provide/inject</strong> вместо стейт менеджера
-    </div>
-  </div>
-  <div class="item-example fx example row-span-4 no-bg" :class="t.example">
-
-<div :class="t.example1">
+<Points>
+  <Point icon="i-material-symbols-key-outline" :attrs="t.point1" class="cs-red">
+    Используйте <strong>Symbol</strong> как ключ
+  </Point>
+  <Point icon="i-majesticons-restricted-line" :attrs="t.point2" class="cs-blue">
+    Не экспортируйте ключ!
+  </Point>
+  <Point icon="i-bi-bricks" :attrs="t.point3" class="cs-green">
+    Всегда уносите в композабл
+  </Point>
+  <Point icon="i-material-symbols-stateful" :attrs="t.point4" class="cs-purple">
+    Не используйте <strong>provide/inject</strong> вместо стейт менеджера
+  </Point>
+  <Point full :class="t.example">
+    <Example v-if="t.exampleId === 1">
 
 ````md magic-move {lines: false}
 ```ts
@@ -139,13 +198,10 @@ export const useColorTheme = () => {
 ```
 ````
 
-</div>
-<div :class="t.example2">
-  <img src="../img/sun.png" class="w-full h-full object-contain" />
-</div>
+</Example>
+<img v-if="t.exampleId === 2" src="../img/sun.png" class="w-full h-full object-contain" />
 
-  </div>
-</div>
+</Point></Points>
 
 ---
 layout: center
@@ -205,60 +261,41 @@ const { isPending, isError, data: user } = useQuery({
 
 ---
 timeline:
-  - point1: 'outline outline-2 outline-[#CCCCCC88]'
-    point2: '-blur-hidden outline-[#00000088]'
-    point3: '-blur-hidden outline-[#00000088]'
-    point4: '-blur-hidden outline-[#00000088]'
-    example1: 'pos-0 fx duration-500'
-    example2: '-blur-hidden pos-0 fx duration-500'
-  - point1: 'outline-[#00000088]'
-    point2: 'outline outline-2 outline-[#CCCCCC88]'
-  - point2: 'outline-[#00000088]'
-    point3: 'outline outline-2 outline-[#CCCCCC88]'
-  - point3: 'outline-[#00000088]'
-    point4: 'outline outline-2 outline-[#CCCCCC88]'
-    example1: '-blur-hidden absolute pos-0 fx duration-500'
-    example2: 'pos-0 fx duration-500'
+  - point1: 'active'
+    point2: 'hidden'
+    point3: 'hidden'
+    point4: 'hidden'
+    example: 'pos-0 fx duration-500 cs-red'
+    exampleId: 1
+  - point1: ''
+    point2: 'active'
+    example: 'cs-blue'
+  - point2: ''
+    point3: 'active'
+    example: 'cs-green'
+  - point3: ''
+    point4: 'active'
+    exampleId: 2
+    example: 'cs-purple
 ---
 
 <h1 class="text-center">Ресурсы:</h1>
 
-<div class="items-grid">
-  <div class="item fx duration-400" :class="t.point1">
-    <div class="item-icon">
-      <MdiAtomVariant/>
-    </div>
-    <div>
-      Асинхронные реактивные данные
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point2">
-    <div class="item-icon">
-      <RiSparkling2Line/>
-    </div>
-    <div>
+<Points>
+  <Point icon="i-mdi-atom-variant" :attrs="t.point1" class="cs-red">
+    Асинхронные реактивные данные
+  </Point>
+  <Point icon="i-ri-sparkling-2-line" :attrs="t.point2" class="cs-blue">
       Реализованные возможности
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point3">
-    <div class="item-icon">
-      <MaterialSymbolsWarningRounded/>
-    </div>
-    <div>
-      Возможно усложнение понимания кода
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point4">
-    <div class="item-icon">
-      <IcBaselineAutoFixHigh/>
-    </div>
-    <div>
-      Становится стандартом в реактивных системах
-    </div>
-  </div>
-  <div class="item-example fx example row-span-4 no-bg" :class="t.example">
-
-<div :class="t.example1">
+  </Point>
+  <Point icon="i-material-symbols-warning-rounded" :attrs="t.point3" class="cs-green">
+    Возможно усложнение понимания кода
+  </Point>
+  <Point icon="i-ic-baseline-auto-fix-high" :attrs="t.point4" class="cs-purple">
+    Становится стандартом в реактивных системах
+  </Point>
+  <Point full :class="t.example">
+    <Example v-if="t.exampleId === 1">
 
 ````md magic-move {lines: false}
 ```ts
@@ -280,22 +317,19 @@ const colorThemeKey:
 ```
 ````
 
-</div>
-<div :class="t.example2">
+</Example>
+<Example v-if="t.exampleId === 2">
   <LogosAngularIcon class="$obj pos-303_154 size-100" />
   <DeviconSolidjs class="$obj pos-96_138 size-100" />
   <LogosSvelteIcon class="$obj pos-210_54 size-100" />
-</div>
-
-  </div>
-</div>
+</Example>
+</Point></Points>
 
 ---
 layout: center
 ---
 
-# Разработка композаблов
-## Директива против композабла
+# Директива vs Композабл
 
 ---
 layout: default
@@ -314,36 +348,42 @@ const vFocus = {
 
 ---
 timeline:
-  - point1: 'outline outline-2 outline-[#CCCCCC88]'
-    point2: '-blur-hidden outline-[#00000088]'
-    point3: '-blur-hidden outline-[#00000088]'
-    point4: '-blur-hidden outline-[#00000088]'
-    example: 'pos-0 fx duration-500'
-  - point1: 'outline-[#00000088]'
-    point2: 'outline outline-2 outline-[#CCCCCC88]'
-  - point2: 'outline-[#00000088]'
-    point3: 'outline outline-2 outline-[#CCCCCC88]'
-  - point3: 'outline-[#00000088]'
-    point4: 'outline outline-2 outline-[#CCCCCC88]'
+  - point1: 'active'
+    point2: 'hidden'
+    point3: 'hidden'
+    point4: 'hidden'
+    example: 'pos-0 fx duration-500 cs-red'
+    exampleId: 1
+  - point1: ''
+    point2: 'active'
+    example: 'cs-blue'
+  - point2: ''
+    point3: 'active'
+    example: 'cs-green'
+    exampleId: 2
+  - point3: ''
+    point4: 'active'
+    exampleId: 3
+    example: 'cs-purple
 ---
 
 <h1 class="text-center">Директива</h1>
 
 <Points>
-  <Point icon="i-mdi-chat-question-outline" :class="t.point1">
+  <Point icon="i-mdi-chat-question-outline" :attrs="t.point1" class="cs-red">
     Спорное API
   </Point>
-  <Point icon="i-material-symbols-weight-outline" :class="t.point2">
+  <Point icon="i-material-symbols-weight-outline" :attrs="t.point2" class="cs-blue">
     Низкая гибкость
   </Point>
-  <Point icon="i-fluent-slow-mode-16-regular" :class="t.point3">
+  <Point icon="i-fluent-slow-mode-16-regular" :attrs="t.point3" class="cs-green">
     Нельзя снимать/добавлять в рантайме
   </Point>
-  <Point icon="i-ic-outline-palette" :class="t.point4">
+  <Point icon="i-ic-outline-palette" :attrs="t.point4" class="cs-purple">
     Декларативны
   </Point>
   <Point full :class="t.example">
-    <Example :class="t.example">
+    <Example>
 
 ````md magic-move {lines: false}
 ```js
@@ -415,24 +455,82 @@ const { focus } = useFocus(element)
 ```
 
 ---
+timeline:
+  - point1: 'active'
+    point2: 'hidden'
+    point3: 'hidden'
+    point4: 'hidden'
+    example: 'pos-0 fx duration-500 cs-red'
+    exampleId: 1
+  - point1: ''
+    point2: 'active'
+    example: 'cs-blue'
+  - point2: ''
+    point3: 'active'
+    example: 'cs-green'
+    exampleId: 2
+  - point3: ''
+    point4: 'active'
+    exampleId: 3
+    example: 'cs-purple
+---
 
-# Директива или композабл?
+<h1 class="text-center">Директива или композабл?</h1>
 
-Предпочитайте <strong>композаблы</strong> когда можете
+<Points>
+  <Point icon="i-streamline-rock-and-roll-hand" :attrs="t.point1" class="cs-red">
+    Гибкость
+  </Point>
+  <Point icon="i-material-symbols-delivery-truck-speed-rounded" :attrs="t.point2" class="cs-blue">
+    Управление в рантайме
+  </Point>
+  <Point icon="i-ph-eyes-bold" :attrs="t.point3" class="cs-green">
+    Могут лучше отслеживать изменения
+  </Point>
+  <Point icon="i-mdi-chat-question-outline" :attrs="t.point4" class="cs-purple">
+    Удобное написание
+  </Point>
+  <Point full :class="t.example">
+    <Example>
 
-<v-clicks>
+````md magic-move {lines: false}
+```js
+const vFocus = {
+  mounted: (el) => el.focus()
+}
+```
+```ts
+useLearnComposable({
+  basics: 'learn'
+})
+```
+```ts
+const [
+  advanced, 
+  setAdvanced
+] = useLearnComposable({
+  basics: 'learn'
+})
+setAdvanced(true)
+```
+```ts
+const { 
+  advanced
+} = useLearnComposable({
+  basics: 'learn'
+})
+advanced.value = true
+```
+````
 
-- Гибкость
-- Управление в рантайме
-- Могут лучше отслеживать изменения
-
-</v-clicks>
+</Example>
+</Point>
+</Points>
 
 ---
 layout: center
 ---
 
-# Разработка композаблов
 ## `onUnmounted` vs `onScopeDispose`
 
 ---
@@ -477,6 +575,10 @@ router.beforeEach(async () => {
 
   // ...
 })
+
+
+
+⠀
 ```
 
 ```js
@@ -492,22 +594,11 @@ router.beforeEach(async () => {
 })
 ```
 ````
----
-
-# `onUnmounted` vs `onScopeDispose`
-
-<v-clicks>
-
-- `onUnmounted` - только для компонентов
-- `onScopeDispose` - для любого **реактивного** контекста
-
-</v-clicks>
 
 ---
 layout: center
 ---
 
-# Разработка композаблов
 ## Неизменяемые значения
 
 ---

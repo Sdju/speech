@@ -2,7 +2,6 @@
 layout: center
 ---
 
-# Продвинутое использование
 ## `Object` vs `Reactive`
 
 ---
@@ -11,24 +10,26 @@ layout: center
 ```ts
 const user = useUserStore()
 console.log(user.name)
+⠀
 ```
 
 ```ts
 const { name, age, isAdmin } = useUserStore()
 console.log(name)
-// ОШИБКА, данные не являются реактивными
+// ❌ данные не являются реактивными
 ```
 
 ```ts
 const { name, age, isAdmin } = storeToRefs(useUserStore())
 console.log(name.value)
+⠀
 ```
 
 ````
 
 ---
 
-# Reactive как результата композабла
+# `Reactive` как результата композабла
 
 ```vue {*|15-21|7-12}
 <script setup lang="ts">
@@ -62,9 +63,7 @@ layout: center
 
 ---
 
-```ts {*|13,14|7-10|13,14}
-// vueuse: makeDestructurable
-
+```ts {*|11-12|5-8|11-12}
 export function useCounter() {
   const count = ref(0)
   const increment = () => count.value++
@@ -79,6 +78,8 @@ const [ a, incA ] = useCounter()
 const { count, increment } = useCounter()
 ```
 
+<LogosVueuse class="$obj pos-779_125 size-150" />
+
 ---
 layout: center
 ---
@@ -87,51 +88,38 @@ layout: center
 
 ---
 timeline:
-  - point1: 'outline outline-2 outline-[#CCCCCC88]'
-    point2: '-blur-hidden outline-[#00000088]'
-    point3: '-blur-hidden outline-[#00000088]'
-    point4: '-blur-hidden outline-[#00000088]'
-    example1: 'pos-0 fx duration-500'
-  - point1: 'outline-[#00000088]'
-    point2: 'outline outline-2 outline-[#CCCCCC88]'
-  - point2: 'outline-[#00000088]'
-    point3: 'outline outline-2 outline-[#CCCCCC88]'
+  - point1: 'active'
+    point2: 'hidden'
+    point3: 'hidden'
+    example: 'pos-0 fx duration-500 cs-red'
+    exampleId: 1
+  - point1: ''
+    point2: 'active'
+    example: 'cs-blue'
+  - point2: ''
+    point3: 'active'
+    example: 'cs-green'
 ---
 
 <h1 class="text-center">Композаблы высшего порядка:</h1>
 
-<div class="items-grid">
-  <div class="item fx duration-400" :class="t.point1">
-    <div class="item-icon">
-      <FeImport/>
-    </div>
-    <div>
-      Композабл как аргумент
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point2">
-    <div class="item-icon">
-      <FeExport/>
-    </div>
-    <div>
-      Возвращают новый композабл
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point3">
-    <div class="item-icon">
-      <QlementineIconsMatchRegexp16/>
-    </div>
-    <div>
-      <strong>use*</strong> → <strong>create*</strong>/<strong>define*</strong>
-    </div>
-  </div>
-  <div class="item-example fx example row-span-4 no-bg" :class="t.example">
-
-<div :class="t.example1">
+<Points>
+  <Point icon="i-fe-import" :attrs="t.point1" class="cs-red">
+    Композабл как аргумент
+  </Point>
+  <Point icon="i-fe-export" :attrs="t.point2" class="cs-blue">
+    Возвращают новый композабл
+  </Point>
+  <Point icon="i-qlementine-icons-match-regexp-16" :attrs="t.point3" class="cs-green">
+    <strong>use*</strong> → <strong>create*</strong>/<strong>define*</strong>
+  </Point>
+  <Point full :class="t.example">
+    <Example>
 
 ````md magic-move {lines: false}
 ```ts
 defineStore('user', () => { ... })
+
 ```
 ```ts
 const userStore = defineStore('user', )
@@ -142,10 +130,9 @@ createSharedComposable()
 ```
 ````
 
-</div>
-
-  </div>
-</div>
+</Example>
+</Point>
+</Points>
 
 ---
 
@@ -186,6 +173,10 @@ layout: center
 ````md magic-move
 ```ts
 const { x, y } = useMouse()
+
+
+
+⠀
 ```
 ```ts
 const useMouseStore = defineStore('mouse', () => { 
@@ -198,6 +189,8 @@ const mouseStore = useMouseStore()
 const useSharedMouse = createSharedComposable(useMouse)
 
 const { x, y } = useSharedMouse()
+
+⠀
 ```
 ````
 
@@ -354,14 +347,3 @@ export function useDebouncedRef<T>(value: T, delay: number = 200) {
 const customCount = createDebouncedRef(0)
 ```
 ````
-
----
-
-# Порождающие `"композаблы"`  
-
-<v-clicks>
-
-- Не совсем композаблы
-- Выручают в ситуациях, когда обычных примитивов недостаточно
-
-</v-clicks>

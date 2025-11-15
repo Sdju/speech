@@ -20,7 +20,9 @@ const hidden = computed(() => props.attrs?.includes('hidden'))
     }"
   >
     <div class="item-icon">
-      <div :class="icon" />
+      <slot name="icon" >
+        <div :class="icon" />
+      </slot>
     </div>
     <div>
       <slot />

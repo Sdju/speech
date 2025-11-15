@@ -193,57 +193,39 @@ layout: default
 
 ---
 timeline:
-  - point1: 'outline outline-2 outline-[#CCCCCC88]'
-    point2: '-blur-hidden outline-[#00000088]'
-    point3: '-blur-hidden outline-[#00000088]'
-    point4: '-blur-hidden outline-[#00000088]'
-    example: 'pos-0 fx duration-500'
-  - point1: 'outline-[#00000088]'
-    point2: 'outline outline-2 outline-[#CCCCCC88]'
-  - point2: 'outline-[#00000088]'
-    point3: 'outline outline-2 outline-[#CCCCCC88]'
-  - point3: 'outline-[#00000088]'
-    point4: 'outline outline-2 outline-[#CCCCCC88]'
+  - point1: 'active'
+    point2: 'hidden'
+    point3: 'hidden'
+    point4: 'hidden'
+    example: 'pos-0 fx duration-500 cs-red'
+  - point1: ''
+    point2: 'active'
+    example: 'cs-blue'
+  - point2: ''
+    point3: 'active'
+    example: 'cs-green'
+  - point3: ''
+    point4: 'active'
+    example: 'cs-purple'
 ---
 
 <h1 class="text-center">Композабл:</h1>
 
-<div class="items-grid">
-  <div class="item fx duration-400" :class="t.point1">
-    <div class="item-icon">
-      <MaterialSymbolsCycle/>
-    </div>
-    <div>
-      Функция, для инкапсуляции и переиспользования логики
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point2">
-    <div class="item-icon">
-      <LineiconsBricks/>
-    </div>
-    <div>
-      Использует <strong>Composition API</strong>
-    </div>
-  </div>
-    <div class="item fx duration-400" :class="t.point3">
-    <div class="item-icon">
-      <MingcuteAsteriskFill/>
-    </div>
-    <div>
-      Следует соглашению именования <strong>use*</strong>
-    </div>
-  </div>
-  <div class="item fx duration-400" :class="t.point4">
-    <div class="item-icon">
-      <FlowbiteVueSolid/>
-    </div>
-    <div>
-      Работает с <strong>реактивными данными</strong> или хуками
-    </div>
-  </div>
-  <div class="item-example fx example row-span-4 no-bg" :class="t.example">
-
-<div :class="t.example">
+<Points>
+  <Point icon="i-lineicons-bricks" :attrs="t.point1" class="cs-red">
+    Функция, для инкапсуляции и переиспользования логики
+  </Point>
+  <Point icon="i-lineicons-bricks" :attrs="t.point2" class="cs-blue">
+    Использует <strong>Composition API</strong>
+  </Point>
+  <Point icon="i-lineicons-bricks" :attrs="t.point3" class="cs-green">
+    Следует соглашению именования <strong>use*</strong>
+  </Point>
+  <Point icon="i-lineicons-bricks" :attrs="t.point4" class="cs-purple">
+    Работает с <strong>реактивными данными</strong> или хуками
+  </Point>
+  <Point full :class="t.example">
+    <Example>
 
 ````md magic-move {lines: false}
 ```ts
@@ -279,10 +261,9 @@ function useHello() {
 ```
 ````
 
-</div>
-
-  </div>
-</div>
+</Example>
+</Point>
+</Points>
 
 ---
 layout: default
@@ -321,46 +302,43 @@ timeline:
     point2: 'hidden'
     point3: 'hidden'
     point4: 'hidden'
-    example: 'pos-0 fx duration-500'
+    example: 'pos-0 fx duration-500 cs-red'
   - point1: ''
     point2: 'active'
+    example: 'cs-blue'
   - point2: ''
     point3: 'active'
+    example: 'cs-green'
   - point3: ''
     point4: 'active'
+    example: 'cs-purple'
 ---
 
 <Points>
   <Point icon="i-material-symbols-cycle" :attrs="t.point1" class="cs-red">
     Следует соглашению именования <strong>use*</strong>
   </Point>
-  <Point icon="i-mingcute-baby-fill" :attrs="t.point2">
+  <Point icon="i-mingcute-baby-fill" :attrs="t.point2" class="cs-blue">
     Расширяет возможности компонента/композабла
   </Point>
-  <Point icon="i-ri-graduation-cap-fill" :attrs="t.point3">
+  <Point icon="i-ri-graduation-cap-fill" :attrs="t.point3" class="cs-green">
     Следует правилам использования композаблов
   </Point>
-  <Point icon="i-game-icons-trophy-cup" :attrs="t.point4">
+  <Point icon="i-game-icons-trophy-cup" :attrs="t.point4" class="cs-purple">
     Это и есть композабл
   </Point>
-  <Point full :attrs="t.example">
+  <Point full :class="t.example">
     <Example>
 
 ````md magic-move {lines: false}
 ```ts
-export function useCurrencyFormatter() {
+export function useCurrencyFormat() {
 }
 ⠀
 ```
 ```ts
-export function useCurrencyFormatter() {
-  const f = new Intl.NumberFormat(
-    'en-US', 
-    {
-      style: 'currency',
-      currency: 'USD',
-    }
-  )
+export function useCurrencyFormat() {
+  const f = new Intl.NumberFormat(/**/)
 
   const format = (value) => {
     return f.format(value);
