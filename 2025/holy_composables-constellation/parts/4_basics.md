@@ -2,28 +2,44 @@
 layout: center
 ---
 
-# Базовая работа с композаблами
+<script setup>
+import shader from '../shaders/vue.glsl?raw'
+</script>
+
+<GlslImageEffect
+  class="pos-50%_50% $obj absolute size-full"
+  :image="'../img/base-cons.png'"
+  :stages="[{
+    fragmentShader: shader
+  }]"
+/>
+
+<h1 :class="className" class="text-center text-4xl pos-50% $obj title-bg"> Базовая работа с композаблами </h1>
 
 ---
 layout: default
+timeline:
+  - title: 'в компонентах'
+  - title: 'в сторе'
+  - title: 'в других композаблах'
 ---
 
-# Где можно использовать:
+<h2 class="title-bg">✅ Где можно использовать:</h2>
+<h1 class="title-bg"> {{ t.title }} </h1>
 
 ````md magic-move
-```js
-// В компонентах
-export default {
-  setup() {
-    const { params } = useRoute()
-    const { isAuthenticated } = useAuth()
-    return { params, isAuthenticated }
-  }
-}
+```vue
+<script setup lang="ts">
+const { isAuthenticated } = useAuth()
+</script>
+
+<template>
+  <div>{{ isAuthenticated }}</div>
+</template>
+⠀
 ```
 
 ```js
-// В сторе
 export const useAdminPanel = defineStore('admin-panel', () => {
     const { params } = useRoute()
     const { isAuthenticated } = useAuth()
@@ -34,18 +50,6 @@ export const useAdminPanel = defineStore('admin-panel', () => {
 ```
 
 ```js
-// В хуках роутера
-router.beforeEach(async (to) => {
-    const { params } = useRoute()
-    const { isAuthenticated } = useAuth()
-
-    // ...
-})
-⠀
-```
-
-```js
-// В других композаблах
 export function useAdminPanel() {
     const { params } = useRoute()
     const { isAuthenticated } = useAuth()
@@ -60,9 +64,54 @@ export function useAdminPanel() {
 layout: default
 ---
 
-# Использование внутри функций
+<h2 class="title-bg">🤔 Сомнительно:</h2>
+<h1 class="title-bg">в хуках роутера</h1>
 
-## 🤔 Сомнительно
+````md magic-move
+```js
+router.beforeEach(async (to) => {
+    const { user } = useUser()
+    if (!user.value) {
+      return router.push('/login')
+    }
+    // ...
+})
+```
+
+```js {*|1|3|4-5}
+app.provide('token', SOME_TOKEN)
+
+router.beforeEach(async (to) => {
+  // vue 3.3+
+  const token = inject('token')
+  // ...
+})
+```
+
+```js {*|2|3}
+router.beforeEach(async (to) => {
+  const instance = getCurrentInstance() // ⚠️ undefined
+  const scope = getCurrentScope() // ⚠️ null
+
+  // ...
+})
+```
+
+```js
+router.beforeEach((to) => {
+  // ✅ This will work because the router starts its navigation after
+  // the router is installed and pinia will be installed too
+  const store = useUserStore()
+
+  if (to.meta.requiresAuth && !store.isLoggedIn) return '/login'
+})
+```
+````
+
+---
+
+<h2 class="title-bg">🤔 Сомнительно:</h2>
+<h1 class="title-bg">в листенерах и обычных функциях</h1>
 
 ````md magic-move
 ```js
@@ -73,15 +122,6 @@ function onClick() {
 
 
 
-⠀
-```
-
-```js
-function onClick() {
-  const { user } = useUser()
-  // watcher-ы не будут уничтожены!
-}
-
 
 
 ⠀
@@ -90,15 +130,32 @@ function onClick() {
 ```js
 function onClick() {
   const { user } = useUser()
-  // watcher-ы не будут уничтожены!
-  // утечка памяти!
+  // ⚠️ watcher-ы не будут уничтожены!
 }
+
+
+
 
 
 ⠀
 ```
 
 ```js
+function onClick() {
+  const { user } = useUser()
+  // ⚠️ watcher-ы не будут уничтожены!
+  // ❌ утечка памяти!
+}
+
+
+
+
+⠀
+```
+
+```js
+import { effectScope } from 'vue'
+
 function onClick() {
   const scope = effectScope()
   scope.run(() => {
@@ -114,9 +171,8 @@ function onClick() {
 layout: default
 ---
 
-# Использование в условиях
-
-## 🤔 Сомнительно:
+<h2 class="title-bg">🤔 Сомнительно:</h2>
+<h1 class="title-bg">Использование в условиях</h1>
 
 ````md magic-move
 ```ts
@@ -152,7 +208,7 @@ const { ... } = useTooltip({
 layout: default
 ---
 
-# Composable hell
+<h1 class="title-bg">Composable hell</h1>
 
 ````md magic-move
 ```ts
@@ -202,10 +258,15 @@ timeline:
   - point3: ''
     point4: 'active'
     exampleId: 3
-    example: 'cs-purple
+    example: 'cs-purple'
 ---
 
-<h1 class="text-center">Композаблы здорового человека:</h1>
+<script setup lang="ts">
+import BreadImg from '../img/bread.png'
+import DryImg from '../img/dry.png'
+</script>
+
+<h1 class="text-center title-bg">Композаблы здорового человека:</h1>
 
 <Points>
   <Point icon="i-material-symbols-cycle" :attrs="t.point1" class="cs-red">
@@ -247,8 +308,8 @@ function useCounter() {
 ````
 
 </Example>
-<img v-if="t.exampleId === 2" src="../img/bread.png" class="w-full h-full object-contain" />
-<img v-if="t.exampleId === 3" src="../img/dry.png" class="w-full h-full object-contain" />
+<ImgExample v-if="t.exampleId === 2" :src="BreadImg" />
+<ImgExample v-if="t.exampleId === 3" :src="DryImg" />
 
   </Point>
 </Points>
@@ -257,7 +318,7 @@ function useCounter() {
 layout: default
 ---
 
-# Прием аргументов
+<h1 class="title-bg">Прием аргументов</h1>
 
 ````md magic-move
 ```ts {*|1|3|7}
@@ -417,7 +478,7 @@ const useFetch = (options: UseFetchOptions) => {
 
 ---
 
-# Возвращаемые значения
+<h1 class="title-bg">Возвращаемые значения</h1>
 
 ````md magic-move
 ```ts {*|11|5-8}
@@ -526,10 +587,10 @@ const composables = useCounter()
 </script>
 
 <template>
-  <button @click="clicks.increment ✅">  
+  <button @click="clicks.increment"> ✅  
     {{ clicks.count }} ❌ 
   </button>
-  <button @click="clicks.count.value-- ❌ ">
+  <button @click="clicks.count--"> ❌
     {{ clicks.count }} ❌ 
   </button>
 </template>
@@ -595,21 +656,23 @@ timeline:
   - point2: ''
     point3: 'active'
     example: 'cs-green'
+  - {}
+  - {}
   - point3: ''
     point4: 'active'
     example: 'cs-purple'
 ---
 
-<h1 class="text-center">Как писать композаблы:</h1>
+<h1 class="text-center title-bg">Как писать композаблы:</h1>
 
 <Points>
   <Point icon="i-lineicons-bricks" :attrs="t.point1" class="cs-red">
     Принимайте решения осознанно
   </Point>
-  <Point icon="i-lineicons-bricks" :attrs="t.point2" class="cs-blue">
+  <Point icon="i-material-symbols-service-toolbox-outline" :attrs="t.point2" class="cs-blue">
     Используйте встроенные хелперы
   </Point>
-  <Point icon="i-material-symbols-service-toolbox-outline" :attrs="t.point3" class="cs-green">
+  <Point icon="i-oui-app-saved-objects" :attrs="t.point3" class="cs-green">
     Используйте объекты как входные параметры
   </Point>
   <Point icon="i-material-symbols-data-object" :attrs="t.point4" class="cs-purple">
@@ -630,10 +693,10 @@ const mutableUrl = toRef(urlValue)
 const param = isReadonly(urlValue)
 // ...
 ```
-```ts
-useSmokersFetch(url, method, headers)
-useHealthFetch({ url, method, headers })
-useNiceFetch(url, { method, headers })
+```ts {1|2|3}
+useSmokersFetch(url, method, headers) // ❌
+useHealthFetch({ url, method, headers }) // 🤔
+useNiceFetch(url, { method, headers }) // ✅
 // ...
 ```
 ```ts
@@ -646,7 +709,6 @@ function useFetch() {
     // ...
   }
 }
-// ...
 ```
 ````
 

@@ -52,6 +52,16 @@
   border-color: --set-alpha(var(--bg-first), 70%);
   color: white;
 }
+.box--rich-dark {
+  --un-gradient-from: --set-alpha(
+    --shift-lightness(var(--bg-first), -0.4), 
+    30%
+  ) var(--un-gradient-from-position);
+  --un-gradient-to: --set-alpha(
+    --shift-lightness(--shift-hue(var(--bg-first), 70), -0.4), 
+    30%
+  ) var(--un-gradient-to-position);
+}
 
 .item {
   @apply text-sm bg-[#00000088] p-[12px] rd-[8px] flex flex-row items-center gap-[8px]
@@ -65,4 +75,16 @@
 }
 .items-grid {
   @apply grid grid-cols-2 grid-rows-4 gap-[14px] grid-flow-col mt-12;
+}
+
+.title-bg {
+  @apply px-3 py-1;
+  background-image: linear-gradient(
+    to right, 
+    transparent 0%,
+    rgba(0, 0, 0, 0.5) 20px,
+    /* rgba(0, 0, 0, 0.5) 20px, */
+    rgba(0, 0, 0, 0.5) calc(100% - 20px),
+    transparent 100%
+  );
 }

@@ -17,7 +17,7 @@ timeline:
     example: 'cs-purple'
 ---
 
-<h1 class="text-center">Что мы не успели обсудить:</h1>
+<h1 class="text-center title-bg">Что мы не успели обсудить:</h1>
 
 <Points>
   <Point icon="i-mdi-test-tube" :attrs="t.point1" class="cs-red">
@@ -94,7 +94,13 @@ timeline:
     example: 'cs-green'
 ---
 
-<h1 class="text-center">Что посмотреть:</h1>
+<script setup lang="ts">
+import VueuseImg from '../img/vueuse.png'
+import VueFinalModalImg from '../img/modal.png'
+import VeeValidateImg from '../img/vee.png'
+</script>
+
+<h1 class="text-center title-bg">Что посмотреть:</h1>
 
 <Points>
   <Point icon="i-logos-vueuse" :attrs="t.point1" class="cs-red">
@@ -117,9 +123,9 @@ timeline:
     <strong>vee-validate</strong>
   </Point>
   <Point full :class="t.example">
-    <img v-if="t.exampleId === 1" src="../img/vueuse.png" class="w-full h-full object-contain" />
-    <img v-if="t.exampleId === 2" src="../img/modal.png" class="w-full h-full object-contain" />
-    <img v-if="t.exampleId === 3" src="../img/vee.png" class="w-full h-full object-contain" />
+    <ImgExample v-if="t.exampleId === 1" :src="VueuseImg" contain />
+    <ImgExample v-if="t.exampleId === 2" :src="VueFinalModalImg" contain />
+    <ImgExample v-if="t.exampleId === 3" :src="VeeValidateImg" contain />
   </Point>
 </Points>
 
@@ -127,19 +133,19 @@ timeline:
 layout: center
 ---
 
-# `Композаблы` - мощный инструмент
+<h1 class="title-bg"><strong>Композаблы</strong> — мощный инструмент</h1>
 
 ---
 layout: center
 ---
 
-# Следуйте лучшим практикам
+<h1 class="title-bg">Следуйте лучшим практикам</h1>
 
 ---
 layout: center
 ---
 
-# Смотрите на решения других разработчиков
+<h1 class="title-bg">Смотрите на решения других разработчиков</h1>
 
 ---
 layout: center

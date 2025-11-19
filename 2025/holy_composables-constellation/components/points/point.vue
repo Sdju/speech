@@ -28,7 +28,7 @@ const hidden = computed(() => props.attrs?.includes('hidden'))
       <slot />
     </div>
   </div>
-  <div v-else class="box box--rich point-full fx row-span-4">
+  <div v-else class="box box--rich box--rich-dark point-full fx row-span-4">
     <slot />
   </div>
 </template>

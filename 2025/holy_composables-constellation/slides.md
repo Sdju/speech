@@ -22,18 +22,14 @@ import shader from './shaders/vue.glsl?raw'
 </script>
 
 <GlslImageEffect
-  class="pos-center $obj absolute size-full"
+  class="pos-50%_35% $obj absolute size-full"
   :image="'./img/vue-cons.png'"
   :stages="[{
     fragmentShader: shader
   }]"
 />
 
-<XSlide slot="title" #="{ title, className, style }">
-  <h1 :class="className" :style="style"> {{ title }} </h1>
-</XSlide>
-
-<XSlideOut slot="title" title="Созвездия композаблов" class="text-center text-4xl" />
+<h1 :class="className" class="text-center text-4xl pos-50%_65% $obj title-bg"> Созвездия композаблов </h1>
 
 ---
 src: ./parts/2_intro.md

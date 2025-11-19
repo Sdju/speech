@@ -1,25 +1,22 @@
 ---
 layout: center
-topTitle: Что такое композабл?
-topTitleClass: transition-none top-[220px] left-[50%] text-[4em] translate-x-[-50%] w-max
 ---
+
+<h1 class="text-[4em] w-max $obj pos-center title-bg">А зачем композаблы?</h1>
 
 ---
 shading: true
 timeline:
-  - optionsAPI: ' fx text-left'
-    compositionAPI: 'fx text-left -popup-hidden'
+  - optionsAPI: 'pos-50%_50%'
+    compositionAPI: 'pos-50%_50% -popup-hidden'
   - {}
-  - optionsAPI: 'fx text-left'
-    compositionAPI: 'fx text-left'
+  - optionsAPI: 'pos-30%_50%'
+    compositionAPI: 'pos-70%_50%'
+  - {}
 ---
 
-<h1 class="text-center $obj pos-509_60">Как было раньше?</h1>
-
-<div class="grid grid-cols-2 gap-4 mt-15">
-
-<div :class="t.optionsAPI">
-<h2 class="mb-4 text-center block w-full">Options API</h2>
+<div class="fx text-left $obj" :class="t.optionsAPI">
+<h2 class="mb-4 text-center block w-full! title-bg">Options API</h2>
 
 ```js  {*|2,5,9,15|*}
 export default {
@@ -44,8 +41,8 @@ export default {
 
 </div>
 
-<div :class="t.compositionAPI">
-<h2 class="mb-4 text-center block w-full">Composition API</h2>
+<div class="fx text-left $obj" :class="t.compositionAPI">
+<h2 class="mb-4 text-center block w-full! title-bg">Composition API</h2>
 
 ```js
 const lupa = ref(0)
@@ -64,14 +61,12 @@ onMounted(() => {
 ```
 
 </div>
-</div>
-
 
 ---
 layout: default
 ---
 
-# От миксинов к композаблам
+<h1 class="title-bg">От миксинов к композаблам</h1>
 
 ````md magic-move
 ```js {*|2,5,9,15|*}
@@ -187,9 +182,11 @@ const pupa = useEmployee()
 layout: default
 ---
 
-# Что такое композабл?
+<h1 class="title-bg">Что такое композабл?</h1>
 
-> `Композабл` - это `Vue-паттерн` для инкапсуляции и гибкого переиспользования логики, в виде `функции` оперирующей `реактивными данными`.
+<p class="title-bg">
+  <strong>Композаблы</strong> — объединяют отдельные реактивные сущности в осмысленные единицы подобно тому, как <strong>созвездия</strong> объединяют <strong>звезды</strong> в единое целое.
+</p>
 
 ---
 timeline:
@@ -209,7 +206,7 @@ timeline:
     example: 'cs-purple'
 ---
 
-<h1 class="text-center">Композабл:</h1>
+<h1 class="text-center title-bg">Композабл:</h1>
 
 <Points>
   <Point icon="i-lineicons-bricks" :attrs="t.point1" class="cs-red">
@@ -266,10 +263,64 @@ function useHello() {
 </Points>
 
 ---
+layout: center
+timeline:
+  - animation: react-swinging
+  - animation: react-poshel-拿回
+---
+
+<img src="../img/hooks.png" class="react size-400" :class="t.animation" />
+
+<style>
+.react {
+  position: relative;
+  left: -10%;
+  transform-origin: 70% 0;
+  transform: rotate(-27deg);
+}
+
+.react-swinging {
+  animation: react-swinging 2s linear infinite;
+}
+
+.react-poshel-拿回 {
+  transform-origin: 70% 20%;
+  animation: react-poshel-拿回 2s linear forwards;
+}
+
+@keyframes react-poshel-拿回 {
+  0% {
+    transform: rotate(0deg) scale(1) translateY(0);
+  }
+  100% {
+    transform: rotate(1120deg) scale(0) translateY(100%);
+  }
+}
+
+@keyframes react-swinging {
+  0% {
+    transform: rotate(-27deg);
+  }
+  25% {
+    transform: rotate(18deg);
+  }
+  50% {
+    transform: rotate(-27deg);
+  }
+  75% {
+    transform: rotate(-72deg);
+  }
+  100% {
+    transform: rotate(-27deg);
+  }
+}
+</style>
+
+---
 layout: default
 ---
 
-# Что НЕ является композаблом?
+<h1 class="title-bg">Что НЕ является композаблом?</h1>
 
 ````md magic-move
 ```ts
@@ -349,23 +400,18 @@ export function useCurrencyFormat() {
   };
 }
 ```
-```ts
-const [
-  advanced, 
-  setAdvanced
-] = useLearnComposable({
-  basics: 'learn'
-})
-setAdvanced(true)
+```vue
+<script setup lang="ts">
+const { format } = useCurrencyFormat()
+</script>
+
+<template>
+  <div>{{ format(1000) }}</div>
+</template>
 ```
 ```ts
-const { 
-  advanced
-} = useLearnComposable({
-  basics: 'learn'
-})
-advanced.value = true
-⠀
+useCurrencyFormat()
+
 ```
 ````
 

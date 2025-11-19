@@ -5,7 +5,7 @@ import { twMerge } from 'tailwind-merge'
 import { showPartsManager, isPartsManagerVertical } from './addon/state/partsManager'
 import { showTimelineEditor, isTimelineEditorVertical } from './addon/state/timeline'
 
-const { currentSlideNo, currentSlideRoute } = useNav()
+const { currentSlideNo, currentSlideRoute, total } = useNav()
 const frontmatter = computed(() => currentSlideRoute.value.meta?.slide?.frontmatter || {})
 
 const isDev = computed(() => import.meta.env.DEV)
@@ -68,7 +68,7 @@ onMounted(async () => {
       <ObjectEdit />
       <MemoryEditor />
     </CoordHelper>
-    <div class="bottom-20px right-20px absolute text-lg opacity-50">{{ currentSlideNo }}</div>
+    <div class="bottom-20px right-20px absolute text-lg opacity-50 bg-black/50 px-3 py-1 rounded-full">{{ currentSlideNo }} / {{ total }}</div>
     <div
       :class="twMerge([
         'absolute pos-20 text-[2.5em] transition-all duration-500',

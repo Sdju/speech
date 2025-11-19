@@ -37,18 +37,10 @@ timeline:
       <p class="text-sm text-green-400/70">@vueist</p>
     </div>
   </div>
-  <div class="col-span-6 row-span-1 box box--rich cs-purple fx" :class="t.box3">
-    <h4 class="text-lg font-semibold text-purple-300 mb-4">SM Lab</h4>
+  <div class="col-span-6 row-span-1 box box--rich box--center cs-purple fx" :class="t.box3">
+    <img class="inset-0 w-full h-full object-contain padding-10" src="/img/smlab.svg" />
   </div>
 </div>
-
----
-
-<LogosVue class="$obj sp-486_278_400_400" />
-
----
-
-<img src="../img/holy.png" class="$obj pos-486_278" />
 
 ---
 shading: true
@@ -69,7 +61,7 @@ timeline:
     example: 'cs-purple'
 ---
 
-<h1 class="text-center">План на сегодня</h1>
+<h1 class="text-center title-bg">План на сегодня</h1>
 
 <Points>
   <Point icon="i-lineicons-bricks" :attrs="t.point1" class="cs-red">
@@ -98,30 +90,26 @@ useLearnComposable()
 ⠀
 ```
 ```ts
-useLearnComposable({
-  basics: 'learn'
-})
-
-
+const { 
+  basics
+} = useLearnComposable()
 
 ⠀
 ```
 ```ts
 const [
   advanced, 
-  setAdvanced
-] = useLearnComposable({
-  basics: 'learn'
-})
-setAdvanced(true)
+  useAdvanced
+] = useLearnComposable()
+useAdvanced(true)
 ```
 ```ts
-const { 
-  advanced
-} = useLearnComposable({
-  basics: 'learn'
+const {
+  useAdvanced
+} = useLearnComposable()
+useAdvanced({
+  advanced: true
 })
-advanced.value = true
 ⠀
 ```
 ````

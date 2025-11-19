@@ -61,7 +61,7 @@
   }
 
   blockquote {
-    @apply mt-2 mb-4 text-6 italic font-hand b-[var(--bg-keyword)] b-l-2;
+    @apply mt-2 mb-4 text-6 italic font-sans b-[var(--bg-keyword)] b-l-2;
   }
 
   img.slide {

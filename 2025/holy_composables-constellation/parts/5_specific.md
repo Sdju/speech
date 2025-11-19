@@ -2,8 +2,19 @@
 layout: center
 ---
 
-# `Provide/Inject`
-## 
+<script setup>
+import shader from '../shaders/vue.glsl?raw'
+</script>
+
+<GlslImageEffect
+  class="pos-50%_50% $obj absolute size-full"
+  :image="'../img/inject-cons.png'"
+  :stages="[{
+    fragmentShader: shader
+  }]"
+/>
+
+<h1 :class="className" class="text-center text-4xl pos-50% $obj title-bg"> Provide / Inject </h1>
 
 ---
 
@@ -155,7 +166,7 @@ timeline:
     example: 'cs-purple'
 ---
 
-<h1 class="text-center"><strong>provide/inject</strong>:</h1>
+<h1 class="text-center title-bg">provide / inject:</h1>
 
 <Points>
   <Point icon="i-material-symbols-key-outline" :attrs="t.point1" class="cs-red">
@@ -199,7 +210,7 @@ export const useColorTheme = () => {
 ````
 
 </Example>
-<img v-if="t.exampleId === 2" src="../img/sun.png" class="w-full h-full object-contain" />
+<ImgExample v-if="t.exampleId === 2" src="../img/sun.png" class="w-full h-full object-contain" />
 
 </Point></Points>
 
@@ -207,14 +218,25 @@ export const useColorTheme = () => {
 layout: center
 ---
 
-# Разработка композаблов
-## Ресурсы
+<script setup>
+import shader from '../shaders/vue.glsl?raw'
+</script>
+
+<GlslImageEffect
+  class="pos-50%_50% $obj absolute size-full"
+  :image="'../img/res-cons.png'"
+  :stages="[{
+    fragmentShader: shader.replaceAll('u_texture0_0', 'u_texture1_0')
+  }]"
+/>
+
+<h1 :class="className" class="text-center text-4xl pos-50% $obj title-bg"> Ресурсы </h1>
 
 ---
 layout: default
 ---
 
-`Ресурсы` - это асинхронные реактивные данные
+<p class="title-bg"><strong>Ресурсы</strong> — это асинхронные реактивные данные</p>
 
 ---
 layout: default
@@ -233,12 +255,19 @@ watch(() => props.userId, async (newUserId) => {
 ```
 
 ```js
-// VueUse: useFetch
+import { useFetch } from '@vueuse/core'
+
 const { data: user, isFetching } = useFetch(() => `/api/users/${props.userId}`)
+
+
+
+
+⠀
 ```
 
 ```js
-// VueUse: useAsyncState
+import { useAsyncState } from '@vueuse/core'
+
 const { state: user, isLoading } = useAsyncState(
   (args) => axios.get(`/api/users/${props.userId}`).then(r => r.data),
   {
@@ -248,11 +277,14 @@ const { state: user, isLoading } = useAsyncState(
 ```
 
 ```js
-// Tanstack Query: useQuery
+import { useQuery } from '@tanstack/vue-query'
+
 const { isPending, isError, data: user } = useQuery({
   queryKey: ['user', props.userId],
   queryFn: () => axios.get(`/api/users/${props.userId}`).then(r => r.data),
 })
+
+⠀
 ```
 ````
 
@@ -272,12 +304,17 @@ timeline:
     example: 'cs-blue'
   - point2: ''
     point3: 'active'
+    exampleId: 2
     example: 'cs-green'
   - point3: ''
     point4: 'active'
-    exampleId: 2
-    example: 'cs-purple
+    exampleId: 3
+    example: 'cs-purple'
 ---
+
+<script setup>
+import ItalyImg from '../img/italy.png'
+</script>
 
 <h1 class="text-center">Ресурсы:</h1>
 
@@ -311,14 +348,11 @@ const colorThemeKey:
 5. Оптимистичные апдейты
 6. ...
 ```
-```ts {*|*}
-// TODO: пример сложного 
-// для понимания кода
-```
 ````
 
 </Example>
-<Example v-if="t.exampleId === 2">
+<ImgExample v-if="t.exampleId === 2" :src="ItalyImg" />
+<Example v-if="t.exampleId === 3">
   <LogosAngularIcon class="$obj pos-303_154 size-100" />
   <DeviconSolidjs class="$obj pos-96_138 size-100" />
   <LogosSvelteIcon class="$obj pos-210_54 size-100" />
@@ -329,13 +363,25 @@ const colorThemeKey:
 layout: center
 ---
 
-# Директива vs Композабл
+<script setup>
+import shader from '../shaders/vue.glsl?raw'
+</script>
+
+<GlslImageEffect
+  class="pos-50%_50% $obj absolute size-full"
+  :image="'../img/dir-cons.png'"
+  :stages="[{
+    fragmentShader: shader
+  }]"
+/>
+
+<h1 :class="className" class="text-center text-4xl pos-50% $obj title-bg"> Директива vs Композабл </h1>
 
 ---
 layout: default
 ---
 
-# Директива:
+<h2 class="title-bg">Директива:</h2>
 
 ```js
 const vFocus = {
@@ -357,6 +403,7 @@ timeline:
   - point1: ''
     point2: 'active'
     example: 'cs-blue'
+  - {}
   - point2: ''
     point3: 'active'
     example: 'cs-green'
@@ -364,10 +411,10 @@ timeline:
   - point3: ''
     point4: 'active'
     exampleId: 3
-    example: 'cs-purple
+    example: 'cs-purple'
 ---
 
-<h1 class="text-center">Директива</h1>
+<h1 class="text-center title-bg">Директива</h1>
 
 <Points>
   <Point icon="i-mdi-chat-question-outline" :attrs="t.point1" class="cs-red">
@@ -376,10 +423,10 @@ timeline:
   <Point icon="i-material-symbols-weight-outline" :attrs="t.point2" class="cs-blue">
     Низкая гибкость
   </Point>
-  <Point icon="i-fluent-slow-mode-16-regular" :attrs="t.point3" class="cs-green">
+  <Point icon="i-mdi-light-switch-off" :attrs="t.point3" class="cs-green">
     Нельзя снимать/добавлять в рантайме
   </Point>
-  <Point icon="i-ic-outline-palette" :attrs="t.point4" class="cs-purple">
+  <Point icon="i-streamline-ultimate-reward-stars-2" :attrs="t.point4" class="cs-purple">
     Декларативны
   </Point>
   <Point full :class="t.example">
@@ -397,27 +444,30 @@ const vFocus = {
   unmounted() {},
 }
 ```
-```ts
-useLearnComposable({
-  basics: 'learn'
-})
+```vue
+<template>
+  <input v-input-mask.number="value" />
+</template>
+
 ```
-```ts
-const [
-  advanced, 
-  setAdvanced
-] = useLearnComposable({
-  basics: 'learn'
-})
-setAdvanced(true)
+```vue
+<script setup>
+const input = templateRef('input')
+const { value } = useInputMask(
+  input, 
+  { mask: '### ### ### ## ##' }
+)
+</script>
 ```
-```ts
-const { 
-  advanced
-} = useLearnComposable({
-  basics: 'learn'
-})
-advanced.value = true
+```vue
+<template>
+  <input v-focus />
+</template>
+```
+```vue
+<template>
+  <input v-mark.red.bold="{ at: 'Hello' }" />
+</template>
 ```
 ````
 
@@ -427,7 +477,8 @@ advanced.value = true
 
 ---
 
-## Композабл:
+<h2 class="title-bg">Композабл:</h2>
+
 ```vue {*|2,3|4-6|8-10,13|17,18|17,22}
 <script setup lang="ts">
 export function useFocus(el: MaybeRefOrGetter<HTMLElement>) {
@@ -472,10 +523,10 @@ timeline:
   - point3: ''
     point4: 'active'
     exampleId: 3
-    example: 'cs-purple
+    example: 'cs-purple'
 ---
 
-<h1 class="text-center">Директива или композабл?</h1>
+<h1 class="text-center title-bg">Директива или композабл?</h1>
 
 <Points>
   <Point icon="i-streamline-rock-and-roll-hand" :attrs="t.point1" class="cs-red">
@@ -494,32 +545,36 @@ timeline:
     <Example>
 
 ````md magic-move {lines: false}
-```js
-const vFocus = {
-  mounted: (el) => el.focus()
-}
+```vue
+<script setup>
+const input = templateRef('input')
+const { value } = useInputMask(
+  input, 
+  { mask: '### ### ### ## ##' }
+)
+</script>
 ```
-```ts
-useLearnComposable({
-  basics: 'learn'
-})
+```vue
+<script setup>
+const input = templateRef('input')
+consr mask = ref('### ### ### ## ##')
+const { value } = useInputMask(
+  input, 
+  { mask }
+)
+</script>
 ```
-```ts
-const [
-  advanced, 
-  setAdvanced
-] = useLearnComposable({
-  basics: 'learn'
-})
-setAdvanced(true)
+```vue
+<template>
+  <input v-mark.red.bold="{ at: 'Hello' }" />
+</template>
 ```
-```ts
-const { 
-  advanced
-} = useLearnComposable({
-  basics: 'learn'
-})
-advanced.value = true
+```vue
+<script setup>
+const maskNumber = useInputMask()
+const maskName = useInputMask()
+const maskPostcode = useInputMask()
+</script>
 ```
 ````
 
@@ -531,13 +586,25 @@ advanced.value = true
 layout: center
 ---
 
-## `onUnmounted` vs `onScopeDispose`
+<script setup>
+import shader from '../shaders/vue.glsl?raw'
+</script>
+
+<GlslImageEffect
+  class="pos-50%_50% $obj absolute size-full"
+  :image="'../img/same-cons.png'"
+  :stages="[{
+    fragmentShader: shader
+  }]"
+/>
+
+<h1 :class="className" class="text-center text-4xl pos-50% $obj title-bg"> onUnmounted vs onScopeDispose </h1>
 
 ---
 layout: default
 ---
 
-# `onUnmounted` vs `onScopeDispose`
+<h1 class="title-bg">onUnmounted vs onScopeDispose</h1>
 
 ````md magic-move
 ```js
@@ -599,7 +666,19 @@ router.beforeEach(async () => {
 layout: center
 ---
 
-## Неизменяемые значения
+<script setup>
+import shader from '../shaders/vue.glsl?raw'
+</script>
+
+<GlslImageEffect
+  class="pos-50%_50% $obj absolute size-full"
+  :image="'../img/weight-cons.png'"
+  :stages="[{
+    fragmentShader: shader
+  }]"
+/>
+
+<h1 :class="className" class="text-center text-4xl pos-50% $obj title-bg"> Неизменяемые значения </h1>
 
 ---
 layout: default
@@ -620,7 +699,7 @@ const useCounter = () => {
 }
 
 const { count, increment, decrement } = useCounter()
-count.value++ // Нежелатльная мутация 
+count.value++ // ❌ Нежелатльная мутация 
 ```
 
 ```js {7,14}
@@ -637,7 +716,7 @@ const useCounter = () => {
 }
 
 const { count, increment, decrement } = useCounter()
-count.value++ // ошибка в рантайме и в TS
+count.value++ // ✅ ошибка в рантайме и в TS
 ```
 
 ```js {7,14}
@@ -647,14 +726,14 @@ const useCounter = () => {
   const decrement = () => count.value--
 
   return {
-    count: shallowReadonly(count), // имеет цену за работу через Proxy
+    count: shallowReadonly(count), // 🤔 имеет цену за работу через Proxy
     increment,
     decrement
   }
 }
 
 const { count, increment, decrement } = useCounter()
-count.value++ // Ошибка в рантайме
+count.value++ // ✅ Ошибка в рантайме
 ```
 
 ```js {7,14}
@@ -671,6 +750,6 @@ const useCounter = () => {
 }
 
 const { count, increment, decrement } = useCounter()
-count.value++ // Ошибка TS
+count.value++ // ✅ Ошибка TS
 ```
 ````

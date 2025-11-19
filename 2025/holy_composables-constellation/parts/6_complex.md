@@ -2,7 +2,19 @@
 layout: center
 ---
 
-## `Object` vs `Reactive`
+<script setup>
+import shader from '../shaders/vue.glsl?raw'
+</script>
+
+<GlslImageEffect
+  class="pos-50%_50% $obj absolute size-full"
+  :image="'../img/r-cons.png'"
+  :stages="[{
+    fragmentShader: shader
+  }]"
+/>
+
+<h1 :class="className" class="text-center text-4xl pos-50%_55% $obj title-bg"> Object vs Reactive </h1>
 
 ---
 
@@ -29,7 +41,7 @@ console.log(name.value)
 
 ---
 
-# `Reactive` как результата композабла
+<h1 class="title-bg"><strong>Reactive</strong> как результата композабла</h1>
 
 ```vue {*|15-21|7-12}
 <script setup lang="ts">
@@ -59,11 +71,25 @@ console.log(user.fullName)
 layout: center
 ---
 
-# `Isomorphic Destructurable`
+<script setup>
+import shader from '../shaders/vue.glsl?raw'
+</script>
+
+<GlslImageEffect
+  class="pos-50%_50% $obj absolute size-full"
+  :image="'../img/iso-cons.png'"
+  :stages="[{
+    fragmentShader: shader
+  }]"
+/>
+
+<h1 class="text-center text-4xl pos-50%_55% $obj title-bg">Isomorphic Destructurable</h1>
 
 ---
 
-```ts {*|11-12|5-8|11-12}
+```ts {*|13-14|7-10|13-14}
+import { makeDestructurable } from '@vueuse/core'
+
 export function useCounter() {
   const count = ref(0)
   const increment = () => count.value++
@@ -84,7 +110,20 @@ const { count, increment } = useCounter()
 layout: center
 ---
 
-# Композаблы высшего порядка
+<script setup>
+import shader from '../shaders/vue.glsl?raw'
+</script>
+
+<GlslImageEffect
+  class="pos-50%_50% $obj absolute size-full"
+  :image="'../img/lev-cons.png'"
+  :stages="[{
+    fragmentShader: shader
+  }]"
+/>
+
+
+<h1 class="text-center text-4xl pos-50%_55% $obj title-bg">Композаблы высшего порядка</h1>
 
 ---
 timeline:
@@ -101,7 +140,7 @@ timeline:
     example: 'cs-green'
 ---
 
-<h1 class="text-center">Композаблы высшего порядка:</h1>
+<h1 class="text-center title-bg">Композаблы высшего порядка:</h1>
 
 <Points>
   <Point icon="i-fe-import" :attrs="t.point1" class="cs-red">
@@ -122,7 +161,7 @@ defineStore('user', () => { ... })
 
 ```
 ```ts
-const userStore = defineStore('user', )
+const useUserStore = defineStore('user', )
 ```
 ```ts {*|*}
 defineStore()
@@ -166,7 +205,19 @@ const [email, emailAttrs] = defineField('email');
 layout: center
 ---
 
-# Shared Composable
+<script setup>
+import shader from '../shaders/vue.glsl?raw'
+</script>
+
+<GlslImageEffect
+  class="pos-50%_50% $obj absolute size-full"
+  :image="'../img/bik-cons.png'"
+  :stages="[{
+    fragmentShader: shader
+  }]"
+/>
+
+<h1 class="text-center text-4xl pos-50%_50% $obj title-bg">Shared Composable</h1>
 
 ---
 
@@ -198,7 +249,7 @@ const { x, y } = useSharedMouse()
 layout: default
 ---
 
-# Shared Composable
+<h1 class="title-bg">Shared Composable</h1>
 
 ```ts {*|2,7-9,16|3,9,19}
 function createSharedComposable<F extends AnyF>(composable: F): ReturnType<F> {
@@ -242,46 +293,54 @@ const { name, age, isAdmin } = useUserStore()
 
 ---
 
-# `Shared Composable`
+# Shared Composable
 
+
+
+<div class="grid grid-cols-2 gap-2">
 <v-clicks>
-
-<div>
-  <AntDesignSmileFilled class="c-green"/>
-  Позволяет <strong>оптимизировать доступ</strong> к данным
+<div class="cs-green box box--rich text-center">
+  Оптимизация доступа
 </div>
-<div>
-  <AntDesignSmileFilled class="c-green"/>
-  Может вести себя как <strong>стейт менеджер</strong>
-</div>
-<div>
-  <AntDesignSmileFilled class="c-green"/>
-  Очищает себя <strong>самостоятельно</strong> если никто не использует
-</div>
-<div>
-  <MaterialSymbolsSentimentSadRounded class="c-red"/>
+<div class="cs-red box box--rich text-center">
   Не дружит с <strong>SSR</strong>
 </div>
-<div>
-  <MaterialSymbolsSentimentSadRounded class="c-red"/>
-  Легко получить <strong>циклические зависимости</strong>
+<div class="cs-blue box box--rich text-center">
+  Стейт менеджер?
 </div>
-<div>
-  <MaterialSymbolsSentimentSadRounded class="c-red"/>
-  Легко сделать <strong>хрупкую конструкцию</strong>
+<div class="cs-red box box--rich text-center">
+  Циклические зависимости
 </div>
-
+<div class="cs-green box box--rich text-center">
+  Очищает себя самостоятельно
+</div>
+<div class="cs-red box box--rich text-center">
+  Хрупкость конструкции
+</div>
 </v-clicks>
+</div>
 
 ---
 layout: center
 ---
 
-# Порождающие `"композаблы"`
+<script setup>
+import shader from '../shaders/vue.glsl?raw'
+</script>
+
+<GlslImageEffect
+  class="pos-50%_50% $obj absolute size-full"
+  :image="'../img/dev-cons.png'"
+  :stages="[{
+    fragmentShader: shader
+  }]"
+/>
+
+<h1 class="text-center text-4xl pos-50%_55% $obj title-bg">Порождающие <strong>"композаблы"</strong></h1>
 
 ---
 
-# Порождающие `"композаблы"`  
+<h1 class="title-bg">Порождающие <strong>«композаблы»</strong></h1>  
 
 ````md magic-move
 ```js {*|2|4-7|8-11|16}
@@ -325,7 +384,7 @@ export function useDebouncedRef<T>(value: T, delay: number = 200) {
 const customCount = useDebouncedRef(0)
 ```
 ```ts {*|20}
-export function useDebouncedRef<T>(value: T, delay: number = 200) {
+export function createDebouncedRef<T>(value: T, delay: number = 200) {
   let timeout
   return customRef((track, trigger) => {
     return {
