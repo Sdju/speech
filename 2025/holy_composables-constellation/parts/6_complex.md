@@ -4,11 +4,12 @@ layout: center
 
 <script setup>
 import shader from '../shaders/vue.glsl?raw'
+import RConsImg from '../img/r-cons.png'
 </script>
 
 <GlslImageEffect
   class="pos-50%_50% $obj absolute size-full"
-  :image="'../img/r-cons.png'"
+  :image="RConsImg"
   :stages="[{
     fragmentShader: shader
   }]"
@@ -73,11 +74,12 @@ layout: center
 
 <script setup>
 import shader from '../shaders/vue.glsl?raw'
+import IsoConsImg from '../img/iso-cons.png'
 </script>
 
 <GlslImageEffect
   class="pos-50%_50% $obj absolute size-full"
-  :image="'../img/iso-cons.png'"
+  :image="IsoConsImg"
   :stages="[{
     fragmentShader: shader
   }]"
@@ -112,11 +114,12 @@ layout: center
 
 <script setup>
 import shader from '../shaders/vue.glsl?raw'
+import LevConsImg from '../img/lev-cons.png'
 </script>
 
 <GlslImageEffect
   class="pos-50%_50% $obj absolute size-full"
-  :image="'../img/lev-cons.png'"
+  :image="LevConsImg"
   :stages="[{
     fragmentShader: shader
   }]"
@@ -207,11 +210,12 @@ layout: center
 
 <script setup>
 import shader from '../shaders/vue.glsl?raw'
+import DevConsImg from '../img/dev-cons.png'
 </script>
 
 <GlslImageEffect
   class="pos-50%_50% $obj absolute size-full"
-  :image="'../img/bik-cons.png'"
+  :image="DevConsImg"
   :stages="[{
     fragmentShader: shader
   }]"
@@ -326,11 +330,12 @@ layout: center
 
 <script setup>
 import shader from '../shaders/vue.glsl?raw'
+import BikConsImg from '../img/bik-cons.png'
 </script>
 
 <GlslImageEffect
   class="pos-50%_50% $obj absolute size-full"
-  :image="'../img/dev-cons.png'"
+  :image="BikConsImg"
   :stages="[{
     fragmentShader: shader
   }]"

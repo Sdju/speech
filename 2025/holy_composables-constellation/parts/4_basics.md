@@ -4,11 +4,12 @@ layout: center
 
 <script setup>
 import shader from '../shaders/vue.glsl?raw'
+import BaseConsImg from '../img/base-cons.png'
 </script>
 
 <GlslImageEffect
   class="pos-50%_50% $obj absolute size-full"
-  :image="'../img/base-cons.png'"
+  :image="BaseConsImg"
   :stages="[{
     fragmentShader: shader
   }]"

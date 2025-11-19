@@ -4,11 +4,12 @@ layout: center
 
 <script setup>
 import shader from '../shaders/vue.glsl?raw'
+import InjectConsImg from '../img/inject-cons.png'
 </script>
 
 <GlslImageEffect
   class="pos-50%_50% $obj absolute size-full"
-  :image="'../img/inject-cons.png'"
+  :image="InjectConsImg"
   :stages="[{
     fragmentShader: shader
   }]"
@@ -220,11 +221,12 @@ layout: center
 
 <script setup>
 import shader from '../shaders/vue.glsl?raw'
+import ResConsImg from '../img/res-cons.png'
 </script>
 
 <GlslImageEffect
   class="pos-50%_50% $obj absolute size-full"
-  :image="'../img/res-cons.png'"
+  :image="ResConsImg"
   :stages="[{
     fragmentShader: shader.replaceAll('u_texture0_0', 'u_texture1_0')
   }]"
@@ -365,11 +367,12 @@ layout: center
 
 <script setup>
 import shader from '../shaders/vue.glsl?raw'
+import DirConsImg from '../img/dir-cons.png'
 </script>
 
 <GlslImageEffect
   class="pos-50%_50% $obj absolute size-full"
-  :image="'../img/dir-cons.png'"
+  :image="DirConsImg"
   :stages="[{
     fragmentShader: shader
   }]"
@@ -588,11 +591,12 @@ layout: center
 
 <script setup>
 import shader from '../shaders/vue.glsl?raw'
+import SameConsImg from '../img/same-cons.png'
 </script>
 
 <GlslImageEffect
   class="pos-50%_50% $obj absolute size-full"
-  :image="'../img/same-cons.png'"
+  :image="SameConsImg"
   :stages="[{
     fragmentShader: shader
   }]"
@@ -668,11 +672,12 @@ layout: center
 
 <script setup>
 import shader from '../shaders/vue.glsl?raw'
+import WeightConsImg from '../img/weight-cons.png'
 </script>
 
 <GlslImageEffect
   class="pos-50%_50% $obj absolute size-full"
-  :image="'../img/weight-cons.png'"
+  :image="WeightConsImg"
   :stages="[{
     fragmentShader: shader
   }]"
