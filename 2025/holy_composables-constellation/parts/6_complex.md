@@ -341,7 +341,7 @@ import BikConsImg from '../img/bik-cons.png'
   }]"
 />
 
-<h1 class="text-center text-4xl pos-50%_55% $obj title-bg">Порождающие <strong>"композаблы"</strong></h1>
+<h1 class="text-center text-4xl pos-50%_55% $obj title-bg">Порождающие <strong>«композаблы»</strong></h1>
 
 ---
 

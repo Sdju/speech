@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "slidev build --out $STATIC_ROOT$PRJ_NAME --base $BASE_ROOT$PRJ_NAME",
+    "build": "env-cmd -x slidev build --out $STATIC_ROOT$PRJ_NAME --base $BASE_ROOT$PRJ_NAME",
     "test": "dotenvx run pnpm run build",
     "dev": "slidev"
   },
@@ -13,6 +13,7 @@
     "chroma-js": "3.1.2",
     "class-variance-authority": "0.7.1",
     "env-cmd": "10.1.0",
+    "qr-code-styling": "^1.9.2",
     "seedrandom": "3.0.5",
     "tailwind-merge": "3.3.1",
     "vue": "3.5.22"

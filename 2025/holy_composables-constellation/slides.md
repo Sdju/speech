@@ -13,7 +13,7 @@ transition: fade-out
 contextMenu: false
 mdc: true
 growSeed: 4
-title: Что такое композаблы?
+title: Созвездия композаблов
 layout: center
 ---
 

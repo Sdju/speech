@@ -37,7 +37,7 @@
 
   b,
   strong {
-    @apply font-strong c-[var(--bg-keyword)];
+    @apply c-[var(--bg-keyword)];
   }
 
   p {
@@ -61,7 +61,7 @@
   }
 
   blockquote {
-    @apply mt-2 mb-4 text-6 italic font-sans b-[var(--bg-keyword)] b-l-2;
+    @apply mt-2 mb-4 text-6 italic b-[var(--bg-keyword)] b-l-2;
   }
 
   img.slide {

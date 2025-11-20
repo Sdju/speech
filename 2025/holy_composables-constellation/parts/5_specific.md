@@ -455,7 +455,7 @@ const vFocus = {
 ```
 ```vue
 <script setup>
-const input = templateRef('input')
+const input = useTemplateRef('input')
 const { value } = useInputMask(
   input, 
   { mask: '### ### ### ## ##' }
@@ -499,7 +499,7 @@ export function useFocus(el: MaybeRefOrGetter<HTMLElement>) {
   }
 }
 
-const element = templateRef('element')
+const element = useTemplateRef('element')
 const { focus } = useFocus(element)
 </script>
 
@@ -550,7 +550,7 @@ timeline:
 ````md magic-move {lines: false}
 ```vue
 <script setup>
-const input = templateRef('input')
+const input = useTemplateRef('input')
 const { value } = useInputMask(
   input, 
   { mask: '### ### ### ## ##' }
@@ -559,7 +559,7 @@ const { value } = useInputMask(
 ```
 ```vue
 <script setup>
-const input = templateRef('input')
+const input = useTemplateRef('input')
 consr mask = ref('### ### ### ## ##')
 const { value } = useInputMask(
   input, 

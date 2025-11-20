@@ -131,21 +131,45 @@ import VeeValidateImg from '../img/vee.png'
 
 ---
 layout: center
+timeline:
+  - q1: '$obj fx text-1.3em pos-50% w-full text-center px-10 title-bg'
+    q1Mode: false
+  - q1Mode: true
 ---
 
-<h1 class="title-bg"><strong>Композаблы</strong> — мощный инструмент</h1>
+<AnimatedText
+  :class="t.q1"
+  :mode="t.q1Mode"
+  words="Композаблы — мощный инструмент"
+/>
 
 ---
 layout: center
+timeline:
+  - q1: '$obj fx text-1.3em pos-50% w-full text-center px-10 title-bg'
+    q1Mode: false
+  - q1Mode: true
 ---
 
-<h1 class="title-bg">Следуйте лучшим практикам</h1>
+<AnimatedText
+  :class="t.q1"
+  :mode="t.q1Mode"
+  words="Следуйте лучшим практикам"
+/>
 
 ---
 layout: center
+timeline:
+  - q1: '$obj fx text-1.3em pos-50% w-full text-center px-10 title-bg'
+    q1Mode: false
+  - q1Mode: true
 ---
 
-<h1 class="title-bg">Смотрите на решения других разработчиков</h1>
+<AnimatedText
+  :class="t.q1"
+  :mode="t.q1Mode"
+  words="Смотрите на решения других разработчиков"
+/>
 
 ---
 layout: center
@@ -219,18 +243,27 @@ class: text-center
 ---
 
 <script setup>
-import current from '../img/current.svg?raw'
+import shader from '../shaders/vue.glsl?raw'
+import VueConsImg from '../img/vue-cons.png'
 </script>
 
-<div v-html="current" class="$obj c-white pos-866_124 size-200" />
-<div class="text-2xl text-left $obj pos-869_243">
+<GlslImageEffect
+  class="pos-50%_45% $obj absolute size-full z-[-1]"
+  :image="VueConsImg"
+  :stages="[{
+    fragmentShader: shader
+  }]"
+/>
+
+<QrCode class="$obj pos-866_124 size-200 title-bg" url="https://sdju.github.io/speech/slides/2025_holy_composables-constellation/#/1" />
+<div class="text-2xl text-left $obj pos-869_244 title-bg">
   презентация
 </div>
-<div class="text-2xl text-left $obj pos-113_500">
+<div class="text-2xl text-left $obj pos-113_500 title-bg">
   <FileIconsTelegram /> @vueist <br/>
   <FileIconsTelegram /> @zede_code
 </div>
 
-# Спасибо за внимание!
+<h1 class="text-center title-bg">Спасибо за внимание!</h1>
 
-## Вопросы? 
+<h2 class="text-center title-bg">Вопросы?</h2>
