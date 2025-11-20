@@ -210,7 +210,7 @@ layout: center
 
 <script setup>
 import shader from '../shaders/vue.glsl?raw'
-import DevConsImg from '../img/dev-cons.png'
+import DevConsImg from '../img/bik-cons.png'
 </script>
 
 <GlslImageEffect
@@ -330,7 +330,7 @@ layout: center
 
 <script setup>
 import shader from '../shaders/vue.glsl?raw'
-import BikConsImg from '../img/bik-cons.png'
+import BikConsImg from '../img/dev-cons.png'
 </script>
 
 <GlslImageEffect
