@@ -1,1 +1,0 @@
-import{f as o,o as s,j as t}from"./modules/vue-C5JO9rSz.js";import{u as a}from"./slidev/context-CZ2lBTNZ.js";const r={class:"example no-bg"},m={__name:"example",setup(n){return a(),(e,l)=>(s(),o("div",r,[t(e.$slots,"default")]))}};export{m as _};

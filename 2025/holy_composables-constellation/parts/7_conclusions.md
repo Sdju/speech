@@ -267,3 +267,37 @@ import VueConsImg from '../img/vue-cons.png'
 <h1 class="text-center title-bg">Спасибо за внимание!</h1>
 
 <h2 class="text-center title-bg">Вопросы?</h2>
+
+---
+
+<script setup>
+import shader from '../shaders/vue.glsl?raw'
+import DevConsImg from '../img/pinia-dark-cons.png'
+</script>
+
+<GlslImageEffect
+  class="$obj pos-0 absolute size-full pinia"
+  :image="DevConsImg"
+  :stages="[{
+    fragmentShader: shader
+  }]"
+/>
+
+<style>
+.pinia {
+  animation: brightness 2s linear infinite, shake 5s linear infinite;
+}
+
+@keyframes brightness {
+  0%{filter: brightness(1); }
+  25%{filter: brightness(1.15) alpha(0.7);}
+  50%{filter: brightness(1.25);}
+  100%{filter: brightness(1);}
+}
+
+@keyframes shake {
+  0%{transform: rotate(7deg) scale(1.1);}
+  50%{transform: rotate(-7deg) scale(1);}
+  100%{transform: rotate(7deg) scale(1.1);}
+}
+</style>
