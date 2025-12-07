@@ -1,0 +1,24 @@
+{
+  "name": "@zede/slidev-addon",
+  "version": "0.0.2",
+  "description": "Zede addon for Slidev",
+  "author": "Zede <zede169778@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://sli.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/slidevjs/themes"
+  },
+  "bugs": "https://github.com/slidevjs/themes/issues",
+  "keywords": [
+    "slidev-addon",
+    "slidev"
+  ],
+  "engines": {
+    "node": ">=14.0.0",
+    "slidev": ">=v0.47.0"
+  },
+  "dependencies": {
+    "@slidev/types": "^0.47.0"
+  }
+}
