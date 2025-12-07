@@ -42,6 +42,12 @@ export class PostProcessingManager {
     this.width = width
     this.height = height
     this.quadBuffer = createQuadBuffer(gl)
+    
+    // Включаем блендинг для корректной работы с прозрачностью
+    this.gl.enable(this.gl.BLEND)
+    this.gl.getExtension("OES_standard_derivatives");
+    this.gl.getExtension("EXT_shader_texture_lod");
+    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA)
   }
 
   /**
@@ -121,7 +127,7 @@ export class PostProcessingManager {
   /**
    * Renders the post-processing pipeline
    */
-  render(pipeline: PostProcessingPipeline, baseUniforms?: Record<string, ShaderUniform>): void {
+  render(pipeline: PostProcessingPipeline, baseUniforms?: Record<string, ShaderUniform>, extraData?: Record<string, any>): void {
     for (let i = 0; i < pipeline.stages.length; i++) {
       const stage = pipeline.stages[i]
       const program = this.programs[i]
@@ -139,15 +145,15 @@ export class PostProcessingManager {
       
       this.gl.viewport(0, 0, this.width, this.height)
       
-      // Clear the screen
-      this.gl.clearColor(0.0, 0.0, 0.0, 1.0)
+      // Clear with transparency (alpha = 0.0)
+      this.gl.clearColor(0.0, 0.0, 0.0, 0.0)
       this.gl.clear(this.gl.COLOR_BUFFER_BIT)
       
       // Set uniforms
       this.setStageUniforms(program, stage.uniforms || {})
       
       // Set base uniforms (time, resolution, etc.)
-      this.setBaseUniforms(program)
+      this.setBaseUniforms(program, extraData)
       
       // Set custom base uniforms if provided
       if (baseUniforms) {
@@ -174,15 +180,19 @@ export class PostProcessingManager {
   /**
    * Sets base uniforms (time, resolution)
    */
-  private setBaseUniforms(program: WebGLProgram): void {
+  private setBaseUniforms(program: WebGLProgram, extraUniforms?: Record<string, any>): void {
     const timeLocation = this.gl.getUniformLocation(program, 'u_time')
     const resolutionLocation = this.gl.getUniformLocation(program, 'u_resolution')
+    const imageSizeLocation = this.gl.getUniformLocation(program, 'u_imageSize')
     
     if (timeLocation) {
       this.gl.uniform1f(timeLocation, performance.now() / 1000.0)
     }
     if (resolutionLocation) {
       this.gl.uniform2f(resolutionLocation, this.width, this.height)
+    }
+    if (imageSizeLocation && extraUniforms?.imageSize) {
+      this.gl.uniform2f(imageSizeLocation, extraUniforms.imageSize[0], extraUniforms.imageSize[1])
     }
   }
 

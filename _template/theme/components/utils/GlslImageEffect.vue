@@ -1,163 +1,167 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-
-const {
-  imageUrl,
-  preset,
-  params,
-} = defineProps<{
-  imageUrl: string;
-  preset: 'blur' | 'vignette';
-  params: any;
-}>()
-
-const presets = {
-  blur: {
-    vertexShader: `
-    
-    `,
-  },
-  vignette: {
-    vertexShader: `
-attribute vec4 a_position;
-attribute vec2 a_texCoord;
-varying vec2 v_texCoord;
-void main() {
-  gl_Position = a_position;
-  v_texCoord = a_texCoord;
-}
-    `,
-    fragmentShader: `
-precision mediump float;
-varying vec2 v_texCoord;
-uniform sampler2D u_image;
-void main() {
-  vec4 color = texture2D(u_image, v_texCoord);
-  
-  float borderSize = 0.2; // Размер рамки, в долях от размера изображения
-  float blurWidth = 0.1; // Ширина градиента размытия
-  
-  float left = smoothstep(0.0, blurWidth, v_texCoord.x);
-  float right = smoothstep(1.0, 1.0 - blurWidth, v_texCoord.x);
-  float top = smoothstep(0.0, blurWidth, v_texCoord.y);
-  float bottom = smoothstep(1.0, 1.0 - blurWidth, v_texCoord.y);
-  
-  float vignette = min(min(left, right), min(top, bottom));
-  
-  gl_FragColor = vec4(color.rgb, color.a * vignette);
-    `
-  },
-}
-
-const canvasRef = ref<HTMLCanvasElement | null>(null);
-let gl: WebGLRenderingContext | null = null;
-let texture: WebGLTexture | null = null;
-
-const createShader = (gl: WebGLRenderingContext, type: number, source: string) => {
-  const shader = gl.createShader(type);
-  if (!shader) return null;
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    console.error(gl.getShaderInfoLog(shader));
-    gl.deleteShader(shader);
-    return null;
-  }
-  return shader;
-};
-
-const createProgram = (gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader) => {
-  const program = gl.createProgram();
-  if (!program) return null;
-  gl.attachShader(program, vertexShader);
-  gl.attachShader(program, fragmentShader);
-  gl.linkProgram(program);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    console.error(gl.getProgramInfoLog(program));
-    return null;
-  }
-  return program;
-};
-
-const loadImage = () => {
-  if (!imageUrl || !canvasRef.value) return;
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.src = imageUrl;
-  img.onload = () => {
-    if (!canvasRef.value) return;
-    canvasRef.value.width = img.width;
-    canvasRef.value.height = img.height;
-    
-    gl = canvasRef.value.getContext('webgl');
-    if (!gl) {
-      console.error('WebGL not supported');
-      return;
-    }
-
-    const vertexShader = createShader(gl, gl.VERTEX_SHADER, presets[preset].vertexShader);
-    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, presets[preset].fragmentShader);
-    if (!vertexShader || !fragmentShader) return;
-
-    const program = createProgram(gl, vertexShader, fragmentShader);
-    if (!program) return;
-
-    gl.useProgram(program);
-
-    const positionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    const positions = [
-      -1, 1,
-      1, 1,
-      -1, -1,
-      1, -1,
-    ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-    const positionLocation = gl.getAttribLocation(program, 'a_position');
-    gl.enableVertexAttribArray(positionLocation);
-    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-    const texCoordBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-    const texCoords = [
-      0, 0,
-      1, 0,
-      0, 1,
-      1, 1,
-    ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoords), gl.STATIC_DRAW);
-    const texCoordLocation = gl.getAttribLocation(program, 'a_texCoord');
-    gl.enableVertexAttribArray(texCoordLocation);
-    gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
-
-    texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-
-    const imageLocation = gl.getUniformLocation(program, 'u_image');
-    gl.uniform1i(imageLocation, 0);
-
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-  };
-};
-</script>
-
 <template>
-  <div>
-    <button @click="loadImage">Load Image</button>
-    <canvas ref="canvasRef"></canvas>
-  </div>
+  <ObjectContainer
+    v-if="!isOverview"
+    :objectWidth="imageSize[0]"
+    :objectHeight="imageSize[1]"
+    :mode="objectFit"
+    v-slot="{ class: canvasClass }"
+  >
+    <canvas ref="canvas" :class="canvasClass" />
+  </ObjectContainer>
+  <img v-else :src="image" style="{objectFit: objectFit}" />
 </template>
+
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount, watch, computed, nextTick } from 'vue'
+import { useSlideContext } from '@slidev/client'
+import { useElementSize, until } from '@vueuse/core'
+import { PostProcessingManager } from '../../../addon/utils/postprocessing'
+import { normalizeStages, type StagesInput } from '../../../addon/utils/presets'
+
+const slideContext = useSlideContext()
+const isOverview = computed(() => slideContext.$renderContext.value === 'overview')
+
+interface Props {
+  image: string
+  stages: StagesInput
+  objectFit?: 'contain' | 'cover' | 'fill' | 'none'
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  objectFit: 'contain'
+})
+
+const pipeline = computed(() => {
+  return { stages: normalizeStages(props.stages, props.image) }
+})
+
+const imageSize = ref<[number, number]>([0, 0])
+
+const loadImageSize = async (image: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      imageSize.value = [img.width, img.height]
+      resolve()
+    }
+    img.onerror = (error) => reject(error)
+    img.src = image
+  })
+}
+
+const canvas = ref<HTMLCanvasElement | null>(null)
+let gl: WebGLRenderingContext | null = null
+let postProcessingManager: PostProcessingManager | null = null
+let animationFrameId: number | null = null
+
+const { width: canvasWidth, height: canvasHeight } = useElementSize(canvas)
+
+const initPostProcessing = async (): Promise<void> => {
+  if (!gl || !canvas.value) return
+
+  await loadImageSize(props.image)
+
+  postProcessingManager = new PostProcessingManager(gl, canvas.value.width, canvas.value.height)
+  await postProcessingManager.initialize(pipeline.value)
+}
+
+const resizeCanvas = async (): Promise<void> => {
+  if (!canvas.value || !gl) return
+  
+  canvas.value.width = canvasWidth.value
+  canvas.value.height = canvasHeight.value
+  gl.viewport(0, 0, canvasWidth.value, canvasHeight.value)
+  
+  if (postProcessingManager) {
+    postProcessingManager.destroy()
+    postProcessingManager = null
+  }
+  
+  await initPostProcessing()
+}
+
+const render = (): void => {
+  if (!gl || !canvas.value) return
+  
+  if (canvas.value.width === 0 || canvas.value.height === 0) {
+    animationFrameId = requestAnimationFrame(render)
+    return
+  }
+  
+  if (!postProcessingManager) return
+  
+  // Очистка с прозрачным фоном (альфа = 0.0)
+  gl.clearColor(0.0, 0.0, 0.0, 0.0)
+  gl.clear(gl.COLOR_BUFFER_BIT)
+  
+  const extraData = props.image && imageSize.value[0] > 0 
+    ? { imageSize: imageSize.value }
+    : {}
+  
+  postProcessingManager.render(pipeline.value, undefined, extraData)
+  
+  animationFrameId = requestAnimationFrame(render)
+}
+
+onMounted(async () => {
+  await loadImageSize(props.image)
+  await until(() => canvasWidth.value > 0 && canvasHeight.value > 0).toBeTruthy()
+  
+  // Создаём WebGL контекст с поддержкой прозрачности
+  gl = canvas.value!.getContext('webgl', {
+    alpha: true,
+    premultipliedAlpha: false,
+    preserveDrawingBuffer: false,
+    antialias: true
+  })
+  if (!gl) {
+    console.error('Unable to initialize WebGL')
+    return
+  }
+  
+  // Включаем блендинг для корректной работы с прозрачностью
+  gl.enable(gl.BLEND)
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+  
+  resizeCanvas()
+  
+  if (canvas.value!.width === 0 || canvas.value!.height === 0) {
+    console.error('Canvas has zero size after resize')
+    return
+  }
+  
+  await initPostProcessing()
+  render()
+})
+
+onBeforeUnmount(() => {
+  if (animationFrameId !== null) {
+    cancelAnimationFrame(animationFrameId)
+  }
+  
+  postProcessingManager?.destroy()
+})
+
+watch(() => [props.stages, props.image], async () => {
+  if (!gl) return
+  
+  if (postProcessingManager) {
+    postProcessingManager.destroy()
+    postProcessingManager = null
+  }
+  
+  await initPostProcessing()
+})
+watch(() => [canvasWidth, canvasHeight], async () => {
+  if (!postProcessingManager) {
+    return
+  }
+  await resizeCanvas()
+})
+</script>
 
 <style scoped>
 canvas {
   display: block;
-  max-width: 100%;
-  border: 1px solid #ccc;
-  margin-top: 10px;
 }
 </style>

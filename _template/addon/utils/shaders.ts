@@ -219,6 +219,37 @@ void main() {
     gl_FragColor = vec4(color * vignette, 1.0);
 }
 `
+// Lowering light colors to low intense
+export const shadingShader = `
+#ifdef GL_ES
+precision highp float;
+#endif
+
+uniform sampler2D u_inputTexture;
+uniform vec2 u_resolution;
+uniform float u_shading;
+
+void main() {
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    vec3 color = texture2D(u_inputTexture, uv).rgb;
+    float shading = 1. - u_shading;
+    gl_FragColor = vec4(color * shading, 1.0);
+}
+`
+
+// return original image
+export const noopShader = `
+#ifdef GL_ES
+precision highp float;
+#endif
+
+uniform sampler2D u_inputTexture;
+uniform vec2 u_resolution;
+
+void main() {
+    gl_FragColor = texture2D(u_inputTexture, gl_FragCoord.xy / u_resolution.xy);
+}
+`
 
 // Re-export the type for convenience
 export type { PostProcessingPipeline }

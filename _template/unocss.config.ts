@@ -12,7 +12,10 @@ const variants = {
   lightblue: "[--bg-keyword:#0099ff] [--bg-first:#0099ff] [--bg-second:#4cbbc5] [--bg-third:#5d1dff] [--v-color:theme('colors.blue.500')] ",
   green: "[--bg-keyword:#5a8f29] [--bg-first:#49ff3c] [--bg-second:#4cc580] [--bg-third:#ceff1d] [--v-color:theme('colors.green.500')] ",
   red: "[--bg-keyword:#990000] [--bg-first:#ff4d4d] [--bg-second:#ff8080] [--bg-third:#ff9999] [--v-color:theme('colors.red.500')] ",
+  pink: "[--bg-keyword:#ff4dff] [--bg-first:#ff80ff] [--bg-second:#ff99ff] [--bg-third:#ff99ff] [--v-color:theme('colors.pink.500')] ",
   purple: "[--bg-keyword:#990099] [--bg-first:#ff4dff] [--bg-second:#ff80ff] [--bg-third:#ff99ff] [--v-color:theme('colors.purple.500')] ",
+  grey: "[--bg-keyword:#808080] [--bg-first:#a0a0a0] [--bg-second:#c0c0c0] [--bg-third:#e0e0e0] [--v-color:theme('colors.gray.500')] ",
+  brown: "[--bg-keyword:#8b4513] [--bg-first:#a0522d] [--bg-second:#c06e47] [--bg-third:#e08a61] [--v-color:#a0522d] ",
 }
 
 const modifiers = {
@@ -78,6 +81,9 @@ export default mergeConfigs([
       [/^view-(\S+)$/, ([, variant]) => {
         return `[view-transition-name:${variant}]`
       }],
+      [/^bento-(\S+)_(\S+)$/, ([, cols, rows]) => {
+        return `col-span-${cols} row-span-${rows} relative of-hidden`
+      }],
       {
         'movable': 'absolute -translate-x-1/2 -translate-y-1/2 transform-origin-center',
         'circle': 'rounded-[100%]',
@@ -86,7 +92,7 @@ export default mergeConfigs([
         'pos-center': 'left-1/2 top-1/2',
         'size-full': 'w-full h-full',
         'framed': 'rounded-[10px] border-2 border-gray-500/20 object-cover',
-        'cs-main': 'cs-orange',
+        'cs-main': 'cs-green',
         'fx': 'transform filter duration-[var(--slidev-transition-duration)]',
         'center': 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
       }
@@ -94,9 +100,9 @@ export default mergeConfigs([
     presets: [
       presetWebFonts({
         fonts: {
-          mono: 'DM Mono',
-          sans: 'DM Sans',
-          strong: 'SUSE Mono',
+          mono: 'sans',
+          sans: 'sans',
+          strong: 'sans', // 'SUSE Mono',
           fast: 'Ubuntu',
           hand: 'Bentham',
         },

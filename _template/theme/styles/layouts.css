@@ -9,7 +9,9 @@
   padding-right: 80px;
 
   --slidev-code-font-size: 16px;
-  --slidev-code-background: #1616167f;
+  --slidev-code-background: #161616c8;
+
+
 
   .light & {
     --slidev-code-background: #1616160f;
@@ -23,11 +25,19 @@
 
   .no-bg {
     --slidev-code-background: transparent;
+
+    .slidev-code {
+      backdrop-filter: none;
+    }
+  }
+
+  .slidev-code {
+    backdrop-filter: blur(4px);
   }
 
   b,
   strong {
-    @apply font-strong c-[var(--bg-keyword)];
+    @apply c-[var(--bg-keyword)];
   }
 
   p {
@@ -51,7 +61,7 @@
   }
 
   blockquote {
-    @apply mt-2 mb-4 text-6 italic font-hand b-[var(--bg-keyword)] b-l-2;
+    @apply mt-2 mb-4 text-6 italic b-[var(--bg-keyword)] b-l-2;
   }
 
   img.slide {

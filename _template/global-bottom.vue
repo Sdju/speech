@@ -5,15 +5,16 @@ import { TransitionPresets, useTransition } from '@vueuse/core'
 import GlslBackground from "./theme/components/backgrounds/GlslBackground.vue"
 import shader from "./background-shader.glsl?raw"
 import { 
-  grainFilterShader, 
-  fancyDitheringShader,
-  type PostProcessingPipeline
+  type PostProcessingPipeline,
+  shadingShader,
+  noopShader
 } from "./addon/utils/shaders"
+import { PostProcessingStage } from "./addon/utils/webgl"
 
 const { currentSlideRoute, currentSlideNo } = useNav()
 const frontmatter = computed(() => {
   const meta = (currentSlideRoute.value.meta?.slide as any)?.frontmatter || {}
-  return meta as { slideClass?: string }
+  return meta as { slideClass?: string, shading?: boolean }
 })
 
 const color = ref([0, 0, 0, 1])
@@ -25,41 +26,35 @@ const shaderSlideNumber = useTransition(currentSlideNo, {
   duration: 2000,
   transition: TransitionPresets.easeOutSine,
 })
+const shaderShading = useTransition(computed(() => frontmatter.value.shading ? 0.4 : 0.25), {
+  duration: 2000,
+  transition: TransitionPresets.easeOutSine,
+})
 
-const postProcessingPipeline = computed((): PostProcessingPipeline => ({
-  stages: [
-    {
-      fragmentShader: shader,
-      uniforms: {
-        u_baseColor: {
-          type: 'vec4' as const,
-          value: shaderColor.value
-        },
-        u_slideNumber: {
-          type: 'float' as const,
-          value: shaderSlideNumber.value
-        }
+const postProcessingPipeline = computed((): PostProcessingStage[] => [
+  {
+    fragmentShader: shader,
+    uniforms: {
+      u_baseColor: {
+        type: 'vec4' as const,
+        value: shaderColor.value
+      },
+      u_slideNumber: {
+        type: 'float' as const,
+        value: shaderSlideNumber.value
       }
-    },
-    // {
-    //   fragmentShader: grainFilterShader,
-    //   uniforms: {
-    //     u_colorNum: {
-    //       type: 'float' as const,
-    //       value: 16
-    //     },
-    //     u_blockSize: {
-    //       type: 'float' as const,
-    //       value: 8
-    //     },
-    //     u_grainIntensity: {
-    //       type: 'float' as const,
-    //       value: 0.05
-    //     }
-    //   }
-    // },
-  ]
-}))
+    }
+  },
+  {
+    fragmentShader: shadingShader,
+    uniforms: {
+      u_shading: {
+        type: 'float' as const,
+        value: shaderShading.value
+      }
+    }
+  }
+])
 
 function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -83,6 +78,6 @@ watch(currentSlideNo, async () => {
 
 <template>
   <div :class="frontmatter.slideClass">
-    <GlslBackground :postProcessing="postProcessingPipeline" />
+    <GlslBackground :stages="postProcessingPipeline" />
   </div>
 </template>

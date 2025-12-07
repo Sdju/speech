@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useNav, useSlideContext } from '@slidev/client'
-import { computed, reactive, onMounted, onUnmounted, useTemplateRef } from 'vue'
+import { computed, reactive, onMounted, onUnmounted, useTemplateRef, watch } from 'vue'
 
 interface TimelineStep {
   $duration?: number
@@ -103,8 +103,20 @@ if (slide.$frontmatter.timeline) {
   slide.$clicksContext.timeline = reactive(Object.fromEntries(reactiveKeys))
 
   onMounted(() => {
-    slide.$clicksContext.register(root.value!, slide.$clicksContext.calculateSince(1, totalClicks.value))
+    slide.$clicksContext.register(root.value!, slide.$clicksContext.calculateSince(1, totalClicks.value - 1))
   })
+
+  watch(
+    () => [slide.$clicksContext.total, slide.$clicksContext.current], 
+    ([newValueTotal, newValueCurrent], [oldValueTotal, oldValueCurrent]) => {
+      if (newValueTotal === 0 && newValueCurrent === 0) {
+        slide.$clicksContext.register(root.value!, slide.$clicksContext.calculateSince(1, totalClicks.value - 1))
+        setTimeout(() => {
+          slide.$clicksContext.current = oldValueCurrent
+        }, 100)
+      }
+    }
+  )
 
   onUnmounted(() => {
     slide.$clicksContext.unregister(root.value!)
