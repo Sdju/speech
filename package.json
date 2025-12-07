@@ -1,0 +1,13 @@
+{
+  "name": "speech-presentations",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "presentation:create": "node scripts/create-presentation.ts"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1"
+  }
+}
+
