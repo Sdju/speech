@@ -1,0 +1,7 @@
+import '@slidev/client/styles/layouts-base.css'
+import './layouts.css'
+import './animations.css'
+import './utils.css'
+import './custom.css'
+import './markers.css'
+import './toolbar-icons.css'

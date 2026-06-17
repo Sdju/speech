@@ -1,0 +1,281 @@
+/* ── Marker palette theme ─────────────────────────────────────
+   «Все фломастеры на вкус разные» — у реактивности нет одного
+   правильного цвета, только подходящий под задачу.
+   ─────────────────────────────────────────────────────────── */
+
+.markers-theme,
+.mk-title,
+.mk-panel {
+  --mk-paper: #141210;
+  --mk-paper-warm: #1c1916;
+  --mk-ink: #ece8e1;
+  --mk-ink-dim: #9a948a;
+  --mk-tray: #252220;
+  --mk-tray-edge: #3a3530;
+  --mk-stroke-height: 0.38em;
+}
+
+/* ── Title layout ─────────────────────────────────────────── */
+
+.mk-title {
+  display: grid;
+  grid-template-columns: 1fr 1.05fr;
+  gap: 0;
+  max-width: 960px;
+  margin: 0 auto;
+  border: 1px solid var(--mk-tray-edge);
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: left;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.mk-title__palette {
+  padding: 1.4rem 1.5rem 1.2rem;
+  background: var(--mk-tray);
+  border-right: 1px solid var(--mk-tray-edge);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mk-title__content {
+  padding: 1.4rem 1.6rem;
+  background: var(--mk-paper-warm);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+.mk-title__content h1 {
+  font-size: 1.4em !important;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.mk-title__content h1::after {
+  bottom: 0.05em;
+  height: 0.42em;
+  background: linear-gradient(
+    90deg in oklch,
+    #e74c3c 0%,
+    #f39c12 18%,
+    #2ecc71 36%,
+    #3498db 54%,
+    #9b59b6 72%,
+    #ff6b9d 88%,
+    #00d4aa 100%
+  );
+  opacity: 0.75;
+  transform: rotate(-0.4deg);
+}
+
+.mk-epigraph {
+  font-family: Bentham, Georgia, serif;
+  font-size: 0.95em;
+  line-height: 1.35;
+  color: var(--mk-ink-dim);
+  margin: 0;
+  font-style: italic;
+}
+
+.mk-epigraph em {
+  color: var(--mk-ink);
+  font-style: normal;
+}
+
+/* ── Marker caps (CSS-only) ───────────────────────────────── */
+
+.mk-tray {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.5rem 0.75rem 1.1rem;
+  background: linear-gradient(180deg, #2e2a26 0%, #1f1c19 100%);
+  border: 1px solid var(--mk-tray-edge);
+  border-radius: 6px;
+  min-height: 110px;
+}
+
+.mk-cap {
+  --mk-color: #7cb87c;
+  position: relative;
+  width: 22px;
+  height: 64px;
+  border-radius: 3px 3px 1px 1px;
+  background: linear-gradient(
+    95deg,
+    color-mix(in srgb, var(--mk-color) 35%, #1a1a1a) 0%,
+    color-mix(in srgb, var(--mk-color) 75%, #fff) 35%,
+    var(--mk-color) 70%,
+    color-mix(in srgb, var(--mk-color) 85%, #000) 100%
+  );
+  box-shadow:
+    1px 0 0 rgba(255, 255, 255, 0.08) inset,
+    -1px 0 4px rgba(0, 0, 0, 0.4);
+  transform-origin: bottom center;
+  transition: transform 0.25s ease;
+}
+
+.mk-cap:hover {
+  transform: translateY(-4px) rotate(-2deg);
+}
+
+.mk-cap::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 3px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.mk-cap::after {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 11px solid var(--mk-color);
+  filter: brightness(0.92);
+}
+
+.mk-cap__label {
+  position: absolute;
+  bottom: -1.65rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.45em;
+  white-space: nowrap;
+  color: var(--mk-ink-dim);
+  font-family: system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.mk-tray:hover .mk-cap__label {
+  opacity: 1;
+}
+
+/* ── Flavor swatches (legend) ─────────────────────────────── */
+
+.mk-swatches {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem 0.75rem;
+  font-size: 0.62em;
+  line-height: 1.3;
+}
+
+.mk-swatch {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  color: var(--mk-ink-dim);
+}
+
+.mk-swatch__dot {
+  flex-shrink: 0;
+  width: 0.75em;
+  height: 0.75em;
+  border-radius: 2px;
+  background: var(--mk-color);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+  transform: rotate(-4deg);
+}
+
+.mk-swatch__taste {
+  color: var(--mk-ink);
+  font-weight: 600;
+}
+
+.mk-swatch__tech {
+  opacity: 0.75;
+}
+
+/* ── Marker panel (intro / speaker) ───────────────────────── */
+
+.mk-panel {
+  background: var(--mk-tray);
+  border: 1px solid var(--mk-tray-edge);
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: left;
+}
+
+.mk-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.85rem;
+  background: #2a2622;
+  border-bottom: 1px solid var(--mk-tray-edge);
+  font-size: 0.7em;
+  color: var(--mk-ink-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.mk-panel__header-dots {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.mk-panel__header-dots span {
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background: var(--mk-color, #888);
+}
+
+.mk-panel__body {
+  padding: 1.1rem 1.25rem;
+}
+
+.mk-note {
+  font-family: Bentham, Georgia, serif;
+  font-size: 0.85em;
+  line-height: 1.5;
+  color: var(--mk-ink-dim);
+  border-left: 3px solid var(--v-color, #7cb87c);
+  padding-left: 0.85rem;
+  margin-top: 1rem;
+}
+
+.mk-badge {
+  display: inline-block;
+  padding: 0.2em 0.55em;
+  font-size: 0.65em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--v-color, #7cb87c) 20%, var(--mk-tray));
+  border: 1px solid color-mix(in srgb, var(--v-color, #7cb87c) 50%, var(--mk-tray-edge));
+  color: var(--v-color, #7cb87c);
+}
+
+.mk-stroke-demo {
+  display: inline;
+  background: linear-gradient(180deg, transparent 55%, color-mix(in srgb, var(--v-color) 50%, transparent) 55%);
+  padding: 0 0.15em;
+}
+
+.mk-top-flavor {
+  font-family: Bentham, Georgia, serif;
+  font-size: 0.38em !important;
+  font-style: italic;
+  opacity: 0.5;
+  letter-spacing: 0.06em;
+  color: var(--v-color, var(--mk-ink-dim));
+}
