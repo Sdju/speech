@@ -1,124 +1,212 @@
 ---
-slideClass: cs-green
-topTitle: · сбалансированный ·
+slideClass: cs-teal
+topTitle: · свежий ·
 topTitleClass: mk-top-flavor
 ---
 
-<div class="grid grid-cols-12 grid-rows-[80px_1fr_140px] gap-4">
-  <div class="col-span-7 row-span-2 box box--rich cs-green flex items-center gap-6 p-6">
-    <div class="text-[120px] text-green-300"><DeviconVuejs/></div>
+<div class="grid grid-cols-12 grid-rows-[1fr_90px_90px] gap-4">
+  <div class="col-span-8 row-span-3 box box--rich cs-blue">
+    <div class="flex items-center gap-6 p-6 mb-6">
+      <div class="text-[100px] text-blue-300"><DeviconSolidjs /></div>
+      <div>
+        <h2 class="text-4xl font-bold text-blue-300 mb-2">Solid</h2>
+        <p class="text-blue-200 text-lg">Сигналы в массы!</p>
+      </div>
+    </div>
+    <div class="px-6">
+      <h4 class="text-xl font-semibold text-blue-300 mb-4 flex items-center gap-2">
+        <span class="text-2xl">⚡</span>
+        Реактивные примитивы
+      </h4>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 p-3 box box--rich cs-yellow">
+            <span class="text-xl">📊</span>
+            <div>
+              <div class="text-yellow-200 font-medium">Signal</div>
+              <div class="text-white text-sm">Базовая единица состояния</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 p-3 box box--rich cs-green">
+            <span class="text-xl">💫</span>
+            <div>
+              <div class="text-green-200 font-medium">Effect</div>
+              <div class="text-white text-sm">Побочные эффекты</div>
+            </div>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 p-3 box box--rich cs-cyan">
+            <span class="text-xl">🧮</span>
+            <div>
+              <div class="text-cyan-200 font-medium">Memo</div>
+              <div class="text-white text-sm">Производные значения</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 p-3 box box--rich cs-purple">
+            <span class="text-xl">🏪</span>
+            <div>
+              <div class="text-purple-200 font-medium">Store</div>
+              <div class="text-white text-sm">Вложенная реактивность</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-span-4 row-span-1 box box--rich cs-teal flex items-center gap-3 p-4">
+    <div class="text-3xl">📅</div>
     <div>
-      <h2 class="text-5xl font-bold text-green-300 mb-2">Vue 2</h2>
-      <p class="text-green-400/80 text-xl">Прогрессивный фреймворк</p>
+      <div class="text-lg text-teal-200 font-medium">2021</div>
+      <div class="text-sm text-teal-400/70">Ryan Carniato</div>
+      <div class="text-xs text-teal-400/50">eBay, Netflix</div>
     </div>
   </div>
-  <div class="col-span-5 row-span-1 box box--rich cs-orange flex-center">
-    <div class="flex justify-between items-center">
-      <span class="text-orange-200">2016</span>
-    </div>
-    <div class="flex justify-between items-center">
-      <span class="text-orange-200">Evan You</span>
-    </div>
-  </div>
-  <div class="col-span-3 row-span-1 box box--rich cs-cyan flex-center">
+  <div class="col-span-4 row-span-1 box box--rich cs-pink flex-center">
     <div class="text-center">
-      <div class="text-3xl mb-2">📝</div>
-      <div class="text-sm font-medium text-cyan-200">Template</div>
-      <div class="text-xs text-cyan-400/70">Декларативный синтаксис</div>
+      <div class="text-2xl mb-1">🎯</div>
+      <div class="text-sm text-pink-200 font-medium">Fine-grained</div>
+      <div class="text-xs text-pink-400/70">Точечные обновления</div>
     </div>
   </div>
-  <div class="col-span-2 row-span-1 box box--rich cs-purple flex-center">
-    <div class="text-center">
-      <div class="text-2xl mb-1">🔍</div>
-      <div class="text-xs text-purple-200">Getter/Setter</div>
-    </div>
-  </div>
-  <div class="col-span-4 row-span-1 box box--rich cs-blue">
-    <h4 class="text-sm font-semibold text-blue-300 mb-2">🎯 Основные концепции</h4>
-    <div class="grid grid-cols-2 gap-1 text-xs">
-      <div class="p-1 box cs-blue text-center">Reactive</div>
-      <div class="p-1 box cs-green text-center">Computed</div>
-      <div class="p-1 box cs-purple text-center">Watchers</div>
-      <div class="p-1 box cs-orange text-center">Components</div>
-    </div>
-  </div>
-  <div class="col-span-8 row-span-1 box box--rich cs-pink">
+  <div class="col-span-4 row-span-1 box box--rich cs-indigo">
     <div class="flex justify-around items-center h-full">
       <div class="text-center">
-        <div class="text-xl font-bold text-pink-300">📈</div>
-        <div class="text-xs text-white">Глубокая реактивность</div>
+        <div class="text-lg font-bold text-indigo-300">🚀</div>
+        <div class="text-xs text-white">Быстрый</div>
       </div>
       <div class="text-center">
-        <div class="text-xl font-bold text-pink-300">🎓</div>
-        <div class="text-xs text-white">PushPull модель</div>
+        <div class="text-lg font-bold text-indigo-300">⚛️</div>
+        <div class="text-xs text-white">JSX</div>
       </div>
       <div class="text-center">
-        <div class="text-xl font-bold text-pink-300">🔧</div>
-        <div class="text-xs text-white">Перфоманс</div>
-      </div>
-      <div class="text-center">
-        <div class="text-xl font-bold text-pink-300">🧩</div>
-        <div class="text-xs text-white">SFC компоненты</div>
+        <div class="text-lg font-bold text-indigo-300">🧩</div>
+        <div class="text-xs text-white">Композиция</div>
       </div>
     </div>
   </div>
 </div>
 
 ---
+timeline:
+  - title: 'Граф сигналов'
+    block1:
+      class: 'pos-250_155 -blur-hidden'
+      color: 'green'
+      solid: true
+    block2:
+      class: 'pos-710_155 -blur-hidden'
+      color: 'green'
+      solid: true
+    block3:
+      class: 'pos-320_295 -blur-hidden'
+      color: 'blue'
+      solid: true
+    block4:
+      class: 'pos-640_295 -blur-hidden'
+      color: 'blue'
+      solid: true
+    block5:
+      class: 'pos-400_435 -blur-hidden'
+      color: 'red'
+      solid: true
+    block6:
+      class: 'pos-560_435 -blur-hidden'
+      color: 'red'
+      solid: true
+    text1: 'count'
+    text2: 'name'
+    text3: 'doubled'
+    text4: 'greeting'
+    text5: '$effect'
+    text6: 'render'
+    arrow1:
+      coords: '265:185 310:265'
+      power: 0.35
+      class: 'fx duration-500 opacity-0'
+    arrow2:
+      coords: '695:185 655:265'
+      power: 0.35
+      class: 'fx duration-500 opacity-0'
+    arrow3:
+      coords: '330:325 395:405'
+      power: 0.35
+      class: 'fx duration-500 opacity-0'
+    arrow4:
+      coords: '625:325 565:405'
+      power: 0.35
+      class: 'fx duration-500 opacity-0'
+  - block1:
+      class: 'pos-250_155'
+    block2:
+      class: 'pos-710_155'
+  - block3:
+      class: 'pos-320_295'
+    block4:
+      class: 'pos-640_295'
+  - block5:
+      class: 'pos-400_435'
+    block6:
+      class: 'pos-560_435'
+  - arrow1:
+      class: 'fx duration-500 animate'
+    arrow2:
+      class: 'fx duration-500 animate'
+  - arrow3:
+      class: 'fx duration-500 animate'
+    arrow4:
+      class: 'fx duration-500 animate'
+---
 
-````md magic-move
-```js
-return {
-  age: 5,
-  name: 'JohnDoe'
-}
-```
-```js
-return {
-  get age() {  },
-  set age(value) {  },
-  get name() {  },
-  set name(value) {  },
-}
-```
-````
+<div class="text-2xl font-bold text-center $obj pos-50%_58">{{ t.title }}</div>
+
+<div class="flex gap-6 justify-center text-sm $obj pos-50%_95 opacity-70">
+  <span class="c-green">● значение</span>
+  <span class="c-blue">● вычисляемое</span>
+  <span class="c-red">● эффект</span>
+</div>
+
+<Node v-bind="t.block1">{{ t.text1 }}</Node>
+<Node v-bind="t.block2">{{ t.text2 }}</Node>
+<Node v-bind="t.block3">{{ t.text3 }}</Node>
+<Node v-bind="t.block4">{{ t.text4 }}</Node>
+<Node v-bind="t.block5">{{ t.text5 }}</Node>
+<Node v-bind="t.block6">{{ t.text6 }}</Node>
+
+<SvgLayer>
+  <SvgArrow v-bind="t.arrow1" />
+  <SvgArrow v-bind="t.arrow2" />
+  <SvgArrow v-bind="t.arrow3" />
+  <SvgArrow v-bind="t.arrow4" />
+</SvgLayer>
+
+<!--
+count, name → signals
+doubled, greeting → memos / derived
+$effect, render → side effects и привязка к DOM
+-->
 
 ---
 
-# Проблемы подхода **Getter+Setter**
+# Сигналы
 
-<v-clicks>
+<v-clicks depth="2">
 
-- Нельзя реактивно отлавливать добавление и удаление свойств
-- Очень дорогое создание реактивного примитива
-- Сильно искажается изначальный объект
-- Приходилось **патчить** стандартные объекты (изменять работу функций)
-
+- Реактивные примитивы, задача которых описать взаимоотношения в системе
+- Автоматический трекинг зависимостей
+- Концентрация на взаимосвязях сущностей:
+  - Состояние
+  - Вычислимое состояние
+  - Эффект
+- Зачастую `PushPull` реактивность
+  - Вычислимые значения ленивые
+  - Эффекты вызываются в строго запланированное время
 </v-clicks>
 
 ---
-
-# Сравнение с **Proxy**
-
-<v-clicks>
-
-- `Proxy` более дорогой инструмент
-- Мгновенное содание примитивов
-- Обработка операций почти любой сложности
-- Нет необходимости патчить изначальный объект
-- Возможность автоматического анбоксинга реактивных элементов
-
-</v-clicks>
-
----
-
-```ts {1|2|3|4|*}
-const a = ref('Hello')
-console.log(a.value)
-const b = reactive({ a, c: ' Reactivity' })
-console.log(b.a, b.c)
-```
-
+slideClass: cs-orange
+topTitle: · лёгкий ·
+topTitleClass: mk-top-flavor
 ---
 
 <div class="grid grid-cols-12 grid-rows-[auto_auto_auto] gap-4">
@@ -299,108 +387,6 @@ function inc() {
 }
 ```
 ````
-
----
-
-<div class="grid grid-cols-12 grid-rows-[1fr_90px_90px] gap-4">
-  <div class="col-span-8 row-span-3 box box--rich cs-blue">
-    <div class="flex items-center gap-6 p-6 mb-6">
-      <div class="text-[100px] text-blue-300"><DeviconSolidjs /></div>
-      <div>
-        <h2 class="text-4xl font-bold text-blue-300 mb-2">Solid</h2>
-        <p class="text-blue-200 text-lg">Сигналы в массы!</p>
-      </div>
-    </div>
-    <div class="px-6">
-      <h4 class="text-xl font-semibold text-blue-300 mb-4 flex items-center gap-2">
-        <span class="text-2xl">⚡</span>
-        Реактивные примитивы
-      </h4>
-      <div class="grid grid-cols-2 gap-4">
-        <div class="space-y-3">
-          <div class="flex items-center gap-3 p-3 box box--rich cs-yellow">
-            <span class="text-xl">📊</span>
-            <div>
-              <div class="text-yellow-200 font-medium">Signal</div>
-              <div class="text-white text-sm">Базовая единица состояния</div>
-            </div>
-          </div>
-          <div class="flex items-center gap-3 p-3 box box--rich cs-green">
-            <span class="text-xl">💫</span>
-            <div>
-              <div class="text-green-200 font-medium">Effect</div>
-              <div class="text-white text-sm">Побочные эффекты</div>
-            </div>
-          </div>
-        </div>
-        <div class="space-y-3">
-          <div class="flex items-center gap-3 p-3 box box--rich cs-cyan">
-            <span class="text-xl">🧮</span>
-            <div>
-              <div class="text-cyan-200 font-medium">Memo</div>
-              <div class="text-white text-sm">Производные значения</div>
-            </div>
-          </div>
-          <div class="flex items-center gap-3 p-3 box box--rich cs-purple">
-            <span class="text-xl">🏪</span>
-            <div>
-              <div class="text-purple-200 font-medium">Store</div>
-              <div class="text-white text-sm">Вложенная реактивность</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-span-4 row-span-1 box box--rich cs-teal flex items-center gap-3 p-4">
-    <div class="text-3xl">📅</div>
-    <div>
-      <div class="text-lg text-teal-200 font-medium">2021</div>
-      <div class="text-sm text-teal-400/70">Ryan Carniato</div>
-      <div class="text-xs text-teal-400/50">eBay, Netflix</div>
-    </div>
-  </div>
-  <div class="col-span-4 row-span-1 box box--rich cs-pink flex-center">
-    <div class="text-center">
-      <div class="text-2xl mb-1">🎯</div>
-      <div class="text-sm text-pink-200 font-medium">Fine-grained</div>
-      <div class="text-xs text-pink-400/70">Точечные обновления</div>
-    </div>
-  </div>
-  <div class="col-span-4 row-span-1 box box--rich cs-indigo">
-    <div class="flex justify-around items-center h-full">
-      <div class="text-center">
-        <div class="text-lg font-bold text-indigo-300">🚀</div>
-        <div class="text-xs text-white">Быстрый</div>
-      </div>
-      <div class="text-center">
-        <div class="text-lg font-bold text-indigo-300">⚛️</div>
-        <div class="text-xs text-white">JSX</div>
-      </div>
-      <div class="text-center">
-        <div class="text-lg font-bold text-indigo-300">🧩</div>
-        <div class="text-xs text-white">Композиция</div>
-      </div>
-    </div>
-  </div>
-</div>
-
----
-
-# Сигналы
-
-<v-clicks depth="2">
-
-- Реактивные примитивы, задача которых описать взаимоотношения в системе
-- Автоматический трекинг зависимостей
-- Концентрация на взаимосвязях сущностей:
-  - Состояние
-  - Вычислимое состояние
-  - Эффект
-- Зачастую `PushPull` реактивность
-  - Вычислимые значения ленивые
-  - Эффекты вызываются в строго запланированное время
-</v-clicks>
 
 ---
 

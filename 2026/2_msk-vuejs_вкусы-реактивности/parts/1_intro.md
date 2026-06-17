@@ -42,7 +42,7 @@ slideClass: cs-green
 <v-clicks>
 
 - 🖍️ Что такое «вкус» реактивности и почему их несколько
-- 📚 Современные подходы: React, Redux, Vue, Svelte, Signals
+- 📚 Современные подходы: React, Redux, Solid, Svelte, Signals
 - ⚖️ Push / Pull / PushPull и гранулярность
 - 🎯 Когда какой вкус уместен
 
@@ -159,20 +159,34 @@ timeline:
 </v-clicks>
 
 ---
-timeline:
-  - block2: -blur-hidden fx
-    block3: -blur-hidden fx
-    block4: -blur-hidden fx
-  - block2: fx
-  - block3: fx
-  - block4: fx
+layout: center
 ---
 
-<div class="text-center mb-8 text-2xl font-bold">Формат анализа каждого подхода</div>
+# Два слоя реактивности
 
-<div class="grid grid-cols-2 grid-rows-2 gap-4">
-  <div class="text-2xl font-bold border text-center p-4 bg-green/30 border-green rounded-md">🎯 Когда уместен</div>
-  <div :class="t.block2" class="text-2xl font-bold border text-center p-4 bg-blue/30 border-blue rounded-md">📖 Теория</div>
-  <div :class="t.block3" class="text-2xl font-bold border text-center p-4 bg-red/30 border-red rounded-md">💻 Практика</div>
-  <div :class="t.block4" class="text-2xl font-bold border text-center p-4 bg-purple/30 border-purple rounded-md">⚖️ Оценка</div>
+<p class="text-lg opacity-80 mb-6" v-click>Во фреймворках реактивность часто делится на <strong>две независимые части</strong></p>
+
+<div class="grid grid-cols-[1fr_auto_1fr] gap-4 items-center">
+  <div class="box box--rich cs-green p-5" v-click>
+    <div class="text-2xl font-bold text-green-300 mb-2">Система реактивности</div>
+    <p class="text-sm opacity-85 leading-snug">Как циркулирует реактивная логика: зависимости, эффекты, инвалидация</p>
+  </div>
+  <div class="text-3xl opacity-40 px-2" v-click>↔</div>
+  <div class="box box--rich cs-blue p-5" v-click>
+    <div class="text-2xl font-bold text-blue-300 mb-2">Реактивный рендеринг</div>
+    <p class="text-sm opacity-85 leading-snug">Связь между моделью и её актуальным отображением в UI</p>
+  </div>
+</div>
+
+<div class="box box--rich cs-purple mt-6 p-4 text-center" v-click>
+  Между ними — прослойка, но <strong>свойства могут быть совершенно разными</strong>
+</div>
+
+<div class="box box--rich cs-cyan mt-4 flex items-center gap-5 p-5" v-click>
+  <DeviconVuejs class="text-5xl shrink-0"/>
+  <div class="text-left text-sm leading-snug">
+    <span class="text-cyan-200 font-semibold">Vue</span> — proxy/сигнальная модель реактивности,
+    но <span class="text-blue-300">VDOM</span> для рендеринга, как у <span class="text-blue-300">React</span>
+  </div>
+  <DeviconReact class="text-5xl shrink-0 opacity-70"/>
 </div>

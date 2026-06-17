@@ -11,35 +11,35 @@ layout: center
 
 ---
 
-<div class="grid grid-cols-12 grid-rows-[70px_1fr_70px] gap-4">
-  <div class="col-span-8 row-span-2 box box--rich cs-blue flex items-center gap-6 p-6">
-    <DeviconReact class="font-size-[100px]"/>
+<div class="grid grid-cols-12 grid-rows-[auto_1fr_70px] gap-4 w-full">
+  <div class="col-span-12 box box--rich cs-blue flex items-center gap-6 p-5">
+    <DeviconReact class="text-[80px] shrink-0"/>
     <div>
-      <h2 class="text-4xl font-bold text-blue-300 mb-2">React</h2>
+      <h2 class="text-4xl font-bold text-blue-300 mb-1">React</h2>
       <p class="text-blue-400/80 text-lg">Компоненты + декларативный UI</p>
     </div>
   </div>
-  <div class="col-span-6 row-span-1 box box--rich cs-purple">
+  <div class="col-span-6 box box--rich cs-purple p-4 min-h-0">
     <h4 class="text-lg font-semibold text-purple-300 mb-3 flex items-center gap-2">
       <span class="text-xl">🏗️</span>
       Архитектура и реактивность
     </h4>
-    <div class="space-y-3">
-      <div class="flex items-center gap-3 p-2 box box--rich text-[20px] cs-blue">
+    <div class="space-y-2">
+      <div class="flex items-center gap-3 p-2 box box--rich text-[18px] cs-blue">
         <span>🧩</span>
         <span class="text-blue-200">Компонентная модель</span>
       </div>
-      <div class="flex items-center gap-3 p-2 box box--rich text-[20px] cs-green">
-        <span class="text-[16px]">🌐</span>
+      <div class="flex items-center gap-3 p-2 box box--rich text-[18px] cs-green">
+        <span>🌐</span>
         <span class="text-green-200">Virtual DOM</span>
       </div>
-      <div class="flex items-center gap-3 p-2 box box--rich text-[20px] cs-purple">
-        <span class="text-[16px]">🔄</span>
+      <div class="flex items-center gap-3 p-2 box box--rich text-[18px] cs-purple">
+        <span>🔄</span>
         <span class="text-purple-200">One-way Data Flow</span>
       </div>
     </div>
   </div>
-  <div class="col-span-6 row-span-1 box box--rich cs-cyan">
+  <div class="col-span-6 box box--rich cs-cyan p-4 min-h-0">
     <h4 class="text-lg font-semibold text-cyan-300 mb-3 flex items-center gap-2">
       <span class="text-xl">✨</span>
       Сильные стороны
@@ -63,7 +63,7 @@ layout: center
       </div>
     </div>
   </div>
-  <div class="col-span-12 row-span-1 box box--rich cs-lightblue">
+  <div class="col-span-12 box box--rich cs-lightblue py-3">
     <div class="flex justify-around items-center h-full">
       <div class="text-center">
         <div class="text-2xl font-bold text-blue-300">⚡</div>
