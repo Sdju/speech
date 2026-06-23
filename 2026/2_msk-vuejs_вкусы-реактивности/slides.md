@@ -27,15 +27,10 @@ layout: center
       <span class="mskjs-brand__edition">71</span>
     </div>
   </div>
-  <p class="mskjs-brand__meta">25 июня 2026 · Школа 21</p>
 
   <XSlide slot="title" #="{ title, className, style }">
     <h1 :class="className" :style="style">{{ title }}</h1>
   </XSlide>
-
-  <p class="mk-epigraph mk-title-minimal__quote">
-    Все фломастеры на вкус разные — и <em>реактивность</em> не исключение
-  </p>
 
   <div class="mk-title-minimal__strokes" aria-hidden="true">
     <span class="mk-title-minimal__stroke" style="--mk-color: #3498db"></span>
@@ -49,7 +44,7 @@ layout: center
 </div>
 
 <!--
-метафора: набор фломастеров — у каждого подхода свой цвет, без интерактива на титуле
+метафора: набор фломастеров — у каждого подхода свой вкус, без интерактива на титуле
 -->
 
 ---
@@ -57,17 +52,25 @@ src: ./parts/1_intro.md
 ---
 
 ---
-src: ./parts/3_mv-model.md
+src: ./parts/3_redux.md
 ---
 
 ---
-src: ./parts/4_state-management.md
+src: ./parts/2_react.md
 ---
 
 ---
-src: ./parts/5_modern.md
+src: ./parts/4_rxjs-push-pull.md
 ---
 
 ---
-src: ./parts/6_results.md
+src: ./parts/5_signals-svelte.md
+---
+
+---
+src: ./parts/6_granularity.md
+---
+
+---
+src: ./parts/7_results.md
 ---

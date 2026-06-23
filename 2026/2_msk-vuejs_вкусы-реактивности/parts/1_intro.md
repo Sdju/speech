@@ -1,5 +1,7 @@
 ---
 slideClass: cs-green
+topTitle: · введение ·
+topTitleClass: mk-top-flavor
 layout: center
 ---
 
@@ -33,6 +35,10 @@ layout: center
 </div>
 
 ---
+slideClass: cs-green
+topTitle: · введение ·
+topTitleClass: mk-top-flavor
+---
 
 # О чем пойдет речь?
 
@@ -53,18 +59,27 @@ layout: center
 </Points>
 
 ---
+slideClass: cs-green
+topTitle: · введение ·
+topTitleClass: mk-top-flavor
 layout: center
 ---
 
 ![/img/artem.png](/img/artem.png)
 
 ---
+slideClass: cs-green
+topTitle: · введение ·
+topTitleClass: mk-top-flavor
 layout: center
 ---
 
 # Что такое реактивность?
 
 ---
+slideClass: cs-green
+topTitle: · введение ·
+topTitleClass: mk-top-flavor
 timeline:
   - block1:
       class: 'pos-484_274'
@@ -165,6 +180,10 @@ timeline:
 </SvgLayer>
 
 ---
+slideClass: cs-green
+topTitle: · введение ·
+topTitleClass: mk-top-flavor
+---
 
 # Реактивность
 
@@ -180,6 +199,9 @@ timeline:
 </span>
 
 ---
+slideClass: cs-green
+topTitle: · введение ·
+topTitleClass: mk-top-flavor
 layout: center
 timeline:
   - intro: -blur-hidden fx
@@ -252,6 +274,9 @@ timeline:
 </div>
 
 ---
+slideClass: cs-green
+topTitle: · введение ·
+topTitleClass: mk-top-flavor
 timeline:
   - item1: -blur-hidden fx
     item2: -blur-hidden fx

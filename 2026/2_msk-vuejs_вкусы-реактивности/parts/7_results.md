@@ -48,6 +48,9 @@ layout: center
 </style>
 
 ---
+slideClass: cs-pink
+topTitle: · на выбор ·
+topTitleClass: mk-top-flavor
 layout: center
 ---
 
@@ -113,6 +116,9 @@ layout: center
 </style>
 
 ---
+slideClass: cs-pink
+topTitle: · на выбор ·
+topTitleClass: mk-top-flavor
 layout: center
 class: text-center
 ---
