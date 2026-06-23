@@ -3,7 +3,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "node addon/scripts/build.ts",
+    "build": "pnpm icons:generate && node addon/scripts/build.ts",
+    "icons:generate": "node addon/scripts/generate-toolbar-icons.ts && node addon/scripts/generate-point-icons.ts",
+    "predev": "pnpm icons:generate",
     "dev": "slidev"
   },
   "dependencies": {

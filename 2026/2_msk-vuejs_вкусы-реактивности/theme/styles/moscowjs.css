@@ -1,0 +1,61 @@
+/* MoscowJS — цвета и типографика с https://moscowjs.org/ */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap');
+
+:root {
+  --mskjs-primary: #f7df1f;
+  --mskjs-primary-darker: #ac9a13;
+  --mskjs-primary-darkest: #605506;
+  --mskjs-text: hsla(0, 0%, 100%, 0.9);
+}
+
+.mskjs-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 4px solid var(--mskjs-primary);
+  font-family: Roboto, system-ui, sans-serif;
+}
+
+.mskjs-brand__logo {
+  width: 2.6rem;
+  height: 2.6rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.mskjs-brand__text {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  line-height: 1;
+}
+
+.mskjs-brand__name {
+  font-size: 1.05em;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--mskjs-text);
+}
+
+.mskjs-brand__edition {
+  display: inline-block;
+  padding: 0.12em 0.38em 0.1em;
+  font-size: 0.82em;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #000;
+  background: var(--mskjs-primary);
+  border-radius: 0.15rem;
+}
+
+.mskjs-brand__meta {
+  margin: 0;
+  font-family: Roboto, system-ui, sans-serif;
+  font-size: 0.68em;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mskjs-primary-darker);
+}

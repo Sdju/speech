@@ -304,14 +304,21 @@ topTitleClass: mk-top-flavor
 
 # Компилируемая реактивность
 
-<v-clicks>
-
-- Трекинг зависимостей на этапе компиляции
-- Минимальный оверхед по памяти
-- Не очень дружит с глубокой реактивностью
-- Плохо строит модели в рантайме (из-за чего есть реалтайм реактивность на основе `svelte/store`)
-
-</v-clicks>
+<Points>
+  <Point v-click class="cs-orange" icon="i-carbon-code">
+    Трекинг зависимостей на этапе компиляции
+  </Point>
+  <Point v-click class="cs-green" icon="i-material-symbols-memory-rounded">
+    Минимальный оверхед по памяти
+  </Point>
+  <Point v-click class="cs-red" icon="i-material-symbols-nest-eco-leaf-rounded">
+    Не очень дружит с глубокой реактивностью
+  </Point>
+  <Point v-click class="cs-purple" icon="i-material-symbols-account-tree-rounded">
+    Плохо строит модели в рантайме (есть `svelte/store`)
+  </Point>
+  <Point full class="cs-grey" />
+</Points>
 
 ---
 
@@ -392,46 +399,59 @@ function inc() {
 
 # Fine Grained Reactivity
 
-<v-clicks>
-
-- Элементы четко разделены между собой по ролям
-- Критически важен граф зависимостей
-- Обновление применяется максимально точечно
-
-</v-clicks>
-
-<div class="box box-rich flex-center-row p-4 gap-8 mt-8 text-6xl cs-green" v-click="4">
-  <DeviconSolidjs v-click />
-  <DeviconQwik v-click />
-  <DeviconSvelte v-click />
-  <DeviconVuejs v-click />
-</div>
+<Points>
+  <Point v-click class="cs-green" icon="i-material-symbols-category-rounded">
+    Элементы четко разделены между собой по ролям
+  </Point>
+  <Point v-click class="cs-blue" icon="i-material-symbols-hub-rounded">
+    Критически важен граф зависимостей
+  </Point>
+  <Point v-click class="cs-purple" icon="i-material-symbols-target-rounded">
+    Обновление применяется максимально точечно
+  </Point>
+  <Point full class="cs-green flex-center-row gap-8 text-6xl p-4">
+    <DeviconSolidjs v-click />
+    <DeviconQwik v-click />
+    <DeviconSvelte v-click />
+    <DeviconVuejs v-click />
+  </Point>
+</Points>
 
 ---
 
 # Coarse Grained Reactvity
 
-<v-clicks>
-
-- Элементы могут не иметь ролей
-- Обновление происходит каскадно
-- VDOM это лишь способ оптимизации данного каскада
-- Перевычисляется все подряд (обычно можно ограничивать через `Memo`)
-
-</v-clicks>
-
-<div class="box box-rich flex-center-row p-4 gap-8 mt-8 text-6xl cs-green" v-click="5">
-  <DeviconReact v-click />
-  <DeviconAngular v-click />
-</div>
+<Points>
+  <Point v-click class="cs-red" icon="i-material-symbols-help-rounded">
+    Элементы могут не иметь ролей
+  </Point>
+  <Point v-click class="cs-orange" icon="i-material-symbols-waterfall-chart-rounded">
+    Обновление происходит каскадно
+  </Point>
+  <Point v-click class="cs-blue" icon="i-material-symbols-layers-rounded">
+    VDOM — лишь способ оптимизации каскада
+  </Point>
+  <Point v-click class="cs-purple" icon="i-material-symbols-replay-rounded">
+    Перевычисляется все подряд (обычно через `Memo`)
+  </Point>
+  <Point full class="cs-green flex-center-row gap-8 text-6xl p-4">
+    <DeviconReact v-click />
+    <DeviconAngular v-click />
+  </Point>
+</Points>
 
 ---
 
 # Semi-Grained Reactivity
 
-- Обладают признаками обеих концептов в зависимости от ситуации
-- Могут иметь реактивный граф, но полный рендер
-
-<div class="box box-rich flex-center-row p-4 gap-8 mt-8 text-6xl cs-green" v-click>
-  <DeviconVuejs />
-</div>
+<Points>
+  <Point v-click class="cs-green" icon="i-material-symbols-blur-on-rounded">
+    Обладают признаками обеих концептов в зависимости от ситуации
+  </Point>
+  <Point v-click class="cs-blue" icon="i-material-symbols-account-tree-rounded">
+    Могут иметь реактивный граф, но полный рендер
+  </Point>
+  <Point full class="cs-green flex-center-row gap-8 text-6xl p-4" v-click>
+    <DeviconVuejs />
+  </Point>
+</Points>

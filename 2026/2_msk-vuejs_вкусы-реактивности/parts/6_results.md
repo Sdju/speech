@@ -7,7 +7,7 @@ layout: center
 
 <div class="flex justify-center items-center">
   <h2 class="rainbow-text">
-    Мои любимые вкусы
+    Мои личный топ
   </h2>
 </div>
 

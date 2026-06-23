@@ -10,6 +10,8 @@ layout: center
 Иммутабельность, VDOM, каскадные обновления
 
 ---
+slideClass: cs-blue
+---
 
 <div class="grid grid-cols-12 grid-rows-[auto_1fr_70px] gap-4 w-full">
   <div class="col-span-12 box box--rich cs-blue flex items-center gap-6 p-5">
@@ -86,31 +88,45 @@ layout: center
 </div>
 
 ---
+slideClass: cs-blue
+---
 
 # Реактивен ли React?
 
-## За
+<h2 class="mb-3">За</h2>
 
-<v-clicks>
+<Points>
+  <Point v-click class="cs-green" icon="i-material-symbols-autorenew-rounded">
+    Интерфейс обновляется полу-автоматически
+  </Point>
+  <Point v-click class="cs-blue" icon="i-material-symbols-notifications-active-rounded">
+    Есть механизмы уведомления об обновлении (React Context)
+  </Point>
+  <Point v-click class="cs-purple" icon="i-material-symbols-call-split-rounded">
+    Есть однонаправленный поток данных
+  </Point>
+  <Point full class="cs-grey" />
+</Points>
 
-- Интерфейс обновляется полу-автоматически
-- Есть механизмы уведомления об обновлении (React Context)
-- Есть однонаправленный поток данных
+<h2 class="mb-3 mt-6">Против</h2>
 
-</v-clicks>
+<Points>
+  <Point v-click class="cs-red" icon="i-material-symbols-touch-app-rounded">
+    Ручной контроль за обновлениями
+  </Point>
+  <Point v-click class="cs-orange" icon="i-material-symbols-block-rounded">
+    Реактивность не существует за пределами React
+  </Point>
+  <Point v-click class="cs-pink" icon="i-material-symbols-waterfall-chart-rounded">
+    Без оптимизаций — каскадные ререндеры
+  </Point>
+  <Point full class="cs-grey" />
+</Points>
 
-## Против
+<div class="box box--rich mt-6" v-click>React имеет реактивность UI, но не имеет реактивной системы</div>
 
-<v-clicks>
-
-- Ручной контроль за обновлениями
-- Реактивность не существует за пределами React
-- Без оптимизаций — каскадные ререндеры
-
-</v-clicks>
-
-<div class="box box--rich" v-click>React имеет реактивность UI, но не имеет реактивной системы</div>
-
+---
+slideClass: cs-blue
 ---
 
 # Реактивность через пересоздание
@@ -125,6 +141,8 @@ layout: center
 
 </v-clicks>
 
+---
+slideClass: cs-blue
 ---
 
 # Каскадное обновление

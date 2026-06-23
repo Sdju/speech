@@ -7,11 +7,11 @@
     "dev": "slidev"
   },
   "dependencies": {
-    "@iconify/json": "2.2.410",
-    "@slidev/cli": "52.9.1",
+    "@iconify/json": "2.2.487",
+    "@slidev/cli": "52.16.0",
     "qr-code-styling": "^1.9.2",
     "seedrandom": "3.0.5",
-    "tailwind-merge": "3.4.0",
-    "vue": "3.5.25"
+    "tailwind-merge": "3.6.0",
+    "vue": "3.5.38"
   }
 }

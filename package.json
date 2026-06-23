@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "presentation:create": "node scripts/create-presentation.ts"
+    "presentation:create": "node scripts/create-presentation.ts",
+    "runner": "node runner/index.ts"
   },
   "devDependencies": {
-    "@types/node": "24.10.1"
+    "@types/node": "25.9.3"
   }
 }
-

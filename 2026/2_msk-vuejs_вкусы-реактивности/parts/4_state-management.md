@@ -195,14 +195,30 @@ timeline:
 
 # Плюсы
 
-- Легко тестировать
-- Понятная ментальная модель
+<Points>
+  <Point v-click class="cs-green" icon="i-material-symbols-science-rounded">
+    Легко тестировать
+  </Point>
+  <Point v-click class="cs-blue" icon="i-material-symbols-psychology-rounded">
+    Понятная ментальная модель
+  </Point>
+  <Point full class="cs-grey" />
+</Points>
 
 # Минусы
 
-- Огромное количество бойлерплейта
-- Крайни низкая оптимизация
-- Сложно распиливается на отдельные части
+<Points>
+  <Point v-click class="cs-red" icon="i-material-symbols-content-copy-rounded">
+    Огромное количество бойлерплейта
+  </Point>
+  <Point v-click class="cs-orange" icon="i-material-symbols-speed-rounded">
+    Крайни низкая оптимизация
+  </Point>
+  <Point v-click class="cs-purple" icon="i-material-symbols-call-split-rounded">
+    Сложно распиливается на отдельные части
+  </Point>
+  <Point full class="cs-grey" />
+</Points>
 
 ---
 
@@ -319,13 +335,18 @@ timeline:
 
 <div class="mb-8 text-4xl"> <DeviconRxjs/> Rxjs </div>
 
-<v-clicks>
-
-- **Oberserver** это **EventListener** маминой подруги
-- Концентрируемся асинхронном на **потоке данных**(**Stream**)
-- Мы не реагируем на изменении модели, а реагируем на события
-
-</v-clicks>
+<Points>
+  <Point v-click class="cs-purple" icon="i-material-symbols-hearing-rounded">
+    <strong>Oberserver</strong> это <strong>EventListener</strong> маминой подруги
+  </Point>
+  <Point v-click class="cs-blue" icon="i-material-symbols-stream-rounded">
+    Концентрируемся асинхронном на <strong>потоке данных</strong>(<strong>Stream</strong>)
+  </Point>
+  <Point v-click class="cs-green" icon="i-material-symbols-bolt-rounded">
+    Мы не реагируем на изменении модели, а реагируем на события
+  </Point>
+  <Point full class="cs-grey" />
+</Points>
 
 ---
 
@@ -344,51 +365,64 @@ numbers$.subscribe(x => console.log(x));
 
 # Push reactivity
 
-<v-clicks>
-
-- Push - значения проталкиваются
-- Не важно хочет подписчик обновляться или нет
-- Если есть зависимые значения они все будут уведомлены
-- Без оптимизаций произойдет полное перевычисление
-
-</v-clicks>
-
-<div class="box box--rich" v-click>
-  Подобен почте, придет вне зависимости от вашего желания забирать ее
-</div>
+<Points>
+  <Point v-click class="cs-red" icon="i-noto-rightwards-pushing-hand">
+    Push — значения проталкиваются
+  </Point>
+  <Point v-click class="cs-orange" icon="i-material-symbols-mail-rounded">
+    Не важно, хочет подписчик обновляться или нет
+  </Point>
+  <Point v-click class="cs-purple" icon="i-material-symbols-hub-rounded">
+    Если есть зависимые значения, они все будут уведомлены
+  </Point>
+  <Point v-click class="cs-pink" icon="i-material-symbols-warning-rounded">
+    Без оптимизаций произойдет полное перевычисление
+  </Point>
+  <Point full class="cs-orange" v-click>
+    Подобен почте, придет вне зависимости от вашего желания забирать ее
+  </Point>
+</Points>
 
 ---
 
 # Pull reactivity
 
-<v-clicks>
-
-- Pull - значения вытягиваются из источника
-- Мы сами запрашиваем данные, если нет запроса, то и значение не дойдет
-- Без оптимизаций, мы опрашиваем все источники всегда
-
-</v-clicks>
-
-<div class="box box--rich" v-click>
-  Подобен магазину, вы сами идете и выбираете, что вам нужно
-</div>
+<Points>
+  <Point v-click class="cs-blue" icon="i-material-symbols-download-rounded">
+    Pull — значения вытягиваются из источника
+  </Point>
+  <Point v-click class="cs-green" icon="i-material-symbols-shopping-bag-rounded">
+    Мы сами запрашиваем данные — без запроса значение не дойдет
+  </Point>
+  <Point v-click class="cs-cyan" icon="i-material-symbols-refresh-rounded">
+    Без оптимизаций мы опрашиваем все источники всегда
+  </Point>
+  <Point full class="cs-blue" v-click>
+    Подобен магазину, вы сами идете и выбираете, что вам нужно
+  </Point>
+</Points>
 
 ---
 
 # PushPull reactivity
 
-<v-clicks>
-
-- PushPull - уведомление проталкивается, значение вытягивается
-- Источник уведомляет о существовании обновления
-- Источник отдает/вычисляет значение только по запросу
-- Наиболее оптимальная стратегия по перфомансу
-
-</v-clicks>
-
-<div class="box box--rich" v-click>
-  Подобен ПВЗ маркетплейса, он вас уведомит о поступлении товара, но вам нужно за ним сходить
-</div>
+<Points>
+  <Point v-click class="cs-purple" icon="i-material-symbols-sync-alt-rounded">
+    PushPull — уведомление проталкивается, значение вытягивается
+  </Point>
+  <Point v-click class="cs-blue" icon="i-material-symbols-notifications-rounded">
+    Источник уведомляет о существовании обновления
+  </Point>
+  <Point v-click class="cs-green" icon="i-material-symbols-download-rounded">
+    Источник отдает значение только по запросу
+  </Point>
+  <Point v-click class="cs-orange" icon="i-material-symbols-speed-rounded">
+    Наиболее оптимальная стратегия по перфомансу
+  </Point>
+  <Point full class="cs-purple" v-click>
+    Подобен ПВЗ маркетплейса, он вас уведомит о поступлении товара, но вам нужно за ним сходить
+  </Point>
+</Points>
 
 ---
 

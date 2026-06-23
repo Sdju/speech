@@ -1,5 +1,6 @@
 {
   "name": "@zede/slidev-addon",
+  "type": "module",
   "version": "0.0.2",
   "description": "Zede addon for Slidev",
   "author": "Zede <zede169778@gmail.com>",
@@ -19,6 +20,6 @@
     "slidev": ">=v0.47.0"
   },
   "dependencies": {
-    "@slidev/types": "^0.47.0"
+    "@slidev/types": "52.16.0"
   }
 }

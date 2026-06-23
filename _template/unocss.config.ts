@@ -1,5 +1,4 @@
-import slidev from '@slidev/client/uno.config'
-import { mergeConfigs, presetWebFonts } from 'unocss'
+import { presetWebFonts } from 'unocss'
 
 function parseValue(value: string) {
   return value.endsWith('%') ? value : `${value}px`
@@ -25,9 +24,7 @@ const modifiers = {
   t: 'top',
 }
 
-export default mergeConfigs([
-  slidev,
-  {
+export default {
     shortcuts: [
       [/^pos-(\S+)$/, ([, c1]) => {
         const [mod1, mod2] = c1.slice(0, 2)
@@ -114,5 +111,4 @@ export default mergeConfigs([
       'duration-200',
       'ease-in-out',
     ],
-  },
-])
+}
