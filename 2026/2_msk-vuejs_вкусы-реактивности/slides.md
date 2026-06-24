@@ -19,28 +19,25 @@ title: Вкусы реактивности
 layout: center
 ---
 
-<div class="mk-title-minimal markers-theme">
-  <div class="mskjs-brand">
-    <img src="/img/moscowjs-logo.png" alt="" class="mskjs-brand__logo" width="42" height="42" />
-    <div class="mskjs-brand__text">
-      <span class="mskjs-brand__name">MoscowJS</span>
-      <span class="mskjs-brand__edition">71</span>
+<div class="mk-title-cover markers-theme">
+  <img
+    src="/img/moscowjs-logo.png"
+    alt=""
+    class="mk-title-cover__corner-logo"
+    width="200"
+    height="200"
+  />
+  <div class="mk-title-minimal">
+    <h1>Вкусы реактивности</h1>
+    <div class="mk-title-minimal__strokes" aria-hidden="true">
+      <span class="mk-title-minimal__stroke" style="--mk-color: #3498db"></span>
+      <span class="mk-title-minimal__stroke" style="--mk-color: #9b59b6"></span>
+      <span class="mk-title-minimal__stroke" style="--mk-color: #2ecc71"></span>
+      <span class="mk-title-minimal__stroke" style="--mk-color: #ff6b9d"></span>
+      <span class="mk-title-minimal__stroke" style="--mk-color: #00d4aa"></span>
     </div>
+    <p class="mk-title-minimal__speaker">Денис Чернов · @zede_code</p>
   </div>
-
-  <XSlide slot="title" #="{ title, className, style }">
-    <h1 :class="className" :style="style">{{ title }}</h1>
-  </XSlide>
-
-  <div class="mk-title-minimal__strokes" aria-hidden="true">
-    <span class="mk-title-minimal__stroke" style="--mk-color: #3498db"></span>
-    <span class="mk-title-minimal__stroke" style="--mk-color: #9b59b6"></span>
-    <span class="mk-title-minimal__stroke" style="--mk-color: #2ecc71"></span>
-    <span class="mk-title-minimal__stroke" style="--mk-color: #ff6b9d"></span>
-    <span class="mk-title-minimal__stroke" style="--mk-color: #00d4aa"></span>
-  </div>
-
-  <p class="mk-title-minimal__speaker">Денис Чернов · @zede_code</p>
 </div>
 
 <!--

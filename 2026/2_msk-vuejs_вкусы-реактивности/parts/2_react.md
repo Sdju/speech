@@ -81,16 +81,34 @@ topTitleClass: mk-top-flavor
 
 # Каскадное обновление
 
-<div class="box box--rich">
-  Обоюдоострый меч для <span class="text-blue">React</span>
+<p class="text-lg opacity-80 mb-4">Stateless vs Stateful</p>
 
-  <div class="c-white"> Реактивность в моменте </div>
+<div class="grid grid-cols-2 gap-5 w-full max-w-980px mx-auto text-left text-[0.72em] leading-snug">
+  <div class="box box--rich cs-blue p-4 min-w-0">
+    <div class="text-blue-300 font-semibold mb-2 flex items-center gap-2">
+      <DeviconReact class="text-xl" /> React · хук
+    </div>
 
 ```jsx
-function Hello(name) {
-  const greetings = `Hello ${name}!`
-  return <Box>{greetings}</Box>
+function useSearch() {
+  const [query, setQuery] = useState('')
+  return { query, setQuery }
 }
 ```
 
+  </div>
+
+  <div class="box box--rich cs-green p-4 min-w-0">
+    <div class="text-green-300 font-semibold mb-2 flex items-center gap-2">
+      <DeviconVuejs class="text-xl" /> Vue · composable
+    </div>
+
+```ts
+export function useSearch() {
+  const query = ref('')
+  return { query }
+}
+```
+
+  </div>
 </div>

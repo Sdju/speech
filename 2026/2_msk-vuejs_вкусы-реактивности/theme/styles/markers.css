@@ -463,6 +463,35 @@
 
 /* ── Minimal title ─────────────────────────────────────────── */
 
+.slidev-layout.center:has(.mk-title-cover) > div {
+  position: relative;
+  width: 100%;
+}
+
+.mk-title-cover {
+  position: relative;
+  width: 100%;
+  min-height: min(52vh, 420px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mk-title-cover__corner-logo {
+  position: absolute;
+  top: -0.35rem;
+  right: -0.15rem;
+  z-index: 2;
+  width: min(14rem, 30vw);
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  transform: rotate(11deg);
+  transform-origin: 85% 15%;
+  filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.55));
+  opacity: 0.96;
+}
+
 .mk-title-minimal {
   display: flex;
   flex-direction: column;
@@ -476,8 +505,8 @@
 
 .mk-title-minimal h1 {
   position: relative;
-  font-size: 1.5em !important;
-  line-height: 1.15;
+  font-size: 1.75em !important;
+  line-height: 1.12;
   margin: 0;
   z-index: 0;
 }
