@@ -3,8 +3,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "pnpm icons:generate && node addon/scripts/build.ts",
-    "icons:generate": "node addon/scripts/generate-toolbar-icons.ts && node addon/scripts/generate-point-icons.ts",
+    "build": "pnpm icons:generate && jiti addon/scripts/build.ts",
+    "icons:generate": "jiti addon/scripts/generate-toolbar-icons.ts && jiti addon/scripts/generate-point-icons.ts",
     "predev": "pnpm icons:generate",
     "dev": "slidev"
   },
