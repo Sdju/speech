@@ -82,7 +82,6 @@ topTitleClass: mk-top-flavor
   <Point v-click class="cs-green" icon="i-material-symbols-bolt-rounded">
     Мы не реагируем на изменении модели, а реагируем на события
   </Point>
-  <Point full class="cs-grey" />
 </Points>
 
 ---

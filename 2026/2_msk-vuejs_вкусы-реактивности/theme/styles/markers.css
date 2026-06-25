@@ -479,8 +479,8 @@
 
 .mk-title-cover__corner-logo {
   position: absolute;
-  top: -0.35rem;
-  right: -0.15rem;
+  top: -40px;
+  right: -40px;
   z-index: 2;
   width: min(14rem, 30vw);
   height: auto;

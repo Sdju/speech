@@ -28,7 +28,7 @@ layout: center
     height="200"
   />
   <div class="mk-title-minimal">
-    <h1>Вкусы реактивности</h1>
+    <img src="/img/title.png" alt="" class="mk-title-minimal__logo" />
     <div class="mk-title-minimal__strokes" aria-hidden="true">
       <span class="mk-title-minimal__stroke" style="--mk-color: #3498db"></span>
       <span class="mk-title-minimal__stroke" style="--mk-color: #9b59b6"></span>

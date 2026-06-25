@@ -35,10 +35,17 @@ topTitleClass: mk-top-flavor
   <Point v-click class="cs-purple" icon="i-material-symbols-call-split-rounded">
     Есть однонаправленный поток данных
   </Point>
-  <Point full class="cs-grey" />
 </Points>
 
-<h2 class="mb-3 mt-6">Против</h2>
+---
+slideClass: cs-blue
+topTitle: · синий ·
+topTitleClass: mk-top-flavor
+---
+
+# Реактивен ли React?
+
+<h2 class="mb-3">Против</h2>
 
 <Points>
   <Point v-click class="cs-red" icon="i-material-symbols-touch-app-rounded">
@@ -50,7 +57,6 @@ topTitleClass: mk-top-flavor
   <Point v-click class="cs-pink" icon="i-material-symbols-waterfall-chart-rounded">
     Без оптимизаций — каскадные ререндеры
   </Point>
-  <Point full class="cs-grey" />
 </Points>
 
 <div class="box box--rich mt-6" v-click>React имеет реактивность UI, но не имеет реактивной системы</div>

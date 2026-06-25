@@ -71,9 +71,7 @@ timeline:
       coords: '590:272 51%:188'
     arrow3To2:
       coords: '590:272 381:272'
-  - block1:
-      multiple: true
-  - text4: Dispatcher
+  - text4: Reducers
     block4:
       class: 'pos-328_274'
     block2:
@@ -86,8 +84,6 @@ timeline:
       coords: '330:345 330:301'
       power: 0.1
   - text4: 'Reducers'
-    block1:
-      multiple: false
     block4:
       multiple: true
   - title: 'Redux'
@@ -122,8 +118,13 @@ topTitleClass: mk-top-flavor
   <Point v-click class="cs-blue" icon="i-material-symbols-psychology-rounded">
     Понятная ментальная модель
   </Point>
-  <Point full class="cs-grey" />
 </Points>
+
+---
+slideClass: cs-purple
+topTitle: · фиолетовый ·
+topTitleClass: mk-top-flavor
+---
 
 # Минусы
 
@@ -137,5 +138,4 @@ topTitleClass: mk-top-flavor
   <Point v-click class="cs-purple" icon="i-material-symbols-call-split-rounded">
     Сложно распиливается на отдельные части
   </Point>
-  <Point full class="cs-grey" />
 </Points>

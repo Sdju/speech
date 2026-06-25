@@ -55,7 +55,6 @@ topTitleClass: mk-top-flavor
   <Point v-click class="cs-orange" icon="i-material-symbols-target-rounded">
     Что и как выбрать
   </Point>
-  <Point full class="cs-grey" />
 </Points>
 
 ---

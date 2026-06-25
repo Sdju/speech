@@ -151,7 +151,6 @@ topTitleClass: mk-top-flavor
   <Point v-click class="cs-red" icon="i-material-symbols-bolt-rounded">
     <strong>Эффект</strong> — побочные действия и DOM
   </Point>
-  <Point full class="cs-grey" />
 </Points>
 
 ---
@@ -169,7 +168,6 @@ topTitleClass: mk-top-flavor
   <Point v-click class="cs-red" icon="i-material-symbols-notifications-active-rounded">
     Эффекты <strong>проталкиваются</strong> в строго запланированное время
   </Point>
-  <Point full class="cs-grey" />
 </Points>
 
 ---
@@ -210,7 +208,6 @@ topTitleClass: mk-top-flavor
   <Point v-click class="cs-purple" icon="i-material-symbols-account-tree-rounded">
     Плохо строит модели в рантайме
   </Point>
-  <Point full class="cs-grey" />
 </Points>
 
 ---
@@ -228,24 +225,6 @@ $: console.log("count:", count, "doubled:", doubled);
 
 function inc() {
   count += 1;
-}
-```
-```js {*|1|2,4-8|10-12|14-16|*}
-let count = 0;
-let doubled;
-
-$$self.$$.update = () => {
-  if ($$self.$$.dirty & /*count*/ 1) {
-    $$invalidate(1, doubled = count * 2);
-  }
-};
-
-$$self.$$.after_update.push(() => {
-  console.log("count:", count, "doubled:", doubled);
-});
-
-function inc() {
-  $$invalidate(0, count += 1);
 }
 ```
 ````
