@@ -291,15 +291,15 @@ timeline:
 
 <div class="flex flex-col gap-4 mt-8 max-w-980px w-full mx-auto">
   <div :class="t.item1" class="box box--rich cs-grey flex items-center gap-4 p-5 text-lg">
-    🤷‍♂️ Пользователю реактивность не нужна
+    🤷‍♂️ Пользователю не нужна
   </div>
   <div :class="t.item2" class="box box--rich cs-pink flex items-center gap-4 p-5 text-lg">
-    💖 Упростить себе жизнь
+    💖 Упрощаем себе жизнь
   </div>
   <div :class="t.item3" class="box box--rich cs-green flex items-center gap-4 p-5 text-lg">
-    📦 Сократить количество кода
+    📦 Сокращаем код
   </div>
   <div :class="t.item4" class="box box--rich cs-blue flex items-center gap-4 p-5 text-lg">
-    🚀 Производительность
+    🚀 Повышаем производительность
   </div>
 </div>

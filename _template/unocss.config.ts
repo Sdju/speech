@@ -24,91 +24,136 @@ const modifiers = {
   t: 'top',
 }
 
+/** Иконки тулбара Slidev + addon (UnoCSS preset-icons, классы с `:`) */
+const toolbarIcons = [
+  'i-carbon:maximize',
+  'i-carbon:minimize',
+  'i-carbon:arrow-left',
+  'i-carbon:arrow-right',
+  'i-carbon:apps',
+  'i-carbon-moon',
+  'i-carbon-sun',
+  'i-carbon-magic-wand',
+  'i-carbon-magic-wand-filled',
+  'i-ph-cursor-fill',
+  'i-ph-cursor-duotone',
+  'i-carbon:pen',
+  'i-carbon:presentation-file',
+  'i-carbon:user-speaker',
+  'i-carbon:text-annotation-toggle',
+  'i-carbon:download',
+  'i-carbon:document-pdf',
+  'i-carbon:information',
+  'i-carbon:template',
+  'i-carbon:settings-adjust',
+  'i-carbon:user-avatar',
+  'i-carbon:video',
+  'i-carbon:chevron-up',
+  'i-ph:arrow-up-bold',
+  'i-carbon:document-multiple-01',
+  'i-tdesign:animation',
+  'i-carbon:open-panel-right',
+  'i-carbon:open-panel-bottom',
+  'i-carbon:close',
+  'i-carbon:add',
+  'i-carbon:arrow-up',
+  'i-carbon:arrow-down',
+  'i-carbon:view',
+  'i-carbon:view-off',
+  'i-carbon:edit',
+  'i-carbon:trash-can',
+  'i-carbon:chevron-down',
+  'i-carbon:chevron-right',
+]
+
+// Не mergeConfigs([slidev, …]) — Slidev уже мержит client uno.config сам.
+// Повторный импорт ломает transformerVariantGroup и классы i-collection:icon.
 export default {
-    shortcuts: [
-      [/^pos-(\S+)$/, ([, c1]) => {
-        const [mod1, mod2] = c1.slice(0, 2)
-        let modifiersCount = 0
-        let x = 'left'
-        let y = 'top'
-        if (mod2 in modifiers) {
-          modifiersCount = 2
-          const mod = modifiers[mod2]
-          if (mod2 === 'r') {
-            x = mod
-          } else if (mod2 === 'b') {
-            y = mod
-          }
-        } else if (mod1 in modifiers) {
-          modifiersCount = 1
-          const mod = modifiers[mod1]
-          if (mod1 === 'r') {
-            x = mod
-          } else if (mod1 === 'b') {
-            y = mod
-          }
+  shortcuts: [
+    [/^pos-(\S+)$/, ([, c1]) => {
+      const [mod1, mod2] = c1.slice(0, 2)
+      let modifiersCount = 0
+      let x = 'left'
+      let y = 'top'
+      if (mod2 in modifiers) {
+        modifiersCount = 2
+        const mod = modifiers[mod2]
+        if (mod2 === 'r') {
+          x = mod
+        } else if (mod2 === 'b') {
+          y = mod
         }
-        const value = c1.slice(modifiersCount)
-        return `${x}-[${parseValue(value)}] ${y}-[${parseValue(value)}]`
-      }],
-      [/^pos-(\S+)_(\S+)$/, ([, c1, c2]) => {
-        const x = c1.startsWith('r') ? `right-[${parseValue(c1.slice(1))}]` : `left-[${parseValue(c1)}]`
-        const y = c2.startsWith('b') ? `bottom-[${parseValue(c2.slice(1))}]` : `top-[${parseValue(c2)}]`
-        return `${x} ${y}`
-      }],
-      [/^size-(\S+)$/, ([, c1]) => {
-        const size = parseValue(c1)
-        return `w-[${size}] h-[${size}]`
-      }],
-      [/^size-(\S+)_(\S+)$/, ([, c1, c2]) => {
-        const width = parseValue(c1)
-        const height = parseValue(c2)
-        return `w-[${width}] h-[${height}]`
-      }],
-      [/^sp-(\S+)_(\S+)_(\S+)_(\S+)$/, ([, c1, c2, c3, c4]) => {
-        const x = c1.startsWith('r') ? `right-[${parseValue(c1.slice(1))}]` : `left-[${parseValue(c1)}]`
-        const y = c2.startsWith('b') ? `bottom-[${parseValue(c2.slice(1))}]` : `top-[${parseValue(c2)}]`
-        const width = parseValue(c3)
-        const height = parseValue(c4)
-        return `${x} ${y} w-[${width}] h-[${height}]`
-      }],
-      [/^cs-(\S+)/, ([, variant]) => {
-        return variants[variant]
-      }, { autocomplete: Object.keys(variants) }],
-      [/^view-(\S+)$/, ([, variant]) => {
-        return `[view-transition-name:${variant}]`
-      }],
-      [/^bento-(\S+)_(\S+)$/, ([, cols, rows]) => {
-        return `col-span-${cols} row-span-${rows} relative of-hidden`
-      }],
-      {
-        'movable': 'absolute -translate-x-1/2 -translate-y-1/2 transform-origin-center',
-        'circle': 'rounded-[100%]',
-        '$obj': 'movable fx',
-        'figure': 'grid place-items-center movable filter text-xl font-bold duration-200 transform-origin-center',
-        'pos-center': 'left-1/2 top-1/2',
-        'size-full': 'w-full h-full',
-        'framed': 'rounded-[10px] border-2 border-gray-500/20 object-cover',
-        'cs-main': 'cs-green',
-        'fx': 'transform filter duration-[var(--slidev-transition-duration)]',
-        'center': 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
+      } else if (mod1 in modifiers) {
+        modifiersCount = 1
+        const mod = modifiers[mod1]
+        if (mod1 === 'r') {
+          x = mod
+        } else if (mod1 === 'b') {
+          y = mod
+        }
       }
-    ],
-    presets: [
-      presetWebFonts({
-        fonts: {
-          mono: 'sans',
-          sans: 'sans',
-          strong: 'sans', // 'SUSE Mono',
-          fast: 'Ubuntu',
-          hand: 'Bentham',
-        },
-      }),
-    ],
-    safelist: [
-      ...Object.keys(variants).map(key => `cs-${key}`),
-      'cs-main',
-      'duration-200',
-      'ease-in-out',
-    ],
+      const value = c1.slice(modifiersCount)
+      return `${x}-[${parseValue(value)}] ${y}-[${parseValue(value)}]`
+    }],
+    [/^pos-(\S+)_(\S+)$/, ([, c1, c2]) => {
+      const x = c1.startsWith('r') ? `right-[${parseValue(c1.slice(1))}]` : `left-[${parseValue(c1)}]`
+      const y = c2.startsWith('b') ? `bottom-[${parseValue(c2.slice(1))}]` : `top-[${parseValue(c2)}]`
+      return `${x} ${y}`
+    }],
+    [/^size-(\S+)$/, ([, c1]) => {
+      const size = parseValue(c1)
+      return `w-[${size}] h-[${size}]`
+    }],
+    [/^size-(\S+)_(\S+)$/, ([, c1, c2]) => {
+      const width = parseValue(c1)
+      const height = parseValue(c2)
+      return `w-[${width}] h-[${height}]`
+    }],
+    [/^sp-(\S+)_(\S+)_(\S+)_(\S+)$/, ([, c1, c2, c3, c4]) => {
+      const x = c1.startsWith('r') ? `right-[${parseValue(c1.slice(1))}]` : `left-[${parseValue(c1)}]`
+      const y = c2.startsWith('b') ? `bottom-[${parseValue(c2.slice(1))}]` : `top-[${parseValue(c2)}]`
+      const width = parseValue(c3)
+      const height = parseValue(c4)
+      return `${x} ${y} w-[${width}] h-[${height}]`
+    }],
+    [/^cs-(\S+)/, ([, variant]) => {
+      return variants[variant]
+    }, { autocomplete: Object.keys(variants) }],
+    [/^view-(\S+)$/, ([, variant]) => {
+      return `[view-transition-name:${variant}]`
+    }],
+    [/^bento-(\S+)_(\S+)$/, ([, cols, rows]) => {
+      return `col-span-${cols} row-span-${rows} relative of-hidden`
+    }],
+    {
+      'movable': 'absolute -translate-x-1/2 -translate-y-1/2 transform-origin-center',
+      'circle': 'rounded-[100%]',
+      '$obj': 'movable fx',
+      'figure': 'grid place-items-center movable filter text-xl font-bold duration-200 transform-origin-center',
+      'pos-center': 'left-1/2 top-1/2',
+      'size-full': 'w-full h-full',
+      'framed': 'rounded-[10px] border-2 border-gray-500/20 object-cover',
+      'cs-main': 'cs-green',
+      'fx': 'transform filter duration-[var(--slidev-transition-duration)]',
+      'center': 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
+    }
+  ],
+  presets: [
+    presetWebFonts({
+      fonts: {
+        mono: 'sans',
+        sans: 'sans',
+        strong: 'sans',
+        fast: 'Ubuntu',
+        hand: 'Bentham',
+      },
+    }),
+  ],
+  safelist: [
+    ...Object.keys(variants).map(key => `cs-${key}`),
+    ...toolbarIcons,
+    'cs-main',
+    'duration-200',
+    'ease-in-out',
+  ],
 }

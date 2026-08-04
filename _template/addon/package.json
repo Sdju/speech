@@ -20,6 +20,6 @@
     "slidev": ">=v0.47.0"
   },
   "dependencies": {
-    "@slidev/types": "52.16.0"
+    "@slidev/types": "52.19.0"
   }
 }

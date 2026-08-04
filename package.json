@@ -8,6 +8,6 @@
     "runner": "node runner/index.ts"
   },
   "devDependencies": {
-    "@types/node": "25.9.3"
+    "@types/node": "25.9.5"
   }
 }

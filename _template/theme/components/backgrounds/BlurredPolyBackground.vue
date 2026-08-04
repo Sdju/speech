@@ -32,7 +32,7 @@ export type Distribution =
 
 const frontmatter = computed(() => (currentSlideRoute.value.meta?.slide as any)?.frontmatter || {})
 const distribution = computed(() => (frontmatter.value.grow || 'full') as Distribution)
-const opacity = computed<number>(() => +(frontmatter.value.growOpacity || 0.4))
+const opacity = computed<number>(() => +(frontmatter.value.growOpacity || 0.55))
 const seed = computed<string>(() => (frontmatter.value.growSeed === 'false' || frontmatter.value.growSeed === false)
   ? Date.now().toString()
   : frontmatter.value.growSeed || 'default',
@@ -148,7 +148,7 @@ const poly3 = usePloy(3)
   <div
     class="bg transform-gpu overflow-hidden pointer-events-none"
     :variant="frontmatter.variant || 'main'"
-    :style="{ filter: `blur(70px)` }"
+    :style="{ filter: `blur(${frontmatter.growBlur || 95}px)` }"
     aria-hidden="true"
   >
     <div
