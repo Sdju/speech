@@ -1,17 +1,15 @@
 ---
 theme: ./theme
 addons:
-  - ./2_msk-vuejs_вкусы-реактивности/addon
+  - '@/addon'
 routerMode: hash
 htmlAttrs:
   lang: ru
-highlighter: shiki
 lineNumbers: true
-css: unocss
 colorSchema: dark
 transition: fade-out
 contextMenu: false
-mdc: true
+comark: true
 growSeed: 4
 growOpacity: 0.55
 growBlur: 110

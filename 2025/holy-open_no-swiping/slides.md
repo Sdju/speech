@@ -1,17 +1,15 @@
 ---
 theme: ./theme
 addons:
-  - ./holy-open_no-swiping/addon
+  - '@/addon'
 routerMode: hash
 htmlAttrs:
   lang: ru
-highlighter: shiki
 lineNumbers: true
-css: unocss
 colorSchema: dark
 transition: view-transition
 contextMenu: false
-mdc: true
+comark: true
 growSeed: 4
 title: Жулик не воруй
 class: text-center

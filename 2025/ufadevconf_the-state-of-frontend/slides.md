@@ -1,17 +1,15 @@
 ---
 theme: ./theme
 addons:
-  - ./ufadevconf_the-state-of-frontend/addon
+  - '@/addon'
 routerMode: hash
 htmlAttrs:
   lang: ru
-highlighter: shiki
 lineNumbers: true
-css: unocss
 colorSchema: dark
 transition: fade-out
 contextMenu: false
-mdc: true
+comark: true
 growSeed: 4
 title: Состояние фронтенда на 2025 год
 layout: center

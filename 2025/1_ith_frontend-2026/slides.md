@@ -1,17 +1,15 @@
 ---
 theme: ./theme
 addons:
-  - ./1_ith_frontend-2026/addon
+  - '@/addon'
 routerMode: hash
 htmlAttrs:
   lang: ru
-highlighter: shiki
 lineNumbers: true
-css: unocss
 colorSchema: dark
 transition: fade-out
 contextMenu: false
-mdc: true
+comark: true
 growSeed: 4
 title: "Frontend 2026: недалёкое будущее"
 layout: center

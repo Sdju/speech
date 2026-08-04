@@ -156,12 +156,6 @@ function copyDir(src: string, dest: string): void {
   }
 }
 
-function updateSlidesAddon(slidesPath: string, folderName: string): void {
-  const content = fs.readFileSync(slidesPath, 'utf-8');
-  const updated = content.replace('./_template/addon', `./${folderName}/addon`);
-  fs.writeFileSync(slidesPath, updated);
-}
-
 async function prompt(rl: readline.Interface, question: string): Promise<string> {
   const answer = await rl.question(question);
   return answer.trim();
@@ -250,11 +244,6 @@ async function createPresentation(): Promise<void> {
 
     console.log('\n⏳ Копирование шаблона...');
     copyDir(templatePath, targetPath);
-
-    const slidesPath = path.join(targetPath, 'slides.md');
-    if (fs.existsSync(slidesPath)) {
-      updateSlidesAddon(slidesPath, folderName);
-    }
 
     if (!options.skipInstall) {
       console.log('📦 Установка зависимостей...');

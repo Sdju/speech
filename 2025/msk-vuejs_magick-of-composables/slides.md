@@ -1,17 +1,15 @@
 ---
 theme: ./theme
 addons:
-  - ./msk-vuejs_magick-of-composables/addon
+  - '@/addon'
 routerMode: hash
 htmlAttrs:
   lang: ru
-highlighter: shiki
 lineNumbers: true
-css: unocss
 colorSchema: dark
 transition: view-transition
 contextMenu: false
-mdc: true
+comark: true
 growSeed: 4
 title: Магия композаблов
 layout: center
