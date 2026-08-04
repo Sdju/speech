@@ -11,12 +11,6 @@ importers:
       '@slidev/types':
         specifier: 52.19.0
         version: 52.19.0(@vue/compiler-sfc@3.5.40)(cac@7.0.0)(rolldown@1.0.3)(srvx@0.12.5)(vite@8.0.16(jiti@2.7.0)(yaml@2.9.0))
-      codemirror-theme-vars:
-        specifier: ^0.1.2
-        version: 0.1.2
-      prism-theme-vars:
-        specifier: ^0.2.5
-        version: 0.2.5
 
 packages:
 
@@ -900,9 +894,6 @@ packages:
   citty@0.2.2:
     resolution: {integrity: sha512-+6vJA3L98yv+IdfKGZHBNiGW5KHn22e/JwID0Strsz8h4S/csAu/OuICwxrg44k5MRiZHWIo8XXuJgQTriRP4w==}
 
-  codemirror-theme-vars@0.1.2:
-    resolution: {integrity: sha512-WTau8X2q58b0SOAY9DO+iQVw8JKVEgyQIqArp2D732tcc+pobbMta3bnVMdQdmgwuvNrOFFr6HoxPRoQOgooFA==}
-
   colorette@2.0.20:
     resolution: {integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==}
 
@@ -1647,9 +1638,6 @@ packages:
   powershell-utils@0.1.0:
     resolution: {integrity: sha512-dM0jVuXJPsDN6DvRpea484tCUaMiXWjuCn++HGTqUWzGDjv5tZkEZldAJ/UMlqRYGFrD/etByo4/xOuC/snX2A==}
     engines: {node: '>=20'}
-
-  prism-theme-vars@0.2.5:
-    resolution: {integrity: sha512-/D8gBTScYzi9afwE6v3TC1U/1YFZ6k+ly17mtVRdLpGy7E79YjJJWkXFgUDHJ2gDksV/ZnXF7ydJ4TvoDm2z/Q==}
 
   property-information@7.2.0:
     resolution: {integrity: sha512-IAtzIB6sUiWaJYrX9smp3V46pBGbBeLFRGdh25kg1334VcBlD8HzhPeNIWQH9zhGmo2itIe25EHt9dQP7G5hmg==}
@@ -3080,8 +3068,6 @@ snapshots:
 
   citty@0.2.2: {}
 
-  codemirror-theme-vars@0.1.2: {}
-
   colorette@2.0.20: {}
 
   comma-separated-tokens@2.0.3: {}
@@ -3830,8 +3816,6 @@ snapshots:
 
   powershell-utils@0.1.0: {}
 
-  prism-theme-vars@0.2.5: {}
-
   property-information@7.2.0: {}
 
   punycode.js@2.3.1: {}
@@ -4143,8 +4127,8 @@ snapshots:
   vite@8.0.16(jiti@2.7.0)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.32.0
-      picomatch: 4.0.4
-      postcss: 8.5.15
+      picomatch: 4.0.5
+      postcss: 8.5.25
       rolldown: 1.0.3
       tinyglobby: 0.2.17
     optionalDependencies:

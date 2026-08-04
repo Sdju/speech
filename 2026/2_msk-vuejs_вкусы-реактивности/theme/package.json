@@ -4,32 +4,34 @@
   "description": "Zede theme for Slidev",
   "author": "Zede <zede169778@gmail.com>",
   "license": "MIT",
-  "homepage": "https://sli.dev",
+  "homepage": "https://github.com/Sdju/speech",
   "repository": {
     "type": "git",
-    "url": "https://github.com/slidevjs/themes"
+    "url": "https://github.com/Sdju/speech.git",
+    "directory": "2026/2_msk-vuejs_вкусы-реактивности/theme"
   },
-  "bugs": "https://github.com/slidevjs/themes/issues",
+  "bugs": "https://github.com/Sdju/speech/issues",
   "keywords": [
     "slidev-theme",
     "slidev"
   ],
   "engines": {
-    "node": ">=14.0.0",
-    "slidev": ">=v0.47.0"
+    "node": ">=20.12.0",
+    "slidev": ">=52.19.0"
   },
   "slidev": {
     "defaults": {
       "fonts": {
         "mono": "Fira Code",
         "sans": "Avenir Next,Nunito Sans",
-        "local": "Avenir Next"
+        "local": [
+          "Avenir Next"
+        ]
       }
-    }
+    },
+    "colorSchema": "dark"
   },
   "dependencies": {
-    "@slidev/types": "52.19.0",
-    "codemirror-theme-vars": "^0.1.2",
-    "prism-theme-vars": "^0.2.5"
+    "@slidev/types": "52.19.0"
   }
 }
