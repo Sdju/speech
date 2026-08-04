@@ -40,7 +40,7 @@ watch(alt_q, (v) => {
 <template>
     <div
       v-if="mouse.inSlide"
-      class="absolute bg-[rgba(0,0,0,0.8)] text-white p-2 rounded-md text-sm pointer-events-none z-[1000] font-mono"
+      class="fixed bg-[rgba(0,0,0,0.8)] text-white p-2 rounded-md text-sm pointer-events-none z-[1000] font-mono"
       :style="{
           left: `${mouse.globalX + 10}px`,
           top: `${mouse.globalY + 10}px`

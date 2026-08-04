@@ -12,8 +12,14 @@ export const MouseService = (injector: Injector) => {
 
     const localX = computed(() => (mousePosX.value - slideService.left) / slideService.scale)
     const localY = computed(() => (mousePosY.value - slideService.top) / slideService.scale)
-    const localXPercent = computed(() => Math.round((localX.value / (slideService.width / slideService.scale)) * 100_00) / 100)
-    const localYPercent = computed(() => Math.round((localY.value / (slideService.height / slideService.scale)) * 100_00) / 100)
+    const localXPercent = computed(() => {
+        const w = slideService.width || 1
+        return Math.round((localX.value / w) * 100_00) / 100
+    })
+    const localYPercent = computed(() => {
+        const h = slideService.height || 1
+        return Math.round((localY.value / h) * 100_00) / 100
+    })
 
     useEventListener(() => slideService.slideElement, 'mouseleave', () => {
         inSlide.value = false

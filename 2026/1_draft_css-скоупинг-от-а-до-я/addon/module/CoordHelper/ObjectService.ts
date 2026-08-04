@@ -83,9 +83,17 @@ export function ObjectService() {
     }
   }
 
+  function isOnVisibleSlide(el: HTMLElement) {
+    const page = el.closest('.slidev-page') as HTMLElement | null
+    if (!page)
+      return el.getClientRects().length > 0
+    return getComputedStyle(page).display !== 'none'
+  }
+
   function scanForFigures() {
-    const elements = document.querySelectorAll(`#slide-content .\\$obj`)
-    const newObjects = new Set(elements) as Set<HTMLElement>
+    const elements = [...document.querySelectorAll(`#slide-content .\\$obj`)]
+      .filter((el): el is HTMLElement => el instanceof HTMLElement && isOnVisibleSlide(el))
+    const newObjects = new Set(elements)
     const addedObjects = [...newObjects].filter(o => !objects.value.has(o))
     addedObjects.forEach(o => {
       objects.value.add(o)
@@ -95,6 +103,7 @@ export function ObjectService() {
     removedObjects.forEach(o => {
       objects.value.delete(o)
       ;(o as any)._object?.dispose()
+      delete (o as any)._object
     })
   }
 

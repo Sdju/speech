@@ -1,5 +1,5 @@
 import { useEventListener } from '@vueuse/core'
-import { reactive, ref, watch, type Ref } from 'vue'
+import { onScopeDispose, reactive, ref, watch, type Ref } from 'vue'
 import { createServiceKey } from '../VueServices/useDiContainer'
 
 function wait<T>(ms: number | (<No>(no: No) => T | No)): Promise<T> {
@@ -20,36 +20,73 @@ function wait<T>(ms: number | (<No>(no: No) => T | No)): Promise<T> {
 }
 
 export const SlideService = () => {
-    const slideElement = ref() as Ref<HTMLElement>
+    const slideElement = ref() as Ref<HTMLElement | undefined>
     const scale = ref(1)
     const rect = ref<DOMRect>()
     const left = ref(0)
     const top = ref(0)
     const width = ref(0)
     const height = ref(0)
-    
-    watch(() => slideElement.value, async (el) => {
-        if (!el) {
-            slideElement.value = await wait(no => document.querySelector('#slide-content') as HTMLElement ?? no)
+    /** Bumps whenever slide viewport metrics are refreshed. */
+    const revision = ref(0)
+
+    const observers: ResizeObserver[] = []
+
+    function disconnectObservers() {
+        while (observers.length) {
+            observers.pop()!.disconnect()
         }
-    }, { immediate: true })
+    }
+
+    function observe(el: Element | null | undefined) {
+        if (!el || typeof ResizeObserver === 'undefined')
+            return
+        const ro = new ResizeObserver(() => updateSlide())
+        ro.observe(el)
+        observers.push(ro)
+    }
 
     function updateSlide() {
-        const newRect = slideElement.value.getBoundingClientRect()
+        const el = slideElement.value
+        if (!el)
+            return
+
+        const newRect = el.getBoundingClientRect()
+        const nextScale = el.clientWidth ? newRect.width / el.clientWidth : 1
+
         rect.value = newRect
         left.value = newRect.left
         top.value = newRect.top
-        width.value = slideElement.value.clientWidth / scale.value
-        height.value = slideElement.value.clientHeight / scale.value
-        scale.value = newRect.width / slideElement.value!.clientWidth
+        scale.value = nextScale
+        // Logical slide size in unscaled CSS px (matches pos-* / $obj coords).
+        width.value = el.clientWidth
+        height.value = el.clientHeight
+        revision.value++
     }
 
-    watch( () => slideElement.value, () => {
+    function bindElement(el: HTMLElement) {
+        disconnectObservers()
         updateSlide()
-    })
+        // Parent / page-root change size when side panels open; transform-only
+        // scale on #slide-content alone would not notify ResizeObserver.
+        observe(el)
+        observe(el.parentElement)
+        observe(document.getElementById('page-root'))
+    }
 
-    useEventListener(window, 'resize', () => {
-        updateSlide()
+    watch(() => slideElement.value, async (el) => {
+        if (!el) {
+            slideElement.value = await wait(no => document.querySelector('#slide-content') as HTMLElement ?? no)
+            return
+        }
+        bindElement(el)
+    }, { immediate: true })
+
+    useEventListener(window, 'resize', updateSlide)
+    useEventListener(window, 'scroll', updateSlide, { capture: true, passive: true })
+
+    onScopeDispose(() => {
+        disconnectObservers()
     })
 
     return reactive({
@@ -60,6 +97,8 @@ export const SlideService = () => {
         top,
         width,
         height,
+        revision,
+        updateSlide,
     })
 }
 export const SLIDE_SERVICE_KEY = createServiceKey(SlideService)
