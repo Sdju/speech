@@ -130,6 +130,14 @@ if (props.resize) {
 
 <template>
   <div
+    class="parts-dock overflow-hidden"
+    :class="vertical ? 'w-full min-h-0' : 'h-full min-w-0'"
+    :style="resize ? {
+      height: vertical ? `${partsManagerHeight}px` : '100%',
+      width: vertical ? '100%' : `${partsManagerWidth}px`,
+    } : {}"
+  >
+  <div
     v-if="resize" class="fixed bg-gray-400 select-none opacity-0 hover:opacity-10 z-dragging"
     :class="vertical ? 'left-0 right-0 w-full h-10px' : 'top-0 bottom-0 w-10px h-full'" :style="{
       opacity: handlerDown ? '0.3' : undefined,
@@ -139,12 +147,10 @@ if (props.resize) {
     }" @pointerdown="onHandlerDown"
   />
   <div
-    class="shadow bg-main p-2 pt-4 grid grid-rows-[max-content_1fr] h-full overflow-hidden"
-    :class="resize ? 'border-l border-gray-400 border-opacity-20' : ''"
-    :style="resize ? {
-      height: vertical ? `${partsManagerHeight}px` : undefined,
-      width: !vertical ? `${partsManagerWidth}px` : undefined,
-    } : {}"
+    class="shadow bg-main p-2 pt-4 grid grid-rows-[max-content_1fr] h-full w-full overflow-hidden"
+    :class="resize
+      ? (vertical ? 'border-t border-gray-400 border-opacity-20' : 'border-l border-gray-400 border-opacity-20')
+      : ''"
   >
     <div class="flex pb-2 text-xl -mt-1 items-center">
       <span class="text-2xl pt-1">

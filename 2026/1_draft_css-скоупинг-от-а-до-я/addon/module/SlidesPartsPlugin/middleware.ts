@@ -7,6 +7,15 @@ export function createApiMiddleware(
   fileOps: FileOperations,
   invalidateModule: () => void
 ): Connect.NextHandleFunction {
+  /** Ops that change the parts index / slides.md structure — refresh virtual module. */
+  const structuralActions = new Set([
+    'rename',
+    'create',
+    'delete',
+    'move',
+    'toggle-hide',
+  ])
+
   return async (req, res, next) => {
     if (!req.url?.startsWith('/__slides_parts_api/')) {
       return next()
@@ -61,7 +70,10 @@ export function createApiMiddleware(
             return
         }
 
-        if (result.success) {
+        if (result.success && structuralActions.has(action)) {
+          // Content edits (timeline/patch-edit) only write the md file —
+          // Slidev's watcher already does proper slide HMR. Forced full-reload
+          // was wiping the whole page on every property tweak.
           invalidateModule()
         }
 

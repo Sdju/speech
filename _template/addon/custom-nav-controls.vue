@@ -3,11 +3,21 @@ import { showPartsManager } from './state/partsManager'
 import { showTimelineEditor } from './state/timeline'
 
 function togglePartsManager() {
-  showPartsManager.value = !showPartsManager.value
+  if (showPartsManager.value) {
+    showPartsManager.value = false
+    return
+  }
+  showTimelineEditor.value = false
+  showPartsManager.value = true
 }
 
 function toggleTimelineEditor() {
-  showTimelineEditor.value = !showTimelineEditor.value
+  if (showTimelineEditor.value) {
+    showTimelineEditor.value = false
+    return
+  }
+  showPartsManager.value = false
+  showTimelineEditor.value = true
 }
 </script>
 
@@ -38,4 +48,3 @@ function toggleTimelineEditor() {
   @apply text-blue-500;
 }
 </style>
-

@@ -16,13 +16,14 @@ export function createSlidesPartsPlugin(entryPath: string): Plugin {
   const fileOps = new FileOperations(entryPath)
 
   const invalidateModule = () => {
-    if (server) {
-      const module = server.moduleGraph.getModuleById('\0' + VIRTUAL_INFO_ID)
-      if (module) {
-        server.moduleGraph.invalidateModule(module)
-        server.ws.send({ type: 'full-reload' })
-      }
-    }
+    if (!server)
+      return
+    const module = server.moduleGraph.getModuleById('\0' + VIRTUAL_INFO_ID)
+    if (!module)
+      return
+    server.moduleGraph.invalidateModule(module)
+    // Soft HMR for parts list consumers; avoid full-reload when possible.
+    void server.reloadModule(module)
   }
 
   return {

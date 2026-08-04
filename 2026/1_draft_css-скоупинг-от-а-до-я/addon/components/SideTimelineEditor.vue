@@ -152,11 +152,43 @@ async function addEmptyStep() {
   }, 200)
 }
 
-async function deleteStep(stepIndex: number) {
+/** First click arms delete; second click within timeout confirms. */
+const pendingDeleteStep = ref<number | null>(null)
+let pendingDeleteTimer: ReturnType<typeof setTimeout> | null = null
+
+function clearPendingDelete() {
+  pendingDeleteStep.value = null
+  if (pendingDeleteTimer) {
+    clearTimeout(pendingDeleteTimer)
+    pendingDeleteTimer = null
+  }
+}
+
+function requestDeleteStep(stepIndex: number) {
   if (timeline.value.length <= 1) {
     actionStatus.value = 'нельзя удалить единственный шаг'
     return
   }
+
+  if (pendingDeleteStep.value === stepIndex) {
+    clearPendingDelete()
+    void confirmDeleteStep(stepIndex)
+    return
+  }
+
+  clearPendingDelete()
+  pendingDeleteStep.value = stepIndex
+  actionStatus.value = `ещё раз нажмите 🗑 чтобы удалить шаг ${stepIndex + 1}`
+  pendingDeleteTimer = setTimeout(() => {
+    if (pendingDeleteStep.value === stepIndex) {
+      pendingDeleteStep.value = null
+      if (actionStatus.value.includes('ещё раз нажмите'))
+        actionStatus.value = ''
+    }
+  }, 3000)
+}
+
+async function confirmDeleteStep(stepIndex: number) {
   const data = await postTimelineMutation('timeline-delete-step', { stepIndex })
   if (!data)
     return
@@ -195,23 +227,33 @@ if (props.resize) {
 </script>
 
 <template>
+  <!-- Single root so Teleport adds one grid child (handle is fixed inside). -->
   <div
-    v-if="resize" class="fixed bg-gray-400 select-none opacity-0 hover:opacity-10 z-dragging"
-    :class="vertical ? 'left-0 right-0 w-full h-10px' : 'top-0 bottom-0 w-10px h-full'" :style="{
-      opacity: handlerDown ? '0.3' : undefined,
-      bottom: vertical ? `${timelineEditorHeight - 5}px` : undefined,
-      right: !vertical ? `${timelineEditorWidth - 5}px` : undefined,
-      cursor: vertical ? 'row-resize' : 'col-resize',
-    }" @pointerdown="onHandlerDown"
-  />
-  <div
-    class="shadow bg-main p-2 pt-4 grid grid-rows-[max-content_1fr] h-full overflow-hidden"
-    :class="resize ? 'border-l border-gray-400 border-opacity-20' : ''"
+    class="timeline-dock overflow-hidden"
+    :class="vertical ? 'w-full min-h-0' : 'h-full min-w-0'"
     :style="resize ? {
-      height: vertical ? `${timelineEditorHeight}px` : undefined,
-      width: !vertical ? `${timelineEditorWidth}px` : undefined,
+      height: vertical ? `${timelineEditorHeight}px` : '100%',
+      width: vertical ? '100%' : `${timelineEditorWidth}px`,
     } : {}"
   >
+    <div
+      v-if="resize"
+      class="fixed bg-gray-400 select-none opacity-0 hover:opacity-10 z-dragging"
+      :class="vertical ? 'left-0 right-0 w-full h-10px' : 'top-0 bottom-0 w-10px h-full'"
+      :style="{
+        opacity: handlerDown ? '0.3' : undefined,
+        bottom: vertical ? `${timelineEditorHeight - 5}px` : undefined,
+        right: !vertical ? `${timelineEditorWidth - 5}px` : undefined,
+        cursor: vertical ? 'row-resize' : 'col-resize',
+      }"
+      @pointerdown="onHandlerDown"
+    />
+    <div
+      class="shadow bg-main p-2 pt-4 grid grid-rows-[max-content_1fr] h-full w-full overflow-hidden"
+      :class="resize
+        ? (vertical ? 'border-t border-gray-400 border-opacity-20' : 'border-l border-gray-400 border-opacity-20')
+        : ''"
+    >
     <div class="flex pb-2 text-xl -mt-1 items-center">
       <span class="text-2xl pt-1">
         Timeline
@@ -230,7 +272,7 @@ if (props.resize) {
       </button>
     </div>
 
-    <div class="relative overflow-auto rounded bg-[#1a1a1a] p-2">
+    <div class="relative overflow-auto rounded bg-[#1a1a1a] p-2 min-h-0">
       <div v-if="!hasTimeline" class="text-white/50 text-center py-8 text-sm">
         Нет таймлайна на этом слайде.<br>
         Добавьте frontmatter с <code class="text-blue-400">timeline</code>
@@ -279,11 +321,13 @@ if (props.resize) {
               <span class="changes-badge">{{ getChangesCount(index) }}</span>
               <button
                 class="expand-btn delete-btn"
-                title="Удалить шаг"
+                :class="{ 'delete-confirm': pendingDeleteStep === index }"
+                :title="pendingDeleteStep === index ? 'Нажмите ещё раз для удаления' : 'Удалить шаг'"
                 :disabled="timeline.length <= 1"
-                @click.stop="deleteStep(index)"
+                @click.stop="requestDeleteStep(index)"
               >
-                <div class="i-carbon:trash-can" />
+                <div v-if="pendingDeleteStep === index" class="i-carbon:warning-alt" />
+                <div v-else class="i-carbon:trash-can" />
               </button>
               <button
                 class="expand-btn"
@@ -295,7 +339,7 @@ if (props.resize) {
             </div>
 
             <div
-              v-if="!shouldCollapseByDefault(index) || isStepExpanded(index)"
+              v-if="isStepExpanded(index)"
               class="step-content"
             >
               <PropertyDiff
@@ -339,6 +383,7 @@ if (props.resize) {
           Добавить пустой шаг
         </button>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -388,6 +433,10 @@ if (props.resize) {
 
 .delete-btn {
   @apply text-red-400/70 hover:text-red-300 hover:bg-red-500/20;
+}
+
+.delete-btn.delete-confirm {
+  @apply bg-red-500/40 text-red-100 ring-1 ring-red-400 animate-pulse w-auto px-1;
 }
 
 .delete-btn:disabled {

@@ -15,27 +15,30 @@ const anyPanelOpen = computed(() => showPartsManager.value || showTimelineEditor
 // Apply grid layout to page-root
 function applyGridLayout() {
   const pageRoot = document.getElementById('page-root')
-  if (pageRoot) {
-    if (anyPanelOpen.value) {
-      pageRoot.style.display = 'grid'
-      
-      // Определяем ориентацию по открытой панели
-      const isVertical = showPartsManager.value 
-        ? isPartsManagerVertical.value 
-        : isTimelineEditorVertical.value
-      
-      if (isVertical) {
-        pageRoot.style.gridTemplateColumns = ''
-        pageRoot.style.gridTemplateRows = '1fr max-content'
-      } else {
-        pageRoot.style.gridTemplateRows = ''
-        pageRoot.style.gridTemplateColumns = '1fr max-content'
-      }
-    } else {
-      pageRoot.style.display = ''
-      pageRoot.style.gridTemplateColumns = ''
-      pageRoot.style.gridTemplateRows = ''
-    }
+  if (!pageRoot)
+    return
+
+  if (!anyPanelOpen.value) {
+    pageRoot.style.display = ''
+    pageRoot.style.gridTemplateColumns = ''
+    pageRoot.style.gridTemplateRows = ''
+    return
+  }
+
+  pageRoot.style.display = 'grid'
+
+  // Orientation of the *visible* side panel (panels are mutually exclusive).
+  const isVertical = showTimelineEditor.value
+    ? isTimelineEditorVertical.value
+    : isPartsManagerVertical.value
+
+  if (isVertical) {
+    pageRoot.style.gridTemplateColumns = '1fr'
+    pageRoot.style.gridTemplateRows = '1fr max-content'
+  }
+  else {
+    pageRoot.style.gridTemplateRows = '1fr'
+    pageRoot.style.gridTemplateColumns = '1fr max-content'
   }
 }
 
