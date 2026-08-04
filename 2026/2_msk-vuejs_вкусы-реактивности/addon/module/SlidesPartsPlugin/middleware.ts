@@ -52,6 +52,9 @@ export function createApiMiddleware(
           case 'timeline-delete-step':
             result = await fileOps.mutateTimelineStep('delete-step', data)
             break
+          case 'timeline-patch-prop':
+            result = await fileOps.patchTimelineProperty(data)
+            break
           default:
             res.statusCode = 404
             res.end(JSON.stringify({ success: false, error: 'Unknown action' }))

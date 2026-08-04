@@ -6,7 +6,9 @@ import { applyEditPatch, type PatchEditRequest } from '../CoordHelper/patchEdit'
 import {
   addEmptyTimelineStep,
   deleteTimelineStep,
+  patchTimelineProperty,
   type TimelineStepMutationRequest,
+  type PatchTimelinePropertyRequest,
 } from '../Timeline/timelineStepsEdit'
 
 export class FileOperations {
@@ -219,6 +221,24 @@ export class FileOperations {
       }
     } catch (error) {
       console.error(`Ошибка при ${action}:`, error)
+      return { success: false, error: String(error) }
+    }
+  }
+
+  async patchTimelineProperty(
+    req: PatchTimelinePropertyRequest,
+  ): Promise<OperationResult & { detail?: string }> {
+    try {
+      const target = this.resolveSlidePath(req.filePath)
+      const content = await readFile(target, 'utf-8')
+      const result = patchTimelineProperty(content, { ...req, filePath: target })
+      if (!result.success || result.content == null)
+        return { success: false, error: result.error }
+
+      await writeFile(target, result.content, 'utf-8')
+      return { success: true, detail: result.detail }
+    } catch (error) {
+      console.error('Ошибка при timeline-patch-prop:', error)
       return { success: false, error: String(error) }
     }
   }

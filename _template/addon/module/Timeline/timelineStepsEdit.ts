@@ -143,3 +143,145 @@ export function deleteTimelineStep(
     stepCount: steps.length - 1,
   }
 }
+
+export interface PatchTimelinePropertyRequest {
+  filePath: string
+  slideStart: number
+  stepIndex: number
+  /** Path inside the step: `block2` or `block1.class`. */
+  keyPath: string
+  newValue: unknown
+}
+
+function escapeRegExp(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function formatYamlScalar(value: unknown, preferQuote: "'" | '"' | '' = ''): string {
+  if (value === null)
+    return 'null'
+  if (typeof value === 'boolean')
+    return value ? 'true' : 'false'
+  if (typeof value === 'number')
+    return Number.isFinite(value) ? String(value) : '0'
+  if (typeof value !== 'string')
+    return JSON.stringify(value)
+
+  const needsQuotes = preferQuote !== ''
+    || value === ''
+    || /[\s:#{}[\],&*?|<>=!%@`]/.test(value)
+    || value.includes("'")
+    || value.includes('"')
+
+  if (!needsQuotes)
+    return value
+
+  const q = preferQuote === '"' ? '"' : "'"
+  if (q === "'")
+    return `'${value.replace(/'/g, "''")}'`
+  return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+}
+
+function replaceValueAfterColon(line: string, newValue: unknown): string | null {
+  const colon = line.indexOf(':')
+  if (colon < 0)
+    return null
+  const prefix = line.slice(0, colon + 1)
+  const rest = line.slice(colon + 1)
+  const lead = rest.match(/^\s*/)?.[0] ?? ' '
+  const old = rest.trim()
+  const preferQuote: "'" | '"' | '' = old.startsWith("'")
+    ? "'"
+    : old.startsWith('"')
+      ? '"'
+      : ''
+  return `${prefix}${lead || ' '}${formatYamlScalar(newValue, preferQuote)}`
+}
+
+/**
+ * Find absolute line index of `keyPath` inside a step (e.g. block1.class).
+ */
+function findKeyLineInStep(lines: string[], step: Step, keyPath: string): number {
+  const parts = keyPath.split('.').filter(Boolean)
+  if (!parts.length)
+    return -1
+
+  let from = step.start
+  let parentIndent = -1
+
+  for (let pi = 0; pi < parts.length; pi++) {
+    const part = parts[pi]
+    const isLast = pi === parts.length - 1
+    const keyRe = new RegExp(`^(-\\s*)?${escapeRegExp(part)}\\s*:`)
+    let found = -1
+
+    for (let i = from; i < step.end; i++) {
+      const line = lines[i]
+      const trimmed = line.trim()
+      if (!trimmed)
+        continue
+      const indent = line.search(/\S/)
+      if (parentIndent >= 0 && indent <= parentIndent)
+        break
+      if (!keyRe.test(trimmed))
+        continue
+      // For nested keys, require deeper indent than parent
+      if (parentIndent >= 0 && indent <= parentIndent)
+        continue
+      found = i
+      break
+    }
+
+    if (found < 0)
+      return -1
+
+    if (isLast)
+      return found
+
+    parentIndent = lines[found].search(/\S/)
+    from = found + 1
+  }
+
+  return -1
+}
+
+/** Patch a scalar (or scalar-on-key-line) property in the current slide timeline step. */
+export function patchTimelineProperty(
+  content: string,
+  req: PatchTimelinePropertyRequest,
+): TimelineStepMutationResult {
+  if (!req.keyPath)
+    return { success: false, error: 'keyPath required' }
+
+  const lines = content.split('\n')
+  const resolved = resolveTimeline(lines, req.slideStart)
+  if (!resolved)
+    return { success: false, error: 'timeline not found in slide frontmatter' }
+
+  const { steps } = resolved
+  if (req.stepIndex < 0 || req.stepIndex >= steps.length)
+    return { success: false, error: `step ${req.stepIndex} out of range (0..${steps.length - 1})` }
+
+  const step = steps[req.stepIndex]
+  const lineIdx = findKeyLineInStep(lines, step, req.keyPath)
+  if (lineIdx < 0)
+    return { success: false, error: `key "${req.keyPath}" not found in step ${req.stepIndex}` }
+
+  const original = lines[lineIdx]
+  const rest = original.slice(original.indexOf(':') + 1).trim()
+  // Nested object header without inline value — not a scalar leaf
+  if (!rest || rest === '|' || rest === '>')
+    return { success: false, error: `"${req.keyPath}" is not a scalar value` }
+
+  const updated = replaceValueAfterColon(original, req.newValue)
+  if (!updated)
+    return { success: false, error: 'failed to rewrite value line' }
+
+  lines[lineIdx] = updated
+  return {
+    success: true,
+    detail: `step ${req.stepIndex} ${req.keyPath} line ${lineIdx + 1}`,
+    content: lines.join('\n'),
+    stepCount: steps.length,
+  }
+}

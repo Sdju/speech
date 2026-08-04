@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import ObjectViewer from './ObjectViewer.vue'
 import EditableValue from './EditableValue.vue'
-import { simulateFileUpdateWithSlidev, type TimelineChange } from '../../utils/fileEditor'
 
 const props = defineProps<{
   name: string
@@ -33,21 +32,34 @@ function isSimpleValue(value: any): boolean {
   return typeof value !== 'object' || value === null
 }
 
-async function handleValueUpdate(path: string, oldValue: any, newValue: any, stepIndex: number, propertyName: string) {
-  // Создаем объект изменения
-  const change: TimelineChange = {
-    path,
-    stepIndex,
-    propertyName,
-    oldValue,
-    newValue
+function keyPathFrom(path: string) {
+  return path.replace(/^timeline\.\d+\./, '')
+}
+
+async function persistProperty(path: string, oldValue: any, newValue: any, stepIndex: number, propertyName: string) {
+  const keyPath = keyPathFrom(path) || propertyName
+  try {
+    const res = await fetch('/__slides_parts_api/timeline-patch-prop', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        filePath: props.slideMeta.filepath,
+        slideStart: props.slideMeta.start,
+        stepIndex,
+        keyPath,
+        newValue,
+      }),
+    })
+    const data = await res.json()
+    if (!data.success) {
+      console.error('timeline-patch-prop failed:', data.error)
+      return
+    }
+    emit('update', path, oldValue, newValue, stepIndex, propertyName)
   }
-  
-  // Симулируем обновление файла с использованием данных Slidev
-  await simulateFileUpdateWithSlidev(change, props.slideMeta)
-  
-  // Передаем событие наверх
-  emit('update', path, oldValue, newValue, stepIndex, propertyName)
+  catch (e) {
+    console.error('timeline-patch-prop error:', e)
+  }
 }
 </script>
 
@@ -67,25 +79,27 @@ async function handleValueUpdate(path: string, oldValue: any, newValue: any, ste
     </div>
     
     <div class="property-content">
-      <!-- Для простых значений используем EditableValue -->
       <EditableValue
         v-if="isSimpleValue(value)"
         :value="value"
         :path="path"
         :step-index="stepIndex"
         :property-name="name"
-        @update="handleValueUpdate"
+        @update="persistProperty"
       />
       
-      <!-- Объект timeline-значения: сразу ключи, без обёртки Object (n) -->
-      <ObjectViewer v-else :data="value" :depth="0" flat />
+      <ObjectViewer
+        v-else
+        :data="value"
+        :depth="0"
+        flat
+        editable
+        :path-prefix="name"
+        :step-index="stepIndex"
+        :base-path="path"
+        @update="persistProperty"
+      />
     </div>
-
-    <!-- Показываем предыдущее значение если есть изменение -->
-    <!-- <div v-if="showDiff && hasChanged && changeType === 'modified'" class="previous-value">
-      <div class="previous-label">Было:</div>
-      <ObjectViewer :data="prevValue" :depth="0" />
-    </div> -->
   </div>
 </template>
 
@@ -134,18 +148,4 @@ async function handleValueUpdate(path: string, oldValue: any, newValue: any, ste
 .property-content {
   padding-left: 4px;
 }
-
-.previous-value {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.1);
-}
-
-.previous-label {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 4px;
-  font-style: italic;
-}
 </style>
-

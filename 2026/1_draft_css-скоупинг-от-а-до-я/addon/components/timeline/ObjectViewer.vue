@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import EditableValue from './EditableValue.vue'
 
 const props = defineProps<{
   data: any
@@ -7,11 +8,23 @@ const props = defineProps<{
   name?: string
   /** Skip Object/Array chrome and show keys/items directly (root of a timeline value). */
   flat?: boolean
+  editable?: boolean
+  /** Key path inside the step value, e.g. `block1` or `block1.class`. */
+  pathPrefix?: string
+  /** Full path used by EditableValue, e.g. `timeline.0.block1`. */
+  basePath?: string
+  stepIndex?: number
+}>()
+
+const emit = defineEmits<{
+  update: [path: string, oldValue: any, newValue: any, stepIndex: number, propertyName: string]
 }>()
 
 const depth = props.depth ?? 0
 const flatRoot = props.flat && depth === 0
 const isExpanded = ref(depth < 2 || flatRoot)
+
+const canEdit = computed(() => props.editable && props.stepIndex != null)
 
 function toggleExpand() {
   isExpanded.value = !isExpanded.value
@@ -58,11 +71,37 @@ function getSize(value: any): number {
   if (isObject(value)) return Object.keys(value).length
   return 0
 }
+
+function childPath(key: string | number) {
+  const base = props.basePath || ''
+  return base ? `${base}.${key}` : String(key)
+}
+
+function childPrefix(key: string | number) {
+  const prefix = props.pathPrefix || ''
+  return prefix ? `${prefix}.${key}` : String(key)
+}
+
+function onChildUpdate(path: string, oldValue: any, newValue: any, stepIndex: number, propertyName: string) {
+  emit('update', path, oldValue, newValue, stepIndex, propertyName)
+}
 </script>
 
 <template>
   <div class="object-viewer" :style="{ paddingLeft: depth > 0 && !flatRoot ? '12px' : '0' }">
-    <div v-if="isPrimitive(data)" class="primitive-value" :class="`type-${getValueType(data)}`">
+    <EditableValue
+      v-if="isPrimitive(data) && canEdit"
+      :value="data"
+      :path="basePath || pathPrefix || ''"
+      :step-index="stepIndex!"
+      :property-name="pathPrefix || name || ''"
+      @update="onChildUpdate"
+    />
+    <div
+      v-else-if="isPrimitive(data)"
+      class="primitive-value"
+      :class="`type-${getValueType(data)}`"
+    >
       {{ formatPrimitive(data) }}
     </div>
 
@@ -71,7 +110,15 @@ function getSize(value: any): number {
       <div v-for="key in getKeys(data)" :key="key" class="object-property">
         <div class="property-line">
           <span class="property-key">{{ key }}:</span>
-          <ObjectViewer :data="data[key]" :depth="depth + 1" />
+          <ObjectViewer
+            :data="data[key]"
+            :depth="depth + 1"
+            :editable="editable"
+            :path-prefix="childPrefix(key)"
+            :base-path="childPath(key)"
+            :step-index="stepIndex"
+            @update="onChildUpdate"
+          />
         </div>
       </div>
     </div>
@@ -102,7 +149,15 @@ function getSize(value: any): number {
         <div v-if="isArray(data)" class="array-items">
           <div v-for="(item, index) in data" :key="index" class="array-item">
             <span class="array-index">[{{ index }}]</span>
-            <ObjectViewer :data="item" :depth="depth + 1" />
+            <ObjectViewer
+              :data="item"
+              :depth="depth + 1"
+              :editable="editable"
+              :path-prefix="childPrefix(index)"
+              :base-path="childPath(index)"
+              :step-index="stepIndex"
+              @update="onChildUpdate"
+            />
           </div>
         </div>
 
@@ -110,7 +165,15 @@ function getSize(value: any): number {
           <div v-for="key in getKeys(data)" :key="key" class="object-property">
             <div class="property-line">
               <span class="property-key">{{ key }}:</span>
-              <ObjectViewer :data="data[key]" :depth="depth + 1" />
+              <ObjectViewer
+                :data="data[key]"
+                :depth="depth + 1"
+                :editable="editable"
+                :path-prefix="childPrefix(key)"
+                :base-path="childPath(key)"
+                :step-index="stepIndex"
+                @update="onChildUpdate"
+              />
             </div>
           </div>
         </div>
