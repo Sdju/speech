@@ -77,8 +77,8 @@ async function handleValueUpdate(path: string, oldValue: any, newValue: any, ste
         @update="handleValueUpdate"
       />
       
-      <!-- Для сложных объектов используем ObjectViewer -->
-      <ObjectViewer v-else :data="value" :depth="0" />
+      <!-- Объект timeline-значения: сразу ключи, без обёртки Object (n) -->
+      <ObjectViewer v-else :data="value" :depth="0" flat />
     </div>
 
     <!-- Показываем предыдущее значение если есть изменение -->

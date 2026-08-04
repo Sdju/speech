@@ -43,6 +43,15 @@ export function createApiMiddleware(
           case 'toggle-hide':
             result = await handleToggleHide(fileOps, data)
             break
+          case 'patch-edit':
+            result = await fileOps.patchEditName(data)
+            break
+          case 'timeline-add-step':
+            result = await fileOps.mutateTimelineStep('add-step', data)
+            break
+          case 'timeline-delete-step':
+            result = await fileOps.mutateTimelineStep('delete-step', data)
+            break
           default:
             res.statusCode = 404
             res.end(JSON.stringify({ success: false, error: 'Unknown action' }))

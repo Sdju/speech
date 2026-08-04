@@ -2,7 +2,7 @@
 import { computed, useAttrs } from 'vue'
 import { twMerge } from 'tailwind-merge'
 
-const {
+const { 
   color = 'green',
   form = 'rect',
   inject = false,
@@ -77,6 +77,11 @@ const formPresets = {
 
 const attrs = useAttrs()
 
+const dataEditName = computed(() => {
+  const v = attrs['data-editname']
+  return typeof v === 'string' ? v : undefined
+})
+
 const classList = computed(() => {
   return [
     twMerge(
@@ -89,7 +94,7 @@ const classList = computed(() => {
     ),
     {
       $obj: !inject,
-    },
+    }
   ]
 })
 
@@ -107,7 +112,7 @@ const multipleList = computed(() => {
 </script>
 
 <template>
-  <div :class="classList">
+  <div :class="classList" :data-editname="dataEditName">
     <Transition name="title" mode="out-in">
       <slot v-if="$slots.default">
         <slot />
@@ -121,6 +126,7 @@ const multipleList = computed(() => {
       v-for="item in multipleList"
       :key="item.marginLeft"
       :class="classList"
+      :data-editname="dataEditName"
       :style="item"
     >
       <slot>

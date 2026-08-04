@@ -5,10 +5,13 @@ const props = defineProps<{
   data: any
   depth?: number
   name?: string
+  /** Skip Object/Array chrome and show keys/items directly (root of a timeline value). */
+  flat?: boolean
 }>()
 
 const depth = props.depth ?? 0
-const isExpanded = ref(depth < 2) // Auto-expand first 2 levels
+const flatRoot = props.flat && depth === 0
+const isExpanded = ref(depth < 2 || flatRoot)
 
 function toggleExpand() {
   isExpanded.value = !isExpanded.value
@@ -58,9 +61,19 @@ function getSize(value: any): number {
 </script>
 
 <template>
-  <div class="object-viewer" :style="{ paddingLeft: depth > 0 ? '12px' : '0' }">
+  <div class="object-viewer" :style="{ paddingLeft: depth > 0 && !flatRoot ? '12px' : '0' }">
     <div v-if="isPrimitive(data)" class="primitive-value" :class="`type-${getValueType(data)}`">
       {{ formatPrimitive(data) }}
+    </div>
+
+    <!-- Flat root object: keys at top level, no Object (n) chrome -->
+    <div v-else-if="flatRoot && isObject(data)" class="object-properties flat-root">
+      <div v-for="key in getKeys(data)" :key="key" class="object-property">
+        <div class="property-line">
+          <span class="property-key">{{ key }}:</span>
+          <ObjectViewer :data="data[key]" :depth="depth + 1" />
+        </div>
+      </div>
     </div>
 
     <div v-else class="complex-container">
@@ -210,6 +223,11 @@ function getSize(value: any): number {
   padding-left: 4px;
 }
 
+.flat-root {
+  padding-left: 0;
+  border-left: none;
+}
+
 .array-item {
   display: flex;
   align-items: flex-start;
@@ -242,4 +260,3 @@ function getSize(value: any): number {
   padding-top: 2px;
 }
 </style>
-

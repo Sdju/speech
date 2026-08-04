@@ -10,23 +10,18 @@ const props = defineProps<{
 }>()
 const { clicks, currentSlideRoute, go } = useNav()
 
-// Получаем данные о слайде из Slidev
+const actionStatus = ref('')
+
 const slideMeta = computed(() => {
-  const slide = currentSlideRoute.value.meta?.slide as any
-  const meta = {
-    filepath: slide?.filepath || 'slides.md',
-    start: slide?.start || 0
+  const slide = currentSlideRoute.value.meta?.slide as {
+    filepath?: string
+    start?: number
+    source?: { filepath?: string, start?: number }
+  } | undefined
+  return {
+    filepath: slide?.source?.filepath || slide?.filepath || 'slides.md',
+    start: slide?.source?.start ?? slide?.start ?? 0,
   }
-  
-  // Отладочная информация
-  console.log('🔍 Данные слайда из Slidev:', {
-    slide: slide,
-    filepath: meta.filepath,
-    start: meta.start,
-    currentSlideRoute: currentSlideRoute.value
-  })
-  
-  return meta
 })
 
 const frontmatter = computed(() => {
@@ -53,18 +48,21 @@ const currentStep = computed(() => {
   return Math.min(clicks.value, timeline.value.length - 1)
 })
 
-const expandedSteps = ref<Set<number>>(new Set())
-
-function toggleStepExpanded(stepIndex: number) {
-  if (expandedSteps.value.has(stepIndex)) {
-    expandedSteps.value.delete(stepIndex)
-  } else {
-    expandedSteps.value.add(stepIndex)
-  }
-}
+const expandedOverride = ref<Record<number, boolean>>({})
 
 function isStepExpanded(stepIndex: number): boolean {
-  return expandedSteps.value.has(stepIndex)
+  const override = expandedOverride.value[stepIndex]
+  if (override !== undefined)
+    return override
+  // Default: collapse only heavy steps
+  return !shouldCollapseByDefault(stepIndex)
+}
+
+function toggleStepExpanded(stepIndex: number) {
+  expandedOverride.value = {
+    ...expandedOverride.value,
+    [stepIndex]: !isStepExpanded(stepIndex),
+  }
 }
 
 function getChangesCount(stepIndex: number): number {
@@ -96,12 +94,11 @@ function isKeyChanged(stepIndex: number, key: string): boolean {
   if (stepIndex === 0) return true
   const currentValue = timeline.value[stepIndex]?.[key]
   const prevValue = timeline.value[stepIndex - 1]?.[key]
-  
-  // Deep comparison for objects
+
   if (typeof currentValue === 'object' && typeof prevValue === 'object') {
     return JSON.stringify(currentValue) !== JSON.stringify(prevValue)
   }
-  
+
   return currentValue !== undefined && currentValue !== prevValue
 }
 
@@ -115,11 +112,58 @@ function handlePropertyUpdate(path: string, oldValue: any, newValue: any, stepIn
     stepIndex,
     propertyName,
     oldValue,
-    newValue
+    newValue,
   })
-  
-  // TODO: Здесь будет логика обновления данных в памяти
-  // Пока что просто логируем изменение
+}
+
+async function postTimelineMutation(action: 'timeline-add-step' | 'timeline-delete-step', body: Record<string, unknown>) {
+  actionStatus.value = '…'
+  try {
+    const res = await fetch(`/__slides_parts_api/${action}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        filePath: slideMeta.value.filepath,
+        slideStart: slideMeta.value.start,
+        ...body,
+      }),
+    })
+    const data = await res.json()
+    if (!data.success) {
+      actionStatus.value = data.error || 'ошибка'
+      return null
+    }
+    actionStatus.value = data.detail || 'ok'
+    return data as { stepCount?: number }
+  }
+  catch (e) {
+    actionStatus.value = String(e)
+    return null
+  }
+}
+
+async function addEmptyStep() {
+  const data = await postTimelineMutation('timeline-add-step', {})
+  if (!data?.stepCount)
+    return
+  const nextIndex = data.stepCount - 1
+  setTimeout(() => {
+    go(currentSlideRoute.value.no, nextIndex, true)
+  }, 200)
+}
+
+async function deleteStep(stepIndex: number) {
+  if (timeline.value.length <= 1) {
+    actionStatus.value = 'нельзя удалить единственный шаг'
+    return
+  }
+  const data = await postTimelineMutation('timeline-delete-step', { stepIndex })
+  if (!data)
+    return
+  const next = Math.min(stepIndex, (data.stepCount ?? 1) - 1)
+  setTimeout(() => {
+    go(currentSlideRoute.value.no, Math.max(0, next), true)
+  }, 200)
 }
 
 const handlerDown = ref(false)
@@ -185,18 +229,31 @@ if (props.resize) {
         <div class="i-carbon:close" />
       </button>
     </div>
-    
+
     <div class="relative overflow-auto rounded bg-[#1a1a1a] p-2">
       <div v-if="!hasTimeline" class="text-white/50 text-center py-8 text-sm">
         Нет таймлайна на этом слайде.<br>
         Добавьте frontmatter с <code class="text-blue-400">timeline</code>
       </div>
-      
+
       <div v-else class="flex flex-col gap-2">
-        <div class="bg-blue-500/20 rounded p-2 border border-blue-500/50">
+        <div class="bg-blue-500/20 rounded p-2 border border-blue-500/50 flex items-center gap-2">
           <div class="text-white font-bold text-lg font-mono">
             {{ currentStep + 1 }} / {{ timeline.length }}
           </div>
+          <div class="flex-auto" />
+          <button
+            class="step-action-btn add"
+            title="Добавить пустой шаг в конец"
+            @click="addEmptyStep"
+          >
+            <div class="i-carbon:add" />
+            <span>шаг</span>
+          </button>
+        </div>
+
+        <div v-if="actionStatus" class="text-[10px] text-white/60 px-1 break-all font-mono">
+          {{ actionStatus }}
         </div>
 
         <div class="flex flex-col gap-1">
@@ -221,6 +278,14 @@ if (props.resize) {
               <div class="flex-auto" />
               <span class="changes-badge">{{ getChangesCount(index) }}</span>
               <button
+                class="expand-btn delete-btn"
+                title="Удалить шаг"
+                :disabled="timeline.length <= 1"
+                @click.stop="deleteStep(index)"
+              >
+                <div class="i-carbon:trash-can" />
+              </button>
+              <button
                 class="expand-btn"
                 @click.stop="toggleStepExpanded(index)"
               >
@@ -228,9 +293,9 @@ if (props.resize) {
                 <div v-else class="i-carbon:chevron-down" />
               </button>
             </div>
-            
+
             <div
-              v-if="!shouldCollapseByDefault(index) || isStepExpanded(index)"
+              v-if="isStepExpanded(index)"
               class="step-content"
             >
               <PropertyDiff
@@ -245,8 +310,14 @@ if (props.resize) {
                 :slide-meta="slideMeta"
                 @update="handlePropertyUpdate"
               />
+              <div
+                v-if="!allKeys.some(key => isKeyChanged(index, key))"
+                class="text-xs text-white/40 font-mono px-1"
+              >
+                пустой шаг
+              </div>
             </div>
-            
+
             <div
               v-else
               class="step-content-collapsed"
@@ -258,6 +329,15 @@ if (props.resize) {
             </div>
           </div>
         </div>
+
+        <button
+          class="add-step-footer"
+          title="Добавить пустой шаг в конец"
+          @click="addEmptyStep"
+        >
+          <div class="i-carbon:add" />
+          Добавить пустой шаг
+        </button>
       </div>
     </div>
   </div>
@@ -265,7 +345,7 @@ if (props.resize) {
 
 <style scoped>
 .step-card {
-  @apply bg-white/5 rounded border border-white/10 overflow-hidden cursor-pointer 
+  @apply bg-white/5 rounded border border-white/10 overflow-hidden cursor-pointer
          hover:bg-white/10 transition-all duration-200;
 }
 
@@ -286,7 +366,7 @@ if (props.resize) {
 }
 
 .step-number {
-  @apply flex items-center justify-center w-6 h-6 bg-white/10 rounded-full 
+  @apply flex items-center justify-center w-6 h-6 bg-white/10 rounded-full
          text-white font-bold text-xs shrink-0;
 }
 
@@ -306,8 +386,27 @@ if (props.resize) {
   @apply flex items-center justify-center w-5 h-5 rounded hover:bg-white/10 text-white/70 hover:text-white;
 }
 
-.current-badge {
-  @apply text-blue-400 text-lg animate-pulse;
+.delete-btn {
+  @apply text-red-400/70 hover:text-red-300 hover:bg-red-500/20;
+}
+
+.delete-btn:disabled {
+  @apply opacity-30 pointer-events-none;
+}
+
+.step-action-btn {
+  @apply flex items-center gap-1 px-2 py-1 rounded text-xs font-mono
+         bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-colors;
+}
+
+.step-action-btn.add {
+  @apply bg-green-500/20 text-green-300 hover:bg-green-500/30;
+}
+
+.add-step-footer {
+  @apply flex items-center justify-center gap-2 w-full py-2 rounded border border-dashed
+         border-white/20 text-white/60 text-sm hover:border-green-500/50 hover:text-green-300
+         hover:bg-green-500/10 transition-colors;
 }
 
 .step-content {
@@ -317,14 +416,4 @@ if (props.resize) {
 .step-content-collapsed {
   @apply p-2 text-center cursor-pointer hover:bg-white/5 border-t border-white/5;
 }
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
 </style>
-

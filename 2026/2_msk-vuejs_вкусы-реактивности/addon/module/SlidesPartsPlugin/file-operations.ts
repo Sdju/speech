@@ -1,7 +1,13 @@
 import { readFile, writeFile, rename, unlink } from 'node:fs/promises'
-import { dirname, join, basename } from 'node:path'
+import { dirname, join, basename, isAbsolute, resolve } from 'node:path'
 import type { OperationResult } from './types'
 import { extractFilePrefix } from './parser'
+import { applyEditPatch, type PatchEditRequest } from '../CoordHelper/patchEdit'
+import {
+  addEmptyTimelineStep,
+  deleteTimelineStep,
+  type TimelineStepMutationRequest,
+} from '../Timeline/timelineStepsEdit'
 
 export class FileOperations {
   constructor(private entryPath: string) {}
@@ -169,6 +175,59 @@ export class FileOperations {
       console.error('Ошибка при переключении скрытия:', error)
       return { success: false, error: String(error) }
     }
+  }
+
+  async patchEditName(req: PatchEditRequest): Promise<OperationResult & { strategy?: string, detail?: string }> {
+    try {
+      const target = this.resolveSlidePath(req.filePath)
+      const content = await readFile(target, 'utf-8')
+      const result = applyEditPatch(content, { ...req, filePath: target })
+      if (!result.success || result.content == null)
+        return { success: false, error: result.error }
+
+      await writeFile(target, result.content, 'utf-8')
+      return {
+        success: true,
+        strategy: result.strategy,
+        detail: result.detail,
+      }
+    } catch (error) {
+      console.error('Ошибка при patch-edit:', error)
+      return { success: false, error: String(error) }
+    }
+  }
+
+  async mutateTimelineStep(
+    action: 'add-step' | 'delete-step',
+    req: TimelineStepMutationRequest,
+  ): Promise<OperationResult & { detail?: string, stepCount?: number }> {
+    try {
+      const target = this.resolveSlidePath(req.filePath)
+      const content = await readFile(target, 'utf-8')
+      const result = action === 'add-step'
+        ? addEmptyTimelineStep(content, req)
+        : deleteTimelineStep(content, req)
+
+      if (!result.success || result.content == null)
+        return { success: false, error: result.error }
+
+      await writeFile(target, result.content, 'utf-8')
+      return {
+        success: true,
+        detail: result.detail,
+        stepCount: result.stepCount,
+      }
+    } catch (error) {
+      console.error(`Ошибка при ${action}:`, error)
+      return { success: false, error: String(error) }
+    }
+  }
+
+  private resolveSlidePath(filePath: string): string {
+    if (isAbsolute(filePath))
+      return filePath
+    const entryDir = dirname(this.entryPath)
+    return resolve(entryDir, filePath)
   }
 }
 

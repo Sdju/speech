@@ -3,6 +3,16 @@ import { computed, reactive, watch } from 'vue'
 import { mergeTimelineSteps } from './merge'
 import type { TimelineStep } from './types'
 
+/** Attach stable edit key so CoordHelper can write back via data-editname. */
+function withEditName(key: string, value: unknown) {
+  if (value !== null && typeof value === 'object' && !Array.isArray(value))
+    return { ...(value as Record<string, unknown>), 'data-editname': key }
+  // Scalar class strings (`:class="t.foo"`) — marker class, not written back to md.
+  if (typeof value === 'string')
+    return `${value} editname-${key}`.trim()
+  return value
+}
+
 /**
  * Reactive view-model for markdown `t.*` bindings.
  * Values are ComputedRefs stored on a reactive object (auto-unwrapped in templates).
@@ -29,7 +39,7 @@ export function createTimelineViewModel(
       keys.delete('$clicksAlias')
 
       for (const key of keys) {
-        view[key] = computed(() => precalculated.value.states[clickIndex.value]?.[key])
+        view[key] = computed(() => withEditName(key, precalculated.value.states[clickIndex.value]?.[key]))
       }
 
       for (const alias of Object.keys(precalculated.value.aliases)) {
