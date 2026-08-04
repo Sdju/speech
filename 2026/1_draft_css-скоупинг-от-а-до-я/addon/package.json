@@ -1,0 +1,26 @@
+{
+  "name": "@zede/slidev-addon",
+  "type": "module",
+  "version": "0.0.2",
+  "description": "Zede addon for Slidev",
+  "author": "Zede <zede169778@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/Sdju/speech",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sdju/speech.git",
+    "directory": "2026/1_draft_css-скоупинг-от-а-до-я/addon"
+  },
+  "bugs": "https://github.com/Sdju/speech/issues",
+  "keywords": [
+    "slidev-addon",
+    "slidev"
+  ],
+  "engines": {
+    "node": ">=20.12.0",
+    "slidev": ">=52.19.0"
+  },
+  "dependencies": {
+    "@slidev/types": "52.19.0"
+  }
+}
