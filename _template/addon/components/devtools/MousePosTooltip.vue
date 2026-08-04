@@ -3,10 +3,15 @@ import { computed, watch } from 'vue'
 import { useDi } from '../../module/VueServices/useDiContainer'
 import { MOUSE_SERVICE_KEY } from '../../module/CoordHelper/MouseService'
 import { MEMORY_SERVICE_KEY } from '../../module/CoordHelper/MemoryService'
+import { OBJECT_SERVICE_KEY } from '../../module/CoordHelper/ObjectService'
+import { SLIDE_SERVICE_KEY } from '../../module/CoordHelper/SlideService'
 import { useMagicKeys } from '@vueuse/core'
+
 const di = useDi()
 const mouse = di.inject(MOUSE_SERVICE_KEY)
 const memory = di.inject(MEMORY_SERVICE_KEY)
+const objectService = di.inject(OBJECT_SERVICE_KEY)
+const slideService = di.inject(SLIDE_SERVICE_KEY)
 
 memory.data.savedPositions ??= []
 
@@ -23,6 +28,23 @@ const boxSize = computed(() => {
 const isSizeMode = computed(() => {
   if (!boxSize.value) return false
   return boxSize.value.width !== 0 || boxSize.value.height !== 0
+})
+
+/** When hovering/selecting $obj inside a nested root — show that space. */
+const rootLocal = computed(() => {
+  void mouse.globalX
+  void mouse.globalY
+  const el = objectService.hovered ?? objectService.active
+  if (!el)
+    return null
+  const root = mouse.coordRootOf(el)
+  if (root === slideService.slideElement)
+    return null
+  const point = mouse.globalToElementLocal(el, { x: mouse.globalX, y: mouse.globalY })
+  return {
+    x: Math.round(point.x),
+    y: Math.round(point.y),
+  }
 })
 
 const { alt_q } = useMagicKeys()
@@ -55,6 +77,10 @@ watch(alt_q, (v) => {
         px {{ Math.round(mouse.localX) }} {{ Math.round(mouse.localY) }}
         <br/>
         % {{ mouse.localXPercent }} {{ mouse.localYPercent }}
+        <template v-if="rootLocal">
+          <br/>
+          root {{ rootLocal.x }} {{ rootLocal.y }}
+        </template>
       </template>
     </div>
 </template>

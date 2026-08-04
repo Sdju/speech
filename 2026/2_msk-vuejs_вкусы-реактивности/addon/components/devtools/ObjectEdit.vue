@@ -59,8 +59,8 @@ function localSizeFromBounds(bounds: DOMRect) {
   }
 }
 
-function localCenterFromBounds(bounds: DOMRect) {
-  return mouseService.globalToLocal({
+function localCenterFromElement(el: HTMLElement, bounds: DOMRect) {
+  return mouseService.globalToElementLocal(el, {
     x: bounds.left + bounds.width / 2,
     y: bounds.top + bounds.height / 2,
   })
@@ -97,7 +97,7 @@ watch(() => getObjectElement(objectService.active), (obj, oldObj) => {
         return
 
       const bounds = obj.element.getBoundingClientRect()
-      const center = localCenterFromBounds(bounds)
+      const center = localCenterFromElement(obj.element, bounds)
       const size = localSizeFromBounds(bounds)
       const power = e.shiftKey ? 10 : e.altKey ? 1 : 5
 
@@ -146,7 +146,7 @@ watch(() => getObjectElement(objectService.active), (obj, oldObj) => {
 
       window.addEventListener('mousemove', (e) => {
         obj.locked = true
-        const pos = mouseService.globalToLocal({ x: e.clientX, y: e.clientY })
+        const pos = mouseService.globalToElementLocal(obj.element, { x: e.clientX, y: e.clientY })
         const size = localSizeFromBounds(obj.element.getBoundingClientRect())
         const next = {
           x: pos.x - dragOffset!.x,

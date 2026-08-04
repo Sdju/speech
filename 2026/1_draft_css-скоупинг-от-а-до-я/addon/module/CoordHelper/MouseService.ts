@@ -1,6 +1,7 @@
 import { computed, reactive, ref } from 'vue'
 import { useEventListener } from '@vueuse/core'
 import { SLIDE_SERVICE_KEY } from './SlideService'
+import { getCoordRoot, globalToRootLocal } from './coords'
 import { Injector, createServiceKey } from '../VueServices/useDiContainer'
 
 export const MouseService = (injector: Injector) => {
@@ -38,11 +39,21 @@ export const MouseService = (injector: Injector) => {
         mousePosY.value = e.clientY
     })
 
-    function globalToLocal({x, y}: {x: number, y: number}) {
+    function globalToLocal({ x, y }: { x: number, y: number }) {
         return {
             x: (x - slideService.left) / slideService.scale,
-            y: (y - slideService.top) / slideService.scale
+            y: (y - slideService.top) / slideService.scale,
         }
+    }
+
+    /** Containing block for $obj left/top (frame / slide / data-coord-root). */
+    function coordRootOf(el: HTMLElement) {
+        return getCoordRoot(el, slideService.slideElement)
+    }
+
+    /** Viewport → CSS px in the element's positioning root. */
+    function globalToElementLocal(el: HTMLElement, point: { x: number, y: number }) {
+        return globalToRootLocal(point, coordRootOf(el), slideService.scale)
     }
 
     return reactive({
@@ -55,6 +66,8 @@ export const MouseService = (injector: Injector) => {
         localXPercent,
         localYPercent,
         globalToLocal,
+        coordRootOf,
+        globalToElementLocal,
     })
 }
 export const MOUSE_SERVICE_KEY = createServiceKey(MouseService)

@@ -3,10 +3,13 @@ import { computed, watch } from 'vue'
 import { useDi } from '../../module/VueServices/useDiContainer'
 import { MOUSE_SERVICE_KEY } from '../../module/CoordHelper/MouseService'
 import { MEMORY_SERVICE_KEY } from '../../module/CoordHelper/MemoryService'
+import { OBJECT_SERVICE_KEY } from '../../module/CoordHelper/ObjectService'
 import { useMagicKeys } from '@vueuse/core'
+
 const di = useDi()
 const mouse = di.inject(MOUSE_SERVICE_KEY)
 const memory = di.inject(MEMORY_SERVICE_KEY)
+const objectService = di.inject(OBJECT_SERVICE_KEY)
 
 memory.data.savedPositions ??= []
 
@@ -23,6 +26,24 @@ const boxSize = computed(() => {
 const isSizeMode = computed(() => {
   if (!boxSize.value) return false
   return boxSize.value.width !== 0 || boxSize.value.height !== 0
+})
+
+/** When hovering/selecting $obj inside a frame — show coords in that root. */
+const rootLocal = computed(() => {
+  const el = objectService.hovered ?? objectService.active
+  if (!el)
+    return null
+  const root = mouse.coordRootOf(el)
+  const slide = (mouse as any) // slide check via identity
+  void slide
+  const point = mouse.globalToElementLocal(el, { x: mouse.globalX, y: mouse.globalY })
+  const isFrame = root !== document.querySelector('#slide-content')
+  if (!isFrame)
+    return null
+  return {
+    x: Math.round(point.x),
+    y: Math.round(point.y),
+  }
 })
 
 const { alt_q } = useMagicKeys()
@@ -55,6 +76,10 @@ watch(alt_q, (v) => {
         px {{ Math.round(mouse.localX) }} {{ Math.round(mouse.localY) }}
         <br/>
         % {{ mouse.localXPercent }} {{ mouse.localYPercent }}
+        <template v-if="rootLocal">
+          <br/>
+          root {{ rootLocal.x }} {{ rootLocal.y }}
+        </template>
       </template>
     </div>
 </template>
