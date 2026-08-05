@@ -1,0 +1,38 @@
+[variant] {
+    transition: all 2.5s ease-out,
+     --bg-keyword 2.5s ease-out,
+     --bg-first 2.5s ease-out,
+     --bg-second 2.5s ease-out,
+     --bg-third 2.5s ease-out,
+     --v-color 2.5s ease-out;
+}
+
+@property --v-color {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: true;
+}
+
+@property --bg-keyword {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: true;
+}
+
+@property --bg-first {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: true;
+}
+
+@property --bg-second {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: true;
+}
+
+@property --bg-third {
+    syntax: '<color>';
+    initial-value: theme('colors.gray.500');
+    inherits: false;
+}

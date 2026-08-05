@@ -1,0 +1,325 @@
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import EditableValue from './EditableValue.vue'
+
+const props = defineProps<{
+  data: any
+  depth?: number
+  name?: string
+  /** Skip Object/Array chrome and show keys/items directly (root of a timeline value). */
+  flat?: boolean
+  editable?: boolean
+  /** Key path inside the step value, e.g. `block1` or `block1.class`. */
+  pathPrefix?: string
+  /** Full path used by EditableValue, e.g. `timeline.0.block1`. */
+  basePath?: string
+  stepIndex?: number
+}>()
+
+const emit = defineEmits<{
+  update: [path: string, oldValue: any, newValue: any, stepIndex: number, propertyName: string]
+}>()
+
+const depth = props.depth ?? 0
+const flatRoot = props.flat && depth === 0
+const isExpanded = ref(depth < 2 || flatRoot)
+
+const canEdit = computed(() => props.editable && props.stepIndex != null)
+
+function toggleExpand() {
+  isExpanded.value = !isExpanded.value
+}
+
+function isObject(value: any): boolean {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+}
+
+function isArray(value: any): boolean {
+  return Array.isArray(value)
+}
+
+function isPrimitive(value: any): boolean {
+  return !isObject(value) && !isArray(value)
+}
+
+function getValueType(value: any): string {
+  if (value === null) return 'null'
+  if (value === undefined) return 'undefined'
+  if (typeof value === 'boolean') return 'boolean'
+  if (typeof value === 'number') return 'number'
+  if (typeof value === 'string') return 'string'
+  if (isArray(value)) return 'array'
+  if (isObject(value)) return 'object'
+  return 'unknown'
+}
+
+function formatPrimitive(value: any): string {
+  if (value === null) return 'null'
+  if (value === undefined) return 'undefined'
+  if (typeof value === 'boolean') return value ? 'true' : 'false'
+  if (typeof value === 'number') return String(value)
+  if (typeof value === 'string') return value
+  return String(value)
+}
+
+function getKeys(obj: any): string[] {
+  return Object.keys(obj)
+}
+
+function getSize(value: any): number {
+  if (isArray(value)) return value.length
+  if (isObject(value)) return Object.keys(value).length
+  return 0
+}
+
+function childPath(key: string | number) {
+  const base = props.basePath || ''
+  return base ? `${base}.${key}` : String(key)
+}
+
+function childPrefix(key: string | number) {
+  const prefix = props.pathPrefix || ''
+  return prefix ? `${prefix}.${key}` : String(key)
+}
+
+function onChildUpdate(path: string, oldValue: any, newValue: any, stepIndex: number, propertyName: string) {
+  emit('update', path, oldValue, newValue, stepIndex, propertyName)
+}
+</script>
+
+<template>
+  <div class="object-viewer" :style="{ paddingLeft: depth > 0 && !flatRoot ? '12px' : '0' }">
+    <EditableValue
+      v-if="isPrimitive(data) && canEdit"
+      :value="data"
+      :path="basePath || pathPrefix || ''"
+      :step-index="stepIndex!"
+      :property-name="pathPrefix || name || ''"
+      @update="onChildUpdate"
+    />
+    <div
+      v-else-if="isPrimitive(data)"
+      class="primitive-value"
+      :class="`type-${getValueType(data)}`"
+    >
+      {{ formatPrimitive(data) }}
+    </div>
+
+    <!-- Flat root object: keys at top level, no Object (n) chrome -->
+    <div v-else-if="flatRoot && isObject(data)" class="object-properties flat-root">
+      <div v-for="key in getKeys(data)" :key="key" class="object-property">
+        <div class="property-line">
+          <span class="property-key">{{ key }}:</span>
+          <ObjectViewer
+            :data="data[key]"
+            :depth="depth + 1"
+            :editable="editable"
+            :path-prefix="childPrefix(key)"
+            :base-path="childPath(key)"
+            :step-index="stepIndex"
+            @update="onChildUpdate"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div v-else class="complex-container">
+      <div class="complex-header" @click="toggleExpand">
+        <button class="expand-btn">
+          <div v-if="isExpanded" class="i-carbon:chevron-down text-xs" />
+          <div v-else class="i-carbon:chevron-right text-xs" />
+        </button>
+        
+        <span v-if="name" class="object-name">{{ name }}</span>
+        
+        <span class="object-type">
+          {{ isArray(data) ? 'Array' : 'Object' }}
+        </span>
+        
+        <span class="object-size">
+          ({{ getSize(data) }})
+        </span>
+        
+        <div v-if="!isExpanded" class="object-preview">
+          {{ isArray(data) ? '[...]' : '{...}' }}
+        </div>
+      </div>
+
+      <div v-if="isExpanded" class="complex-content">
+        <div v-if="isArray(data)" class="array-items">
+          <div v-for="(item, index) in data" :key="index" class="array-item">
+            <span class="array-index">[{{ index }}]</span>
+            <ObjectViewer
+              :data="item"
+              :depth="depth + 1"
+              :editable="editable"
+              :path-prefix="childPrefix(index)"
+              :base-path="childPath(index)"
+              :step-index="stepIndex"
+              @update="onChildUpdate"
+            />
+          </div>
+        </div>
+
+        <div v-else class="object-properties">
+          <div v-for="key in getKeys(data)" :key="key" class="object-property">
+            <div class="property-line">
+              <span class="property-key">{{ key }}:</span>
+              <ObjectViewer
+                :data="data[key]"
+                :depth="depth + 1"
+                :editable="editable"
+                :path-prefix="childPrefix(key)"
+                :base-path="childPath(key)"
+                :step-index="stepIndex"
+                @update="onChildUpdate"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.object-viewer {
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.primitive-value {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.type-string {
+  color: #ce9178;
+  background: rgba(206, 145, 120, 0.1);
+}
+
+.type-number {
+  color: #b5cea8;
+  background: rgba(181, 206, 168, 0.1);
+}
+
+.type-boolean {
+  color: #569cd6;
+  background: rgba(86, 156, 214, 0.1);
+}
+
+.type-null,
+.type-undefined {
+  color: #808080;
+  background: rgba(128, 128, 128, 0.1);
+  font-style: italic;
+}
+
+.complex-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.complex-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.complex-header:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.expand-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.object-name {
+  color: #9cdcfe;
+  font-weight: 600;
+}
+
+.object-type {
+  color: #4ec9b0;
+  font-size: 10px;
+}
+
+.object-size {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 10px;
+}
+
+.object-preview {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 10px;
+  margin-left: 4px;
+}
+
+.complex-content {
+  margin-top: 2px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  margin-left: 8px;
+}
+
+.array-items,
+.object-properties {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 4px;
+}
+
+.flat-root {
+  padding-left: 0;
+  border-left: none;
+}
+
+.array-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.array-index {
+  color: #d16969;
+  font-size: 10px;
+  min-width: 24px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.object-property {
+  display: flex;
+  flex-direction: column;
+}
+
+.property-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.property-key {
+  color: #9cdcfe;
+  font-weight: 500;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+</style>

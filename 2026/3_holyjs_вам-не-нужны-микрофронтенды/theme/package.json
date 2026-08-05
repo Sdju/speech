@@ -1,0 +1,37 @@
+{
+  "name": "@zede/theme",
+  "version": "0.0.2",
+  "description": "Zede theme for Slidev",
+  "author": "Zede <zede169778@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/Sdju/speech",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sdju/speech.git",
+    "directory": "_template/theme"
+  },
+  "bugs": "https://github.com/Sdju/speech/issues",
+  "keywords": [
+    "slidev-theme",
+    "slidev"
+  ],
+  "engines": {
+    "node": ">=20.12.0",
+    "slidev": ">=52.19.0"
+  },
+  "slidev": {
+    "colorSchema": "dark",
+    "defaults": {
+      "fonts": {
+        "mono": "Fira Code",
+        "sans": "Avenir Next,Nunito Sans",
+        "local": [
+          "Avenir Next"
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "@slidev/types": "52.19.0"
+  }
+}
