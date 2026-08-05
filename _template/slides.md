@@ -7,7 +7,7 @@ htmlAttrs:
   lang: ru
 lineNumbers: true
 colorSchema: dark
-transition: fade-out
+transition: view-transition
 contextMenu: false
 comark: true
 growSeed: 4
@@ -15,26 +15,19 @@ title: История реактивности Frontend
 layout: center
 ---
 
-<XSlide slot="title" #="{ title, className, style }">
-  <h1 :class="className" :style="style"> {{ title }} </h1>
-</XSlide>
+# Шаблон доклада
 
-<XSlideOut slot="title" title="Реактивность и все все все" class="text-center text-4xl" />
+Демо ниже — **XSlide** (shared element между слайдами).
 
-<div class="pt-12 text-center">
-  <div class="text-xl opacity-75 mb-8">
-    От спагетти-кода до сигналов: эволюция подходов к управлению состоянием
-  </div>
-</div>
+Дальше — обычные примеры палитры и timeline.
 
-<!--
-подстелить соломку реактивность как парадигма / отличие от реактивности UI
--->
+---
+src: ./parts/0_xslide.md
+---
 
 ---
 src: ./parts/1_palette.md
 ---
-
 
 ---
 src: ./parts/2_advanced.md

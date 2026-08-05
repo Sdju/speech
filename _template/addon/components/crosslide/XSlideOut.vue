@@ -1,21 +1,17 @@
 <script lang="ts" setup>
-import { useNav } from '@slidev/client'
-import { useXSlides } from '../../module/XSlides/XSlidesService'
+/**
+ * Render-only alias of XSlide (no slot registration).
+ * Prefer `<XSlide name="…" />` without children for the same effect.
+ */
+import XSlide from './XSlide.vue'
 
 defineProps<{
-  slot: string
+  name?: string
+  /** @deprecated use `name` */
+  slot?: string
 }>()
-
-const { isPlaying  } = useNav()
-const { slots } = useXSlides()
 </script>
 
 <template>
-  <component 
-    v-if="isPlaying" 
-    :is="slots[slot]"
-    :style="{ 'view-transition-name': `x-slide-${slot}` }"
-    :className="['vt', $attrs.class]"
-    v-bind="$attrs"
-  />
+  <XSlide v-bind="{ ...$props, ...$attrs }" />
 </template>
