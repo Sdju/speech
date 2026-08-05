@@ -79,6 +79,9 @@ Each presentation directory contains its own `package.json` with these scripts:
 ### Main Project Commands
 
 - `pnpm presentation:create`: Create a new presentation project
+- `pnpm static:index`: Regenerate `-static/index.html` hub with links to built slides
+
+Each presentation `pnpm build` also refreshes that hub after Slidev output.
 
 ## Presentation Structure
 

@@ -233,6 +233,7 @@ if (props.resize) {
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <style scoped>

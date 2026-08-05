@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "presentation:create": "node scripts/create-presentation.ts",
+    "static:index": "node scripts/generate-static-index.ts",
     "runner": "node runner/index.ts"
   },
   "devDependencies": {

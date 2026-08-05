@@ -8,18 +8,24 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '../..');
+const repoRoot = path.resolve(projectRoot, '../..');
 
 const projectDir = path.basename(projectRoot);
+const yearDir = path.basename(path.dirname(projectRoot));
+// Source: {year}/{n}_{conf}_{title} → static: {year}_{conf}_{title} (no order number)
+const slug = projectDir.replace(/^\d+_/, '');
+const outName = /^\d{4}$/.test(yearDir) ? `${yearDir}_${slug}` : slug;
 
 const STATIC_ROOT = '../../-static/slides/';
 const BASE_ROOT = '/speech/slides/';
 
-const outputPath = path.resolve(projectRoot, STATIC_ROOT, projectDir);
-const basePath = BASE_ROOT + projectDir + '/';
+const outputPath = path.resolve(projectRoot, STATIC_ROOT, outName);
+const basePath = BASE_ROOT + outName + '/';
 const binDir = path.resolve(projectRoot, 'node_modules/.bin');
 
 console.log(`📦 Building presentation...`);
-console.log(`📁 Project directory: ${projectDir}`);
+console.log(`📁 Project directory: ${yearDir}/${projectDir}`);
+console.log(`📁 Output name: ${outName}`);
 console.log(`📁 Output path: ${outputPath}`);
 console.log(`🔗 Base path: ${basePath}`);
 
@@ -36,6 +42,12 @@ try {
     stdio: 'inherit',
     cwd: projectRoot,
     env: { ...process.env, PATH: `${binDir}${path.delimiter}${process.env.PATH}` },
+  });
+
+  console.log(`🧭 Refreshing -static/index.html hub...`);
+  execSync('node scripts/generate-static-index.ts', {
+    stdio: 'inherit',
+    cwd: repoRoot,
   });
 
   console.log(`✅ Build completed successfully!`);
