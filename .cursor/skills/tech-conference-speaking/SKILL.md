@@ -15,7 +15,7 @@ disable-model-invocation: true
 
 Используй этот skill, когда нужно не просто "написать слайды", а провести доклад через понятные стадии зрелости.
 
-Сочетай его с `slidev-zede-style`, когда доходишь до реальных Slidev-слайдов и визуальной реализации в стиле этого репозитория.
+Не перескакивай сразу к финальным стилизованным слайдам. Ведущий workflow — фазы ниже; [slidev-zede-style](../slidev-zede-style/SKILL.md) подключай для scaffold (`presentation:create`, latin folder names), синтаксиса Slidev и фазы материализации.
 
 ## Артефакты
 
@@ -136,5 +136,5 @@ disable-model-invocation: true
 
 ## Дополнительно
 
-- За Slidev-синтаксис, `parts/`, timeline, `magic-move`, `Node`, `SvgArrow`, `XSlide`, `Points`, темы и кастомный стиль репозитория см. [skill `slidev-zede-style`](../slidev-zede-style/SKILL.md).
-- За примеры фаз и шаблоны файлов см. [examples.md](examples.md) и [reference.md](reference.md).
+- Scaffold папки, имена (`латиница` = перевод, не транслит), `parts/`, timeline, `magic-move`, `Node`/`SvgArrow`/`XSlide`/`Points` → [slidev-zede-style](../slidev-zede-style/SKILL.md).
+- Примеры фаз и шаблоны → [examples.md](examples.md), [reference.md](reference.md).

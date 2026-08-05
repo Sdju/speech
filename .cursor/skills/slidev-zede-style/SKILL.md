@@ -3,9 +3,10 @@ name: slidev-zede-style
 description: >-
   Создаёт и правит Slidev-доклады в стиле репозитория speech (zede): _template,
   parts/, timeline + t.*, Node/SvgArrow/XSlide, Points/bento, magic-move,
-  Uno pos-/sp-/$obj/cs-*, русский контент, dark theme. Use when creating a new
-  presentation, writing slides.md/parts, complex layouts, timeline animations,
-  diagrams, or when the user asks for слайды/доклад/презентацию в своём стиле.
+  Uno pos-/sp-/$obj/cs-*, русский контент, dark theme, latin folder names.
+  Use when creating or editing Slidev slides/parts, layouts, animations,
+  diagrams; scaffold via presentation:create; materialize after
+  tech-conference-speaking phases.
 ---
 
 # Slidev в стиле speech (zede)
@@ -13,6 +14,9 @@ description: >-
 Канон: `_template/` + `2026/2_msk-vuejs_вкусы-реактивности`.  
 Points+full / magic-move pad / bento — также `2025/msk-vuejs_magick-of-composables`, `holy_composables-constellation`, `ufadevconf_the-state-of-frontend`.  
 Talk-skins (`mk-*`, `dt-*`) — per-talk. Upstream → `slidev-expert`.
+
+Этот skill — про **синтаксис, форматы и визуальные паттерны** Slidev в speech.  
+План доклада, фазы зрелости, wireframe → md → материализация → [tech-conference-speaking](../tech-conference-speaking/SKILL.md).
 
 ## Upstream vs custom
 
@@ -27,11 +31,33 @@ Talk-skins (`mk-*`, `dt-*`) — per-talk. Upstream → `slidev-expert`.
 
 ## Workflow
 
+Не создавай «сразу готовые» слайды хаотично. Иди по фазам [tech-conference-speaking](../tech-conference-speaking/SKILL.md); этот skill подключай там, где нужны scaffold, синтаксис и материализация.
+
+| Фаза | Кто ведёт | Роль этого skill |
+|------|-----------|------------------|
+| 1 сбор фактуры | tech-conference-speaking | при необходимости scaffold папки |
+| 2 wireframe | tech-conference-speaking | заглушки в `parts/`, FM, структура |
+| 2.1 дизайн | tech-conference-speaking | идеи ↔ доступные паттерны (Points, Node…) |
+| 3 markdown | tech-conference-speaking | простой md/mermaid в `parts/` |
+| 4 материализация | **этот skill** + tech-conference-speaking | стилизованные слайды, timeline, диаграммы |
+
+### Создание папки
+
 ```bash
-pnpm presentation:create -c <conf> -t "<название>" -y <year>
+pnpm presentation:create -c <conf> -t "<english-title>" -y <year>
 ```
 
-FM из `_template` → `parts/` → один драйвер кликов на слайд → CoordHelper для `$obj`.
+Правила имени (`{n}_{conf}_{title}`):
+
+- **только латиница** в `conference` и `title` для CLI/`-t` (кириллица в пути запрещена);
+- русское название → **английский перевод**, не транслит  
+  (`Вам не нужны микрофронтенды` → `you-dont-need-microfrontends`, не `vam-ne-nuzhny-…`);
+- kebab-case; бренд конфы как принято (`holyjs`, `msk-vuejs`);
+- `title:` в frontmatter / контент слайдов — по-русски.
+
+Артефакты планирования: `<path-to-slides>/collected/`. Референсы: `.samples/`.
+
+Дальше: FM из `_template` → `parts/` → один драйвер кликов на слайд → CoordHelper для `$obj`.
 
 ## Frontmatter
 
@@ -243,6 +269,8 @@ Uno: `pos-*`, `sp-*`, `cs-*`, `bento-*`, `$obj`, `fx`. Не `mergeConfigs([slide
 
 | Нет | Да |
 |-----|-----|
+| Сразу «красивые» слайды без фаз | [tech-conference-speaking](../tech-conference-speaking/SKILL.md) → потом материализация |
+| Кириллица / транслит в имени папки | латиница = **перевод** (`you-dont-need-…`) |
 | Монолитный `slides.md` | parts + `src:` |
 | `v-click` + timeline/magic-move на одном слайде | Один драйвер |
 | `v-click` на Points+full «и» timeline для подсветки | A **или** B/C/D, не оба |
