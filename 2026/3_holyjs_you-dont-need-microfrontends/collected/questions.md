@@ -1,22 +1,37 @@
 # Questions
 
-Метки: `fact` · `hypothesis` · `unknown` · `defer`
+Метки: `fact` · `hypothesis` · `unknown` · `defer` · `decision`
 
 ## Согласовано
 
-- [x] Порядок макро и рабочее определение MFE = dynamic — `fact`
-- [x] Артефакт: `example/<example-name>/` — `fact`
 - [x] Жанр / MF / без SM Lab — `fact`
-- [x] Фаза 2 wireframe начата — `fact`
+- [x] MFE в докладе = dynamic linking — `fact`
+- [x] Лестница static: modules → monorepo → packages — `fact`
+- [x] Носитель лестницы = сквозной сценарий **Ябе.ру** — `fact` (внесено в collected)
+- [x] Второй вопрос доклада: «почему всё ещё один frontend?» — `fact`
+- [x] Ритм каламбуров и «Pay не дожимать» — `fact` (`narrative.md`)
 
-## Открыто · правка wireframe
+## Решение нужно сейчас (блокер wireframe)
 
-- [ ] Слить/вырезать отдельные слайды техпроблем в `3_mfe_analysis.md`? — `unknown`
-- [ ] Финальный список 3–4 техпроблем MB3b — `unknown`
-- [ ] Примеры болей на слайде «в какой плоскости?» — `hypothesis` в notes
-- [ ] Сигналы «когда dynamic ок» — `hypothesis` в notes
-- [ ] `<example-name>` — `defer`
+- [ ] Порядок макро: **A** история→поворот→аналитика (рекомендация) vs B/C — `decision`
+- [ ] Где сажать мягкое определение MFE / лого MF: MB1 или этап Travel — `decision`
+- [ ] UI-гэг: только фон или явный слайд в повороте — `decision`
+
+## Открыто · содержание
+
+- [ ] Финальный список 3–4 техпроблем MB5c — `unknown`
+- [ ] Сигналы «когда dynamic ок» — `hypothesis`
+- [ ] Насколько явно проговаривать «архитектура чище / продукт мутнее» — `hypothesis`
+- [ ] `<example-name>`: `yabe` / `yabe-ru` / иное — `defer`
+- [ ] Юридически/тонально: дистанция от реального суперприложения — ок вымысел? — `hypothesis` (кажется ок)
+
+## Устарело относительно parts/
+
+- [x] Старый wireframe MB0–MB9 в `parts/` не совпадает с новым порядком — `fact` · статус: **stale**
+- [ ] Перенарезать `parts/` после ok по макроблокам — `unknown`
 
 ## Следующий шаг
 
-Прогнать narrative по wireframe (темп, дырки, повторы) → design brief (2.1) или markdown-контент (3).
+1. Подтвердить порядок A (или выбрать B/C).
+2. Ответить на 2–3 decision выше.
+3. Пересобрать wireframe в `parts/` под новые MB0–MB7.

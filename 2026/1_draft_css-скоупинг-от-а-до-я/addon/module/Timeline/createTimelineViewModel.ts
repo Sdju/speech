@@ -3,12 +3,32 @@ import { computed, reactive, watch } from 'vue'
 import { mergeTimelineSteps } from './merge'
 import type { TimelineStep } from './types'
 
+/** Uno/Tailwind-like tokens for `:class="t.*"`, not human labels in `{{ t.* }}`. */
+function isUtilityToken(token: string): boolean {
+  if (token === 'fx')
+    return true
+  // Utilities: dashes, brackets, slash, %, CSS vars
+  if (/[-[\]/%:]/.test(token) || /^\[--/.test(token))
+    return true
+  if (/^(opacity|duration|animate|overflow|inset|pointer-events|hidden|absolute|relative|flex|grid)([\w.-]|$)/.test(token))
+    return true
+  return false
+}
+
+function isClassString(value: string): boolean {
+  const tokens = value.trim().split(/\s+/).filter(Boolean)
+  if (!tokens.length)
+    return false
+  return tokens.every(isUtilityToken)
+}
+
 /** Attach stable edit key so CoordHelper can write back via data-editname. */
 function withEditName(key: string, value: unknown) {
   if (value !== null && typeof value === 'object' && !Array.isArray(value))
     return { ...(value as Record<string, unknown>), 'data-editname': key }
   // Scalar class strings (`:class="t.foo"`) — marker class, not written back to md.
-  if (typeof value === 'string')
+  // Skip content strings used in `{{ t.foo }}` (titles, node labels, …).
+  if (typeof value === 'string' && isClassString(value))
     return `${value} editname-${key}`.trim()
   return value
 }

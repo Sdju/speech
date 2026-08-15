@@ -31,7 +31,9 @@ Talk-skins (`mk-*`, `dt-*`) — per-talk. Upstream → `slidev-expert`.
 
 ## Workflow
 
-Не создавай «сразу готовые» слайды хаотично. Иди по фазам [tech-conference-speaking](../tech-conference-speaking/SKILL.md); этот skill подключай там, где нужны scaffold, синтаксис и материализация.
+  Не создавай «сразу готовые» слайды хаотично по всему докладу. Иди по фазам [tech-conference-speaking](../tech-conference-speaking/SKILL.md); этот skill подключай там, где нужны scaffold, синтаксис и материализация.
+
+  **Исключение:** слайд с `Статус: реализация` в HTML-комментарии можно материализовать сразу (md → при необходимости визуал), не дожидаясь фазы 3/4 на весь доклад. Правки пользователя в `Контент`/`Спикер` у такого слайда — синхронизируй в тело.
 
 | Фаза | Кто ведёт | Роль этого skill |
 |------|-----------|------------------|
@@ -40,6 +42,7 @@ Talk-skins (`mk-*`, `dt-*`) — per-talk. Upstream → `slidev-expert`.
 | 2.1 дизайн | tech-conference-speaking | идеи ↔ доступные паттерны (Points, Node…) |
 | 3 markdown | tech-conference-speaking | простой md/mermaid в `parts/` |
 | 4 материализация | **этот skill** + tech-conference-speaking | стилизованные слайды, timeline, диаграммы |
+| послайдово | оба | только слайды с `Статус: реализация` |
 
 ### Создание папки
 
@@ -269,7 +272,7 @@ Uno: `pos-*`, `sp-*`, `cs-*`, `bento-*`, `$obj`, `fx`. Не `mergeConfigs([slide
 
 | Нет | Да |
 |-----|-----|
-| Сразу «красивые» слайды без фаз | [tech-conference-speaking](../tech-conference-speaking/SKILL.md) → потом материализация |
+| Сразу «красивые» слайды без фаз | [tech-conference-speaking](../tech-conference-speaking/SKILL.md); исключение — `Статус: реализация` |
 | Кириллица / транслит в имени папки | латиница = **перевод** (`you-dont-need-…`) |
 | Монолитный `slides.md` | parts + `src:` |
 | `v-click` + timeline/magic-move на одном слайде | Один драйвер |

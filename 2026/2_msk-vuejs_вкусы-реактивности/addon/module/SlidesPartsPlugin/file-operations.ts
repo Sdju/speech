@@ -1,7 +1,7 @@
 import { readFile, writeFile, rename, unlink } from 'node:fs/promises'
 import { dirname, join, basename, isAbsolute, resolve } from 'node:path'
 import type { OperationResult } from './types'
-import { extractFilePrefix } from './parser'
+import { extractFileName, extractFilePrefix } from './parser'
 import { applyEditPatch, type PatchEditRequest } from '../CoordHelper/patchEdit'
 import {
   addEmptyTimelineStep,
@@ -135,7 +135,8 @@ export class FileOperations {
       parts[partIndex] = parts[targetIndex]
       parts[targetIndex] = temp
       
-      const newSlidesContent = parts.join('\n\n---')
+      const reorderedContent = parts.join('\n\n---')
+      const newSlidesContent = await this.renumberPartPrefixes(reorderedContent)
       await writeFile(this.entryPath, newSlidesContent, 'utf-8')
       
       return { success: true }
@@ -143,6 +144,64 @@ export class FileOperations {
       console.error('Ошибка при перемещении части:', error)
       return { success: false, error: String(error) }
     }
+  }
+
+  private async renumberPartPrefixes(slidesContent: string): Promise<string> {
+    const entryDir = dirname(this.entryPath)
+    const parts = slidesContent.split('\n\n---')
+
+    type Plan = {
+      partIndex: number
+      oldSrc: string
+      newSrc: string
+      oldPath: string
+      newPath: string
+    }
+
+    const plan: Plan[] = []
+    let order = 0
+
+    for (let i = 1; i < parts.length; i++) {
+      const srcMatch = parts[i].match(/\nsrc:\s*(.+\.md)\s*\n/)
+      if (!srcMatch)
+        continue
+
+      const oldSrc = srcMatch[1].trim()
+      const oldFileName = basename(oldSrc)
+      const stem = extractFileName(oldSrc)
+      const newFileName = `${order}_${stem}.md`
+      const newSrc = oldSrc.replace(oldFileName, newFileName)
+
+      plan.push({
+        partIndex: i,
+        oldSrc,
+        newSrc,
+        oldPath: join(entryDir, oldSrc),
+        newPath: join(entryDir, newSrc),
+      })
+      order++
+    }
+
+    const toRename = plan.filter(p => p.oldPath !== p.newPath)
+    const temps = await Promise.all(toRename.map(async (p, idx) => {
+      const tempPath = join(dirname(p.oldPath), `.renum-tmp-${idx}-${basename(p.newPath)}`)
+      await rename(p.oldPath, tempPath)
+      return { ...p, tempPath }
+    }))
+
+    for (const p of temps)
+      await rename(p.tempPath, p.newPath)
+
+    for (const p of plan) {
+      if (p.oldSrc === p.newSrc)
+        continue
+      parts[p.partIndex] = parts[p.partIndex].replace(
+        `src: ${p.oldSrc}`,
+        `src: ${p.newSrc}`,
+      )
+    }
+
+    return parts.join('\n\n---')
   }
 
   async toggleHidePartFile(src: string): Promise<OperationResult> {

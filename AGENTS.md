@@ -1,111 +1,67 @@
-# Speech Presentations Project
+# speech — инструкции для агента
 
-## Overview
+Монорепо докладов на [Slidev](https://sli.dev) (Vue + Markdown). Корневой `package.json` — только оркестрация; каждая презентация — отдельный пакет со своим `pnpm dev` / `pnpm build`.
 
-This is a project for creating and managing presentation slides using [Slidev](https://sli.dev), a presentation framework based on Vue and Markdown. The project includes a script for generating new presentation templates with consistent structure and dependencies.
+Короткие инварианты репо. Синтаксис слайдов, фазы доклада и сабагенты — через skills/agents (их description уже в контексте); сюда не копируй каталог.
 
-## Project Structure
+Приоритет при новом/сыром докладе: сначала фазы планирования (`tech-conference-speaking`), потом материализация (`slidev-zede-style`) — не прыгай сразу к «красивым» слайдам по всему докладу.
 
-- `scripts/create-presentation.ts`: Main script for creating new presentation projects
-- `_template/`: Template directory used as a base for new presentations
-- `2024/`, `2025/`: Year-based directories containing individual presentation projects
-- `-static/`: Static assets directory
-- Root level files: Project configuration and index file
+## Карта репо
 
-## Key Features
-
-1. **Automated Project Creation**: The `create-presentation.ts` script automatically generates new presentation projects with proper folder naming, template copying, and dependency installation.
-
-2. **Standardized Template**: All presentations use a consistent template with:
-   - Vue-based slide components
-   - UnoCSS styling
-   - Custom theme and layout components
-   - Pre-configured dependencies and build tools
-
-3. **Year-based Organization**: Presentations are organized in yearly directories with numbered prefixes for chronological tracking.
-
-## Creating New Presentations
-
-To create a new presentation, run:
-
-```bash
-pnpm presentation:create
+```
+_template/          # канон новой презентации (копируется скриптом)
+2024|2025|2026/     # доклады: {n}_{conf}_{title}/
+.samples/           # референсы / клоны (вне основного workflow слайдов)
+.cursor/skills/     # рабочие skill'ы
+.cursor/agents/     # сабагенты
+scripts/            # presentation:create, static:index
+-static/            # собранный хаб бинарных билдов
 ```
 
-Or pass arguments via CLI (for scripts and agents):
+Внутри доклада:
 
-```bash
-pnpm presentation:create --conference draft --title "CSS скоупинг от А до Я"
-pnpm presentation:create draft "CSS скоупинг от А до Я"
-pnpm presentation:create -c msk-vuejs -t "CSS scoping" -y 2026 --skip-install
+```
+slides.md           # entry + src: parts
+parts/*.md          # секции
+collected/          # brief, plan, design, questions (фаза планирования)
+theme/ + addon/     # тема и локальные расширения
+components/ img/    # per-talk
 ```
 
-CLI options:
-- `-c, --conference` — conference name
-- `-t, --title` — talk title
-- `-y, --year` — year (default: current)
-- `-n, --number` — order number (default: next free)
-- `--skip-install` — skip `pnpm install`
-- `-h, --help` — show help
+Канон стиля: `_template/` + свежие доклады в `2026/` (см. skill).
 
-Without CLI args, the script prompts interactively (TTY only).
+## Команды
 
-Folder name format: `{number}_{conference}_{title}`
+```bash
+# корень репо
+pnpm presentation:create -c <conf> -t "<english-title>" -y <year>
+pnpm static:index
 
-The script will:
-1. Create a new directory with proper numbering
-2. Copy the template files
-3. Update configuration files
-4. Install project dependencies
+# внутри <year>/<talk>/
+pnpm install
+pnpm dev
+pnpm build
+```
 
-## Technology Stack
+CLI: `-c/--conference`, `-t/--title`, `-y/--year`, `-n/--number`, `--skip-install`, `-h`.
 
-- **Slidev**: Presentation framework built on Vue.js and Markdown
-- **Vue 3**: Component-based UI framework
-- **UnoCSS**: Utility-first CSS framework
-- **PNPM**: Package manager
-- **TypeScript**: Type-safe JavaScript
-- **GLSL Shaders**: Custom visual effects support
+## Жёсткие правила
 
-## Building and Running
+1. **Имя папки** `{n}_{conf}_{title}`: только **латиница**, kebab-case. Русский заголовок → **английский перевод**, не транслит (`you-dont-need-microfrontends`, не `vam-ne-nuzhny-…`). Контент слайдов и `title:` в FM — по-русски.
+2. **Новый доклад** → `pnpm presentation:create`, не копируй `_template` руками без причины.
+3. **Контент** в `parts/`, не монолитный `slides.md`.
+4. **Один драйвер кликов** на слайд (`timeline` **или** `v-click` **или** magic-move — детали в skill).
+5. Планирование → `collected/`; внешние референсы → `.samples/`.
+6. Язык ответов пользователю: **русский** (если не попросили иначе).
 
-### For Individual Presentations
+## Границы
 
-Each presentation directory contains its own `package.json` with these scripts:
+- Не коммить секреты; не трогай git config / force-push без явной просьбы.
+- Не правь чужие исходники в `.samples/` «для красоты» — только если задача про исследование/knowledge и skill это разрешает.
+- Не раздувай AGENTS.md деталями Slidev — обновляй skills.
 
-- `pnpm dev`: Start development server
-- `pnpm build`: Build static files
+## Done means
 
-### Main Project Commands
-
-- `pnpm presentation:create`: Create a new presentation project
-- `pnpm static:index`: Regenerate `-static/index.html` hub with links to built slides
-
-Each presentation `pnpm build` also refreshes that hub after Slidev output.
-
-## Presentation Structure
-
-Each presentation contains:
-
-- `slides.md`: Main presentation file with markdown and Vue components
-- `parts/*.md`: Individual slide sections referenced from main slides file
-- `components/`: Vue components for custom slide elements
-- `theme/`: Theme configuration and components
-- `addon/`: Presentation-specific add-ons (if needed)
-- `img/`: Presentation images and assets
-
-## Development Conventions
-
-1. **Naming Convention**: Presentation folders follow `{number}_{conference}_{title}` pattern
-2. **Slide Format**: Uses Slidev's markdown format with Vue component support
-3. **Theming**: Custom theme components for consistent look and feel
-4. **Internationalization**: Content primarily in Russian with potential for multi-language support
-
-## Dependencies
-
-- Slidev (main presentation framework)
-- Vue 3 (component system)
-- UnoCSS (styling)
-- Chroma.js (color manipulation)
-- QR Code Styling (for QR code generation)
-- Tailwind Merge (utility class management)
+- Соблюдены фазы (или явно согласован skip с пользователем).
+- Имена путей латиницей-переводом; слайды в `parts/`.
+- После материализации: `pnpm dev` в папке доклада поднимается; спорный click-flow при сомнении проверен в браузере.

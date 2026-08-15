@@ -15,20 +15,16 @@ title: Вам (не) нужны микрофронтенды
 layout: center
 ---
 
-# Вам (не) нужны микрофронтенды
-
-HolyJS 2026 Autumn · фаза 2: wireframe
-
 ---
 src: ./parts/0_intro.md
 ---
 
 ---
-src: ./parts/1_what_is_mfe.md
+src: ./parts/1_biz_tech.md
 ---
 
 ---
-src: ./parts/2_biz_tech.md
+src: ./parts/2_what_is_mfe.md
 ---
 
 ---
