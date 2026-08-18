@@ -24,23 +24,23 @@ src: ./parts/1_biz_tech.md
 ---
 
 ---
-src: ./parts/2_what_is_mfe.md
+src: ./parts/2_modularity.md
 ---
 
 ---
-src: ./parts/3_mfe_analysis.md
+src: ./parts/3_monorepo.md
 ---
 
 ---
-src: ./parts/4_static_vs_dynamic.md
+src: ./parts/4_what_is_mfe.md
 ---
 
 ---
-src: ./parts/5_modularity.md
+src: ./parts/5_mfe_analysis.md
 ---
 
 ---
-src: ./parts/6_monorepo.md
+src: ./parts/6_static_vs_dynamic.md
 ---
 
 ---

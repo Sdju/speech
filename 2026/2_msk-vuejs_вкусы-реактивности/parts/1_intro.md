@@ -155,7 +155,7 @@ timeline:
     arrow3To1:
       coords: '513:272 51%:188'
       power: 0.3
-  - title: 'Сознательная реакция'
+  - title: 'Сознательное действие'
   - title: ''
     text2: 'Горячая поверхность'
     text3: 'Отдернуть руку'
@@ -177,6 +177,15 @@ timeline:
   <SvgArrow v-bind="t.arrow3To1" />
   <SvgArrow v-bind="t.arrow3To2" />
 </SvgLayer>
+---
+layout: center
+---
+
+<script setup>
+  import EtoImg from '../img/eto.png'
+</script>
+
+<ImgExample :src="EtoImg" cover />
 
 ---
 slideClass: cs-green
@@ -208,7 +217,7 @@ timeline:
     arrow: -blur-hidden fx
     layer2: -blur-hidden fx
     bridge: -blur-hidden fx
-    examples: h-0 overflow-hidden
+    examples: -blur-hidden fx
     example: -blur-hidden fx
     example2: -blur-hidden fx
   - intro: fx
@@ -216,8 +225,8 @@ timeline:
   - arrow: fx
   - layer2: fx
   - bridge: fx
-    examples: mt-4
-  - example: fx
+  - examples: fx
+    example: fx
   - example: -blur-hidden fx
     example2: fx
 ---
@@ -226,7 +235,6 @@ timeline:
 
 <div class="w-full max-w-980px mx-auto">
   <p :class="t.intro" class="text-lg opacity-80 mb-6">Во фреймворках реактивность часто делится на <strong>две независимые части</strong></p>
-
   <div class="grid grid-cols-[1fr_auto_1fr] gap-4 items-stretch w-full text-center">
     <div :class="t.layer1" class="box box--rich cs-green p-5 h-full">
       <div class="text-2xl font-bold text-green-300 mb-2">Система реактивности</div>
@@ -238,12 +246,10 @@ timeline:
       <p class="text-sm opacity-85 leading-snug">Связь между моделью и её актуальным отображением в UI</p>
     </div>
   </div>
-
   <div :class="t.bridge" class="box box--rich cs-purple mt-6 p-4 text-center w-full text-center">
     Между ними — прослойка, но <strong>свойства могут быть совершенно разными</strong>
   </div>
-
-  <div :class="t.examples" class="relative w-full">
+  <div :class="t.examples" class="relative w-full mt-4 overflow-hidden">
     <div aria-hidden="true" class="box box--rich cs-cyan flex items-center gap-5 p-5 w-full invisible pointer-events-none">
       <DeviconVuejs class="text-5xl shrink-0"/>
       <div class="text-left text-sm leading-snug flex-1">
@@ -252,23 +258,21 @@ timeline:
       </div>
       <DeviconReact class="text-5xl shrink-0"/>
     </div>
-
-  <div :class="t.example" class="box box--rich cs-cyan flex items-center gap-5 p-5 w-full absolute inset-0">
-    <DeviconVuejs class="text-5xl shrink-0"/>
-    <div class="text-left text-sm leading-snug flex-1">
-      <span class="text-cyan-200 font-semibold">Vue</span> — proxy/сигнальная модель реактивности,
-      но <span class="text-blue-300">VDOM</span> для рендеринга, как у <span class="text-blue-300">React</span>
+    <div :class="t.example" class="box box--rich cs-cyan flex items-center gap-5 p-5 w-full absolute inset-0">
+      <DeviconVuejs class="text-5xl shrink-0"/>
+      <div class="text-left text-sm leading-snug flex-1">
+        <span class="text-cyan-200 font-semibold">Vue</span> — proxy/сигнальная модель реактивности,
+        но <span class="text-blue-300">VDOM</span> для рендеринга, как у <span class="text-blue-300">React</span>
+      </div>
+      <DeviconReact class="text-5xl shrink-0 opacity-70"/>
     </div>
-    <DeviconReact class="text-5xl shrink-0 opacity-70"/>
-  </div>
-
-  <div :class="t.example2" class="box box--rich cs-red flex items-center gap-5 p-5 w-full absolute inset-0">
-    <DeviconRxjs class="text-5xl shrink-0"/>
-    <div class="text-left text-sm leading-snug flex-1">
-      <span class="text-cyan-200 font-semibold">RxJS</span> — есть система реактивности,
-      но нет <span class="text-blue-300">UI реактивности</span>
+    <div :class="t.example2" class="box box--rich cs-red flex items-center gap-5 p-5 w-full absolute inset-0">
+      <DeviconRxjs class="text-5xl shrink-0"/>
+      <div class="text-left text-sm leading-snug flex-1">
+        <span class="text-cyan-200 font-semibold">RxJS</span> — есть система реактивности,
+        но нет <span class="text-blue-300">UI реактивности</span>
+      </div>
     </div>
-  </div>
   </div>
 </div>
 

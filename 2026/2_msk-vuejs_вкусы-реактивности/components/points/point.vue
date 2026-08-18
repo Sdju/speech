@@ -27,7 +27,7 @@ const hidden = computed(() => props.attrs?.includes('hidden'))
       <slot />
     </div>
   </div>
-  <div v-else class="box box--rich point-full fx row-span-4 relative min-h-0">
+  <div v-else class="box box--rich point-full fx relative min-h-0">
     <slot />
   </div>
 </template>
@@ -39,5 +39,7 @@ const hidden = computed(() => props.attrs?.includes('hidden'))
 
 .point-full {
   --at-apply: flex flex-col items-center justify-center gap-[8px] p-[12px] rd-[8px] text-sm min-h-0;
+  grid-column: 2;
+  grid-row: 1 / -1;
 }
 </style>

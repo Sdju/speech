@@ -8,7 +8,7 @@
 .points {
   --at-apply: grid gap-[14px] mt-8;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(4, minmax(0, auto));
+  grid-template-rows: repeat(5, minmax(0, auto));
   grid-auto-flow: column;
 }
 

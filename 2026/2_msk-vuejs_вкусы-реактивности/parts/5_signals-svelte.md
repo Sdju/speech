@@ -19,102 +19,148 @@ layout: center
 slideClass: cs-green
 topTitle: · зелёный ·
 topTitleClass: mk-top-flavor
+---
+
+# Пример: профиль
+
+```jsx {*|1-3|5|6-8|10-13|*}
+const [first, setFirst] = createSignal('John')
+const [last, setLast] = createSignal('Doe')
+const [loggedIn, setLoggedIn] = createSignal(true)
+
+const fullName = createMemo(() => `${first()} ${last()}`)
+const label = createMemo(() =>
+  loggedIn() ? `Hi, ${fullName()}` : 'Guest'
+)
+
+createEffect(() => { document.title = label() })
+return (
+  <h1>{label()}</h1>
+)
+```
+
+---
+slideClass: cs-green
+topTitle: · зелёный ·
+topTitleClass: mk-top-flavor
 timeline:
   - title: 'Граф сигналов'
-    block1:
-      class: 'pos-250_155 -blur-hidden'
+    first:
+      class: 'pos-180_150 -blur-hidden'
       color: 'green'
       solid: true
-    block2:
-      class: 'pos-710_155 -blur-hidden'
+    last:
+      class: 'pos-380_150 -blur-hidden'
       color: 'green'
       solid: true
-    block3:
-      class: 'pos-320_295 -blur-hidden'
+    loggedIn:
+      class: 'pos-720_150 -blur-hidden'
+      color: 'green'
+      solid: true
+    fullName:
+      class: 'pos-280_290 -blur-hidden'
       color: 'blue'
       solid: true
-    block4:
-      class: 'pos-640_295 -blur-hidden'
+    label:
+      class: 'pos-500_360 -blur-hidden'
       color: 'blue'
       solid: true
-    block5:
-      class: 'pos-400_435 -blur-hidden'
+    effect:
+      class: 'pos-380_470 -blur-hidden'
       color: 'red'
       solid: true
-    block6:
-      class: 'pos-560_435 -blur-hidden'
+    render:
+      class: 'pos-640_470 -blur-hidden'
       color: 'red'
       solid: true
-    text1: 'count'
-    text2: 'name'
-    text3: 'doubled'
-    text4: 'greeting'
-    text5: '$effect'
-    text6: 'render'
-    arrow1:
-      coords: '265:185 310:265'
+    textFirst: 'first'
+    textLast: 'last'
+    textLoggedIn: 'loggedIn'
+    textFullName: 'fullName'
+    textLabel: 'label'
+    textEffect: '$effect'
+    textRender: 'render'
+    arrowFirstFull:
+      coords: '180:173 237:267'
+      power: 0.25
+      class: 'fx duration-500 opacity-0'
+    arrowLastFull:
+      coords: '380:173 323:267'
+      power: -0.25
+      class: 'fx duration-500 opacity-0'
+    arrowFullLabel:
+      coords: '343:290 459:360'
+      power: -0.2
+      class: 'fx duration-500 opacity-0'
+    arrowLoginLabel:
+      coords: '720:173 542:357'
       power: 0.35
       class: 'fx duration-500 opacity-0'
-    arrow2:
-      coords: '695:185 655:265'
-      power: 0.35
+    arrowLabelEffect:
+      coords: '469:383 380:447'
+      power: -0.2
       class: 'fx duration-500 opacity-0'
-    arrow3:
-      coords: '330:325 395:405'
-      power: 0.35
+    arrowLabelRender:
+      coords: '531:383 640:447'
+      power: 0.2
       class: 'fx duration-500 opacity-0'
-    arrow4:
-      coords: '625:325 565:405'
-      power: 0.35
-      class: 'fx duration-500 opacity-0'
-  - block1:
-      class: 'pos-250_155'
-    block2:
-      class: 'pos-710_155'
-  - block3:
-      class: 'pos-320_295'
-    block4:
-      class: 'pos-640_295'
-  - block5:
-      class: 'pos-400_435'
-    block6:
-      class: 'pos-560_435'
-  - arrow1:
+  - first:
+      class: 'pos-180_150'
+    last:
+      class: 'pos-380_150'
+    loggedIn:
+      class: 'pos-720_150'
+  - fullName:
+      class: 'pos-280_290'
+    arrowFirstFull:
       class: 'fx duration-500 animate'
-    arrow2:
+    arrowLastFull:
       class: 'fx duration-500 animate'
-  - arrow3:
+  - label:
+      class: 'pos-500_360'
+    arrowFullLabel:
       class: 'fx duration-500 animate'
-    arrow4:
+    arrowLoginLabel:
+      class: 'fx duration-500 animate'
+  - effect:
+      class: 'pos-380_470'
+    render:
+      class: 'pos-640_470'
+    arrowLabelEffect:
+      class: 'fx duration-500 animate'
+    arrowLabelRender:
       class: 'fx duration-500 animate'
 ---
 
-<div class="text-2xl font-bold text-center $obj pos-50%_58">{{ t.title }}</div>
+<div class="text-2xl font-bold text-center $obj pos-50%_55">{{ t.title }}</div>
 
-<div class="flex gap-6 justify-center text-sm $obj pos-50%_95 opacity-70">
-  <span class="c-green">● значение</span>
-  <span class="c-blue">● вычисляемое</span>
+<div class="flex gap-6 justify-center text-sm $obj pos-50%_520 opacity-70">
+  <span class="c-green">● сигнал</span>
+  <span class="c-blue">● memo</span>
   <span class="c-red">● эффект</span>
 </div>
 
-<Node v-bind="t.block1">{{ t.text1 }}</Node>
-<Node v-bind="t.block2">{{ t.text2 }}</Node>
-<Node v-bind="t.block3">{{ t.text3 }}</Node>
-<Node v-bind="t.block4">{{ t.text4 }}</Node>
-<Node v-bind="t.block5">{{ t.text5 }}</Node>
-<Node v-bind="t.block6">{{ t.text6 }}</Node>
+<Node v-bind="t.first">{{ t.textFirst }}</Node>
+<Node v-bind="t.last">{{ t.textLast }}</Node>
+<Node v-bind="t.loggedIn">{{ t.textLoggedIn }}</Node>
+<Node v-bind="t.fullName">{{ t.textFullName }}</Node>
+<Node v-bind="t.label">{{ t.textLabel }}</Node>
+<Node v-bind="t.effect">{{ t.textEffect }}</Node>
+<Node v-bind="t.render">{{ t.textRender }}</Node>
 
 <SvgLayer>
-  <SvgArrow v-bind="t.arrow1" />
-  <SvgArrow v-bind="t.arrow2" />
-  <SvgArrow v-bind="t.arrow3" />
-  <SvgArrow v-bind="t.arrow4" />
+  <SvgArrow v-bind="t.arrowFirstFull" />
+  <SvgArrow v-bind="t.arrowLastFull" />
+  <SvgArrow v-bind="t.arrowFullLabel" />
+  <SvgArrow v-bind="t.arrowLoginLabel" />
+  <SvgArrow v-bind="t.arrowLabelEffect" />
+  <SvgArrow v-bind="t.arrowLabelRender" />
 </SvgLayer>
 
 <!--
-count, name → signals
-doubled, greeting → memos / derived
-$effect, render → side effects и привязка к DOM
+first + last → fullName (fan-in)
+fullName + loggedIn → label (ветка)
+label → $effect (title) и render (JSX)
 -->
 
 ---
@@ -217,7 +263,7 @@ topTitleClass: mk-top-flavor
 ---
 
 ````md magic-move
-```js {*|1|3|4|6-8|*}
+```js {*|1|3|4|3-4|6-8|*}
 let count = 0;
 
 $: doubled = count * 2;
@@ -225,6 +271,16 @@ $: console.log("count:", count, "doubled:", doubled);
 
 function inc() {
   count += 1;
+}
+```
+```js {*|7|*}
+let count = 0;
+
+$: doubled = count * 2;
+$: console.log("count:", count, "doubled:", doubled);
+
+function inc() {
+  $$invalidate(0, count += 1)
 }
 ```
 ````
@@ -235,9 +291,9 @@ topTitle: · оранжевый ·
 topTitleClass: mk-top-flavor
 ---
 
-<v-clicks>
-
 # К чему пришли в Svelte5
+
+<v-clicks>
 
 - Смена системы реактивности на сигнальную
 - Глубокая реактивность стала доступной
