@@ -141,7 +141,7 @@ export default {
   presets: [
     presetWebFonts({
       fonts: {
-        mono: 'sans',
+        mono: 'Fira Code',
         sans: 'sans',
         strong: 'sans',
         fast: 'Ubuntu',

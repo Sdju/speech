@@ -15,12 +15,28 @@ title: Вам (не) нужны микрофронтенды
 layout: center
 ---
 
+# Вам (не) нужны микрофронтенды
+
+HolyJS 2026 Autumn
+
+<!--
+Цель: открыть доклад, зафиксировать тему и тон
+Контент:
+- Заголовок: Вам (не) нужны микрофронтенды
+- HolyJS 2026 Autumn
+Спикер:
+- Опрос зала про микрофронтенды — кто внедрял, кто думал внедрять
+- Микрофронтенды — сколько боли в этом слове…
+Время: 10–15 сек
+Статус: реализация
+-->
+
 ---
 src: ./parts/0_intro.md
 ---
 
 ---
-src: ./parts/1_biz_tech.md
+src: ./parts/1_what-is-mfe.md
 ---
 
 ---
@@ -32,25 +48,9 @@ src: ./parts/3_monorepo.md
 ---
 
 ---
-src: ./parts/4_what_is_mfe.md
+src: ./parts/4_distributed.md
 ---
 
 ---
-src: ./parts/5_mfe_analysis.md
----
-
----
-src: ./parts/6_static_vs_dynamic.md
----
-
----
-src: ./parts/7_static_linking.md
----
-
----
-src: ./parts/8_compare.md
----
-
----
-src: ./parts/9_outro.md
+src: ./parts/5_mfe.md
 ---
