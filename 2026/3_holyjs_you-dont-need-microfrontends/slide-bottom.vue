@@ -31,11 +31,11 @@ watchEffect(() => {
   if (hasTimeline.value)
     publishTimeline(page.value, view)
   else
-    unpublishTimeline(page.value)
+    unpublishTimeline(page.value, view)
 })
 
 onUnmounted(() => {
-  unpublishTimeline(page.value)
+  unpublishTimeline(page.value, view)
 })
 </script>
 

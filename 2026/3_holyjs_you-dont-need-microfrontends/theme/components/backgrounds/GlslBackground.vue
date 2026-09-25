@@ -1,23 +1,29 @@
 <template>
     <div ref="container" class="absolute inset-0 z-[-10] w-full h-full">
-        <canvas ref="canvas" id="glsl-background"></canvas>
+        <canvas ref="canvas" id="glsl-background" class="w-full h-full"></canvas>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
-import { 
+import {
   type PostProcessingPipeline,
-  type PostProcessingStage
 } from '../../../addon/utils/webgl'
 import { PostProcessingManager } from '../../../addon/utils/postprocessing'
 import { normalizeStages, type StagesInput } from '../../../addon/utils/presets'
 
 interface Props {
     stages: StagesInput
+    /** доля от размера контейнера; мягкому фону хватает 0.5 */
+    resolutionScale?: number
+    /** ограничение частоты кадров */
+    fps?: number
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+    resolutionScale: 1,
+    fps: 60,
+})
 
 const getPipeline = (): PostProcessingPipeline => {
   const normalizedStages = normalizeStages(props.stages)
@@ -29,6 +35,7 @@ const canvas = ref<HTMLCanvasElement | null>(null)
 let gl: WebGLRenderingContext | null = null
 let postProcessingManager: PostProcessingManager | null = null
 let animationFrameId: number | null = null
+let lastFrame = 0
 
 const initPostProcessing = async (): Promise<void> => {
     if (!gl || !canvas.value) return
@@ -41,62 +48,51 @@ const initPostProcessing = async (): Promise<void> => {
 const resizeCanvas = async (): Promise<void> => {
     if (!canvas.value || !gl || !container.value) return
 
-    const width = container.value.clientWidth
-    const height = container.value.clientHeight
-    
+    const width = Math.round(container.value.clientWidth * props.resolutionScale)
+    const height = Math.round(container.value.clientHeight * props.resolutionScale)
+
     if (width === 0 || height === 0) return
 
     canvas.value.width = width
     canvas.value.height = height
     gl.viewport(0, 0, width, height)
-    
+
     if (postProcessingManager) {
         postProcessingManager.destroy()
         postProcessingManager = null
     }
-    
+
     await initPostProcessing()
 }
 
-const render = (): void => {
+const render = (now: number): void => {
+    animationFrameId = requestAnimationFrame(render)
     if (!gl || !canvas.value) return
-
-    if (canvas.value.width === 0 || canvas.value.height === 0) {
-        animationFrameId = requestAnimationFrame(render)
-        return
-    }
+    if (canvas.value.width === 0 || canvas.value.height === 0) return
+    if (now - lastFrame < 1000 / props.fps - 1) return
+    lastFrame = now
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0)
     gl.clear(gl.COLOR_BUFFER_BIT)
 
+    // uniform-ы (цвет, номер слайда) читаются из props каждый кадр
     if (postProcessingManager) {
-        const pipeline = getPipeline()
-        postProcessingManager.render(pipeline, undefined, {})
+        postProcessingManager.render(getPipeline(), undefined, {})
     }
-    
-    animationFrameId = requestAnimationFrame(render)
 }
 
 onMounted(async () => {
     if (!canvas.value) return
 
-    gl = canvas.value.getContext('webgl')
+    gl = canvas.value.getContext('webgl', { antialias: false })
     if (!gl) {
         console.error('Unable to initialize WebGL')
         return
     }
 
-    resizeCanvas()
-    
-    if (canvas.value.width === 0 || canvas.value.height === 0) {
-        console.error('Canvas has zero size after resize')
-        return
-    }
-    
+    await resizeCanvas()
     window.addEventListener('resize', resizeCanvas)
-    
-    await initPostProcessing()
-    render()
+    animationFrameId = requestAnimationFrame(render)
 })
 
 onBeforeUnmount(() => {
@@ -104,21 +100,22 @@ onBeforeUnmount(() => {
     if (animationFrameId !== null) {
         cancelAnimationFrame(animationFrameId)
     }
-    
+
     if (postProcessingManager) {
         postProcessingManager.destroy()
     }
 })
 
-watch(() => props.stages, async () => {
+// Пересобираем пайплайн только при смене шейдеров. Раньше watch реагировал на любое
+// изменение stages — анимация цвета после смены слайда перекомпилировала программы каждый кадр.
+watch(() => normalizeStages(props.stages).map(s => s.fragmentShader).join('\0'), async () => {
     if (!gl) return
-    
+
     if (postProcessingManager) {
         postProcessingManager.destroy()
         postProcessingManager = null
     }
-    
+
     await initPostProcessing()
 })
 </script>
-
