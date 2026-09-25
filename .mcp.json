@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "slidev": {
+      "command": "pnpm",
+      "args": [
+        "--silent",
+        "--dir",
+        "2026/3_holyjs_you-dont-need-microfrontends",
+        "exec",
+        "slidev",
+        "mcp",
+        "slides.md"
+      ]
+    }
+  }
+}
