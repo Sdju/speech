@@ -104,6 +104,8 @@ onBeforeUnmount(() => {
     if (postProcessingManager) {
         postProcessingManager.destroy()
     }
+    // освободить контекст сразу — иначе при перемонтировании копятся живые контексты
+    gl?.getExtension('WEBGL_lose_context')?.loseContext()
 })
 
 // Пересобираем пайплайн только при смене шейдеров. Раньше watch реагировал на любое

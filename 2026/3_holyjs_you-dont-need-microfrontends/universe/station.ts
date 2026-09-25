@@ -531,6 +531,7 @@ export class StationScene {
 
   dispose() {
     this.renderer.dispose()
+    this.renderer.forceContextLoss()
     this.scene.traverse((o) => {
       if (o instanceof THREE.Mesh)
         o.geometry.dispose()
