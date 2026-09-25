@@ -101,7 +101,7 @@ const versions = computed(() => s.value === 4)
                 <span class="srv__api">/v1</span><span class="srv__api srv__api--new">/v2</span>
               </template>
               <template v-else>
-                свой процесс · память
+                свой процесс и память
               </template>
             </div>
           </div>

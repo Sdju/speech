@@ -59,7 +59,7 @@
     color: --shift-lightness(var(--v-color), 0.12);
   }
 
-  /* Списки: тонкая направляющая слева, маркер — точка на ней */
+  /* Списки внутри компонентов и нестандартных вёрсток — лёгкие: точка-маркер */
   & ul:not(.not-hud) {
     @apply pl-0 flex flex-col gap-3 list-none relative;
 
@@ -351,4 +351,139 @@
 .section-title-wrap {
   width: fit-content;
   margin-inline: auto;
+}
+
+
+/* ══ Слайды-пункты по умолчанию ═══════════════════════════════════════
+ * Обычный markdown-слайд «заголовок + список» (layout default).
+ * Без карточек и рамок — типографика: крупный номер в цвет слайда и текст.
+ * Вид подстраивается под число пунктов:
+ *   2–3 пункта — крупно, в колонку,
+ *   4 пункта   — сетка 2×2, номер над текстом,
+ *   5+         — компактно в две колонки.
+ * Цвет — от схемы слайда (slideClass: cs-red для минусов, cs-green для плюсов).
+ * Появление по v-click: выезд, проявление из размытия.
+ */
+
+.slidev-layout.default > div {
+  @apply items-start;
+  counter-reset: point;
+
+  & > h1 {
+    @apply text-[1.9em] font-bold leading-[1.1] tracking-[-0.02em] mb-8 max-w-[620px];
+    text-wrap: balance;
+  }
+
+  /* список в правую часть слайда не лезет — там модуль станции своего раздела */
+  & > ul:not(.not-hud) {
+    @apply grid gap-x-10 gap-y-5 w-full max-w-[600px] m-0 p-0 list-none;
+
+    & > li {
+      @apply relative m-0 leading-snug text-[1em] c-white;
+      counter-increment: point;
+      padding: 0 0 0 64px;
+      text-shadow: 0 1px 16px rgb(0 0 0 / 0.7);
+
+      /* номер пункта: крупная светлая цифра в цвет слайда */
+      &::before {
+        content: counter(point);
+        @apply absolute left-0 top-[-0.12em] w-auto h-auto rounded-none bg-transparent;
+        font-size: 2.1em;
+        font-weight: 300;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+        color: --shift-lightness(var(--v-color), 0.12);
+      }
+
+      & strong,
+      & b {
+        color: --shift-lightness(var(--v-color), 0.18);
+      }
+
+      & svg {
+        vertical-align: -0.15em;
+        margin-right: 0.2em;
+      }
+    }
+
+    /* 2–3 пункта: крупнее и просторнее (кроме слайдов с двумя списками подряд) */
+    &:not(:has(> li:nth-child(4))):not(:has(+ ul)):not(ul + *) {
+      @apply gap-y-7;
+
+      & > li {
+        @apply text-[1.15em];
+      }
+    }
+
+    /* ровно 4: сетка 2×2, номер над текстом */
+    &:has(> li:nth-child(4)):not(:has(> li:nth-child(5))) {
+      grid-template-columns: 1fr 1fr;
+      max-width: 620px;
+      row-gap: 28px;
+
+      & > li {
+        padding: 48px 0 0;
+
+        &::before {
+          @apply top-0;
+        }
+      }
+    }
+
+    /* 5 и больше: компактно в две колонки */
+    &:has(> li:nth-child(5)) {
+      grid-template-columns: 1fr 1fr;
+      max-width: 600px;
+      row-gap: 16px;
+
+      & > li {
+        @apply text-[0.85em];
+        padding-left: 40px;
+
+        &::before {
+          font-size: 1.7em;
+        }
+      }
+    }
+
+    /* v-click: выезд слева и проявление из размытия вместо простого появления */
+    & > li.slidev-vclick-target {
+      transition:
+        opacity 0.5s ease,
+        translate 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.5s ease;
+    }
+
+    & > li.slidev-vclick-hidden {
+      translate: -18px 0;
+      filter: blur(6px);
+    }
+  }
+
+  /* два списка подряд (сценарий + вывод): заголовок и пункты компактнее */
+  & > h1:has(~ ul + ul) {
+    @apply text-[1.45em] mb-5 max-w-[680px];
+  }
+
+  & > ul:not(.not-hud) + ul:not(.not-hud) {
+    margin-top: 28px;
+  }
+
+  & > ul:not(.not-hud):has(+ ul) > li,
+  & > ul + ul:not(.not-hud) > li {
+    @apply text-[0.85em];
+    padding-left: 44px;
+  }
+}
+
+/* ── Стеклянная подложка ────────────────────────────────────────── */
+/* Для важного текста поверх яркой 3D-сцены: затемняет и размывает то, что под ним. */
+.glass {
+  border-radius: 16px;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  background: linear-gradient(160deg, rgb(22 20 40 / 0.62), rgb(6 6 14 / 0.74));
+  box-shadow:
+    0 1.2em 3em rgb(0 0 0 / 0.4),
+    inset 0 1px 0 rgb(255 255 255 / 0.07);
+  backdrop-filter: blur(16px) saturate(1.2);
 }

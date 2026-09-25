@@ -184,10 +184,21 @@ onUnmounted(() => {
   --ft-ease: cubic-bezier(0.65, 0, 0.35, 1);
   font-family: var(--slidev-code-font-family, 'Fira Code', monospace);
   font-size: var(--ft-font);
-  width: var(--ft-width);
+  /* паддинг подложки — внутри заданной высоты и сверх ширины колонки */
+  box-sizing: border-box;
+  width: calc(var(--ft-width) + 2.6em);
   display: flex;
   flex-direction: column;
   text-align: left;
+  /* стеклянная подложка: дерево читается и поверх яркой планеты */
+  padding: 0.9em 1.3em 1.1em;
+  border-radius: 0.9em;
+  border: 1px solid rgb(255 255 255 / 0.09);
+  background: linear-gradient(160deg, rgb(20 18 36 / 0.68), rgb(6 6 14 / 0.76));
+  box-shadow:
+    0 1.2em 3em rgb(0 0 0 / 0.35),
+    inset 0 1px 0 rgb(255 255 255 / 0.06);
+  backdrop-filter: blur(14px) saturate(1.2);
 }
 
 .ft__caption {
@@ -312,7 +323,7 @@ onUnmounted(() => {
 
 /* ── фокус ──────────────────────────────────────────────────────── */
 .is-dim {
-  opacity: 0.22;
+  opacity: 0.3;
   filter: saturate(0.2);
 }
 .is-lit .ft-name {
