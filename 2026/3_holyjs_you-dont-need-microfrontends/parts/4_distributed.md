@@ -2,7 +2,11 @@
 layout: center
 ---
 
-Независимый деплой
+<div class="section-kicker">обещание 3</div>
+
+<XSlide name="promise-3" class="section-title-wrap">
+  <h1 class="section-title">Независимый деплой</h1>
+</XSlide>
 
 ---
 layout: center
@@ -136,3 +140,24 @@ layout: center
 - Использовать линтинг
 - Использовать форматирование
 - Использовать стандартизацию
+
+---
+layout: full
+camera: promises
+timeline:
+  - station: { hidden: [profile, checkout, catalog, search] }
+    camera: promise-cart
+  - station: { hidden: [profile, checkout, catalog, search, cart] }
+    camera: promises
+  - station: { hidden: [profile, catalog, search, cart] }
+    camera: promise-checkout
+---
+
+<PromiseStation :stage="3" :step="$clicks" />
+
+<!--
+Клик 1: независимый деплой закрыл распределённый монолит — улетает третий модуль.
+У станции остался только хаб: всё обещанное мы получили на Земле.
+Клик 2: бонус. Из глубины прилетает и стыкуется последний модуль — динамическая подгрузка.
+Это единственное, что действительно требует стыковки на орбите. Переход к части про MFE.
+-->

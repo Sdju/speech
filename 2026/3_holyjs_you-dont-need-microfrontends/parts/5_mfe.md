@@ -2,7 +2,11 @@
 layout: center
 ---
 
-# Динамическая подгрузка
+<div class="section-kicker">обещание 4</div>
+
+<XSlide name="promise-4" class="section-title-wrap">
+  <h1 class="section-title">Динамическая подгрузка</h1>
+</XSlide>
 
 ---
 

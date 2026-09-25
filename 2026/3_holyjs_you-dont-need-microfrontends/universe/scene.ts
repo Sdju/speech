@@ -125,6 +125,18 @@ export const presets: Record<string, CameraSpec> = {
    */
   /** «геройский» план станции со слайда 3: станция справа сверху, крупный заголовок слева снизу */
   'station-hero': { focus: 'station', distance: 3.3, yaw: -28, pitch: 12, shift: [1.05, 0.2], fov: 2.35, spin: 1.2 },
+  /** сквозной слайд обещаний: станция крупно справа, колонка обещаний слева */
+  promises: { focus: 'station', distance: 4.6, yaw: -30, pitch: 34, shift: [1.05, -0.05], fov: 2.35, spin: 0.6 },
+  /** крупно модуль-обещание на сквозном слайде: справа от колонки обещаний */
+  'promise-catalog': { focus: 'station.catalog', distance: 7, yaw: -25, pitch: 24, shift: [0.95, 0], fov: 2.35, spin: 0.6, duration: 1.6 },
+  'promise-search': { focus: 'station.search', distance: 7, yaw: -25, pitch: 24, shift: [0.95, 0], fov: 2.35, spin: 0.6, duration: 1.6 },
+  'promise-cart': { focus: 'station.cart', distance: 8, yaw: -25, pitch: 24, shift: [0.95, 0], fov: 2.35, spin: 0.6, duration: 1.6 },
+  'promise-checkout': { focus: 'station.checkout', distance: 8, yaw: -25, pitch: 24, shift: [0.95, 0], fov: 2.35, spin: 0.6, duration: 2.2 },
+  /** модуль своего раздела у правого края — фон для текстовых слайдов раздела */
+  'section-catalog': { focus: 'station.catalog', distance: 9, yaw: -35, pitch: 20, shift: [1.55, 0.15], fov: 2.35, spin: 0.5 },
+  'section-search': { focus: 'station.search', distance: 9, yaw: -35, pitch: 20, shift: [1.55, 0.15], fov: 2.35, spin: 0.5 },
+  'section-cart': { focus: 'station.cart', distance: 10, yaw: -35, pitch: 20, shift: [1.55, 0.15], fov: 2.35, spin: 0.5 },
+  'section-checkout': { focus: 'station.checkout', distance: 10, yaw: -35, pitch: 20, shift: [1.55, 0.15], fov: 2.35, spin: 0.5 },
   /** станция справа, место под текст слева — фон для части про микрофронтенды */
   station: { focus: 'station', distance: 5.2, yaw: -40, pitch: 14, shift: [1.5, 0.1], fov: 2.35, spin: 1.0 },
   ambient: { focus: [60, 40, -120], distance: 10, yaw: 0, pitch: 0, shift: [0, 0], fov: 2.35 },
@@ -138,6 +150,11 @@ export const DEFAULT_PRESET = 'ambient'
  */
 export const partCameras: Record<string, string | CameraSpec> = {
   'what-is-mfe': 'station',
+  // раздел = обещание = модуль станции (см. PromiseStation)
+  'modularity': 'section-catalog',
+  'monorepo': 'section-search',
+  'distributed': 'section-cart',
+  'mfe': 'section-checkout',
 }
 export const DEFAULT_DURATION = 1.8
 

@@ -202,7 +202,7 @@ function dress(root: THREE.Object3D, pick: (name: string) => THREE.Material) {
 
 // ── анимации модулей ────────────────────────────────────────────────
 
-type Mode = 'docked' | 'detached' | 'hidden'
+export type Mode = 'docked' | 'detached' | 'hidden'
 
 interface Pose { pos: THREE.Vector3, quat: THREE.Quaternion, scale: number }
 
@@ -231,6 +231,10 @@ export class StationScene {
   private occluders: THREE.Mesh[] = []
   private sun: THREE.Vector3
   private wasVisible = false
+  /** станция в кадре на последнем кадре */
+  get visible() {
+    return this.wasVisible
+  }
   private tmp = new THREE.Vector3()
 
   constructor(private canvas: HTMLCanvasElement, sun: Vec3) {
@@ -443,6 +447,32 @@ export class StationScene {
     return Math.abs(x) < aspect + m && Math.abs(y) < 1 + m
   }
 
+  /**
+   * Экранные координаты модулей (0..1 от канваса) — для HTML-выносок поверх 3D.
+   * module — центр модуля сейчас, port — точка стыковки на хабе, mode — состояние.
+   */
+  readonly screen: Record<string, { module: [number, number], port: [number, number], mode: Mode, front: boolean }> = {}
+
+  private updateScreen() {
+    const c = this.camera
+    const toScreen = (v: THREE.Vector3): [number, number] => {
+      const p = v.project(c)
+      return [(p.x + 1) / 2, (1 - p.y) / 2]
+    }
+    const center = new THREE.Vector3()
+    this.body.getWorldPosition(center)
+    const eye = c.position
+    for (const rt of this.modules.values()) {
+      const d = PORT_DIR[rt.def.port]
+      const base = rt.def.port === '-y' ? new THREE.Vector3(0, -HUB_LEN / 2, 0) : d.clone().multiplyScalar(HUB_R)
+      const port = this.body.localToWorld(base.addScaledVector(d, H * 0.3))
+      const mod = rt.pivot.getWorldPosition(new THREE.Vector3())
+      // модуль ближе к камере, чем центр станции — не спрятан за хабом
+      const front = mod.distanceTo(eye) <= center.distanceTo(eye) + H * 2
+      this.screen[rt.def.id] = { module: toScreen(mod), port: toScreen(port), mode: rt.mode, front }
+    }
+  }
+
   private benchTarget: THREE.WebGLRenderTarget | null = null
 
   render(cam: CameraFrame, time: number, now: number, pPos: Float32Array, sPos: Float32Array, offscreen = false) {
@@ -478,6 +508,9 @@ export class StationScene {
     c.projectionMatrix.elements[8] = -cam.shift[0] / c.aspect
     c.projectionMatrix.elements[9] = -cam.shift[1]
     c.projectionMatrixInverse.copy(c.projectionMatrix).invert()
+    c.updateMatrixWorld()
+    this.body.updateMatrixWorld()
+    this.updateScreen()
 
     // заглушки глубины
     let k = 0

@@ -331,3 +331,24 @@
 .mf-title__word--question {
   @apply text-[3.2em] leading-[1.02];
 }
+
+/* ── Заголовок раздела: сюда морфится пункт со сквозного слайда обещаний ── */
+
+.section-kicker {
+  @apply text-lg font-semibold mb-3;
+  color: rgb(255 255 255 / 0.5);
+}
+
+.slidev-layout .section-title,
+.section-title {
+  @apply m-0 text-[2.6em] font-bold leading-tight text-center c-white;
+  /* рамка по тексту: иначе перенесённый заголовок занимает всю ширину, и морф идёт в неё */
+  max-width: 16ch;
+  text-wrap: balance;
+}
+
+/* обёртка XSlide вокруг заголовка раздела — по ширине текста, чтобы морф шёл в его рамку */
+.section-title-wrap {
+  width: fit-content;
+  margin-inline: auto;
+}

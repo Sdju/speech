@@ -88,3 +88,22 @@ camera: { preset: station, distance: 8, pitch: 20, shift: [2.05, 0.55] }
 Интерфейс видит человек: Catalog v2 и Cart v1 на одной странице — «франкенштейн».
 -->
 
+---
+layout: full
+camera: promises
+timeline:
+  - station: { hidden: [profile, checkout] }
+  - camera: promise-catalog
+  - camera: promise-search
+  - camera: promise-cart
+  - camera: promises
+---
+
+<PromiseStation :stage="0" :step="$clicks" />
+
+<!--
+Сквозной слайд. Каждое обещание микрофронтендов — модуль станции.
+Клики 1–3: границы ответственности, свои пайплайны, независимый деплой — камера подлетает к модулю каждого пункта.
+Клик 4: четвёртый пункт размыт — бонус, раскроем в конце.
+Дальше по ходу доклада модули будут улетать: обещание выполнено без микрофронтендов.
+-->

@@ -2,7 +2,11 @@
 layout: center
 ---
 
-#  Свои пайплайны в репозитории
+<div class="section-kicker">обещание 2</div>
+
+<XSlide name="promise-2" class="section-title-wrap">
+  <h1 class="section-title">Свои пайплайны в репозитории</h1>
+</XSlide>
 
 ---
 
@@ -177,10 +181,17 @@ layout: center
 ---
 
 ---
+layout: full
+camera: promises
+timeline:
+  - station: { hidden: [profile, checkout, catalog] }
+    camera: promise-search
+  - station: { hidden: [profile, checkout, catalog, search] }
+    camera: promises
+---
 
-Что нам решат микрофронтенды?
+<PromiseStation :stage="2" :step="$clicks" />
 
-- <span v-mark.strike-through.green>Четкие границы ответственности</span> ✅ Модули
-- <span v-mark.strike-through.green="{at: 1}">Свои пайплайны для модулей</span> ✅ Монорепозиторий
-- Независимый деплой
-- <span class="blur"> Динамическая подгрузка </span>
+<!--
+Клик: свои пайплайны закрыл монорепозиторий — улетает второй модуль.
+-->

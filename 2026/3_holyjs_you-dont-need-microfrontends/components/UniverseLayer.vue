@@ -8,6 +8,7 @@ import type { Vec3 } from '../universe/scene'
 import { planets, satellites, station } from '../universe/scene'
 import { BAKE_SIZE, MAX_P, MAX_S, renderFragment, vertex } from '../universe/shader'
 import { StationScene } from '../universe/station'
+import { stationScreen } from '../universe/screen'
 
 /**
  * Общая 3D-сцена доклада. Живёт в global-bottom, поэтому не пересоздаётся между слайдами:
@@ -244,6 +245,17 @@ onMounted(() => {
 
   let lastCam: CameraFrame | null = null
 
+  // выноски на слайдах следят за модулями — публикуем их экранные позиции
+  const publishScreen = () => {
+    const visible = stationScene?.visible ?? false
+    if (!visible) {
+      if (stationScreen.value)
+        stationScreen.value = null
+      return
+    }
+    stationScreen.value = { ...stationScene!.screen }
+  }
+
   const frame = (now: number) => {
     raf = requestAnimationFrame(frame)
     const time = worldTime(now)
@@ -279,6 +291,7 @@ onMounted(() => {
     try {
       draw(cam, time, mode)
       stationScene?.render(cam, time, now, pPos, sPos)
+      publishScreen()
     }
     catch (e) {
       console.error('[UniverseLayer]', e)

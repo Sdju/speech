@@ -2,7 +2,11 @@
 layout: center
 ---
 
-# Четкие границы ответственности
+<div class="section-kicker">обещание 1</div>
+
+<XSlide name="promise-1" class="section-title-wrap">
+  <h1 class="section-title">Чёткие границы ответственности</h1>
+</XSlide>
 
 ---
 layout: center
@@ -272,10 +276,18 @@ fileTree:
 </v-clicks>
 
 ---
+layout: full
+camera: promises
+timeline:
+  - station: { hidden: [profile, checkout] }
+    camera: promise-catalog
+  - station: { hidden: [profile, checkout, catalog] }
+    camera: promises
+---
 
+<PromiseStation :stage="1" :step="$clicks" />
+
+<!--
 Что нам решат микрофронтенды?
-
-- <span v-mark.strike-through.green={at:1}>Четкие границы ответственности</span> <v-click>✅ Модули</v-click>
-- Свои пайплайны в репозитории
-- Независимый деплой
-- <span class="blur"> Динамическая подгрузка </span>
+Клик: границы ответственности закрыли модулями — модуль Catalog отстыковывается и улетает.
+-->
