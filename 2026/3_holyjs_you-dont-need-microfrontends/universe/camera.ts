@@ -49,7 +49,7 @@ export function satelliteRotation(id: string, time: number): { axis: Vec3, angle
     return
   const p = planets.find(p => p.id === s.parent)!
   const orbitAngle = time * s.speed + s.phase
-  return { axis: norm(p.axis), angle: -orbitAngle - time * (s.spin ?? 0.25) }
+  return { axis: norm(p.axis), angle: -orbitAngle - time * (s.spin ?? 0.125) }
 }
 
 /** Орбитальный базис спутника: наружу от планеты, ось орбиты, по ходу движения */

@@ -107,10 +107,10 @@ export const planets: PlanetDef[] = [
 ]
 
 export const satellites: SatelliteDef[] = [
-  { id: 'catalog', parent: 'home', radius: 0.065, color: [0.2, 0.83, 0.6], phase: 0.6, speed: 0.16 },
-  { id: 'search', parent: 'home', radius: 0.065, color: [0.38, 0.65, 0.98], phase: 1.15, speed: 0.16 },
-  { id: 'cart', parent: 'home', radius: 0.065, color: [0.96, 0.45, 0.71], phase: 1.7, speed: 0.16 },
-  { id: 'moon', parent: 'ocean', radius: 0.12, color: [0.8, 0.82, 0.9], phase: 0, speed: 0.1 },
+  { id: 'catalog', parent: 'home', radius: 0.065, color: [0.2, 0.83, 0.6], phase: 0.6, speed: 0.08 },
+  { id: 'search', parent: 'home', radius: 0.065, color: [0.38, 0.65, 0.98], phase: 1.15, speed: 0.08 },
+  { id: 'cart', parent: 'home', radius: 0.065, color: [0.96, 0.45, 0.71], phase: 1.7, speed: 0.08 },
+  { id: 'moon', parent: 'ocean', radius: 0.12, color: [0.8, 0.82, 0.9], phase: 0, speed: 0.05 },
 ]
 
 export const presets: Record<string, CameraSpec> = {
