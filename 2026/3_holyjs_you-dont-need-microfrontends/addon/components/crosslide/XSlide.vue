@@ -11,12 +11,14 @@ import { computed, inject, useAttrs, useSlots, type Ref } from 'vue'
 import { useNav } from '@slidev/client'
 import { useXSlides } from '../../module/XSlides/XSlidesService'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   /** Registry key shared across slides */
   name?: string
   /** @deprecated use `name` */
   slot?: string
-}>()
+  /** Тег обёртки, которая получает view-transition-name */
+  as?: string
+}>(), { as: 'div' })
 
 defineOptions({ inheritAttrs: false })
 
@@ -55,7 +57,6 @@ const bound = computed(() => {
   return {
     ...rest,
     class: ['vt', userClass],
-    className: ['vt', userClass],
     style,
   }
 })
@@ -69,10 +70,16 @@ const render = computed(() => {
 })
 </script>
 
+<!--
+  Имя перехода вешается на обёртку: атрибуты, переданные слоту как компоненту,
+  не доходят до его элементов (слот — фрагмент), и морф молча не срабатывал.
+-->
 <template>
   <component
-    :is="render"
+    :is="props.as"
     v-if="visible && render"
     v-bind="bound"
-  />
+  >
+    <component :is="render" />
+  </component>
 </template>
