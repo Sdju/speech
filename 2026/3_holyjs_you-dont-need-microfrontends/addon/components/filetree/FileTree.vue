@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useIsSlideActive, useSlideContext } from '@slidev/client'
-import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
 import type { FileTreeStep, TreeRow } from '../../module/FileTree/parse'
 import { focused, resolveSteps } from '../../module/FileTree/parse'
 
@@ -47,8 +47,6 @@ const instant = ref(true)
 
 watch([current, index], ([step, i], [old, oldI]) => {
   instant.value = !old || !active.value || Math.abs(i - (oldI ?? i)) > 1
-  if (instant.value)
-    nextTick(() => setTimeout(() => (instant.value = false), 60))
   const before = old && !instant.value ? new Map(old.rows.map(r => [r.id, r])) : null
   const out = new Map<string, { moved: boolean, fresh: boolean, order: number }>()
   let order = 0
@@ -135,14 +133,16 @@ onUnmounted(() => {
     :style="{ '--ft-font': `${font}px`, '--ft-row': `${ROW}em`, '--ft-width': `${width}em`, 'minHeight': `${maxRows * ROW * font + 40}px` }"
   >
     <div class="ft__caption">
-      <Transition name="ft-cap" mode="out-in" :css="!instant">
+      <!-- Keep CSS hooks asynchronous: out-in with css=false can re-enter Vue's
+           patch during removal. ft--instant disables the visual animation. -->
+      <Transition name="ft-cap" mode="out-in">
         <div v-if="current.caption" :key="current.caption" class="hud-label">
           {{ current.caption }}
         </div>
       </Transition>
     </div>
 
-    <TransitionGroup tag="div" name="ft" class="ft__list" :css="!instant">
+    <TransitionGroup tag="div" name="ft" class="ft__list">
       <div
         v-for="r in current.rows"
         :key="r.id"
@@ -167,7 +167,7 @@ onUnmounted(() => {
           </template>
         </svg>
 
-        <Transition name="ft-name" mode="out-in" :css="!instant">
+        <Transition name="ft-name" mode="out-in">
           <span :key="r.name" class="ft-name">{{ r.name }}</span>
         </Transition>
         <span v-if="r.note" class="ft-note">{{ r.note }}</span>
@@ -250,7 +250,6 @@ onUnmounted(() => {
 }
 .is-ellipsis .ft-name {
   color: #6b7280;
-  letter-spacing: 0.1em;
 }
 
 .ft-note {
