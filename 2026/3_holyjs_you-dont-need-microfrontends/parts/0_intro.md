@@ -80,67 +80,66 @@ layout: center
 -->
 
 ---
-layout: center
+layout: full
+camera: { focus: station, distance: 3.7, yaw: -48, pitch: 14, shift: [1.05, 0.2], spin: 1.2, duration: 2.8 }
+station: { hidden: [cart] }
+timeline:
+  - evil: 'mf-off'
+    solution: 'mf-off'
+  - evil: 'mf-on'
+  - evil: 'mf-out'
+    solution: 'mf-on'
+    station: {}
+    camera: { focus: station, distance: 3.3, yaw: -28, pitch: 12, shift: [1.05, 0.2], spin: 1.2, duration: 2.6 }
 ---
 
-<h1 v-click.hide class="$obj pos-center">
-  Микрофронтенды
-</h1>
-<h1 v-click="[1, 2]" class="$obj pos-center">
-  Микрофронтенды <span v-click="[1, 2]" class="text-red-500">≠ зло</span>
-</h1>
-<h1 v-click="2" class="$obj pos-center w-100vw">
-  Микрофронтенды&nbsp;<span class="text-green-500">=&nbsp;решение</span>
-</h1>
+<div class="mf-title">
+  <div class="mf-title__word">Микрофронтенды</div>
+  <div class="mf-title__slot">
+    <span class="mf-title__suffix mf-title__suffix--evil" :class="t.evil">≠ зло</span>
+    <span class="mf-title__suffix mf-title__suffix--solution" :class="t.solution">= решение</span>
+  </div>
+</div>
 
 <!--
 Микрофронтенды это это решение которое имеет свою цену
 -->
 
 ---
-layout: center
+layout: full
+timeline:
+  - stats: 'mf-on'
+    when: 'mf-off'
+    instead: 'mf-off'
+  - stats: 'mf-out'
+    when: 'mf-on'
+  - when: 'mf-out'
+    instead: 'mf-on'
 ---
 
-<script setup>
-  import logo from '../img/gun.png'
-</script>
+<div class="mf-crawl">
+  <TalksCrawl />
+</div>
 
-<img :src="logo" />
+<div class="mf-stage">
+  <div class="mf-stage__slot">
+    <div class="mf-title__suffix crawl-caption" :class="t.stats">
+      <div class="crawl-caption__num">68+</div>
+      <div class="crawl-caption__text">
+        докладов о микрофронтендах<br>
+        <span class="crawl-caption__pro">54</span> призывают их внедрять ·
+        <span class="crawl-caption__contra">14</span> настроены скептически
+      </div>
+    </div>
+    <div class="mf-title__suffix mf-title__word mf-title__word--question" :class="t.when">Когда микрофронтенды<br>оправданы?</div>
+    <div class="mf-title__suffix mf-title__word mf-title__word--question" :class="t.instead">Если не микрофронтенды,<br>то что?</div>
+  </div>
+</div>
 
-<!-- 
-Мое личное мнение, что часто микрофронтенды берутся совершенно не оправданно, когда существуют решения проще и эффективнее.
+<!--
+Подборка кучи докладов про микрофронтенды: 54 «за», 14 «против» (красная кромка).
+Источник: find-some.md → data/mfe-talks.json, обложки — img/shows/.
+Лента крутится весь слайд — пока говорю, зритель видит, сколько уже сказано.
+Клик 1: аналитика → «Когда микрофронтенды оправданы?»
+Клик 2: → «Если не микрофронтенды, то что?»
 -->
-
----
-
-<v-clicks>
-
-- Не каждый проект легко разделить на микрофронтенды
-- Правильный CI/CD для микрофронтендов может быть сложным
-- Правильно настроить Dev-окружение не тривиальная задача
-- Сборка является более хрупкой
-- Контракты менее четкие
-- Поддержание единого стиля
-- Массовые миграции
-
-</v-clicks>
-
----
-layout: center
----
-
-(Подборка кучи докладов про микрофронтенды)
-
-(50+ ру/англ за 5 лет)
-
----
-layout: center
----
-
-# Когда микрофронтенды оправданы?
-
----
-layout: center
----
-
-# Если не микрофронтенды, то что?

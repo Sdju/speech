@@ -1,0 +1,682 @@
+[
+  {
+    "id": "revolyuciya-v-mikrofrontendah-module-federation",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Революция в микрофронтендах, Module Federation, Webpack 5",
+    "who": "Павел Черторогов, HolyJS 2020",
+    "note": "Сильный pro-MFE, Module Federation как важный шаг",
+    "url": "https://holyjs.ru/archive/2020%20Moscow/talks/",
+    "youtube": null
+  },
+  {
+    "id": "microfrontends-na-react-vmeste-s-kubernetes",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Microfrontends на React вместе с Kubernetes",
+    "who": "Иван Затравкин, HolyJS 2020",
+    "note": "Практическое внедрение + проблемы, но вывод конструктивный",
+    "url": "https://holyjs.ru/en/archive/2020%20Moscow/talks/4cevcnexmdlcgipriym59j/",
+    "youtube": null
+  },
+  {
+    "id": "mikrofrontendy-na-tinkoff-ru",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Микрофронтенды на tinkoff.ru",
+    "who": "Дмитрий Кузнецов, Frontend Live 2020",
+    "note": "Большой production-case: независимые релизные циклы",
+    "url": "https://www.youtube.com/watch?v=adgUumoPv6o",
+    "youtube": "adgUumoPv6o"
+  },
+  {
+    "id": "mikrofrontendy-dva-goda-v-prodakshne",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Микрофронтенды. Два года в продакшне",
+    "who": "Владимир Санников, Точка, FrontendConf 2021",
+    "note": "Особенно ценный long-term production-case",
+    "url": "https://www.youtube.com/watch?v=T3_lVp3WOFo",
+    "youtube": "T3_lVp3WOFo"
+  },
+  {
+    "id": "mikroservis-golovnogo-mozga-pilim-vse-chto-dvizh",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Микросервис головного мозга. Пилим всё, что движется",
+    "who": "Михаил Трифонов, Cloud.ru, FrontendConf 2021",
+    "note": "Очень pro-MFE: скорость команд и релизов",
+    "url": "https://frontendconf.ru/moscow/2021/abstracts/8098",
+    "youtube": null
+  },
+  {
+    "id": "mikrofrontendy-i-vidzhety-v-2021-m",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Микрофронтенды и виджеты в 2021-м",
+    "who": "Алексей Гусев, Яндекс",
+    "note": "Умеренно pro: применять осмысленно, но подход полезен",
+    "url": "https://www.youtube.com/watch?v=RcWqY4kcjDY",
+    "youtube": "RcWqY4kcjDY"
+  },
+  {
+    "id": "micro-frontends-on-modules-and-web-components",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Micro frontends on modules and web components",
+    "who": "Юрий Караджов, Bolt, HolyJS 2021",
+    "note": "Реализация через modules/Web Components",
+    "url": "https://holyjs.ru/en/archive/2021%20Piter/talks/2jck5mvh4btaiohe4krk0f/",
+    "youtube": null
+  },
+  {
+    "id": "kak-mikrofrontendy-reshayut-problemy",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Как микрофронтенды решают проблемы",
+    "who": "Зар Захаров, FrontendConf 2022",
+    "note": "Вводный аргумент «зачем это вообще нужно»",
+    "url": "https://www.youtube.com/watch?v=lRI5eCOnPpI",
+    "youtube": "lRI5eCOnPpI"
+  },
+  {
+    "id": "istoriya-o-tom-kak-my-na-module-federation-sezzh",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "История о том, как мы на Module Federation съезжали",
+    "who": "Максим Смирнов, Тинькофф, FrontendConf 2022",
+    "note": "Реальная миграция монолита → независимые MFE",
+    "url": "https://www.youtube.com/watch?v=ZOzsnjzyKsA",
+    "youtube": "ZOzsnjzyKsA"
+  },
+  {
+    "id": "shared-modules",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Shared Modules",
+    "who": "Андрей Гладков, hh.ru, HolyJS 2022",
+    "note": "Как решать duplication/shared dependencies",
+    "url": "https://holyjs.ru/en/archive/2022%20Autumn/talks/20001394-shared-modules/",
+    "youtube": null
+  },
+  {
+    "id": "korobochnyy-discovery-dlya-mikrofrontendov-chast",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "«Коробочный» discovery для микрофронтендов — часть 1",
+    "who": "Иван Малюгин, билайн, HolyJS 2023",
+    "note": "Как снизить инфраструктурную сложность MFE",
+    "url": "https://holyjs.ru/archive/2023%20Spring/talks/0438a61b094e4dafb47f4f30ea26a3ec/",
+    "youtube": null
+  },
+  {
+    "id": "korobochnyy-discovery-dlya-mikrofrontendov-chast-2",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "«Коробочный» discovery для микрофронтендов — часть 2",
+    "who": "Иван Малюгин, билайн, HolyJS 2023",
+    "note": "Продолжение production/tooling-подхода",
+    "url": "https://holyjs.ru/archive/2023%20Spring/talks/20001985-an-out-of-the-box-discovery-for-microfrontends-based-on-modulefederation-part-2/",
+    "youtube": null
+  },
+  {
+    "id": "mikrofrontendy-build-time-vs-runtime",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Микрофронтенды: build time vs runtime",
+    "who": "Александр Гончаров, FrontendConf 2023",
+    "note": "Называет MFE «логичным архитектурным развитием индустрии»",
+    "url": "https://rutube.ru/video/13be3e1d9183c1a376af39ed8692f9db/",
+    "youtube": null
+  },
+  {
+    "id": "avtomatiziruem-kontrol-kachestva-mikrofrontov",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Автоматизируем контроль качества микрофронтов",
+    "who": "Михаил Трифонов, Cloud.ru, FrontendConf 2023",
+    "note": "100+ сервисов / 21 команда: как жить с MFE в масштабе",
+    "url": "https://www.youtube.com/watch?v=Gb6dMYDPQkY",
+    "youtube": "Gb6dMYDPQkY"
+  },
+  {
+    "id": "dx-i-observability-mikrofrontendov",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "DX и Observability микрофронтендов",
+    "who": "Евгений Мальченко, QIWI, FrontendConf 2023",
+    "note": "Как сделать MFE удобными для множества команд",
+    "url": "https://frontendconf.ru/moscow/2023/sections/arhitektura_i_patterny",
+    "youtube": null
+  },
+  {
+    "id": "mikrofrontendy-razbivaemsya-na-kross-funkcionaln",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Микрофронтенды: разбиваемся на кросс-функциональные команды и деплоим без боли",
+    "who": "Александр Гончаров, TechLeadConf 2024",
+    "note": "Сильный организационный аргумент за MFE",
+    "url": "https://techleadconf.ru/moscow/2024/abstracts/13834",
+    "youtube": null
+  },
+  {
+    "id": "mikrofrontendy-stabilnaya-integraciya-neskolkih",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Микрофронтенды: стабильная интеграция нескольких SPA",
+    "who": "Александр Посонский, FrontendConf 2025",
+    "note": "Как сделать независимый deploy и стабильную интеграцию",
+    "url": "https://frontendconf.ru/moscow/2025/abstracts/15671",
+    "youtube": null
+  },
+  {
+    "id": "mikrofrontendy-eventbus-na-maksimalkah-stroim-ra",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Микрофронтенды: EventBus на максималках — строим расширяемую систему коммуникаций",
+    "who": "Александр Пипинов, Яндекс, FrontendConf 2025",
+    "note": "Решает одну из главных болей MFE — коммуникацию",
+    "url": "https://frontendconf.ru/moscow/2025/abstracts",
+    "youtube": null
+  },
+  {
+    "id": "mikrofrontendy-uproschaem-razrabotku-cherez-dev",
+    "camp": "pro",
+    "lang": "ru",
+    "title": "Микрофронтенды: упрощаем разработку через dev-окружение",
+    "who": "Иван Усынин, Альфа-Банк, FrontendConf 2025",
+    "note": "DX/tooling вокруг большой MFE-экосистемы",
+    "url": "https://frontendconf.ru/moscow/2025/abstracts/16074",
+    "youtube": null
+  },
+  {
+    "id": "lessons-from-dazn-scaling-your-project-with-micr",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Lessons from DAZN: Scaling Your Project with Micro-Frontends",
+    "who": "Luca Mezzalira",
+    "note": "Классический большой production-case DAZN",
+    "url": "https://www.infoq.com/presentations/dazn-microfrontend/",
+    "youtube": null
+  },
+  {
+    "id": "the-ideal-micro-frontends-platform",
+    "camp": "pro",
+    "lang": "en",
+    "title": "The Ideal Micro-Frontends Platform",
+    "who": "Luca Mezzalira, QCon London 2025",
+    "note": "Как правильно построить MFE-платформу",
+    "url": "https://qconlondon.com/presentation/apr2025/ideal-micro-frontends-platform",
+    "youtube": null
+  },
+  {
+    "id": "lessons-learned-in-migrating-to-micro-frontends",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Lessons Learned in Migrating to Micro-Frontends",
+    "who": "Luca Mezzalira, QCon SF 2025",
+    "note": "Практический roadmap миграции",
+    "url": "https://qconsf.com/presentation/nov2025/lessons-learned-migrating-micro-frontends",
+    "youtube": null
+  },
+  {
+    "id": "micro-frontends-a-strive-for-fully-verticalized",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Micro Frontends – a Strive for Fully Verticalized Systems",
+    "who": "David Leitner, Devoxx Poland 2019",
+    "note": "MFE как средство уйти от frontend-monolith",
+    "url": "https://www.youtube.com/watch?v=BdogUPEC27w",
+    "youtube": "BdogUPEC27w"
+  },
+  {
+    "id": "micro-frontends-extending-service-oriented-archi",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Micro Frontends – Extending Service-Oriented Architecture to Frontend Development",
+    "who": "Jakub Sowiński, Devoxx Poland 2019",
+    "note": "Production experience StepStone",
+    "url": "https://www.classcentral.com/course/youtube-micro-frontends-extending-service-oriented-architecture-to-frontend-development-jakub-sowinski-195831",
+    "youtube": null
+  },
+  {
+    "id": "micro-frontends-composing-a-greater-whole",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Micro Frontends – Composing a Greater Whole",
+    "who": "Yoav Yanovski, Vue.js Amsterdam 2020",
+    "note": "Прямо содержит секцию «Micro Frontends is Awesome»",
+    "url": "https://www.classcentral.com/course/youtube-yoav-yanovski-micro-frontends-composing-a-greater-whole-vue-js-amsterdam-2020-247479",
+    "youtube": null
+  },
+  {
+    "id": "the-micro-frontend-revolution-at-amex",
+    "camp": "pro",
+    "lang": "en",
+    "title": "The Micro-Frontend Revolution at Amex",
+    "who": "Ruben Casas, Node Congress 2021",
+    "note": "American Express, тысячи разработчиков",
+    "url": "https://www.classcentral.com/course/youtube-the-micro-frontend-revolution-at-amex-ruben-casas-247723",
+    "youtube": null
+  },
+  {
+    "id": "micro-frontends-performance-and-centralised-data",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Micro-Frontends Performance and Centralised Data Caching",
+    "who": "Ruben Casas, React Advanced 2021",
+    "note": "Опровергает тезис «MFE обязательно медленные»",
+    "url": "https://gitnation.com/contents/micro-frontends-performance-and-centralised-data-caching",
+    "youtube": null
+  },
+  {
+    "id": "monolith-to-micro-frontends",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Monolith to Micro-Frontends",
+    "who": "Ruben Casas, React Advanced 2022",
+    "note": "Паттерны миграции от монолита",
+    "url": "https://gitnation.com/contents/monolith-to-micro-frontends",
+    "youtube": null
+  },
+  {
+    "id": "micro-frontends-with-react-router-6",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Micro-frontends with React Router 6",
+    "who": "Ruben Casas, Wey Wey Web 2022",
+    "note": "Практический способ композиции MFE",
+    "url": "https://www.youtube.com/watch?v=tI8RYB5rcVw",
+    "youtube": "tI8RYB5rcVw"
+  },
+  {
+    "id": "micro-frontends-the-evolution-of-frontend-archit",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Micro Frontends: The Evolution of Frontend Architecture",
+    "who": "Ruben Casas, QCon London 2023",
+    "note": "MFE как крайняя точка спектра decoupling",
+    "url": "https://www.infoq.com/presentations/evolution-micro-frontend/",
+    "youtube": null
+  },
+  {
+    "id": "micro-frontends-is-it-a-silver-bullet",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Micro-frontends: Is it a Silver Bullet?",
+    "who": "Liron Cohen, ReactNext 2019",
+    "note": "С оговорками, но на основе успешной миграции AppsFlyer",
+    "url": "https://www.youtube.com/watch?v=asqgKaUMXq0",
+    "youtube": "asqgKaUMXq0"
+  },
+  {
+    "id": "micro-frontends-with-module-federation-beyond-th",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Micro-Frontends with Module Federation: Beyond the Basics",
+    "who": "Manfred Steyer, EnterpriseNG 2021",
+    "note": "Advanced implementation / best practices",
+    "url": "https://www.youtube.com/watch?v=8peHqzO7oqE",
+    "youtube": "8peHqzO7oqE"
+  },
+  {
+    "id": "angular-based-micro-frontends-with-module-federa",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Angular Based Micro Frontends with Module Federation",
+    "who": "Manfred Steyer, ng-conf 2022",
+    "note": "Практический шаблон для Angular",
+    "url": "https://www.youtube.com/watch?v=CDKK6FVvqvs",
+    "youtube": "CDKK6FVvqvs"
+  },
+  {
+    "id": "how-can-webpack-module-federation-be-a-micro-fro",
+    "camp": "pro",
+    "lang": "en",
+    "title": "How Can Webpack Module Federation Be a Micro Frontends Game Changer",
+    "who": "Natalia Venditto, JSWorld 2021",
+    "note": "Module Federation как game changer для MFE",
+    "url": "https://www.classcentral.com/course/youtube-natalia-venditto-how-can-webpack-module-federation-be-a-micro-frontends-game-changer-jsworld-2021-247418",
+    "youtube": null
+  },
+  {
+    "id": "applications-instead-of-libraries-micro-frontend",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Applications Instead of Libraries – Micro Frontends Implemented Through Module Federation",
+    "who": "Devoxx / Voxxed Days",
+    "note": "Плюсы независимых team-owned frontend apps",
+    "url": "https://www.classcentral.com/course/youtube-vdz22-applications-instead-of-libraries-micro-frontends-implemented-through-module-federation-195504",
+    "youtube": null
+  },
+  {
+    "id": "our-journey-into-frontends",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Our Journey Into μFrontends",
+    "who": "Rita Castro, Volkswagen, React Summit 2023",
+    "note": "MFE улучшили autonomy/DX и помогли с tech debt",
+    "url": "https://gitnation.com/contents/our-journey-into-mfrontends/video",
+    "youtube": null
+  },
+  {
+    "id": "challenges-of-decomposing-a-massive-front-end-us",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Challenges of Decomposing a Massive Front-End Using Micro-Frontends",
+    "who": "Oleksandr Tryshchenko, Personio, React Day Berlin 2023",
+    "note": "«Что получили / чем пожертвовали», итог скорее pro",
+    "url": "https://gitnation.com/contents/challenges-of-decomposing-a-massive-front-end-using-micro-frontends",
+    "youtube": null
+  },
+  {
+    "id": "micro-frontends-revolutionizing-frontend-develop",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Micro-Frontends: Revolutionizing Frontend Development",
+    "who": "Nataly Rocha, JSNation US 2024",
+    "note": "Явно pro-MFE: scalability/autonomy/deployment",
+    "url": "https://gitnation.com/contents/whats-with-micro-frontends",
+    "youtube": null
+  },
+  {
+    "id": "bye-bye-frontend-monolith-accelerating-feature-d",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Bye Bye Frontend Monolith: Accelerating Feature Development with Micro Frontends",
+    "who": "Michael Geers, Philly ETE 2021",
+    "note": "Один из наиболее прямых аргументов за MFE",
+    "url": "https://www.youtube.com/watch?v=sRKo1Rt5ypU",
+    "youtube": "sRKo1Rt5ypU"
+  },
+  {
+    "id": "how-deep-is-your-micro-frontend",
+    "camp": "pro",
+    "lang": "en",
+    "title": "How Deep Is Your Micro Frontend?",
+    "who": "Michael Geers, MFE Conference 2023",
+    "note": "Domain ownership / vertical architecture",
+    "url": "https://speakerdeck.com/naltatis/how-deep-is-your-micro-frontend",
+    "youtube": null
+  },
+  {
+    "id": "the-tractor-store-2-0-the-todomvc-for-micro-fron",
+    "camp": "pro",
+    "lang": "en",
+    "title": "The Tractor Store 2.0: The TodoMVC for Micro Frontends",
+    "who": "Michael Geers, MFE Conference 2024",
+    "note": "Практическая reference implementation",
+    "url": "https://conference.microfrontends.cloud/2024/schedule/tractor-store-v2",
+    "youtube": null
+  },
+  {
+    "id": "micro-frontends-true-end-to-end-decoupling-in-pr",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Micro Frontends – True End-to-End Decoupling in Practice",
+    "who": "Michael Geers, Hey Architect! 2024",
+    "note": "Strong pro: domain ownership и vertical teams",
+    "url": "https://speakerdeck.com/naltatis/micro-frontends-true-end-to-end-decoupling-in-practice",
+    "youtube": null
+  },
+  {
+    "id": "the-past-present-and-future-of-micro-frontends",
+    "camp": "pro",
+    "lang": "en",
+    "title": "The Past, Present, and Future of Micro Frontends",
+    "who": "Florian Rappl, MFE Conference 2023",
+    "note": "«established pattern», взгляд на дальнейшее развитие",
+    "url": "https://www.youtube.com/watch?v=tNokay7A3sw",
+    "youtube": "tNokay7A3sw"
+  },
+  {
+    "id": "microfrontends-with-blazor-welcome-to-the-party",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Microfrontends with Blazor: Welcome to the Party!",
+    "who": "Florian Rappl, .NET Conf 2020",
+    "note": "Перенос MFE-паттерна в Blazor",
+    "url": "https://learn.microsoft.com/en-us/shows/dotnetconf-2020/microfrontends-with-blazor-welcome-to-the-party",
+    "youtube": null
+  },
+  {
+    "id": "micro-frontend-discovery-the-driver-for-scalabil",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Micro Frontend Discovery – The Driver for Scalability",
+    "who": "Florian Rappl, Craft 2023",
+    "note": "Discovery/service registry как основа масштабирования MFE",
+    "url": "https://dev.to/florianrappl/micro-frontend-discovery-the-driver-for-scalability-oai",
+    "youtube": null
+  },
+  {
+    "id": "8-things-you-didn-t-know-micro-frontends-can-do",
+    "camp": "pro",
+    "lang": "en",
+    "title": "8 Things You Didn't Know Micro Frontends Can Do",
+    "who": "Florian Rappl, React Summit US 2024",
+    "note": "Очень pro-MFE: дополнительные возможности архитектуры",
+    "url": "https://gitnation.com/events/react-summit-us-2024",
+    "youtube": null
+  },
+  {
+    "id": "module-federation-ssr",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Module Federation & SSR",
+    "who": "Zack Jackson, MFE Conference 2023",
+    "note": "Scalable distributed frontend + SSR",
+    "url": "https://www.youtube.com/watch?v=x63PIpqQME8",
+    "youtube": "x63PIpqQME8"
+  },
+  {
+    "id": "redefining-module-federation-in-2024-beyond-webp",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Redefining Module Federation in 2024: Beyond Webpack",
+    "who": "Zack Jackson, CityJS 2024",
+    "note": "Будущее Module Federation / distributed frontend",
+    "url": "https://www.youtube.com/watch?v=O7xZZoCTxjw",
+    "youtube": "O7xZZoCTxjw"
+  },
+  {
+    "id": "from-monolith-to-micro-frontend",
+    "camp": "pro",
+    "lang": "en",
+    "title": "From Monolith to Micro Frontend",
+    "who": "Juan Carlos, MFE Conference 2024",
+    "note": "Реальный migration journey",
+    "url": "https://www.youtube.com/watch?v=Bc4uzOVmyyU",
+    "youtube": "Bc4uzOVmyyU"
+  },
+  {
+    "id": "migrating-from-monolithic-to-future-proof-micro",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Migrating from Monolithic to Future-Proof Micro Frontends",
+    "who": "David Serrano, MFE Conference 2024",
+    "note": "Эволюционная миграция в MFE",
+    "url": "https://conference.microfrontends.cloud/2024/speakers/david-serrano",
+    "youtube": null
+  },
+  {
+    "id": "micro-frontends-for-mobile",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Micro Frontends for Mobile",
+    "who": "Mo Javad, MFE Conference 2024",
+    "note": "Расширяет подход на mobile",
+    "url": "https://conference.microfrontends.cloud/2024/live",
+    "youtube": null
+  },
+  {
+    "id": "micro-frontend-magic-in-a-regulated-environment",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Micro-Frontend Magic in a Regulated Environment",
+    "who": "James Strachan, Nikola Kovačević, NDC",
+    "note": "MFE как решение проблем productivity/integration в regulated systems",
+    "url": "https://www.classcentral.com/course/youtube-micro-frontend-magic-in-a-regulated-environment-james-strachan-nikola-kovacevic-213908",
+    "youtube": null
+  },
+  {
+    "id": "breaking-up-the-front-end-monolith-an-introducti",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Breaking Up the Front End Monolith: An Introduction to Micro Frontends",
+    "who": "Even Zhang, Latency 2023",
+    "note": "Прямая аргументация против frontend-monolith",
+    "url": "https://www.mechanicalrock.io/learn/videos",
+    "youtube": null
+  },
+  {
+    "id": "building-microfrontends-on-aws",
+    "camp": "pro",
+    "lang": "en",
+    "title": "Building Microfrontends on AWS",
+    "who": "Derick Chen, CityJS Singapore 2023",
+    "note": "Scalability, maintainability, independent delivery",
+    "url": "https://www.buildwithdc.co/posts/2023-cityjs-micro-frontend/",
+    "youtube": null
+  },
+  {
+    "id": "glorious-monolith-masshtabiruem-prilozhenie-bez",
+    "camp": "contra",
+    "lang": "ru",
+    "title": "Glorious Monolith: масштабируем приложение без микрофронтендов",
+    "who": "Максим Земсков, Яндекс, HolyJS 2023 Autumn",
+    "note": "Самый чистый RU-контраргумент: многие преимущества MFE можно получить хорошим монолитом",
+    "url": "https://holyjs.ru/archive/2023%20Autumn/talks/20003049-glorious-monolith-scaling-an-application-without-microfrontends/?ysclid=lwavjvwbq1900050905",
+    "youtube": null
+  },
+  {
+    "id": "mikrofrontendy-malenkie-komandy-bolshie-problemy",
+    "camp": "contra",
+    "lang": "ru",
+    "title": "Микрофронтенды — маленькие команды, большие проблемы",
+    "who": "Динара Николаева, Positive Technologies, FrontendConf 2024",
+    "note": "Независимые команды создают новый коммуникационный долг и риск «Франкенштейна»",
+    "url": "https://www.youtube.com/watch?v=MGjo-pY7CNc",
+    "youtube": "MGjo-pY7CNc"
+  },
+  {
+    "id": "mikrofronty-nuzhny-ili-net",
+    "camp": "contra",
+    "lang": "ru",
+    "title": "Микрофронты: нужны или нет?",
+    "who": "Семён Левенсон, Никита Сидоров, Яндекс",
+    "note": "Сильная подборка аргументов против: слабая изоляция, interop, один MFE может сломать другой",
+    "url": "https://yatalks.yandex.ru/ru/hub/mikrofronty-nuzhny-ili-net",
+    "youtube": null
+  },
+  {
+    "id": "debaty-mikrofrontend-vs-monolit",
+    "camp": "contra",
+    "lang": "ru",
+    "title": "Дебаты «Микрофронтенд vs Монолит»",
+    "who": "FrontendConf 2023",
+    "note": "Прямое столкновение двух архитектурных лагерей",
+    "url": "https://frontendconf.ru/moscow/2023/abstracts/11303",
+    "youtube": null
+  },
+  {
+    "id": "chem-boleyut-bolshie-frontendy-monorepy-i-mikrof",
+    "camp": "contra",
+    "lang": "ru",
+    "title": "Чем болеют большие фронтенды: монорепы и микрофронтенды",
+    "who": "Иван Соловьёв, Evrone, FrontendConf 2020",
+    "note": "Релизные циклы, dependencies, duplication и стоимость разделения",
+    "url": "https://frontendconf.ru/moscow/2020/abstracts/6967",
+    "youtube": null
+  },
+  {
+    "id": "the-risks-of-micro-frontends",
+    "camp": "contra",
+    "lang": "en",
+    "title": "The Risks of Micro-Frontends",
+    "who": "Ruben Casas, CityJS 2022",
+    "note": "🔴 Один из лучших прямых «что может пойти не так»",
+    "url": "https://www.youtube.com/watch?v=R8dTiT9nKow",
+    "youtube": "R8dTiT9nKow"
+  },
+  {
+    "id": "the-problems-micro-frontends-won-t-solve-that-no",
+    "camp": "contra",
+    "lang": "en",
+    "title": "The Problems Micro Frontends Won't Solve That No One Wants to Talk About",
+    "who": "Jennifer Wadella, NDC",
+    "note": "🔴 Отличный анти-silver-bullet доклад",
+    "url": "https://www.youtube.com/watch?v=KfezmwfTu7Y",
+    "youtube": "KfezmwfTu7Y"
+  },
+  {
+    "id": "adopting-micro-frontends-without-micro-frontends",
+    "camp": "contra",
+    "lang": "en",
+    "title": "Adopting Micro-Frontends Without Micro-Frontends",
+    "who": "Alex Lobera, React Advanced 2022",
+    "note": "🔴 Как получить преимущества MFE без production-MFE",
+    "url": "https://gitnation.com/contents/adopting-micro-frontends-without-micro-frontends",
+    "youtube": null
+  },
+  {
+    "id": "stairway-to-heaven-scaling-frontends-the-right-w",
+    "camp": "contra",
+    "lang": "en",
+    "title": "Stairway to Heaven – Scaling Frontends the Right Way",
+    "who": "Florian Rappl, WeAreDevelopers 2022",
+    "note": "🔴 Предлагает **modular monolith / modulith** как альтернативу",
+    "url": "https://www.wearedevelopers.com/videos/492/stairway-to-heaven-scaling-frontends-the-right-way",
+    "youtube": null
+  },
+  {
+    "id": "micro-frontends-unmasked-opportunities-challenge",
+    "camp": "contra",
+    "lang": "en",
+    "title": "Micro Frontends Unmasked: Opportunities, Challenges, Alternatives",
+    "who": "Manfred Steyer, MFE Conference 2024",
+    "note": "🟠 Системно сравнивает benefits с complexity и альтернативами",
+    "url": "https://speakerdeck.com/manfredsteyer/micro-frontends-unmasked-opportunities-challenges-alternatives",
+    "youtube": null
+  },
+  {
+    "id": "the-hidden-challenges-of-runtime-integrated-micr",
+    "camp": "contra",
+    "lang": "en",
+    "title": "The Hidden Challenges of Runtime Integrated Micro Frontends",
+    "who": "Cathrin Möller, MFE Conference 2024",
+    "note": "🟠 Критика именно runtime-composition",
+    "url": "https://conference.microfrontends.cloud/2024/schedule",
+    "youtube": null
+  },
+  {
+    "id": "microfrontends-anti-patterns-seven-years-in-the",
+    "camp": "contra",
+    "lang": "en",
+    "title": "Microfrontends Anti-Patterns: Seven Years in the Trenches",
+    "who": "Luca Mezzalira, QCon",
+    "note": "🟠 Автор pro-MFE, но это отличный каталог того, как MFE ломают",
+    "url": "https://www.youtube.com/watch?v=n1XSeiLhBtE",
+    "youtube": "n1XSeiLhBtE"
+  },
+  {
+    "id": "between-monolith-and-microfrontends-advantages-o",
+    "camp": "contra",
+    "lang": "en",
+    "title": "Between Monolith and Microfrontends – Advantages of a Modulithic Architecture",
+    "who": "Milena-Mercedes May, BOB 2025",
+    "note": "🔴 Реальный кейс масштабирования нескольких команд **без MFE**",
+    "url": "https://bobkonf.de/2025/may.html",
+    "youtube": null
+  },
+  {
+    "id": "the-hidden-cost-of-shared-frontend-code-lessons",
+    "camp": "contra",
+    "lang": "en",
+    "title": "The Hidden Cost of Shared Frontend Code: Lessons from 8 Apps and One Monorepo",
+    "who": "Mansi Manhas, React Summit US 2026",
+    "note": "🟠 Не чистый anti-MFE, но очень полезный разбор distributed frontend costs",
+    "url": "https://gitnation.com/contents/the-hidden-cost-of-shared-frontend-code-lessons-from-8-apps-and-one-monorepo-3776",
+    "youtube": null
+  }
+]

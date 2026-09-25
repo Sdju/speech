@@ -1,6 +1,6 @@
 import type { CameraSpec, Vec3 } from './scene'
 import type { StationSpec } from './scene'
-import { DEFAULT_DURATION, DEFAULT_PRESET, DEFAULT_STATION_DURATION, planets, presets, satellites, station } from './scene'
+import { DEFAULT_DURATION, DEFAULT_PRESET, DEFAULT_STATION_DURATION, partCameras, planets, presets, satellites, station } from './scene'
 
 // ── векторная мелочь ───────────────────────────────────────────────
 
@@ -125,16 +125,23 @@ function expandRaw(raw: RawCamera): CameraSpec {
   return { ...base, ...rest }
 }
 
-interface SlideLike { meta?: { slide?: { frontmatter?: Record<string, any> } } }
+interface SlideLike { meta?: { slide?: { frontmatter?: Record<string, any>, filepath?: string } } }
+
+/** камера части доклада по имени файла: parts/2_what-is-mfe.md → what-is-mfe */
+function partCamera(slide: SlideLike | undefined): RawCamera {
+  const file = slide?.meta?.slide?.filepath?.split(/[\\/]/).pop()?.replace(/\.md$/, '').replace(/^\d+_/, '')
+  return file ? partCameras[file] : undefined
+}
 
 function slideCamera(slide: SlideLike | undefined, click: number | 'last'): RawCamera | null {
   const fm = slide?.meta?.slide?.frontmatter ?? {}
   const steps = Array.isArray(fm.timeline) ? fm.timeline : []
   const fromTimeline = steps.some((s: any) => s && 'camera' in s)
-  if (fm.camera === undefined && !fromTimeline)
+  const own = fm.camera ?? partCamera(slide)
+  if (own === undefined && !fromTimeline)
     return null
 
-  let spec = expand(fm.camera === 'keep' ? undefined : fm.camera)
+  let spec = expand(own === 'keep' ? undefined : own)
   if (fromTimeline) {
     // камера в шаге не накапливается: действует последний шаг с `camera` до текущего клика
     const last = click === 'last' ? steps.length - 1 : Math.min(click, steps.length - 1)
@@ -145,7 +152,7 @@ function slideCamera(slide: SlideLike | undefined, click: number | 'last'): RawC
       }
     }
   }
-  if (fm.camera === 'keep' && !fromTimeline)
+  if (own === 'keep' && !fromTimeline)
     return 'keep'
   return spec
 }

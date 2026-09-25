@@ -223,3 +223,109 @@
   width: 100%;
   height: 100%;
 }
+
+/* ── Слайд «Микрофронтенды ≠ зло / = решение» ───────────────────── */
+
+.mf-title {
+  @apply absolute left-[80px] bottom-[110px] text-left c-white;
+}
+
+.mf-title__word {
+  @apply text-[4em] font-bold leading-none tracking-[-0.03em];
+}
+
+/* обе подписи в одной ячейке: перетекают друг в друга, вёрстка не прыгает */
+.mf-title__slot {
+  @apply grid mt-3 text-[3.2em] font-light leading-none tracking-[-0.02em];
+
+  & > * {
+    grid-area: 1 / 1;
+  }
+}
+
+.mf-title__suffix {
+  transition:
+    opacity 0.7s ease,
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.7s ease;
+}
+
+.mf-title__suffix--evil {
+  color: #f87171;
+}
+
+.mf-title__suffix--solution {
+  color: #34d399;
+}
+
+.mf-off {
+  opacity: 0;
+  transform: translateY(0.35em);
+  filter: blur(10px);
+}
+
+.mf-on {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.mf-out {
+  opacity: 0;
+  transform: translateY(-0.35em);
+  filter: blur(10px);
+}
+
+/* ── Лента докладов ─────────────────────────────────────────────── */
+
+.crawl-caption {
+  @apply flex items-end gap-5 text-left c-white;
+}
+
+/* ── Слайд «аналитика → вопросы»: лента и тексты в одной ячейке ─── */
+
+.mf-crawl {
+  @apply absolute inset-0;
+
+  /* затемнение низа под текстом */
+  &::after {
+    content: '';
+    @apply absolute left-0 right-0 bottom-0 h-[260px] pointer-events-none;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0.55) 55%, transparent);
+  }
+}
+
+.mf-stage {
+  @apply absolute left-[80px] right-[80px] bottom-[64px] text-left c-white;
+}
+
+.mf-stage__slot {
+  @apply grid items-end;
+
+  & > * {
+    grid-area: 1 / 1;
+  }
+}
+
+.crawl-caption__num {
+  @apply text-[7em] font-bold leading-[0.8] tracking-[-0.04em];
+}
+
+.crawl-caption__text {
+  @apply text-xl leading-snug pb-2;
+  color: rgb(255 255 255 / 0.75);
+}
+
+.crawl-caption__pro {
+  @apply font-bold;
+  color: #34d399;
+}
+
+.crawl-caption__contra {
+  @apply font-bold;
+  color: #f87171;
+}
+
+.mf-title__word--question {
+  @apply text-[3.2em] leading-[1.02];
+}

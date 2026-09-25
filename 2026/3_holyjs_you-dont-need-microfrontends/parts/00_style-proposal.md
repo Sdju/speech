@@ -1,6 +1,7 @@
 ---
 layout: full
 chapter: стиль · станция
+hide: true
 camera: { focus: station, distance: 3.6, yaw: -35, pitch: 16, shift: [-0.55, 0.05] }
 station: {}
 timeline:

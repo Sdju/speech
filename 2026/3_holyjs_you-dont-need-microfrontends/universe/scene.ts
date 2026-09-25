@@ -123,10 +123,22 @@ export const presets: Record<string, CameraSpec> = {
    * Точка в стороне от планет: перелёт туда не проходит сквозь тела,
    * сдвиг объектива 0 — иначе широкоугольно растягиваются звёзды.
    */
+  /** «геройский» план станции со слайда 3: станция справа сверху, крупный заголовок слева снизу */
+  'station-hero': { focus: 'station', distance: 3.3, yaw: -28, pitch: 12, shift: [1.05, 0.2], fov: 2.35, spin: 1.2 },
+  /** станция справа, место под текст слева — фон для части про микрофронтенды */
+  station: { focus: 'station', distance: 5.2, yaw: -40, pitch: 14, shift: [1.5, 0.1], fov: 2.35, spin: 1.0 },
   ambient: { focus: [60, 40, -120], distance: 10, yaw: 0, pitch: 0, shift: [0, 0], fov: 2.35 },
 }
 
 export const DEFAULT_PRESET = 'ambient'
+
+/**
+ * Камера по умолчанию для части доклада (файл в parts/, без числового префикса).
+ * Слайд без `camera` получает камеру своей части; явный `camera` на слайде её переопределяет.
+ */
+export const partCameras: Record<string, string | CameraSpec> = {
+  'what-is-mfe': 'station',
+}
 export const DEFAULT_DURATION = 1.8
 
 // ── модульная станция = продукт на микрофронтендах ─────────────────
