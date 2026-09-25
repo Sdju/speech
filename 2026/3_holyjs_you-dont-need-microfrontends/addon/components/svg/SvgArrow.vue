@@ -1,11 +1,13 @@
 <script setup lang="ts">
 
-import { inject, computed, ref, watch, type ComputedRef } from 'vue';
+import { inject, computed, ref, useId, watch, onBeforeUnmount, type ComputedRef } from 'vue';
 
 const { 
     start, 
     end,
     coords,
+    d,
+    reveal,
     power = 0.5,
     endArrow = true,
     startArrow = false,
@@ -14,6 +16,10 @@ const {
     start?: { x: number | string, y: number | string } | string,
     end?: { x: number | string, y: number | string } | string,
     coords?: string,
+    /** Готовая траектория для схем со своей геометрией. */
+    d?: string,
+    /** Управляемая прорисовка 0..1; без неё сохраняется API класса animate. */
+    reveal?: number,
     power?: number,
     endArrow?: boolean,
     startArrow?: boolean,
@@ -21,8 +27,14 @@ const {
 }>()
 
 const curve = ref<SVGPathElement>()
+const head = ref<SVGPolygonElement>()
+const tail = ref<SVGPolygonElement>()
+const HEAD_LENGTH = 12
 
-const sizes = inject<ComputedRef<{ width: number, height: number }>>('sizes')!
+const sizes = inject<ComputedRef<{ width: number, height: number }>>('sizes', computed(() => ({ width: 960, height: 552 })))
+const progress = computed(() => reveal == null ? undefined : Math.max(0, Math.min(1, reveal)))
+const maskId = `arrow-reveal-${useId()}`
+const maskBounds = ref({ x: 0, y: 0, width: 0, height: 0 })
 
 const toNormalizePosition = (position: { x: number | string, y: number | string } | string): { x: number, y: number } => {
   let x
@@ -63,15 +75,15 @@ const normalizedCoords = computed(() => {
 })
 
 function getCurve(start, end, options) {
-  const CONTROL_POINT_HEIGHT_RATE = options?.heightRate || 0.5
+  const CONTROL_POINT_HEIGHT_RATE = options?.heightRate ?? 0.5
   const dx = end.x - start.x
   const dy = end.y - start.y
   const distance = Math.sqrt(dx * dx + dy * dy)
   const midX = (start.x + end.x) / 2
   const midY = (start.y + end.y) / 2
 
-  const perpX = -dy / distance
-  const perpY = dx / distance
+  const perpX = -dy / (distance || 1)
+  const perpY = dx / (distance || 1)
 
   const controlHeight = distance * CONTROL_POINT_HEIGHT_RATE
   
@@ -104,6 +116,8 @@ function getAllCurveData(start, end, options) {
 }
 
 const curveData = computed(() => {
+  if (d)
+    return { svgPath: d }
   return getAllCurveData(
     normalizedCoords.value[0],
     normalizedCoords.value[1],
@@ -113,37 +127,90 @@ const curveData = computed(() => {
 
 
 const fullLength = ref(0)
+let measuredCurve: SVGPathElement | undefined
 watch(curveData, (value) => {
   const mockCurve = document.createElementNS('http://www.w3.org/2000/svg', 'path')
   mockCurve.setAttribute('d', value.svgPath)
+  measuredCurve = mockCurve
   fullLength.value = mockCurve.getTotalLength()
-  if (fullLength.value < 1) {
-    console.log('fullLength', { curveData: value, fullLength: fullLength.value })
-  }
+  // Любая точка пути лежит не дальше его полной длины от начала.
+  // userSpaceOnUse нужен и для строго вертикальных/горизонтальных стрелок.
+  const start = mockCurve.getPointAtLength(0)
+  const extent = fullLength.value + 20
+  maskBounds.value = { x: start.x - extent, y: start.y - extent, width: extent * 2, height: extent * 2 }
 }, { flush: 'post', immediate: true })
+
+// Наконечник имеет длину: направляем его вдоль хорды под треугольником,
+// а не вдоль касательной только в точке острия. Кончик остаётся на motion path.
+function orientHead(element: SVGPolygonElement, atStart = false) {
+  if (!measuredCurve) return
+  const length = fullLength.value
+  const distance = getComputedStyle(element).offsetDistance
+  const position = Math.max(0, Math.min(length,
+    parseFloat(distance) * (distance.endsWith('%') ? length / 100 : 1) || 0,
+  ))
+  let from = Math.max(0, position - HEAD_LENGTH)
+  let to = position
+  if (atStart || position < 0.001) {
+    from = position
+    to = Math.min(length, position + HEAD_LENGTH)
+  }
+  const a = measuredCurve.getPointAtLength(from)
+  const b = measuredCurve.getPointAtLength(to)
+  element.style.offsetRotate = `${Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI}deg`
+}
+
+let orientationFrame: number | undefined
+function syncOrientation() {
+  if (orientationFrame != null) cancelAnimationFrame(orientationFrame)
+  orientationFrame = undefined
+  if (head.value) orientHead(head.value)
+  if (tail.value) orientHead(tail.value, true)
+  // Читаем фактическую CSS-позицию: сохраняются easing, delay и обратный ход.
+  // Статические стрелки не держат собственный цикл requestAnimationFrame.
+  const moving = [head.value, tail.value].some(element => element?.getAnimations()
+    .some(animation => animation.playState === 'running' || animation.pending))
+  if (moving) orientationFrame = requestAnimationFrame(syncOrientation)
+}
+watch([head, tail, curveData, progress], syncOrientation, { flush: 'post' })
+onBeforeUnmount(() => {
+  if (orientationFrame != null) cancelAnimationFrame(orientationFrame)
+})
 </script>
 
 <template>
-  <g class="svg-arrow" :class="{ dashed }" :style="{ '--full-length': fullLength }">
-    <path ref="curve" :d="curveData.svgPath" fill="none" />
+  <g class="svg-arrow" :class="{ dashed, 'controlled-reveal': progress != null }" :style="{ '--full-length': fullLength }">
+    <defs v-if="progress != null">
+      <mask :id="maskId" maskUnits="userSpaceOnUse" v-bind="maskBounds" style="mask-type: alpha">
+        <path class="arrow-reveal" :d="curveData.svgPath" pathLength="1" fill="none" stroke="white"
+          :style="{ strokeDashoffset: 1 - progress }" />
+      </mask>
+    </defs>
+    <path ref="curve" :d="curveData.svgPath" fill="none" :mask="progress != null ? `url(#${maskId})` : undefined" />
     <polygon
         v-if="endArrow"
+        ref="head"
         points="-12,-6 0,0, -12,6"
         class="arrow-head"
+        @transitionrun="syncOrientation" @transitionend="syncOrientation" @transitioncancel="syncOrientation"
+        @animationstart="syncOrientation" @animationend="syncOrientation" @animationcancel="syncOrientation"
         :style="{
             offsetPath: `path('${curveData.svgPath}')`,
-            offsetDistance: '100%',
-            offsetRotate: 'auto',
+            offsetDistance: `${(progress ?? 1) * 100}%`,
+            offsetAnchor: '0px 0px',
         }"
     />
     <polygon
         v-if="startArrow"
+        ref="tail"
         points="12,-6 0,0, 12,6"
         class="arrow-tail"
+        @transitionrun="syncOrientation" @transitionend="syncOrientation" @transitioncancel="syncOrientation"
+        @animationstart="syncOrientation" @animationend="syncOrientation" @animationcancel="syncOrientation"
         :style="{
             offsetPath: `path('${curveData.svgPath}')`,
             offsetDistance: '0%',
-            offsetRotate: 'auto',
+            offsetAnchor: '0px 0px',
         }"
     />
   </g>
@@ -157,7 +224,7 @@ watch(curveData, (value) => {
   --dash-gap: 5;
 
 
-  & path {
+  & > path {
     transition: all var(--animation-duration) ease-out;
     stroke-dasharray: var(--full-length);
     stroke-dashoffset: var(--full-length);
@@ -167,22 +234,44 @@ watch(curveData, (value) => {
     }
   }
 
-  &.dashed path {
+  &.dashed > path {
     stroke-dasharray: var(--dash-length) var(--dash-gap);
   }
 
-  &.animate path {
+  &.animate > path {
     animation: svg-arrow-stroke var(--animation-duration) linear forwards;
   }
 
   &.animate .arrow-head {
     animation: moveAlongPath var(--animation-duration) linear normal;
   }
+
+  /* Один прогресс и одинаковый timing для маски линии и движущегося наконечника.
+     Маска постепенно открывает и сплошной, и пунктирный штрих. */
+  &.controlled-reveal > path {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+
+  &.controlled-reveal.dashed > path {
+    stroke-dasharray: var(--dash-length) var(--dash-gap);
+  }
+
+  &.controlled-reveal .arrow-reveal {
+    stroke-width: calc(var(--arrow-width, 2px) + 2px);
+    stroke-dasharray: 1;
+    transition: stroke-dashoffset var(--animation-duration) var(--arrow-ease, ease-out) var(--animation-delay, 0s);
+  }
+
+  &.controlled-reveal .arrow-head {
+    transition: offset-distance var(--animation-duration) var(--arrow-ease, ease-out) var(--animation-delay, 0s);
+  }
 }
 
 .arrow-head,
 .arrow-tail {
-  transition: all var(--animation-duration) ease-out;
+  transition: offset-distance var(--animation-duration) ease-out;
 }
 
 @keyframes moveAlongPath {
