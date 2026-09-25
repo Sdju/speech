@@ -46,135 +46,170 @@ layout: center
 # Модульная структура проекта
 
 ---
-
-<img class="contain $obj pos-center w-700px" src="../img/mf.png" />
-
+layout: center
+clicks: 2
 ---
 
-````md magic-move
-```md
-src/
-├── components/
-|   ├── Map/
-|   ├── ProfileCard/
-|   └── ...
-├── pages/
-├── utils/
-├── App.vue
-└── main.js
+<ArchScheme mode="modules" :step="$clicks" />
 
+---
+layout: center
+fileTree:
+  - caption: 'Классическая структура: по типам файлов'
+    tree: |
+      src/ @src
+        components/ @components
+          Map/ @map-ui
+          ProfileCard/ @profile-card
+          ...
+        pages/ @pages
+        utils/
+        App.vue
+        main.js
+  - caption: 'Проект растёт — каждая папка пухнет'
+    tree: |
+      src/ @src
+        components/ @components
+          Map/ @map-ui
+            MapComponent/
+            MapCard/
+            ...
+          Profile/ @profile-ui
+            UserProfile/
+            ProfileCard/ @profile-card
+          ...
+        pages/ @pages
+          MapPage/ @map-pages
+          ProfilePage/ @profile-pages
+          ...
+        stores/ @stores
+          MapStore/ @map-store
+          ProfileStore/ @profile-store
+          ...
+        utils/
+        App.vue
+        main.js
+  - caption: 'Всё про карту размазано по трём папкам'
+    focus: '#green'
+    tree: |
+      src/ @src
+        components/ @components
+          Map/ @map-ui #green
+            MapComponent/
+            MapCard/
+            ...
+          Profile/ @profile-ui #blue
+            UserProfile/
+            ProfileCard/ @profile-card
+          ...
+        pages/ @pages
+          MapPage/ @map-pages #green
+          ProfilePage/ @profile-pages #blue
+          ...
+        stores/ @stores
+          MapStore/ @map-store #green
+          ProfileStore/ @profile-store #blue
+          ...
+        utils/
+        App.vue
+        main.js
+  - caption: 'И всё про профиль — тоже'
+    focus: '#blue'
+  - caption: 'Соберём фичу в одном месте'
+    focus: '@modules'
+    tree: |
+      src/ @src
+        components/ @components
+          Map/ @map-ui #green
+            MapComponent/
+            MapCard/
+            ...
+          Profile/ @profile-ui #blue
+            UserProfile/
+            ProfileCard/ @profile-card
+          ...
+        pages/ @pages
+          MapPage/ @map-pages #green
+          ProfilePage/ @profile-pages #blue
+          ...
+        stores/ @stores
+          MapStore/ @map-store #green
+          ProfileStore/ @profile-store #blue
+          ...
+        modules/ @modules
+        utils/
+        App.vue
+        main.js
+  - caption: 'Модуль Map: свои компоненты, страницы, стор'
+    focus: '#green'
+    tree: |
+      src/ @src
+        components/ @components
+          Profile/ @profile-ui #blue
+            UserProfile/
+            ProfileCard/ @profile-card
+          ...
+        pages/ @pages
+          ProfilePage/ @profile-pages #blue
+          ...
+        stores/ @stores
+          ProfileStore/ @profile-store #blue
+          ...
+        modules/ @modules
+          Map/ @map #green
+            components/ @map-ui
+              MapComponent/
+              MapCard/
+              ...
+            pages/ @map-pages
+            stores/ @map-store
+        utils/
+        App.vue
+        main.js
+  - caption: 'Модуль Profile — так же. Общее уходит в shared'
+    tree: |
+      src/ @src
+        app/
+        pages/ @pages
+        modules/ @modules
+          Map/ @map #green
+            components/ @map-ui
+            pages/ @map-pages
+            stores/ @map-store
+          Profile/ @profile #blue
+            components/ @profile-ui
+            pages/ @profile-pages
+            stores/ @profile-store
+          ...
+        shared/ @components
+          ...
+        utils/
+        App.vue
+        main.js
+  - caption: 'Модуль — это граница: публичный API, тесты, документация'
+    focus: '@map'
+    tree: |
+      src/ @src
+        app/
+        pages/ @pages
+        modules/ @modules
+          Map/ @map #green
+            components/ @map-ui
+            pages/ @map-pages
+            stores/ @map-store
+            tests/
+            index.ts // публичный API модуля
+            README.md
+          Profile/ @profile #blue
+          ...
+        shared/ @components
+          ...
+        utils/
+        App.vue
+        main.js
+---
 
-
-
-
-
-
-
-
-
-
-⠀
-```
-
-```md {2-10|2-5|4-5,11-12,15-16|2,7-9,11,13,15,17|19}
-src/
-├── components/
-|   ├── Map/
-|   |   ├── MapComponent/
-|   |   ├── MapCard/
-|   |   └─── ...
-|   ├── Profile/
-|   |   ├── UserProfile/
-|   |   └── ProfileCard/
-|   └── ...
-├── pages/
-|   |   ├── MapPage/
-|   |   └── ProfilePage/
-|   └─── ...
-├── stores/
-|   ├── MapStore/
-|   ├── ProfileStore/
-|   └─── ...
-├── utils/
-├── App.vue
-└── main.js
-⠀
-```
-
-```md {19}
-src/
-├── components/
-|   ├── Map/
-|   |   ├── MapComponent/
-|   |   ├── MapCard/
-|   |   └─── ...
-|   ├── Profile/
-|   |   ├── UserProfile/
-|   |   └── ProfileCard/
-|   └── ...
-├── pages/
-|   |   ├── MapPage/
-|   |   └── ProfilePage/
-|   └─── ...
-├── stores/
-|   ├── MapStore/
-|   ├── ProfileStore/
-|   └─── ...
-├── modules/
-├── utils/
-├── App.vue
-└── main.js
-```
-
-```md {*|4-13|5-8|9-12|*}
-src/
-├── app/
-├── pages/
-├── modules/
-|   ├── Map/
-|   |   ├── stores/
-|   |   ├── components/
-|   |   └── pages/
-|   ├── Profile/
-|   |   ├── stores/
-|   |   ├── components/
-|   |   └── pages/
-|   └── ...
-├── shared/
-├── utils/
-├── App.vue
-└── main.js
-
-
-
-
-⠀
-```
-
-```md {*|4-13|5-8|9-12|*}
-src/
-├── app/
-├── pages/
-├── modules/
-|   ├── Map/
-|   |   ├── stores/
-|   |   ├── components/
-|   |   ├── pages/
-|   |   ├── tests/
-|   |   ├── index.ts
-|   |   └── README.md
-|   └── ...
-├── shared/
-├── utils/
-├── App.vue
-└── main.js
-
-
-
-
-⠀
-```
-````
+<FileTree />
 
 ---
 

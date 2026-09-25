@@ -98,6 +98,7 @@ Notes = последний HTML-комментарий в конце слайд�
 | `timeline:` + `t.*` | схемы, bento, Points B/C/D |
 | `v-click` | Points A, простые списки |
 | magic-move | эволюция кода |
+| `FileTree` | эволюция дерева файлов (сам себе драйвер) |
 
 Один драйвер на слайд. При `timeline` не писать `clicks:`.
 
@@ -118,6 +119,7 @@ Notes = последний HTML-комментарий в конце слайд�
 | Карточки разного размера | bento |
 | Схема | диаграмма Node+SvgArrow |
 | Эволюция кода | magic-move (+ **pad строк**) |
+| Эволюция структуры папок | `FileTree` (не magic-move по ascii-дереву) |
 | Элемент между слайдами | XSlide |
 | Свободная композиция | `$obj` + `pos-*` |
 
@@ -240,6 +242,41 @@ Yaml/HTML → [examples.md](examples.md).
 - `{lines: false}` в `Point full`; full-slide обычно с номерами (**pad всё равно**).
 - Solo magic-move = свой слайд. С Points = только B/C, steps ↔ fences.
 - Подсветка без смены текста → `` ```js {*|1|3|*} `` ``, не magic-move.
+
+---
+
+## FileTree
+
+Дерево файлов по шагам: удалённое схлопывается → остальное едет (FLIP) → новое въезжает по очереди.
+Компонент: `addon/components/filetree/FileTree.vue`, парсер: `addon/module/FileTree/parse.ts`.
+
+```yaml
+---
+layout: center
+fileTree:
+  - caption: 'Подпись шага'          # необязательно
+    tree: |
+      src/ @src                      # `/` в конце — папка
+        components/
+          Map/ @map-ui #green        # @id — сквозной id, #tag — цвет (наследуется детьми)
+          ...                        # «и так далее»
+        main.js // точка входа       # // — заметка справа
+  - focus: '#green'                  # без tree — дерево прошлого шага; focus: @id | путь | имя | #tag
+  - tree: |
+      src/ @src
+        modules/
+          Map/ #green
+            components/ @map-ui      # тот же @id → строка перелетает и переименовывается, дети — с ней
+---
+
+<FileTree />
+```
+
+- Клики регистрирует сам (`steps − 1`), **других драйверов на слайде нет**. Под timeline: `<FileTree :steps="…" :step="t.tree" />`.
+- Без `@id` id = `<id родителя>/<имя>`: переезд без `@id` = удалить + создать. Хочешь перелёт — ставь `@id`.
+- Отступ — любым числом пробелов; ascii-дерево (`├──`, `|`) тоже парсится.
+- Цвета тегов: green, blue, pink, violet, amber, red, cyan. Шрифт подбирается под самый длинный шаг (`height`, `maxFont`, `width` — пропсы).
+- Прыжок через шаги и вход на слайд — без анимации.
 
 ---
 

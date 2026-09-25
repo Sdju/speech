@@ -26,71 +26,51 @@ layout: center
 > Пакет - модуль на уровне пакетного менеджера
 
 ---
+layout: center
+fileTree:
+  - caption: 'Один пакет, внутри — модули'
+    tree: |
+      src/ @root
+        app/ @app
+        pages/
+        modules/ @modules
+          Profile/ @profile #blue
+          Map/ @map #green
+          ... @more
+        shared/
+        utils/
+        App.vue
+        main.js
+  - caption: 'Каждый модуль — отдельный пакет'
+    tree: |
+      packages/ @root
+        app/ @app
+        profile/ @profile #blue
+        map/ @map #green
+        ... @more
+  - caption: 'У каждого пакета свой package.json'
+    tree: |
+      packages/ @root
+        app/ @app
+          package.json
+        profile/ @profile #blue
+          package.json
+        map/ @map #green
+          package.json
+        ... @more
+  - caption: 'Общий код — тоже пакеты'
+    focus: ['ui', 'types']
+    tree: |
+      packages/ @root
+        app/ @app
+        profile/ @profile #blue
+        map/ @map #green
+        ui/ #violet
+        types/ #amber
+        ... @more
+---
 
-````md magic-move
-```md
-src/
-├── app/
-├── pages/
-├── modules/
-|   ├── Profile/
-|   ├── Map/
-|   └── ...
-├── shared/
-├── utils/
-├── App.vue
-└── main.js
-⠀
-```
-
-```md
-packages/
-├── app/
-├── profile/
-├── map/
-└── ...
-
-
-
-
-
-
-⠀
-```
-
-```md
-packages/
-├── app/
-|   └── package.json
-├── profile/
-|   └── package.json
-├── map/
-|   └── package.json
-└── ...
-
-
-
-
-
-
-⠀
-```
-
-```md {*|5,6}
-packages/
-├── app/
-├── profile/
-├── map/
-├── ui/
-├── types/
-└── ...
-
-
-
-
-⠀
-```
-````
+<FileTree />
 
 ---
 
@@ -192,7 +172,7 @@ layout: center
 
 ---
 
-<img src="../img/chair.png" class="contain $obj pos-center w-700px" />
+<ChairPlanet />
 
 ---
 

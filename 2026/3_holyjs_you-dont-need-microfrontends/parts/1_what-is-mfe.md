@@ -13,8 +13,27 @@ layout: center
 <img src="../img/mfe.svg" />
 
 ---
+layout: center
+clicks: 2
+# станция отъезжает к краю — схеме нужна вся ширина
+camera: { preset: station, distance: 8, pitch: 20, shift: [2.05, 0.55] }
+---
 
-<img class="contain $obj pos-center w-700px" src="../img/mf.png" />
+<ArchScheme mode="mfe" :step="$clicks" />
+
+---
+
+<v-clicks>
+
+- Не каждый проект легко разделить на микрофронтенды
+- Правильный CI/CD для микрофронтендов может быть сложным
+- Правильно настроить Dev-окружение не тривиальная задача
+- Сборка является более хрупкой
+- Контракты менее четкие
+- Поддержание единого стиля
+- Массовые миграции
+
+</v-clicks>
 
 ---
 
