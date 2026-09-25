@@ -5,9 +5,9 @@ layout: center
 <div class="sui">
   <div class="sui-bar">
     <span class="sui-bar__title">Экипаж</span>
-    <span class="sui-bar__meta">борт 01 · бортинженер</span>
+    <span class="sui-bar__meta">Бортинженер борта 01</span>
     <span class="sui-bar__spacer" />
-    <span class="sui-bar__meta"><span class="sui-dot" /> связь установлена</span>
+    <span class="sui-bar__meta">Связь установлена</span>
     <MissionClock class="sui-bar__meta" />
   </div>
 
@@ -127,7 +127,7 @@ timeline:
       <div class="crawl-caption__num">68+</div>
       <div class="crawl-caption__text">
         докладов о микрофронтендах<br>
-        <span class="crawl-caption__pro">54</span> призывают их внедрять ·
+        <span class="crawl-caption__pro">54</span> призывают их внедрять,
         <span class="crawl-caption__contra">14</span> настроены скептически
       </div>
     </div>

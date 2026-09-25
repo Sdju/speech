@@ -73,7 +73,6 @@ onMounted(async () => {
     </CoordHelper>
     <div class="bottom-20px right-20px absolute text-lg opacity-50 bg-black/50 px-3 py-1 rounded-full">{{ currentSlideNo }} / {{ total }}</div>
     <div v-if="frontmatter.chapter" class="hud-stamp">
-      <span class="hud-stamp__dot" />
       <span>{{ frontmatter.chapter }}</span>
     </div>
     <div

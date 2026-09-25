@@ -53,7 +53,7 @@ watch(() => props.mode, (newVal) => {
 </script>
 
 <template>
-  <div class="leading-snug tracking-wide">
+  <div class="leading-snug">
     <div ref="scope">
       <span
         v-for="(word, idx) in wordsArray"

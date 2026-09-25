@@ -1,17 +1,12 @@
 /* ── HUD skin · «Вам (не) нужны микрофронтенды» ─────────────────── */
 
 .hud-stamp {
-  @apply absolute bottom-24px left-24px font-mono text-xs uppercase tracking-[0.25em] flex items-center gap-3;
+  @apply absolute bottom-24px left-24px text-xs;
   color: --set-alpha(var(--v-color), 85%);
 }
 
-.hud-stamp__dot {
-  @apply w-1.5 h-1.5 rounded-full;
-  background: var(--v-color);
-}
-
 .hud-label {
-  @apply font-mono text-xs uppercase tracking-[0.22em];
+  @apply text-xs;
   color: --set-alpha(var(--v-color), 90%);
 }
 
@@ -40,7 +35,7 @@
   @apply flex flex-col items-center gap-0.5 text-center leading-tight;
 
   & small {
-    @apply font-mono text-[0.55em] font-normal opacity-70 tracking-wide;
+    @apply font-mono text-[0.55em] font-normal opacity-70;
   }
 }
 
@@ -138,6 +133,18 @@
 .title-block__not {
   @apply font-light;
   color: rgb(255 255 255 / 0.42);
+  animation: title-not-blink 4s ease-in-out infinite;
+}
+
+@keyframes title-not-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title-block__not {
+    animation: none;
+  }
 }
 
 /* ── Space UI: консоль экипажа ─────────────────────────────────── */
@@ -164,11 +171,6 @@
 
 .sui-bar__spacer {
   @apply flex-1;
-}
-
-.sui-dot {
-  @apply inline-block w-1.5 h-1.5 rounded-full;
-  background: #34d399;
 }
 
 .sui-caption {

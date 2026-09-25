@@ -17,7 +17,7 @@ camera: title
 ---
 
 <div class="title-block">
-  <div class="title-block__event">HolyJS · осень 2026</div>
+  <div class="title-block__event">HolyJS, осень 2026</div>
   <h1 class="title-block__text">
     Вам <span class="title-block__not">(не)</span> нужны<br>микрофронтенды
   </h1>

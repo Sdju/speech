@@ -1,6 +1,6 @@
 ---
 layout: full
-chapter: стиль · станция
+chapter: Станция
 hide: true
 camera: { focus: station, distance: 3.6, yaw: -35, pitch: 16, shift: [-0.55, 0.05] }
 station: {}
@@ -39,7 +39,7 @@ timeline:
 
 ---
 layout: full
-chapter: стиль · прогулка по системе
+chapter: Прогулка по системе
 hide: true
 camera: system
 timeline:
@@ -76,7 +76,7 @@ timeline:
 ---
 layout: center
 slideClass: cs-purple
-chapter: стиль · линия Кармана
+chapter: Линия Кармана
 hide: true
 timeline:
   - step: 0
@@ -108,17 +108,17 @@ timeline:
 ---
 layout: full
 slideClass: cs-blue
-chapter: стиль · схема
+chapter: Схема
 hide: true
 timeline:
   - title: 'Module Federation'
     legend: 'интеграция в рантайме'
     remoteKind: 'remote'
     remoteNote: 'remoteEntry.js'
-    hostTitle: 'Host · Shell'
+    hostTitle: 'Host / Shell'
     hostNote: 'оркестратор'
     sharedTitle: 'Shared dependencies'
-    infra: 'CDN · независимый деплой каждого'
+    infra: 'Независимый деплой каждого на CDN'
     karman: 'стыковка на орбите ↑'
     user:
       class: 'pos-480_38 w-[210px] text-base'
@@ -238,9 +238,9 @@ timeline:
     remoteKind: 'модуль'
     remoteNote: 'feature module'
     hostTitle: 'Single App'
-    hostNote: 'один проект · один репозиторий'
+    hostNote: 'один проект, один репозиторий'
     sharedTitle: 'Shared core'
-    infra: 'один артефакт · один деплой'
+    infra: 'один артефакт, один деплой'
     karman: 'стыковка на земле ↓'
     cdn1:
       class: 'pos-480_462 w-[160px] text-base -blur-hidden'

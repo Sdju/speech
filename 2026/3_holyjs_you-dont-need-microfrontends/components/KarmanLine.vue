@@ -20,10 +20,10 @@ const columns: { name: string, launches: string, mode: Mode }[] = [
 <template>
   <div class="karman">
     <div class="karman__zone karman__zone--orbit">
-      <span class="hud-label">орбита · runtime · браузер</span>
+      <span class="hud-label">Орбита: runtime в браузере</span>
     </div>
     <div class="karman__zone karman__zone--earth">
-      <span class="hud-label">земля · build time · CI</span>
+      <span class="hud-label">Земля: сборка в CI</span>
     </div>
     <div class="karman__line">
       <span class="hud-label">линия Кармана</span>
