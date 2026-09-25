@@ -1,6 +1,6 @@
 import type { CameraSpec, Vec3 } from './scene'
 import type { StationSpec } from './scene'
-import { DEFAULT_DURATION, DEFAULT_PRESET, DEFAULT_STATION_DURATION, partCameras, planets, presets, satellites, station } from './scene'
+import { DEFAULT_DURATION, DEFAULT_PRESET, DEFAULT_STATION_DURATION, partCameras, planets, presets, satellites, station, SUN_DIR } from './scene'
 
 // ── векторная мелочь ───────────────────────────────────────────────
 
@@ -27,7 +27,12 @@ export function planeBasis(axis: Vec3): [Vec3, Vec3, Vec3] {
 
 // ── мир во времени ─────────────────────────────────────────────────
 
-export interface BodyState { pos: Vec3, radius: number }
+export interface BodyState {
+  pos: Vec3
+  radius: number
+  /** для модулей станции: куда модуль смотрит от хаба (мировые координаты) */
+  dir?: Vec3
+}
 
 export function satellitePos(id: string, time: number): Vec3 | undefined {
   const s = satellites.find(s => s.id === id)
@@ -251,6 +256,21 @@ type Spec = ReturnType<typeof resolveCamera>
 function specDir(s: Spec, time: number, spinDeg: number): Vec3 {
   const yaw = (s.yaw + spinDeg) * deg
   const pitch = s.pitch * deg
+  if (s.follow === 'module' && typeof s.focus === 'string') {
+    // yaw 0 — со стороны торца модуля, yaw 90 — сбоку; pitch — над/под плоскостью портов.
+    // Станция вращается, но ракурс держится относительно модуля — он всегда в кадре сбоку.
+    const out = bodyAt(s.focus, time).dir
+    if (out) {
+      const up: Vec3 = Math.abs(out[1]) > 0.9 ? [1, 0, 0] : [0, 1, 0]
+      const radial = norm(sub(out, mul(up, dot(out, up))))
+      const tangent = norm(cross(up, radial))
+      let horiz = add(mul(radial, Math.cos(yaw)), mul(tangent, Math.sin(yaw)))
+      // клоним ракурс к солнцу — модуль на освещённой стороне; непрерывно, без скачков при вращении
+      const sunH = sub(norm(SUN_DIR), mul(up, dot(norm(SUN_DIR), up)))
+      horiz = norm(add(horiz, mul(norm(sunH), 1.4)))
+      return norm(add(mul(horiz, Math.cos(pitch)), mul(up, Math.sin(pitch))))
+    }
+  }
   const frame = s.follow === 'orbit' && typeof s.focus === 'string' ? orbitFrame(s.focus, time) : undefined
   if (frame) {
     // yaw 0 — снаружи орбиты (планета за спутником), yaw 90 — вдогонку сбоку

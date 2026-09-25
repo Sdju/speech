@@ -65,8 +65,9 @@ export interface CameraSpec {
    * world — yaw/pitch относительно мира (по умолчанию);
    * orbit — относительно орбиты спутника: yaw 0 = снаружи орбиты, планета за спутником.
    * Камера облетает планету вместе со спутником, фаза освещения меняется.
+   * module — относительно модуля станции (`focus: station.<id>`): yaw 0 — с торца, 90 — сбоку.
    */
-  follow?: 'world' | 'orbit'
+  follow?: 'world' | 'orbit' | 'module'
   duration?: number
 }
 
@@ -128,21 +129,30 @@ export const presets: Record<string, CameraSpec> = {
   /** сквозной слайд обещаний: станция крупно справа, колонка обещаний слева */
   promises: { focus: 'station', distance: 4.6, yaw: -30, pitch: 34, shift: [1.05, -0.05], fov: 2.35, spin: 0.6 },
   /** крупно модуль-обещание на сквозном слайде: справа от колонки обещаний */
-  'promise-catalog': { focus: 'station.catalog', distance: 7, yaw: -25, pitch: 24, shift: [0.95, 0], fov: 2.35, spin: 0.6, duration: 1.6 },
-  'promise-search': { focus: 'station.search', distance: 7, yaw: -25, pitch: 24, shift: [0.95, 0], fov: 2.35, spin: 0.6, duration: 1.6 },
-  'promise-cart': { focus: 'station.cart', distance: 8, yaw: -25, pitch: 24, shift: [0.95, 0], fov: 2.35, spin: 0.6, duration: 1.6 },
-  'promise-checkout': { focus: 'station.checkout', distance: 8, yaw: -25, pitch: 24, shift: [0.95, 0], fov: 2.35, spin: 0.6, duration: 2.2 },
+  'promise-catalog': { focus: 'station.catalog', follow: 'module', distance: 9, yaw: 70, pitch: 28, shift: [0.95, 0], fov: 2.35, duration: 1.6 },
+  'promise-search': { focus: 'station.search', follow: 'module', distance: 9, yaw: 70, pitch: 28, shift: [0.95, 0], fov: 2.35, duration: 1.6 },
+  'promise-cart': { focus: 'station.cart', follow: 'module', distance: 10, yaw: 20, pitch: -8, shift: [0.95, 0], fov: 2.35, duration: 1.6 },
+  'promise-checkout': { focus: 'station.checkout', follow: 'module', distance: 10, yaw: 70, pitch: 28, shift: [0.95, 0], fov: 2.35, duration: 1.6 },
+  /** экипаж вокруг станции (слайды 13–14): станция справа от центра, место под людей вокруг */
+  crew: { focus: 'station', distance: 5.6, yaw: -35, pitch: 26, shift: [0.4, 0.12], fov: 2.35, spin: 0.4 },
   /** модуль своего раздела у правого края — фон для текстовых слайдов раздела */
-  'section-catalog': { focus: 'station.catalog', distance: 9, yaw: -35, pitch: 20, shift: [1.55, 0.15], fov: 2.35, spin: 0.5 },
-  'section-search': { focus: 'station.search', distance: 9, yaw: -35, pitch: 20, shift: [1.55, 0.15], fov: 2.35, spin: 0.5 },
-  'section-cart': { focus: 'station.cart', distance: 10, yaw: -35, pitch: 20, shift: [1.55, 0.15], fov: 2.35, spin: 0.5 },
-  'section-checkout': { focus: 'station.checkout', distance: 10, yaw: -35, pitch: 20, shift: [1.55, 0.15], fov: 2.35, spin: 0.5 },
+  'section-catalog': { focus: 'station.catalog', follow: 'module', distance: 11, yaw: 60, pitch: 12, shift: [1.35, 0.1], fov: 2.35 },
+  'section-search': { focus: 'station.search', follow: 'module', distance: 11, yaw: 60, pitch: 12, shift: [1.35, 0.1], fov: 2.35 },
+  'section-cart': { focus: 'station.cart', follow: 'module', distance: 12, yaw: 60, pitch: 12, shift: [1.35, 0.1], fov: 2.35 },
+  'section-checkout': { focus: 'station.checkout', follow: 'module', distance: 12, yaw: 60, pitch: 12, shift: [1.35, 0.1], fov: 2.35 },
   /** станция справа, место под текст слева — фон для части про микрофронтенды */
   station: { focus: 'station', distance: 5.2, yaw: -40, pitch: 14, shift: [1.5, 0.1], fov: 2.35, spin: 1.0 },
+  // финал: общий план всей системы с собранной станцией
+  finale: { focus: [-1.4, -0.3, 0.9], distance: 8.6, yaw: -24, pitch: 16, shift: [0.95, 0.14], fov: 2.35, duration: 3.2 },
+  // прощание: собранная станция крупно справа, слева — место под текст
+  farewell: { focus: 'station', distance: 5.2, yaw: -35, pitch: 18, shift: [1.0, 0.38], fov: 2.35, spin: 0.5, duration: 2.4 },
   ambient: { focus: [60, 40, -120], distance: 10, yaw: 0, pitch: 0, shift: [0, 0], fov: 2.35 },
 }
 
 export const DEFAULT_PRESET = 'ambient'
+
+/** направление на солнце (не нормировано) — общее для рейтрейсера, станции и камеры */
+export const SUN_DIR: Vec3 = [-0.85, 0.35, 0.42]
 
 /**
  * Камера по умолчанию для части доклада (файл в parts/, без числового префикса).

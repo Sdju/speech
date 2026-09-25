@@ -5,7 +5,7 @@ import { SurfaceBaker } from '../universe/baker'
 import type { CameraFrame } from '../universe/camera'
 import { bodyAt, CameraRig, dot, norm, resolveCamera, resolveStation, satelliteRotation, setStationResolver, sub } from '../universe/camera'
 import type { Vec3 } from '../universe/scene'
-import { planets, satellites, station } from '../universe/scene'
+import { planets, satellites, station, SUN_DIR } from '../universe/scene'
 import { BAKE_SIZE, MAX_P, MAX_S, renderFragment, vertex } from '../universe/shader'
 import { StationScene } from '../universe/station'
 import { stationScreen } from '../universe/screen'
@@ -23,7 +23,7 @@ const canvas = useTemplateRef<HTMLCanvasElement>('canvas')
 const stationCanvas = useTemplateRef<HTMLCanvasElement>('stationCanvas')
 const nav = useNav()
 const rig = new CameraRig()
-const SUN = norm([-0.85, 0.35, 0.42])
+const SUN = norm(SUN_DIR)
 
 let gl: WebGLRenderingContext | null = null
 let raf = 0

@@ -387,7 +387,8 @@ export class StationScene {
     if (!rt)
       return
     const p = rt.pivot.getWorldPosition(this.tmp)
-    return { pos: [p.x, p.y, p.z], radius: rt.length * 0.6 }
+    const d = PORT_DIR[rt.def.port].clone().transformDirection(this.body.matrixWorld)
+    return { pos: [p.x, p.y, p.z], radius: rt.length * 0.6, dir: [d.x, d.y, d.z] }
   }
 
   private animate(time: number, now: number) {
