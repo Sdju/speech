@@ -12,7 +12,7 @@
  * В timeline `camera` шага — полная спецификация поверх frontmatter-камеры слайда;
  * между шагами не накапливается: действует последний шаг с `camera` до текущего клика.
  *
- *   focus     — id планеты/спутника или точка [x, y, z]
+ *   focus     — id планеты/спутника, `station`, `station.<модуль>` или точка [x, y, z]
  *   distance  — расстояние от центра фокуса в радиусах тела (для точки — в мировых единицах)
  *   yaw/pitch — градусы; yaw 0 = смотрим с +Z, pitch > 0 = сверху
  *   shift     — где фокус окажется в кадре: [x, y] в единицах высоты кадра / 2 (x ∈ ±1.78)
@@ -128,3 +128,49 @@ export const presets: Record<string, CameraSpec> = {
 
 export const DEFAULT_PRESET = 'ambient'
 export const DEFAULT_DURATION = 1.8
+
+// ── модульная станция = продукт на микрофронтендах ─────────────────
+//
+// Хаб (host/shell) с шестью стыковочными портами; модули — команды/микрофронтенды.
+// Состояние задаётся во frontmatter или шаге timeline и «прилипает» к следующим слайдам:
+//
+//   station: { detached: [cart] }          # cart отстыкован и висит рядом
+//   station: { hidden: [profile, search] } # модулей ещё/уже нет
+//   station: {}                            # все пристыкованы
+//
+// Камера наводится на станцию `focus: station` или на модуль `focus: station.cart`.
+
+export type Port = '+x' | '-x' | '+z' | '-z' | '-y'
+
+export interface ModuleDef {
+  id: string
+  port: Port
+  color: Vec3
+  /** длина модуля, в радиусах корпуса */
+  length: number
+  kind: 'lab' | 'hab' | 'cargo'
+}
+
+export interface StationSpec {
+  detached?: string[]
+  hidden?: string[]
+  duration?: number
+}
+
+export const station = {
+  id: 'station',
+  pos: [-3.6, -0.55, 2.2] as Vec3,
+  /** масштаб для камеры: distance в `camera` считается в этих единицах */
+  radius: 0.45,
+  /** медленное вращение вокруг вертикали, рад/с */
+  spin: 0.025,
+  modules: [
+    { id: 'catalog', port: '+x', color: [0.2, 0.83, 0.6], length: 5.5, kind: 'lab' },
+    { id: 'search', port: '-x', color: [0.38, 0.65, 0.98], length: 4.5, kind: 'lab' },
+    { id: 'cart', port: '+z', color: [0.96, 0.45, 0.71], length: 3.6, kind: 'hab' },
+    { id: 'checkout', port: '-z', color: [0.66, 0.4, 0.97], length: 3.2, kind: 'cargo' },
+    { id: 'profile', port: '-y', color: [0.98, 0.64, 0.25], length: 2.8, kind: 'hab' },
+  ] as ModuleDef[],
+}
+
+export const DEFAULT_STATION_DURATION = 2.2

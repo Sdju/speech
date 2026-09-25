@@ -1,6 +1,45 @@
 ---
 layout: full
+chapter: стиль · станция
+camera: { focus: station, distance: 3.6, yaw: -35, pitch: 16, shift: [-0.55, 0.05] }
+station: {}
+timeline:
+  - title: 'Продукт — модульная станция'
+    note: 'Хаб — оболочка, модули — команды'
+  - station: { detached: [cart] }
+    title: 'Модуль отстыковался'
+    note: 'Независимый деплой: Cart уходит на обновление'
+  - camera: { focus: station.cart, distance: 6, yaw: -20, pitch: 10, shift: [-0.6, 0] }
+    station: { detached: [cart] }
+    title: 'Cart отдельно'
+    note: 'Своя команда, свой релизный цикл'
+  - camera: { focus: station, distance: 3.6, yaw: -35, pitch: 16, shift: [-0.55, 0.05] }
+    station: {}
+    title: 'Стыковка'
+    note: 'Новая версия пристыковалась к работающей станции'
+  - station: { hidden: [profile, checkout] }
+    title: 'Модулей может ещё не быть'
+    note: 'Станция работает и без них'
+  - station: {}
+    title: 'Прилетели'
+    note: 'Добавление модуля — стыковка на орбите'
+---
+
+<div class="absolute right-[64px] bottom-[64px] w-[360px] text-right">
+  <div class="text-4xl font-bold leading-tight">{{ t.title }}</div>
+  <div class="text-lg opacity-65 mt-2">{{ t.note }}</div>
+</div>
+
+<!--
+Статус: предложение стиля
+Демо станции (universe/station.ts): состояние `station:` во frontmatter/timeline — detached / hidden,
+переходы анимируются; камера умеет `focus: station` и `focus: station.<модуль>`.
+-->
+
+---
+layout: full
 chapter: стиль · прогулка по системе
+hide: true
 camera: system
 timeline:
   - title: 'Один продукт — одна планета'
@@ -37,6 +76,7 @@ timeline:
 layout: center
 slideClass: cs-purple
 chapter: стиль · линия Кармана
+hide: true
 timeline:
   - step: 0
     active: -1
@@ -68,6 +108,7 @@ timeline:
 layout: full
 slideClass: cs-blue
 chapter: стиль · схема
+hide: true
 timeline:
   - title: 'Module Federation'
     legend: 'интеграция в рантайме'

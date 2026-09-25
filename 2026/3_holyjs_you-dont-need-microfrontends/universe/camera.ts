@@ -1,5 +1,6 @@
 import type { CameraSpec, Vec3 } from './scene'
-import { DEFAULT_DURATION, DEFAULT_PRESET, planets, presets, satellites } from './scene'
+import type { StationSpec } from './scene'
+import { DEFAULT_DURATION, DEFAULT_PRESET, DEFAULT_STATION_DURATION, planets, presets, satellites, station } from './scene'
 
 // ── векторная мелочь ───────────────────────────────────────────────
 
@@ -62,9 +63,21 @@ export function orbitFrame(id: string, time: number): { radial: Vec3, axis: Vec3
   return { radial, axis, tangent: cross(axis, radial) }
 }
 
+/**
+ * Позиции станции и модулей живут в three.js-слое (анимации стыковки) —
+ * он регистрирует здесь резолвер, чтобы камера могла на них навестись.
+ */
+let stationResolver: ((id: string) => BodyState | undefined) | null = null
+export function setStationResolver(fn: typeof stationResolver) {
+  stationResolver = fn
+}
+
 export function bodyAt(focus: string | Vec3 | undefined, time: number): BodyState {
   if (Array.isArray(focus))
     return { pos: focus, radius: 1 }
+  if (typeof focus === 'string' && (focus === station.id || focus.startsWith(`${station.id}.`))) {
+    return stationResolver?.(focus) ?? { pos: station.pos, radius: station.radius }
+  }
   const p = planets.find(p => p.id === focus)
   if (p)
     return { pos: p.pos, radius: p.radius }
@@ -157,6 +170,34 @@ export function resolveCamera(slides: SlideLike[], no: number, click: number): R
     spin: spec.spin ?? 0,
     follow: spec.follow ?? 'world',
     duration: spec.duration ?? DEFAULT_DURATION,
+  }
+}
+
+// ── состояние станции ──────────────────────────────────────────────
+
+export interface StationState { detached: string[], hidden: string[], duration: number }
+
+function stationOf(slide: SlideLike | undefined, click: number | 'last'): StationSpec | null {
+  const fm = slide?.meta?.slide?.frontmatter ?? {}
+  const steps = Array.isArray(fm.timeline) ? fm.timeline : []
+  const last = click === 'last' ? steps.length - 1 : Math.min(click, steps.length - 1)
+  for (let i = last; i >= 0; i--) {
+    if (steps[i] && 'station' in steps[i])
+      return steps[i].station ?? {}
+  }
+  return fm.station === undefined ? null : (fm.station ?? {})
+}
+
+/** Состояние станции «прилипает»: действует последнее заданное на этом или предыдущих слайдах. */
+export function resolveStation(slides: SlideLike[], no: number, click: number): StationState {
+  let spec = stationOf(slides[no - 1], click)
+  for (let i = no - 1; spec === null && i >= 1; i--)
+    spec = stationOf(slides[i - 1], 'last')
+  const list = (v: unknown) => (Array.isArray(v) ? v : typeof v === 'object' && v ? Object.values(v) : []).map(String)
+  return {
+    detached: list(spec?.detached),
+    hidden: list(spec?.hidden),
+    duration: spec?.duration ?? DEFAULT_STATION_DURATION,
   }
 }
 

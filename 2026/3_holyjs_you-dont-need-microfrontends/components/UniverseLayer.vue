@@ -3,10 +3,11 @@ import { useNav } from '@slidev/client'
 import { onBeforeUnmount, onMounted, useTemplateRef, watch } from 'vue'
 import { SurfaceBaker } from '../universe/baker'
 import type { CameraFrame } from '../universe/camera'
-import { bodyAt, CameraRig, dot, norm, resolveCamera, satelliteRotation, sub } from '../universe/camera'
+import { bodyAt, CameraRig, dot, norm, resolveCamera, resolveStation, satelliteRotation, setStationResolver, sub } from '../universe/camera'
 import type { Vec3 } from '../universe/scene'
-import { planets, satellites } from '../universe/scene'
+import { planets, satellites, station } from '../universe/scene'
 import { BAKE_SIZE, MAX_P, MAX_S, renderFragment, vertex } from '../universe/shader'
+import { StationScene } from '../universe/station'
 
 /**
  * Общая 3D-сцена доклада. Живёт в global-bottom, поэтому не пересоздаётся между слайдами:
@@ -18,6 +19,7 @@ import { BAKE_SIZE, MAX_P, MAX_S, renderFragment, vertex } from '../universe/sha
 type Mode = 'baked' | 'procedural'
 
 const canvas = useTemplateRef<HTMLCanvasElement>('canvas')
+const stationCanvas = useTemplateRef<HTMLCanvasElement>('stationCanvas')
 const nav = useNav()
 const rig = new CameraRig()
 const SUN = norm([-0.85, 0.35, 0.42])
@@ -26,6 +28,7 @@ let gl: WebGLRenderingContext | null = null
 let raf = 0
 let firstTarget = true
 let dispose = () => {}
+let stationScene: StationScene | null = null
 
 watch(
   () => resolveCamera(nav.slides.value as any, nav.currentSlideNo.value, nav.clicks.value),
@@ -36,6 +39,10 @@ watch(
   },
   { immediate: true, deep: true },
 )
+
+// состояние станции: отстыкованные/скрытые модули; переходы анимирует StationScene
+const stationState = () => resolveStation(nav.slides.value as any, nav.currentSlideNo.value, nav.clicks.value)
+watch(stationState, state => stationScene?.setState(state, performance.now()), { deep: true })
 
 const UNIFORMS = [
   'u_res', 'u_time', 'u_eye', 'u_right', 'u_up', 'u_fwd', 'u_focal', 'u_shift', 'u_sun',
@@ -138,6 +145,11 @@ onMounted(() => {
     console.info(`[UniverseLayer] поверхности запечены за ${(performance.now() - t0).toFixed(0)} мс`)
   }
 
+  // станция — three.js поверх рейтрейсера, камера и солнце общие
+  stationScene = new StationScene(stationCanvas.value!, SUN as Vec3)
+  stationScene.setState(stationState(), performance.now(), true)
+  setStationResolver(id => stationScene?.resolve(id))
+
   // ── управление нагрузкой ──────────────────────────────────────────
   // quality — базовая доля экранного разрешения, подстраивается по времени кадра
   // (на 60 Гц кадр ≈ 16.7 мс, поэтому вверх — при < 18 мс, вниз — при > 24 мс);
@@ -163,6 +175,7 @@ onMounted(() => {
     const aspect = el.width / el.height
     const bounds = planets.slice(0, MAX_P)
       .map(p => [p.pos, Math.max(p.radius * 1.3, p.ring?.outer ?? 0, (p.orbit ?? 0) + 0.2)] as [Vec3, number])
+    bounds.push([station.pos, station.radius * 2.5])
     return bounds.some(([pos, radius]) => {
       const v = sub(pos, cam.eye)
       const z = dot(v, cam.fwd)
@@ -265,6 +278,7 @@ onMounted(() => {
     // ошибка кадра не должна останавливать цикл
     try {
       draw(cam, time, mode)
+      stationScene?.render(cam, time, now, pPos, sPos)
     }
     catch (e) {
       console.error('[UniverseLayer]', e)
@@ -334,6 +348,24 @@ onMounted(() => {
           over4: `${(over4 / Math.max(1, covered) * 100).toFixed(2)}%`,
           over16: `${(over16 / Math.max(1, covered) * 100).toFixed(2)}%`,
         }
+      },
+      /** время кадра станции (three.js) в текущем ракурсе, мс; сцена рейтрейсера не входит */
+      benchStation(n = 40) {
+        const now = performance.now()
+        const time = worldTime(now)
+        const cam = rig.frame(time, now)
+        if (!cam || !stationScene)
+          return null
+        for (let i = 0; i < 3; i++) {
+          stationScene.render(cam, time, now, pPos, sPos, true)
+          stationScene.sync()
+        }
+        const t = performance.now()
+        for (let i = 0; i < n; i++) {
+          stationScene.render(cam, time, now, pPos, sPos, true)
+          stationScene.sync()
+        }
+        return +((performance.now() - t) / n).toFixed(2)
       },
       /** картинки обоих режимов и усиленный ×8 дифф — оверлеем поверх страницы (повторный вызов убирает) */
       showDiff({ fullDetail = false, zoom = [0, 0, 1920, 1080] } = {}) {
@@ -451,6 +483,9 @@ onMounted(() => {
   }
 
   dispose = () => {
+    setStationResolver(null)
+    stationScene?.dispose()
+    stationScene = null
     baker?.dispose()
     g.getExtension('WEBGL_lose_context')?.loseContext()
   }
@@ -464,6 +499,7 @@ onBeforeUnmount(() => {
 
 <template>
   <canvas ref="canvas" class="universe-layer" />
+  <canvas ref="stationCanvas" class="universe-layer universe-layer--station" />
 </template>
 
 <style>
@@ -474,5 +510,9 @@ onBeforeUnmount(() => {
   height: 100%;
   z-index: -9;
   pointer-events: none;
+}
+
+.universe-layer--station {
+  z-index: -8;
 }
 </style>
