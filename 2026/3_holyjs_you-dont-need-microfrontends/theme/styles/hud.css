@@ -356,7 +356,8 @@
 
 /* ══ Слайды-пункты по умолчанию ═══════════════════════════════════════
  * Обычный markdown-слайд «заголовок + список» (layout default).
- * Без карточек и рамок — типографика: крупный номер в цвет слайда и текст.
+ * Типографика: крупный номер в цвет слайда и текст; под каждым пунктом —
+ * стеклянная подложка (как .glass), чтобы 3D-фон не мешал читать.
  * Вид подстраивается под число пунктов:
  *   2–3 пункта — крупно, в колонку,
  *   4 пункта   — сетка 2×2, номер над текстом,
@@ -370,7 +371,7 @@
   counter-reset: point;
 
   & > h1 {
-    @apply text-[1.9em] font-bold leading-[1.1] tracking-[-0.02em] mb-8 max-w-[620px];
+    @apply text-[1.9em] font-bold leading-[1.1] tracking-[-0.02em] mb-7 max-w-[700px];
     text-wrap: balance;
   }
 
@@ -381,13 +382,20 @@
     & > li {
       @apply relative m-0 leading-snug text-[1em] c-white;
       counter-increment: point;
-      padding: 0 0 0 64px;
-      text-shadow: 0 1px 16px rgb(0 0 0 / 0.7);
+      padding: 14px 22px 14px 76px;
+      border-radius: 14px;
+      border: 1px solid rgb(255 255 255 / 0.1);
+      background: linear-gradient(160deg, rgb(22 20 40 / 0.62), rgb(6 6 14 / 0.74));
+      box-shadow:
+        0 1em 2.4em rgb(0 0 0 / 0.35),
+        inset 0 1px 0 rgb(255 255 255 / 0.07);
+      backdrop-filter: blur(16px) saturate(1.2);
 
       /* номер пункта: крупная светлая цифра в цвет слайда */
       &::before {
         content: counter(point);
-        @apply absolute left-0 top-[-0.12em] w-auto h-auto rounded-none bg-transparent;
+        @apply absolute left-[22px] top-1/2 w-auto h-auto rounded-none bg-transparent;
+        translate: 0 -50%;
         font-size: 2.1em;
         font-weight: 300;
         line-height: 1;
@@ -408,24 +416,28 @@
 
     /* 2–3 пункта: крупнее и просторнее (кроме слайдов с двумя списками подряд) */
     &:not(:has(> li:nth-child(4))):not(:has(+ ul)):not(ul + *) {
-      @apply gap-y-7;
+      @apply gap-y-3;
 
       & > li {
-        @apply text-[1.15em];
+        @apply text-[1.05em];
+        padding-top: 12px;
+        padding-bottom: 12px;
       }
     }
 
-    /* ровно 4: сетка 2×2, номер над текстом */
+    /* ровно 4: сетка 2×2, номер слева по центру карточки */
     &:has(> li:nth-child(4)):not(:has(> li:nth-child(5))) {
       grid-template-columns: 1fr 1fr;
       max-width: 620px;
-      row-gap: 28px;
+      gap: 14px;
 
       & > li {
-        padding: 48px 0 0;
+        @apply text-[0.92em] flex items-center;
+        padding: 14px 18px 14px 62px;
 
         &::before {
-          @apply top-0;
+          @apply left-[18px];
+          font-size: 1.9em;
         }
       }
     }
@@ -433,14 +445,15 @@
     /* 5 и больше: компактно в две колонки */
     &:has(> li:nth-child(5)) {
       grid-template-columns: 1fr 1fr;
-      max-width: 600px;
-      row-gap: 16px;
+      max-width: 620px;
+      gap: 10px;
 
       & > li {
         @apply text-[0.85em];
-        padding-left: 40px;
+        padding: 10px 16px 10px 54px;
 
         &::before {
+          @apply left-[16px];
           font-size: 1.7em;
         }
       }
@@ -466,7 +479,7 @@
   }
 
   & > ul:not(.not-hud) + ul:not(.not-hud) {
-    margin-top: 28px;
+    margin-top: 16px;
   }
 
   & > ul:not(.not-hud):has(+ ul) > li,
