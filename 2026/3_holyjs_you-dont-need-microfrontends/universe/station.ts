@@ -1,4 +1,6 @@
 import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import stationUrl from './assets/station.glb?url'
 import type { BodyState, CameraFrame, StationState } from './camera'
 import type { ModuleDef, Port, Vec3 } from './scene'
 import { planets, satellites, station as def } from './scene'
@@ -183,146 +185,19 @@ function materials(): Materials {
   }
 }
 
-/** оболочка цилиндра вдоль X: CylinderGeometry строится вдоль Y */
-function alongX(geo: THREE.BufferGeometry, dir = 1) {
-  geo.rotateZ(dir > 0 ? -Math.PI / 2 : Math.PI / 2)
-  return geo
-}
-
-function mesh(geo: THREE.BufferGeometry, mat: THREE.Material, x = 0, y = 0, z = 0) {
-  const m = new THREE.Mesh(geo, mat)
-  m.position.set(x, y, z)
-  return m
-}
-
-/** Модуль вдоль +X; стыковочный узел на −X. */
-function buildModule(m: ModuleDef, M: Materials) {
-  const len = m.length * H
-  const g = new THREE.Group()
-  const accent = new THREE.MeshStandardMaterial({
-    color: srgb(m.color),
-    emissive: srgb(m.color),
-    emissiveIntensity: 0.45,
-    metalness: 0.3,
-    roughness: 0.4,
+/**
+ * Геометрия — из Blender (universe/blender/station.py → assets/station.glb), в единицах радиуса
+ * корпуса. Материалы в модели названы по ролям и подменяются здесь процедурными — так станция
+ * выглядит в одном ключе с остальным миром, а огни и пояса команд управляются из кода.
+ */
+function dress(root: THREE.Object3D, pick: (name: string) => THREE.Material) {
+  root.traverse((o) => {
+    if (!(o instanceof THREE.Mesh))
+      return
+    o.material = Array.isArray(o.material)
+      ? o.material.map(m => pick(m.name))
+      : pick(o.material.name)
   })
-
-  const skin = m.kind === 'cargo' ? M.foil : M.hull
-  const body = mesh(alongX(new THREE.CylinderGeometry(H, H, len, 48, 1, true)), skin)
-  ;(body.material as THREE.MeshStandardMaterial).map!.repeat.set(2, 1)
-  g.add(body)
-  // конусы на торцах и стыковочный воротник
-  g.add(mesh(alongX(new THREE.CylinderGeometry(H * 0.72, H, CONE, 48)), M.hull, len / 2 + CONE / 2))
-  g.add(mesh(alongX(new THREE.CylinderGeometry(H * 0.72, H, CONE, 48), -1), M.hull, -len / 2 - CONE / 2))
-  g.add(mesh(alongX(new THREE.CylinderGeometry(H * 0.55, H * 0.6, COLLAR, 32)), M.dark, -len / 2 - CONE - COLLAR / 2))
-  g.add(mesh(alongX(new THREE.CylinderGeometry(H * 0.3, H * 0.3, H * 0.12, 24)), M.dark, len / 2 + CONE + H * 0.06))
-
-  // рёбра жёсткости
-  const rings = Math.max(2, Math.round(len / (H * 1.4)))
-  for (let i = 1; i < rings; i++) {
-    const ring = mesh(new THREE.TorusGeometry(H * 1.006, H * 0.03, 8, 48), M.truss, -len / 2 + (len / rings) * i)
-    ring.rotation.y = Math.PI / 2
-    g.add(ring)
-  }
-  // цветной пояс — «команда» модуля
-  g.add(mesh(alongX(new THREE.CylinderGeometry(H * 1.015, H * 1.015, H * 0.45, 48, 1, true)), accent, len / 2 - H * 0.55))
-
-  if (m.kind === 'lab') {
-    // внешние полезные нагрузки и радиаторы
-    for (const x of [-0.25, 0.15]) {
-      g.add(mesh(new THREE.BoxGeometry(H * 0.7, H * 0.32, H * 0.55), M.dark, x * len, H * 1.12, 0))
-      g.add(mesh(new THREE.BoxGeometry(H * 0.5, H * 0.1, H * 0.4), M.foil, x * len, H * 1.34, 0))
-    }
-    for (const s of [-1, 1])
-      g.add(mesh(new THREE.BoxGeometry(len * 0.32, H * 0.02, H * 0.8), M.radiator, len * 0.05, 0, s * H * 1.45))
-  }
-  if (m.kind === 'hab') {
-    // иллюминаторы
-    for (let i = 0; i < 4; i++)
-      g.add(mesh(new THREE.BoxGeometry(H * 0.18, H * 0.06, H * 0.12), M.window, -len * 0.3 + i * len * 0.2, H * 0.99, 0))
-    g.add(mesh(new THREE.SphereGeometry(H * 0.2, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), M.window, 0, H * 0.96, H * 0.5))
-  }
-  if (m.kind === 'cargo')
-    g.add(mesh(alongX(new THREE.CylinderGeometry(H * 1.02, H * 1.02, H * 0.25, 48, 1, true)), M.hull, -len / 2 + H * 0.4))
-
-  // навигационный огонь на внешнем торце
-  const nav = mesh(new THREE.SphereGeometry(H * 0.08, 12, 8), new THREE.MeshBasicMaterial({ color: srgb(m.color), toneMapped: false }), len / 2 + CONE, H * 0.55)
-  g.add(nav)
-
-  return { group: g, length: len, accent }
-}
-
-function buildHub(M: Materials) {
-  const g = new THREE.Group()
-  g.add(mesh(new THREE.CylinderGeometry(HUB_R, HUB_R, HUB_LEN, 48), M.hull))
-  g.add(mesh(new THREE.SphereGeometry(HUB_R, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), M.hull, 0, HUB_LEN / 2))
-  // стыковочные порты и их огни
-  const portLights = new Map<Port, THREE.Mesh>()
-  for (const port of Object.keys(PORT_DIR) as Port[]) {
-    const d = PORT_DIR[port]
-    const base = port === '-y' ? new THREE.Vector3(0, -HUB_LEN / 2, 0) : d.clone().multiplyScalar(HUB_R)
-    const collar = mesh(new THREE.CylinderGeometry(H * 0.6, H * 0.65, H * 0.3, 32), M.dark)
-    collar.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d)
-    collar.position.copy(base).addScaledVector(d, H * 0.15)
-    g.add(collar)
-    const light = new THREE.Mesh(
-      new THREE.TorusGeometry(H * 0.64, H * 0.05, 8, 32),
-      new THREE.MeshBasicMaterial({ color: 0xffb347, toneMapped: false }),
-    )
-    light.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), d)
-    light.position.copy(base).addScaledVector(d, H * 0.3)
-    g.add(light)
-    portLights.set(port, light)
-  }
-
-  // мачта, ферма, солнечные крылья, радиаторы, антенна
-  const top = HUB_LEN / 2 + H * 5
-  g.add(mesh(new THREE.CylinderGeometry(H * 0.22, H * 0.22, H * 5, 12), M.truss, 0, HUB_LEN / 2 + H * 2.5))
-  const L = H * 22
-  const s = H * 0.7
-  const beams = new THREE.Group()
-  for (const [y, z] of [[s, s], [s, -s], [-s, s], [-s, -s]])
-    beams.add(mesh(new THREE.BoxGeometry(L, H * 0.07, H * 0.07), M.truss, 0, y / 2, z / 2))
-  const bays = 22
-  for (let i = 0; i <= bays; i++) {
-    const x = -L / 2 + (L / bays) * i
-    beams.add(mesh(new THREE.BoxGeometry(H * 0.05, s, H * 0.05), M.truss, x, 0, s / 2))
-    beams.add(mesh(new THREE.BoxGeometry(H * 0.05, s, H * 0.05), M.truss, x, 0, -s / 2))
-    beams.add(mesh(new THREE.BoxGeometry(H * 0.05, H * 0.05, s), M.truss, x, s / 2, 0))
-    beams.add(mesh(new THREE.BoxGeometry(H * 0.05, H * 0.05, s), M.truss, x, -s / 2, 0))
-    if (i < bays) {
-      const diag = mesh(new THREE.BoxGeometry(Math.hypot(L / bays, s), H * 0.04, H * 0.04), M.truss, x + L / bays / 2, 0, s / 2)
-      diag.rotation.z = (i % 2 ? 1 : -1) * Math.atan2(s, L / bays)
-      beams.add(diag)
-    }
-  }
-  beams.position.y = top
-  g.add(beams)
-
-  const wings: THREE.Group[] = []
-  for (const side of [-1, 1]) {
-    const wing = new THREE.Group()
-    wing.position.set(side * (L / 2 + H * 0.4), top, 0)
-    for (const dz of [-1, 1]) {
-      const panel = mesh(new THREE.BoxGeometry(H * 2.6, H * 0.03, H * 9), M.solar, 0, 0, dz * (H * 4.5 + H * 0.4))
-      wing.add(panel)
-      wing.add(mesh(new THREE.BoxGeometry(H * 0.08, H * 0.08, H * 9.4), M.truss, 0, H * 0.05, dz * (H * 4.5 + H * 0.4)))
-    }
-    wing.add(mesh(new THREE.BoxGeometry(H * 0.5, H * 0.5, H * 0.9), M.dark))
-    g.add(wing)
-    wings.push(wing)
-  }
-  for (const dz of [-1, 1]) {
-    const rad = mesh(new THREE.BoxGeometry(H * 1.8, H * 0.03, H * 4.2), M.radiator, 0, top - H * 0.4, dz * H * 2.6)
-    rad.rotation.x = dz * 0.35
-    g.add(rad)
-  }
-  const dish = mesh(new THREE.SphereGeometry(H * 0.9, 24, 8, 0, Math.PI * 2, 0, Math.PI * 0.32), M.radiator, H * 4, top + H * 1.1, 0)
-  dish.rotation.z = 0.5
-  g.add(dish)
-  g.add(mesh(new THREE.CylinderGeometry(H * 0.06, H * 0.06, H * 1.2, 8), M.truss, H * 4, top + H * 0.5, 0))
-
-  return { group: g, portLights, wings }
 }
 
 // ── анимации модулей ────────────────────────────────────────────────
@@ -350,11 +225,12 @@ export class StationScene {
   private root = new THREE.Group()
   private body = new THREE.Group()
   private modules = new Map<string, ModuleRuntime>()
-  private portLights: Map<Port, THREE.Mesh>
+  private portLights = new Map<Port, THREE.MeshBasicMaterial>()
+  private ready = false
   private sunLight: THREE.DirectionalLight
   private occluders: THREE.Mesh[] = []
   private sun: THREE.Vector3
-  private wasVisible = true
+  private wasVisible = false
   private tmp = new THREE.Vector3()
 
   constructor(private canvas: HTMLCanvasElement, sun: Vec3) {
@@ -371,13 +247,10 @@ export class StationScene {
     this.scene.add(new THREE.HemisphereLight(srgb(planets[0].color), 0x050508, 0.35))
 
     const M = materials()
-    const hub = buildHub(M)
-    this.portLights = hub.portLights
-    this.body.add(hub.group)
+    ;(M.hull.map as THREE.Texture).repeat.set(2, 1)
     for (const m of def.modules) {
-      const built = buildModule(m, M)
+      const length = m.length * H
       const pivot = new THREE.Group()
-      pivot.add(built.group)
       const thrusters = [-1, 1].map((s) => {
         const sp = new THREE.Sprite(new THREE.SpriteMaterial({
           map: glowTexture(),
@@ -388,7 +261,7 @@ export class StationScene {
           opacity: 0,
         }))
         sp.scale.setScalar(H * 2.2)
-        sp.position.set(s * (built.length / 2 + CONE + H * 0.3), 0, 0)
+        sp.position.set(s * (length / 2 + CONE + H * 0.3), 0, 0)
         pivot.add(sp)
         return sp
       })
@@ -396,9 +269,9 @@ export class StationScene {
       const rt: ModuleRuntime = {
         def: m,
         pivot,
-        length: built.length,
+        length,
         mode: 'docked',
-        from: this.target(m, built.length, 'docked'),
+        from: this.target(m, length, 'docked'),
         start: -1e9,
         duration: 1,
         thrusters,
@@ -407,6 +280,9 @@ export class StationScene {
       this.apply(rt, rt.from)
       this.modules.set(m.id, rt)
     }
+    new GLTFLoader().loadAsync(stationUrl)
+      .then(gltf => this.attachModel(gltf.scene, M))
+      .catch(e => console.error('[StationScene] модель станции не загрузилась', e))
     // лёгкий наклон — станция не должна стоять «по стойке смирно»
     this.body.rotation.set(0.32, 0.5, -0.16)
     this.root.add(this.body)
@@ -422,6 +298,37 @@ export class StationScene {
       this.scene.add(o)
       this.occluders.push(o)
     }
+  }
+
+  private attachModel(model: THREE.Object3D, M: Materials) {
+    const base = (name: string): THREE.Material => (M as unknown as Record<string, THREE.Material>)[name] ?? M.hull
+
+    const hub = model.getObjectByName('hub')!
+    dress(hub, base)
+    // у каждого порта свой огонь — анимируется независимо
+    for (const port of Object.keys(PORT_DIR) as Port[]) {
+      const light = new THREE.MeshBasicMaterial({ color: 0xffb347, toneMapped: false })
+      dress(hub.getObjectByName(`port_${port}`)!, () => light)
+      this.portLights.set(port, light)
+    }
+    hub.removeFromParent()
+    hub.scale.setScalar(H)
+    this.body.add(hub)
+
+    for (const rt of this.modules.values()) {
+      const node = model.getObjectByName(`module_${rt.def.id}`)
+      if (!node)
+        continue
+      const color = srgb(rt.def.color)
+      const accent = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.45, metalness: 0.3, roughness: 0.4 })
+      const nav = new THREE.MeshBasicMaterial({ color, toneMapped: false })
+      dress(node, name => name === 'accent' ? accent : name === 'navlight' ? nav : base(name))
+      node.removeFromParent()
+      node.position.set(0, 0, 0)
+      node.scale.setScalar(H)
+      rt.pivot.add(node)
+    }
+    this.ready = true
   }
 
   private target(m: ModuleDef, length: number, mode: Mode): Pose {
@@ -452,6 +359,8 @@ export class StationScene {
   }
 
   setState(state: StationState, now: number, instant = false) {
+    // станцию сейчас никто не видит — анимировать незачем, сразу в новое состояние
+    instant ||= !this.wasVisible
     for (const rt of this.modules.values()) {
       const mode: Mode = state.hidden.includes(rt.def.id) ? 'hidden' : state.detached.includes(rt.def.id) ? 'detached' : 'docked'
       if (mode === rt.mode)
@@ -508,8 +417,9 @@ export class StationScene {
       })
 
       // огонь порта: мигает во время манёвра, зелёный — занят, янтарный — свободен
-      const light = this.portLights.get(rt.def.port)!
-      const mat = light.material as THREE.MeshBasicMaterial
+      const mat = this.portLights.get(rt.def.port)
+      if (!mat)
+        continue
       if (moving)
         mat.color.set(Math.sin(now * 0.02) > 0 ? 0xffffff : 0x303030)
       else
@@ -548,7 +458,7 @@ export class StationScene {
 
     this.animate(time, now)
 
-    const visible = this.inView(cam, w / h)
+    const visible = this.ready && this.inView(cam, w / h)
     if (!visible) {
       if (this.wasVisible)
         this.renderer.clear()
