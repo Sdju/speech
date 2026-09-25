@@ -3,6 +3,7 @@ import { useNav } from "@slidev/client"
 import { computed, ref, watch } from "vue"
 import { TransitionPresets, useTransition } from '@vueuse/core'
 import GlslBackground from "./theme/components/backgrounds/GlslBackground.vue"
+import UniverseLayer from "./components/UniverseLayer.vue"
 import shader from "./background-shader.glsl?raw"
 import { 
   type PostProcessingPipeline,
@@ -61,7 +62,8 @@ function wait(ms: number) {
 }
 
 watch(currentSlideNo, async () => {
-  const selector = `[data-slidev-no="${currentSlideNo.value}"] .slidev-layout`
+  // у layout: full нет .slidev-layout — берём корень слайда
+  const selector = `[data-slidev-no="${currentSlideNo.value}"] :is(.slidev-layout, .full)`
   while(!document.querySelector(selector)) {
     await wait(100)
   }
@@ -78,6 +80,8 @@ watch(currentSlideNo, async () => {
 
 <template>
   <div :class="frontmatter.slideClass">
-    <GlslBackground :stages="postProcessingPipeline" />
+    <!-- туманность мягкая: половина разрешения и 30 fps незаметны глазу -->
+    <GlslBackground :stages="postProcessingPipeline" :resolution-scale="0.5" :fps="30" />
+    <UniverseLayer />
   </div>
 </template>

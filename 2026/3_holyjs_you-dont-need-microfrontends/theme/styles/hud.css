@@ -1,0 +1,225 @@
+/* ── HUD skin · «Вам (не) нужны микрофронтенды» ─────────────────── */
+
+.hud-stamp {
+  @apply absolute bottom-24px left-24px font-mono text-xs uppercase tracking-[0.25em] flex items-center gap-3;
+  color: --set-alpha(var(--v-color), 85%);
+}
+
+.hud-stamp__dot {
+  @apply w-1.5 h-1.5 rounded-full;
+  background: var(--v-color);
+}
+
+.hud-label {
+  @apply font-mono text-xs uppercase tracking-[0.22em];
+  color: --set-alpha(var(--v-color), 90%);
+}
+
+/* Рамка с уголками-скобками: основной контейнер HUD */
+.hud-frame {
+  --hud-c: var(--v-color);
+  --hud-l: 14px;
+  --hud-w: 2px;
+  @apply relative px-5 py-4;
+  background:
+    linear-gradient(var(--hud-c) 0 0) top left / var(--hud-l) var(--hud-w),
+    linear-gradient(var(--hud-c) 0 0) top left / var(--hud-w) var(--hud-l),
+    linear-gradient(var(--hud-c) 0 0) top right / var(--hud-l) var(--hud-w),
+    linear-gradient(var(--hud-c) 0 0) top right / var(--hud-w) var(--hud-l),
+    linear-gradient(var(--hud-c) 0 0) bottom left / var(--hud-l) var(--hud-w),
+    linear-gradient(var(--hud-c) 0 0) bottom left / var(--hud-w) var(--hud-l),
+    linear-gradient(var(--hud-c) 0 0) bottom right / var(--hud-l) var(--hud-w),
+    linear-gradient(var(--hud-c) 0 0) bottom right / var(--hud-w) var(--hud-l),
+    linear-gradient(--set-alpha(var(--hud-c), 8%) 0 0);
+  background-repeat: no-repeat;
+  backdrop-filter: blur(6px);
+}
+
+/* Содержимое Node в схемах */
+.hud-node {
+  @apply flex flex-col items-center gap-0.5 text-center leading-tight;
+
+  & small {
+    @apply font-mono text-[0.55em] font-normal opacity-70 tracking-wide;
+  }
+}
+
+.hud-chip {
+  @apply flex flex-col items-center gap-1 rounded-[6px] px-2 py-1.5 text-[0.55em] font-medium bg-black/35 b-1 b-white/10 c-white/85;
+
+  & > svg {
+    @apply text-lg opacity-80;
+  }
+}
+
+/* ── Базовая типографика доклада в HUD-скине ─────────────────────── */
+
+.slidev-layout {
+  & h1 {
+    @apply font-bold tracking-tight;
+  }
+
+  & strong,
+  & b {
+    color: --shift-lightness(var(--v-color), 0.12);
+  }
+
+  /* Списки: тонкая направляющая слева, маркер — точка на ней */
+  & ul:not(.not-hud) {
+    @apply pl-0 flex flex-col gap-3 list-none relative;
+
+    & > li {
+      @apply relative m-0 pl-8 leading-snug;
+
+      &::before {
+        content: '';
+        @apply absolute left-0 top-[0.62em] w-2 h-2 rounded-full;
+        background: var(--v-color);
+      }
+    }
+  }
+
+  & blockquote {
+    @apply not-italic text-[0.85em] px-5 py-3 b-l-0;
+    background:
+      linear-gradient(var(--v-color) 0 0) top left / 14px 2px no-repeat,
+      linear-gradient(var(--v-color) 0 0) top left / 2px 14px no-repeat,
+      linear-gradient(var(--v-color) 0 0) bottom right / 14px 2px no-repeat,
+      linear-gradient(var(--v-color) 0 0) bottom right / 2px 14px no-repeat,
+      --set-alpha(var(--v-color), 8%);
+  }
+}
+
+/* Слайд-разделитель главы (layout: center + h1) */
+.slidev-layout.center > div > h1:only-child,
+.slidev-layout.center > div > h1:first-child:last-child {
+  @apply text-[2.6em] leading-tight text-center;
+}
+
+/* Карточка bento в HUD-скине: тёмное стекло + рамка в цвет главы */
+.hud-card {
+  @apply relative of-hidden rounded-[8px] px-5 py-4 c-white;
+  background: linear-gradient(135deg, --set-alpha(var(--v-color), 16%), rgb(0 0 0 / 0.45) 60%);
+  border: 1px solid --set-alpha(var(--v-color), 35%);
+  box-shadow: inset 0 0 24px --set-alpha(var(--v-color), 10%);
+  backdrop-filter: blur(8px);
+}
+
+.hud-card.hud-frame {
+  --hud-c: var(--v-color);
+  background:
+    linear-gradient(var(--hud-c) 0 0) top left / 14px 2px no-repeat,
+    linear-gradient(var(--hud-c) 0 0) top left / 2px 14px no-repeat,
+    linear-gradient(var(--hud-c) 0 0) top right / 14px 2px no-repeat,
+    linear-gradient(var(--hud-c) 0 0) top right / 2px 14px no-repeat,
+    linear-gradient(var(--hud-c) 0 0) bottom left / 14px 2px no-repeat,
+    linear-gradient(var(--hud-c) 0 0) bottom left / 2px 14px no-repeat,
+    linear-gradient(var(--hud-c) 0 0) bottom right / 14px 2px no-repeat,
+    linear-gradient(var(--hud-c) 0 0) bottom right / 2px 14px no-repeat,
+    linear-gradient(135deg, --set-alpha(var(--v-color), 16%), rgb(0 0 0 / 0.45) 60%);
+}
+
+/* ── Титул: планета ─────────────────────────────────────────────── */
+
+.title-block {
+  @apply absolute left-[80px] bottom-[96px] text-left;
+}
+
+.title-block__event {
+  @apply text-lg font-medium mb-4;
+  color: rgb(255 255 255 / 0.55);
+}
+
+.slidev-layout .title-block__text,
+.title-block__text {
+  @apply m-0 text-[4.2em] font-bold leading-[0.98] tracking-[-0.03em] c-white;
+}
+
+.title-block__not {
+  @apply font-light;
+  color: rgb(255 255 255 / 0.42);
+}
+
+/* ── Space UI: консоль экипажа ─────────────────────────────────── */
+
+.sui {
+  @apply w-full flex flex-col gap-3;
+}
+
+.sui-bar {
+  @apply flex items-center gap-5 pb-2 text-left;
+  border-bottom: 1px solid --set-alpha(var(--v-color), 30%);
+  /* шкала делений под линией */
+  background: repeating-linear-gradient(90deg, --set-alpha(var(--v-color), 45%) 0 1px, transparent 1px 24px) bottom / 100% 5px no-repeat;
+}
+
+.sui-bar__title {
+  @apply text-lg font-bold c-white;
+}
+
+.sui-bar__meta {
+  @apply text-xs flex items-center gap-2;
+  color: rgb(255 255 255 / 0.55);
+}
+
+.sui-bar__spacer {
+  @apply flex-1;
+}
+
+.sui-dot {
+  @apply inline-block w-1.5 h-1.5 rounded-full;
+  background: #34d399;
+}
+
+.sui-caption {
+  @apply text-xs mb-1;
+  color: --shift-lightness(var(--v-color), 0.15);
+}
+
+.sui-photo img {
+  filter: saturate(0.85) contrast(1.05);
+}
+
+/* прицельная сетка: центральный крест и засечки */
+.sui-reticle {
+  @apply absolute inset-0 pointer-events-none;
+  background:
+    linear-gradient(rgb(255 255 255 / 0.5) 0 0) center 40% / 1px 18px no-repeat,
+    linear-gradient(rgb(255 255 255 / 0.5) 0 0) center 40% / 18px 1px no-repeat,
+    radial-gradient(circle at 50% 40%, transparent 78px, rgb(255 255 255 / 0.22) 79px, transparent 80px);
+}
+
+.sui-scale {
+  @apply absolute left-2 top-4 bottom-24 w-2 pointer-events-none;
+  background: repeating-linear-gradient(180deg, rgb(255 255 255 / 0.4) 0 1px, transparent 1px 12px);
+}
+
+.sui-gauge {
+  @apply flex gap-[3px] mt-2;
+
+  & > span {
+    @apply block h-1.5 flex-1 rounded-[1px];
+    background: rgb(255 255 255 / 0.12);
+
+    &.on {
+      background: var(--v-color);
+    }
+  }
+}
+
+.sui-badge {
+  @apply text-sm font-semibold px-2.5 py-0.5 rounded-[4px] c-white;
+  border: 1px solid --set-alpha(var(--v-color), 45%);
+  background: --set-alpha(var(--v-color), 14%);
+}
+
+.sui-icon {
+  @apply grid place-items-center w-12 h-12 rounded-[6px] text-2xl shrink-0;
+  background: rgb(255 255 255 / 0.06);
+  border: 1px solid rgb(255 255 255 / 0.1);
+}
+
+.sui-qr svg {
+  width: 100%;
+  height: 100%;
+}

@@ -12,12 +12,16 @@ contextMenu: false
 comark: true
 growSeed: 4
 title: Вам (не) нужны микрофронтенды
-layout: center
+layout: full
+camera: title
 ---
 
-# Вам (не) нужны микрофронтенды
-
-HolyJS 2026 Autumn
+<div class="title-block">
+  <div class="title-block__event">HolyJS · осень 2026</div>
+  <h1 class="title-block__text">
+    Вам <span class="title-block__not">(не)</span> нужны<br>микрофронтенды
+  </h1>
+</div>
 
 <!--
 Цель: открыть доклад, зафиксировать тему и тон
@@ -30,6 +34,10 @@ HolyJS 2026 Autumn
 Время: 10–15 сек
 Статус: реализация
 -->
+
+---
+src: ./parts/00_style-proposal.md
+---
 
 ---
 src: ./parts/0_intro.md
