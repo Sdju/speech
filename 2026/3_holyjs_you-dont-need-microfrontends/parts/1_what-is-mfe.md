@@ -1,5 +1,6 @@
 ---
 layout: center
+camera: { preset: earth, distance: 7.5, shift: [1.4, 0.6] }
 ---
 
 # Что такое микрофронтенды?
