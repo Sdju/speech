@@ -10,7 +10,10 @@
   color: --set-alpha(var(--v-color), 90%);
 }
 
-/* Рамка с уголками-скобками: основной контейнер HUD */
+/* Рамка с уголками-скобками: основной статичный блок HUD.
+ * Для блоков, которые появляются и прячутся, — компонент <HudBlock> (механическое раскрытие):
+ * у него анимируются внутренние слои, а корень остаётся свободен для позиционирования.
+ */
 .hud-frame {
   --hud-c: var(--v-color);
   --hud-l: 14px;
@@ -25,7 +28,8 @@
     linear-gradient(var(--hud-c) 0 0) bottom left / var(--hud-w) var(--hud-l),
     linear-gradient(var(--hud-c) 0 0) bottom right / var(--hud-l) var(--hud-w),
     linear-gradient(var(--hud-c) 0 0) bottom right / var(--hud-w) var(--hud-l),
-    linear-gradient(--set-alpha(var(--hud-c), 8%) 0 0);
+    linear-gradient(--set-alpha(var(--hud-c), 8%) 0 0),
+    linear-gradient(var(--hud-bg, transparent) 0 0);
   background-repeat: no-repeat;
   backdrop-filter: blur(6px);
 }
@@ -52,7 +56,11 @@
   --hud-w: 1.5px;
 }
 
-.hud-frame.hud-solid,
+/* у рамки подложка раскрывается вместе с ней, у пунктира — просто фон */
+.hud-frame.hud-solid {
+  --hud-bg: rgb(10 10 20 / 0.72);
+}
+
 .hud-dashed.hud-solid {
   background-color: rgb(10 10 20 / 0.72);
 }

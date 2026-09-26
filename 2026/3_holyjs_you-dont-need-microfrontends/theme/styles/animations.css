@@ -111,3 +111,42 @@
     initial-value: 0deg;
     inherits: false;
 }
+
+/* ── Слово «микрофронтенды»: вопрос → заголовок определения (слайды 5 → 6) ── */
+/* пролёт медленнее обычного перехода, старое слово гаснет быстро, новое проявляется с подсветкой */
+::view-transition-group(x-slide-mfe-word) {
+  animation-duration: 1.15s;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+::view-transition-image-pair(x-slide-mfe-word) {
+  isolation: isolate;
+}
+
+/* текст не растягиваем: изображения слова держат пропорции, пока рамка морфится */
+::view-transition-old(x-slide-mfe-word),
+::view-transition-new(x-slide-mfe-word) {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  object-position: left center;
+}
+
+::view-transition-old(x-slide-mfe-word) {
+  animation: mfe-word-out 0.5s ease-in both;
+}
+
+::view-transition-new(x-slide-mfe-word) {
+  animation: mfe-word-in 1.15s ease-out both;
+}
+
+@keyframes mfe-word-out {
+  to { opacity: 0; filter: blur(6px); }
+}
+
+@keyframes mfe-word-in {
+  0% { opacity: 0; filter: blur(8px) brightness(1.6); }
+  45% { opacity: 1; filter: blur(0) brightness(1.4) drop-shadow(0 0 14px #a78bfa); }
+  80% { filter: brightness(1.15) drop-shadow(0 0 22px #c4b5fd); }
+  100% { opacity: 1; filter: none; }
+}

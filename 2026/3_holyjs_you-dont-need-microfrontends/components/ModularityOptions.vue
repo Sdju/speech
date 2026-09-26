@@ -173,7 +173,7 @@ const layers = [
   padding: 4px 0;
   text-align: center;
   --hud-c: #34d399;
-  background-color: #12251f;
+  --hud-bg: #12251f;
   color: #a7f3d0;
 }
 
@@ -191,7 +191,7 @@ const layers = [
   padding: 0 10px;
   --hud-c: #60a5fa;
   /* пластины перекрываются — подложка непрозрачная */
-  background-color: #182235;
+  --hud-bg: #182235;
   box-shadow: 0 5px 12px #0005;
   color: #bfdbfe;
 }

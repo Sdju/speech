@@ -197,7 +197,7 @@ const pipelines = [
     width: 31%;
     height: 100%;
     padding: 0;
-    background-color: color-mix(in oklab, var(--hud-c) 26%, #0b0b12);
+    --hud-bg: color-mix(in oklab, var(--hud-c) 26%, #0b0b12);
   }
 }
 
