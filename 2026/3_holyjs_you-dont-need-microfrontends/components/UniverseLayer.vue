@@ -336,6 +336,13 @@ onMounted(() => {
         rig.setTarget({ ...slide, ...extra } as any, performance.now(), true)
         lastCam = rig.frame(worldTime(performance.now()), performance.now())
       },
+      /** сцена станции — для отладки в консоли */
+      get station() { return stationScene },
+      /** чертёж станции поверх текущего состояния слайда (для подбора кадров); null — как на слайде */
+      blueprint(on: boolean | null, duration?: number) {
+        const st = stationState()
+        stationScene?.setState({ ...st, blueprint: on ?? st.blueprint, duration: duration ?? st.duration }, performance.now())
+      },
       /** подбор мира: сдвинуть планету (и её спутники) на лету; радиус — по желанию */
       planet(id: string, pos: Vec3, radius?: number) {
         const i = planets.findIndex(p => p.id === id)

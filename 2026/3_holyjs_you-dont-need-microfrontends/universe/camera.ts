@@ -187,7 +187,7 @@ export function resolveCamera(slides: SlideLike[], no: number, click: number): R
 
 // ── состояние станции ──────────────────────────────────────────────
 
-export interface StationState { detached: string[], hidden: string[], duration: number }
+export interface StationState { detached: string[], hidden: string[], blueprint: boolean, mf: boolean, duration: number, delay: number }
 
 function stationOf(slide: SlideLike | undefined, click: number | 'last'): StationSpec | null {
   const fm = slide?.meta?.slide?.frontmatter ?? {}
@@ -209,7 +209,10 @@ export function resolveStation(slides: SlideLike[], no: number, click: number): 
   return {
     detached: list(spec?.detached),
     hidden: list(spec?.hidden),
+    blueprint: spec?.blueprint === true || String(spec?.blueprint) === 'true',
+    mf: spec?.mf === true || String(spec?.mf) === 'true',
     duration: spec?.duration ?? DEFAULT_STATION_DURATION,
+    delay: Number(spec?.delay ?? 0),
   }
 }
 
@@ -253,8 +256,12 @@ function slerp(a: Vec3, b: Vec3, t: number): Vec3 {
 
 type Spec = ReturnType<typeof resolveCamera>
 
+/** поворот корпуса станции вокруг вертикали — тот же, что в StationScene.animate */
+export const stationYaw = (time: number) => 0.5 + time * station.spin
+
 function specDir(s: Spec, time: number, spinDeg: number): Vec3 {
-  const yaw = (s.yaw + spinDeg) * deg
+  // follow: station — ракурс держится относительно станции, а не мира
+  const yaw = (s.yaw + spinDeg) * deg + (s.follow === 'station' ? stationYaw(time) : 0)
   const pitch = s.pitch * deg
   if (s.follow === 'module' && typeof s.focus === 'string') {
     // yaw 0 — со стороны торца модуля, yaw 90 — сбоку; pitch — над/под плоскостью портов.

@@ -68,8 +68,10 @@ export interface CameraSpec {
    * orbit — относительно орбиты спутника: yaw 0 = снаружи орбиты, планета за спутником.
    * Камера облетает планету вместе со спутником, фаза освещения меняется.
    * module — относительно модуля станции (`focus: station.<id>`): yaw 0 — с торца, 90 — сбоку.
+   * station — yaw относительно поворота станции: ракурс вращается вместе с ней
+   * (yaw 0 — со стороны порта +z, 90 — порта +x; 45 — между ними).
    */
-  follow?: 'world' | 'orbit' | 'module'
+  follow?: 'world' | 'orbit' | 'module' | 'station'
   duration?: number
 }
 
@@ -157,6 +159,8 @@ export const presets: Record<string, CameraSpec> = {
   farewell: { focus: 'station', distance: 5.2, yaw: -35, pitch: 18, shift: [1.0, 0.38], fov: 2.35, spin: 0.5, duration: 2.4 },
   /** станция над Землёй: станция справа сверху, дуга Земли внизу, слева место под текст */
   earth: { focus: 'station', distance: 6.5, yaw: -24, pitch: 52, shift: [0.95, 0.5], fov: 2.35, duration: 2.4 },
+  /** станция над Землёй под центрированный заголовок: станция и Земля уходят к правому краю */
+  'earth-wide': { focus: 'station', distance: 7.5, yaw: -24, pitch: 52, shift: [1.4, 0.6], fov: 2.35, duration: 2.4 },
   ambient: { focus: [60, 40, -120], distance: 10, yaw: 0, pitch: 0, shift: [0, 0], fov: 2.35 },
 }
 
@@ -187,6 +191,9 @@ export const DEFAULT_DURATION = 1.8
 //   station: { detached: [cart] }          # cart отстыкован и висит рядом
 //   station: { hidden: [profile, search] } # модулей ещё/уже нет
 //   station: {}                            # все пристыкованы
+//   station: { blueprint: true }           # станция как структурный чертёж (для пояснений)
+//   station: { blueprint: true, delay: 3 } # то же, но через 3 с — после перелёта камеры
+//   station: { blueprint: true, mf: true } # чертёж + двигатель Module Federation внутри хаба
 //
 // Камера наводится на станцию `focus: station` или на модуль `focus: station.cart`.
 
@@ -204,7 +211,13 @@ export interface ModuleDef {
 export interface StationSpec {
   detached?: string[]
   hidden?: string[]
+  /** режим «структурного чертежа»: контуры, скрытые рёбра пунктиром, полупрозрачная заливка */
+  blueprint?: boolean
+  /** Module Federation — двигатель внутри хаба: виден на чертеже, в обычном виде скрыт корпусом */
+  mf?: boolean
   duration?: number
+  /** пауза перед переходом, секунд: например, дать камере долететь до станции */
+  delay?: number
 }
 
 export const station = {

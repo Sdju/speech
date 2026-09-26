@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import stationUrl from './assets/station.glb?url'
 import type { BodyState, CameraFrame, StationState } from './camera'
+import { stationYaw } from './camera'
 import type { ModuleDef, Port, Vec3 } from './scene'
 import { planets, satellites, station as def } from './scene'
 
@@ -200,6 +201,202 @@ function dress(root: THREE.Object3D, pick: (name: string) => THREE.Material) {
   })
 }
 
+// ── режим «структурного чертежа» ─────────────────────────────────────
+//
+// Поверх каждой детали: полупрозрачная заливка с подсветкой силуэта (цилиндры без острых
+// рёбер тоже получают контур), видимые рёбра сплошной линией и скрытые — пунктиром.
+// Переход — сканирующая плоскость: по одну сторону обычная станция, по другую чертёж.
+
+const BP_LINE = new THREE.Color('#9fd8ff')
+const BP_FILL = new THREE.Color('#0b1f3a')
+
+function blueprintFill(line: THREE.Color, scan: THREE.Plane[]) {
+  return new THREE.ShaderMaterial({
+    uniforms: {
+      uLine: { value: line },
+      uFill: { value: BP_FILL.clone().lerp(line, 0.18) },
+      uOpacity: { value: 1 },
+      // фронт скана в мире: направление и положение — светящаяся полоса на поверхности
+      uScanDir: { value: new THREE.Vector3(1, 0, 0) },
+      uScanAt: { value: 0 },
+    },
+    vertexShader: /* glsl */ `
+      #include <clipping_planes_pars_vertex>
+      varying vec3 vNormal;
+      varying vec3 vView;
+      varying vec3 vWorld;
+      void main() {
+        vWorld = (modelMatrix * vec4(position, 1.0)).xyz;
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        vNormal = normalize(normalMatrix * normal);
+        vView = -mvPosition.xyz;
+        gl_Position = projectionMatrix * mvPosition;
+        #include <clipping_planes_vertex>
+      }
+    `,
+    fragmentShader: /* glsl */ `
+      #include <clipping_planes_pars_fragment>
+      uniform vec3 uLine;
+      uniform vec3 uFill;
+      uniform float uOpacity;
+      uniform vec3 uScanDir;
+      uniform float uScanAt;
+      varying vec3 vNormal;
+      varying vec3 vView;
+      varying vec3 vWorld;
+      void main() {
+        #include <clipping_planes_fragment>
+        float facing = abs(dot(normalize(vNormal), normalize(vView)));
+        // силуэт — только у самого края: плоскости под скользящим углом не выбеливаются
+        float rim = pow(1.0 - facing, 3.0);
+        float scan = exp(-max(0.0, uScanAt - dot(vWorld, uScanDir)) / 0.012);
+        vec3 col = mix(uFill, uLine, rim * 0.75) + vec3(0.75, 0.9, 1.0) * scan;
+        gl_FragColor = vec4(col, uOpacity * (0.3 + 0.5 * rim) + scan * 0.6);
+      }
+    `,
+    transparent: true,
+    depthWrite: true,
+    clipping: true,
+    clippingPlanes: scan,
+    // заливка чуть глубже рёбер — линии не мерцают на гранях
+    polygonOffset: true,
+    polygonOffsetFactor: 1,
+    polygonOffsetUnits: 1,
+  })
+}
+
+/** Чертёжная сетка: квадрат линий, гаснущий к краям круга — под станцией, не на весь кадр */
+function blueprintGrid(size: number, cells: number, scan: THREE.Plane[]) {
+  const pts: number[] = []
+  const half = size / 2
+  for (let i = 0; i <= cells; i++) {
+    const t = -half + (size * i) / cells
+    pts.push(t, 0, -half, t, 0, half, -half, 0, t, half, 0, t)
+  }
+  const geo = new THREE.BufferGeometry()
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3))
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { uColor: { value: BP_LINE }, uOpacity: { value: 0.16 }, uRadius: { value: half } },
+    vertexShader: /* glsl */ `
+      #include <clipping_planes_pars_vertex>
+      varying vec2 vXZ;
+      void main() {
+        vXZ = position.xz;
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        gl_Position = projectionMatrix * mvPosition;
+        #include <clipping_planes_vertex>
+      }
+    `,
+    fragmentShader: /* glsl */ `
+      #include <clipping_planes_pars_fragment>
+      uniform vec3 uColor;
+      uniform float uOpacity;
+      uniform float uRadius;
+      varying vec2 vXZ;
+      void main() {
+        #include <clipping_planes_fragment>
+        float fade = 1.0 - smoothstep(uRadius * 0.35, uRadius, length(vXZ));
+        gl_FragColor = vec4(uColor, uOpacity * fade);
+      }
+    `,
+    transparent: true,
+    depthWrite: false,
+    clipping: true,
+    clippingPlanes: scan,
+  })
+  return new THREE.LineSegments(geo, mat)
+}
+
+interface BlueprintParts {
+  fills: THREE.ShaderMaterial[]
+  lines: THREE.LineBasicMaterial[]
+  hidden: THREE.LineDashedMaterial[]
+  objects: THREE.Object3D[]
+}
+
+/** Добавить к деталям узла чертёжные слои. Слои — дочерние объекты мешей: едут вместе с модулем. */
+function addBlueprint(root: THREE.Object3D, color: THREE.Color, scan: THREE.Plane[], out: BlueprintParts) {
+  const fill = blueprintFill(color, scan)
+  const line = new THREE.LineBasicMaterial({ color, transparent: true, depthWrite: false, clippingPlanes: scan, toneMapped: false })
+  const hidden = new THREE.LineDashedMaterial({
+    color,
+    transparent: true,
+    opacity: 0.3,
+    dashSize: 0.18,
+    gapSize: 0.14,
+    depthWrite: false,
+    // только там, где ребро закрыто корпусом
+    depthFunc: THREE.GreaterDepth,
+    clippingPlanes: scan,
+    toneMapped: false,
+  })
+  out.fills.push(fill)
+  out.lines.push(line)
+  out.hidden.push(hidden)
+  const meshes: THREE.Mesh[] = []
+  root.traverse(o => o instanceof THREE.Mesh && meshes.push(o))
+  for (const m of meshes) {
+    const ghost = new THREE.Mesh(m.geometry, fill)
+    ghost.renderOrder = 10
+    const edges = new THREE.EdgesGeometry(m.geometry, 28)
+    const visible = new THREE.LineSegments(edges, line)
+    visible.renderOrder = 11
+    const back = new THREE.LineSegments(edges, hidden)
+    back.computeLineDistances()
+    back.renderOrder = 12
+    for (const o of [ghost, visible, back]) {
+      o.visible = false
+      m.add(o)
+      out.objects.push(o)
+    }
+  }
+}
+
+// ── Module Federation: двигатель внутри хаба ────────────────────────
+//
+// Двигатель станции — Module Federation. Живёт внутри хаба: в обычном виде его закрывает
+// корпус, на чертеже (полупрозрачный корпус) он проступает «живым». Клетка корпуса из рёбер,
+// внутри светящееся ядро и вращающиеся кольца-статоры, по середине — лента с логотипом MF.
+// Цвета — из логотипа Module Federation.
+
+const MF_CYAN = new THREE.Color('#38bdf8')
+const MF_VIOLET = new THREE.Color('#9589ea')
+
+interface Fade { from: number, to: number, start: number, duration: number }
+
+const fadeAt = (f: Fade, now: number) => {
+  const raw = Math.min(1, Math.max(0, (now - f.start) / (f.duration * 1000)))
+  return THREE.MathUtils.lerp(f.from, f.to, ease(raw))
+}
+
+/** лента с логотипом: словесный знак MF по кругу, три повтора — один всегда смотрит в камеру */
+function logoBandTexture(url: string) {
+  const c = document.createElement('canvas')
+  c.width = 1024
+  c.height = 200
+  const tex = new THREE.CanvasTexture(c)
+  tex.colorSpace = THREE.SRGBColorSpace
+  tex.wrapS = THREE.RepeatWrapping
+  tex.repeat.set(3, 1)
+  tex.anisotropy = 8
+  const img = new Image()
+  img.onload = () => {
+    const ctx = c.getContext('2d')!
+    ctx.fillStyle = '#0d1424'
+    ctx.fillRect(0, 0, c.width, c.height)
+    // тонкие риски по краям ленты — как маркировка на корпусе
+    ctx.fillStyle = 'rgba(56,189,248,0.55)'
+    ctx.fillRect(0, 10, c.width, 4)
+    ctx.fillRect(0, c.height - 14, c.width, 4)
+    const w = c.width * 0.82
+    const h = w * img.height / img.width
+    ctx.drawImage(img, (c.width - w) / 2, (c.height - h) / 2, w, h)
+    tex.needsUpdate = true
+  }
+  img.src = url
+  return tex
+}
+
 // ── анимации модулей ────────────────────────────────────────────────
 
 export type Mode = 'docked' | 'detached' | 'hidden'
@@ -237,12 +434,28 @@ export class StationScene {
   }
   private tmp = new THREE.Vector3()
 
+  // чертёж: доля 0..1 и её анимация; плоскости скана — обычная станция / чертёж
+  private bp = { from: 0, to: 0, start: -1e9, duration: 1 }
+  private scanReal = new THREE.Plane()
+  private scanDraft = new THREE.Plane()
+  private blueprintParts: BlueprintParts = { fills: [], lines: [], hidden: [], objects: [] }
+  private realMaterials = new Set<THREE.Material>()
+  private grid: THREE.LineSegments | null = null
+  private sprites: THREE.SpriteMaterial[] = []
+
+  // Module Federation: двигатель внутри хаба и его видимость
+  private mf: Fade = { from: 0, to: 0, start: -1e9, duration: 1 }
+  private engine: THREE.Group | null = null
+  private engineRings: THREE.Mesh[] = []
+  private engineCore: THREE.Sprite | null = null
+
   constructor(private canvas: HTMLCanvasElement, sun: Vec3) {
     this.sun = new THREE.Vector3(...sun).normalize()
     this.renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, premultipliedAlpha: true })
     this.renderer.setClearColor(0x000000, 0)
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping
     this.renderer.toneMappingExposure = 1.05
+    this.renderer.localClippingEnabled = true
     this.scene.environment = environment(this.renderer, this.sun)
     this.scene.environmentIntensity = 0.9
 
@@ -265,6 +478,7 @@ export class StationScene {
           opacity: 0,
         }))
         sp.scale.setScalar(H * 2.2)
+        this.sprites.push(sp.material)
         sp.position.set(s * (length / 2 + CONE + H * 0.3), 0, 0)
         pivot.add(sp)
         return sp
@@ -292,6 +506,7 @@ export class StationScene {
     this.root.add(this.body)
     this.root.position.set(...def.pos)
     this.scene.add(this.root)
+    this.buildEngine()
 
     // планеты и спутники — только в буфер глубины
     const occ = new THREE.MeshBasicMaterial({ colorWrite: false })
@@ -302,6 +517,112 @@ export class StationScene {
       this.scene.add(o)
       this.occluders.push(o)
     }
+  }
+
+  private buildEngine() {
+    const g = new THREE.Group()
+    const metal = new THREE.MeshStandardMaterial({ color: 0x2b3040, metalness: 0.85, roughness: 0.32 })
+    const light = new THREE.MeshStandardMaterial({ color: 0xc8ccd6, metalness: 0.7, roughness: 0.35 })
+    const R = H * 1.0
+    const HALF = H * 1.25
+
+    // крышки и рёбра клетки
+    for (const y of [-HALF, HALF]) {
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(R, R, H * 0.28, 48), metal)
+      cap.position.y = y
+      g.add(cap)
+      const lip = new THREE.Mesh(new THREE.TorusGeometry(R, H * 0.05, 8, 48), light)
+      lip.rotation.x = Math.PI / 2
+      lip.position.y = y + Math.sign(y) * -H * 0.14
+      g.add(lip)
+    }
+    for (let k = 0; k < 8; k++) {
+      const a = (k / 8) * Math.PI * 2
+      const rib = new THREE.Mesh(new THREE.BoxGeometry(H * 0.12, HALF * 2, H * 0.12), metal)
+      rib.position.set(Math.cos(a) * R * 0.97, 0, Math.sin(a) * R * 0.97)
+      rib.rotation.y = -a
+      g.add(rib)
+    }
+
+    // лента с логотипом Module Federation — опоясывает корпус посередине
+    const logo = logoBandTexture('/img/mfe.svg')
+    const band = new THREE.Mesh(
+      new THREE.CylinderGeometry(R * 1.04, R * 1.04, H * 0.46, 96, 1, true),
+      new THREE.MeshStandardMaterial({
+        map: logo,
+        emissiveMap: logo,
+        emissive: 0xffffff,
+        emissiveIntensity: 0.8,
+        metalness: 0.3,
+        roughness: 0.5,
+      }),
+    )
+    g.add(band)
+
+    // ядро — светящийся стержень и его ореол
+    const coreMat = new THREE.MeshBasicMaterial({ color: MF_CYAN, toneMapped: false })
+    const rod = new THREE.Mesh(new THREE.CylinderGeometry(H * 0.18, H * 0.18, HALF * 2, 24), coreMat)
+    g.add(rod)
+    const core = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: glowTexture(),
+      color: MF_CYAN,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      toneMapped: false,
+    }))
+    core.scale.set(H * 2.2, H * 4.2, 1)
+    g.add(core)
+    this.engineCore = core
+
+    // кольца-статоры вокруг ядра — вращаются с разной скоростью
+    for (const [i, y] of [-H * 0.75, H * 0.75].entries()) {
+      const mat = new THREE.MeshStandardMaterial({
+        color: i ? MF_VIOLET : MF_CYAN,
+        emissive: i ? MF_VIOLET : MF_CYAN,
+        emissiveIntensity: 0.9,
+        metalness: 0.5,
+        roughness: 0.3,
+      })
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(R * 0.62, H * 0.07, 10, 48, Math.PI * 1.6), mat)
+      ring.rotation.x = Math.PI / 2
+      ring.position.y = y
+      g.add(ring)
+      this.engineRings.push(ring)
+    }
+
+    // магистрали от двигателя к портам хаба — двигатель питает стыковку каждого модуля
+    const conduit = new THREE.MeshBasicMaterial({ color: MF_CYAN, toneMapped: false })
+    for (const port of Object.keys(PORT_DIR) as Port[]) {
+      const d = PORT_DIR[port]
+      const from = port === '-y' ? HALF : R
+      const to = port === '-y' ? HUB_LEN / 2 : HUB_R * 0.97
+      const len = to - from
+      const pipe = new THREE.Mesh(new THREE.CylinderGeometry(H * 0.06, H * 0.06, len, 12), conduit)
+      pipe.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d)
+      pipe.position.copy(d).multiplyScalar(from + len / 2)
+      g.add(pipe)
+    }
+
+    g.visible = false
+    this.body.add(g)
+    this.engine = g
+  }
+
+  private updateEngine(now: number, time: number) {
+    if (!this.engine)
+      return
+    const m = fadeAt(this.mf, now)
+    this.engine.visible = m > 0.01
+    if (!this.engine.visible)
+      return
+    // двигатель «запускается»: кольца раскручиваются, ядро разгорается
+    this.engineRings.forEach((r, i) => {
+      r.rotation.z = time * (i ? -1.6 : 1.1) * m
+    })
+    if (this.engineCore)
+      (this.engineCore.material as THREE.SpriteMaterial).opacity = m * (0.75 + 0.2 * Math.sin(time * 4))
+    this.engine.scale.setScalar(0.85 + 0.15 * m)
   }
 
   private attachModel(model: THREE.Object3D, M: Materials) {
@@ -315,6 +636,8 @@ export class StationScene {
       dress(hub.getObjectByName(`port_${port}`)!, () => light)
       this.portLights.set(port, light)
     }
+    const draft = [this.scanDraft]
+    addBlueprint(hub, BP_LINE, draft, this.blueprintParts)
     hub.removeFromParent()
     hub.scale.setScalar(H)
     this.body.add(hub)
@@ -327,12 +650,73 @@ export class StationScene {
       const accent = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.45, metalness: 0.3, roughness: 0.4 })
       const nav = new THREE.MeshBasicMaterial({ color, toneMapped: false })
       dress(node, name => name === 'accent' ? accent : name === 'navlight' ? nav : base(name))
+      // контуры модуля — в цвет его команды, чуть светлее
+      addBlueprint(node, color.clone().lerp(new THREE.Color(1, 1, 1), 0.25), draft, this.blueprintParts)
       node.removeFromParent()
       node.position.set(0, 0, 0)
       node.scale.setScalar(H)
       rt.pivot.add(node)
     }
+    // обычные материалы режутся плоскостью скана с другой стороны
+    this.body.traverse((o) => {
+      if (!(o instanceof THREE.Mesh) || this.blueprintParts.objects.includes(o))
+        return
+      // двигатель MF — не часть корпуса: на чертеже он как раз остаётся «живым»
+      if (this.engine?.getObjectById(o.id))
+        return
+      for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
+        m.clippingPlanes = [this.scanReal]
+        this.realMaterials.add(m)
+      }
+    })
+
+    // чертёжная сетка под станцией
+    const grid = blueprintGrid(def.radius * 2.2, 22, [this.scanDraft])
+    grid.position.y = -def.radius * 0.8
+    grid.renderOrder = 9
+    grid.visible = false
+    this.root.add(grid)
+    this.grid = grid
+
     this.ready = true
+  }
+
+  /** доля чертежа сейчас, 0 — обычная станция, 1 — чертёж */
+  private blueprintMix(now: number) {
+    const raw = Math.min(1, Math.max(0, (now - this.bp.start) / (this.bp.duration * 1000)))
+    return THREE.MathUtils.lerp(this.bp.from, this.bp.to, ease(raw))
+  }
+
+  /**
+   * Скан идёт слева направо по экрану: левее фронта — чертёж, правее — обычная станция.
+   * При 0 фронт у левого края станции (всё обычное), при 1 — у правого (всё чертёж).
+   */
+  private updateBlueprint(now: number, right: THREE.Vector3) {
+    const b = this.blueprintMix(now)
+    const center = this.root.position
+    // с запасом: солнечные панели и отстыкованные модули выходят далеко за радиус станции
+    const extent = def.radius * 3
+    const front = right.dot(center) - extent + 2 * extent * b
+    // обычная станция: dot(p, right) >= front; чертёж — по другую сторону
+    this.scanReal.set(right, -front)
+    this.scanDraft.set(right.clone().negate(), front)
+    // полоса фронта видна только пока идёт скан
+    const scanning = b > 0.001 && b < 0.999
+    for (const f of this.blueprintParts.fills) {
+      f.uniforms.uScanDir.value.copy(right)
+      // вне скана фронт уносим далеко вперёд: exp(-расстояние) даёт ноль, а не вспышку
+      f.uniforms.uScanAt.value = scanning ? front : 1e6
+    }
+    const on = b > 0.001
+    for (const o of this.blueprintParts.objects)
+      o.visible = on
+    if (this.grid)
+      this.grid.visible = on
+    for (const m of this.sprites)
+      m.visible = b < 0.999
+    // скан завершён — обычная станция не рисуется вовсе
+    for (const m of this.realMaterials)
+      m.visible = b < 0.999
   }
 
   private target(m: ModuleDef, length: number, mode: Mode): Pose {
@@ -364,14 +748,24 @@ export class StationScene {
 
   setState(state: StationState, now: number, instant = false) {
     // станцию сейчас никто не видит — анимировать незачем, сразу в новое состояние
-    instant ||= !this.wasVisible
+    const delay = Math.max(0, state.delay || 0) * 1000
+    // с паузой переход должен быть виден: станция к этому моменту уже в кадре
+    instant = !delay && (instant || !this.wasVisible)
+    const want = state.blueprint ? 1 : 0
+    if (want !== this.bp.to) {
+      this.bp = { from: instant ? want : this.blueprintMix(now), to: want, start: instant ? -1e9 : now + delay, duration: state.duration * 0.9 }
+    }
+    const fade = (cur: Fade, to: number): Fade => to === cur.to
+      ? cur
+      : { from: instant ? to : fadeAt(cur, now), to, start: instant ? -1e9 : now + delay, duration: state.duration * 0.6 }
+    this.mf = fade(this.mf, state.mf ? 1 : 0)
     for (const rt of this.modules.values()) {
       const mode: Mode = state.hidden.includes(rt.def.id) ? 'hidden' : state.detached.includes(rt.def.id) ? 'detached' : 'docked'
       if (mode === rt.mode)
         continue
       rt.from = { pos: rt.pivot.position.clone(), quat: rt.pivot.quaternion.clone(), scale: rt.pivot.scale.x }
       rt.mode = mode
-      rt.start = instant ? -1e9 : now
+      rt.start = instant ? -1e9 : now + delay
       rt.duration = state.duration * 1000 * (mode === 'hidden' || rt.from.scale < 0.5 ? 1.4 : 1)
       if (instant)
         this.apply(rt, this.target(rt.def, rt.length, mode))
@@ -392,7 +786,7 @@ export class StationScene {
   }
 
   private animate(time: number, now: number) {
-    this.body.rotation.y = 0.5 + time * def.spin
+    this.body.rotation.y = stationYaw(time)
     for (const rt of this.modules.values()) {
       const target = this.target(rt.def, rt.length, rt.mode)
       const raw = Math.min(1, Math.max(0, (now - rt.start) / rt.duration))
@@ -512,6 +906,8 @@ export class StationScene {
     c.updateMatrixWorld()
     this.body.updateMatrixWorld()
     this.updateScreen()
+    this.updateBlueprint(now, new THREE.Vector3(...cam.right))
+    this.updateEngine(now, time)
 
     // заглушки глубины
     let k = 0
