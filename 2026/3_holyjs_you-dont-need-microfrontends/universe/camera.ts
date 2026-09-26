@@ -41,7 +41,7 @@ export function satellitePos(id: string, time: number): Vec3 | undefined {
   const p = planets.find(p => p.id === s.parent)!
   const [, e1, e2] = planeBasis(p.axis)
   const a = time * s.speed + s.phase
-  return add(p.pos, mul(add(mul(e1, Math.cos(a)), mul(e2, Math.sin(a))), p.orbit ?? 2))
+  return add(p.pos, mul(add(mul(e1, Math.cos(a)), mul(e2, Math.sin(a))), s.orbit ?? p.orbit ?? 2))
 }
 
 /**

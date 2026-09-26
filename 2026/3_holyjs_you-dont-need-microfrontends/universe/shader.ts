@@ -194,6 +194,8 @@ uniform vec4 u_pPos[MAX_P];    // xyz, radius (0 — слота нет)
 uniform vec3 u_pColor[MAX_P];
 uniform vec3 u_pAxis[MAX_P];
 uniform vec4 u_pRing[MAX_P];   // inner, outer, orbit, style (0 газ, 1 твёрдая)
+uniform vec4 u_pOrbits[MAX_P]; // радиусы орбит спутников планеты (до 4, 0 — нет)
+uniform vec4 u_pOrbitA[MAX_P]; // где сейчас спутник на каждой орбите, рад (-1 — орбита без спутника)
 uniform float u_pSpin[MAX_P];  // угол поворота, рад
 
 uniform vec4 u_sPos[MAX_S];    // xyz, radius (0 — слота нет)
@@ -409,14 +411,27 @@ void main() {
       layer = vec4(rc * a, a);
     }
 
-    float orbit = u_pRing[i].z;
-    if (orbit > 0.0) {
+    // орбиты спутников: у каждого своя. Сама орбита — едва заметный пунктир,
+    // за спутником тянется светящийся шлейф: видно траекторию, но кадр не расчерчен
+    vec4 orbits = u_pOrbits[i];
+    if (orbits.x > 0.0) {
       vec3 e1; vec3 e2;
       basis(ax, e1, e2);
       float w = pxK * t;
-      float line = smoothstep(w * 1.6, 0.0, abs(r - orbit)) * 0.28;
       float phi = atan(dot(q, e2), dot(q, e1));
-      line *= step(0.35, fract(phi * 48.0 / 6.2831));
+      vec4 orbitA = u_pOrbitA[i];
+      float line = 0.0;
+      for (int k = 0; k < 4; k++) {
+        float orbit = k == 0 ? orbits.x : (k == 1 ? orbits.y : (k == 2 ? orbits.z : orbits.w));
+        float a = k == 0 ? orbitA.x : (k == 1 ? orbitA.y : (k == 2 ? orbitA.z : orbitA.w));
+        if (orbit <= 0.0) continue;
+        float on = smoothstep(w * 1.6, 0.0, abs(r - orbit));
+        float dash = step(0.35, fract(phi * orbit * 21.0 / 6.2831)) * 0.07;
+        // угол позади спутника по ходу движения: 0 у спутника, растёт назад
+        float behind = a < 0.0 ? 7.0 : mod(a - phi, 6.2831853);
+        float trail = exp(-behind * 1.6) * 0.5 * smoothstep(0.0, 0.04, behind);
+        line = max(line, on * max(dash, trail));
+      }
       line *= 0.2 + 0.8 * planetShadow(ro + rd * t);
       layer = vec4(vec3(0.85, 0.85, 1.0) * line, line) + layer * (1.0 - line);
     }

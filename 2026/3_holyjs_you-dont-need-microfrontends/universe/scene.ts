@@ -34,7 +34,7 @@ export interface PlanetDef {
   /** скорость вращения, рад/с */
   spin: number
   ring?: { inner: number, outer: number }
-  /** радиус орбиты спутников (в мировых единицах), 0 — без орбиты */
+  /** радиус орбиты спутников по умолчанию (в мировых единицах), 0 — без орбиты */
   orbit?: number
   style: 'gas' | 'rocky'
 }
@@ -44,6 +44,8 @@ export interface SatelliteDef {
   parent: string
   radius: number
   color: Vec3
+  /** радиус своей орбиты (мировые единицы); по умолчанию — orbit планеты */
+  orbit?: number
   /** начальная фаза, рад */
   phase: number
   /** угловая скорость по орбите, рад/с */
@@ -86,13 +88,15 @@ export const planets: PlanetDef[] = [
     style: 'gas',
   },
   {
+    // Земля под станцией, как у МКС: в обычных ракурсах ниже кадра,
+    // видна только в кадре `earth` (станция над Землёй)
     id: 'ocean',
-    pos: [-11, 2.5, -16],
-    radius: 0.85,
+    pos: [-3, -8.5, 3.5],
+    radius: 2.8,
     color: [0.16, 0.46, 0.95],
     axis: tilt(0.25, 0.1),
     spin: 0.05,
-    orbit: 1.7,
+    orbit: 4.4,
     style: 'rocky',
   },
   {
@@ -108,15 +112,20 @@ export const planets: PlanetDef[] = [
 ]
 
 export const satellites: SatelliteDef[] = [
-  { id: 'catalog', parent: 'home', radius: 0.065, color: [0.2, 0.83, 0.6], phase: 0.6, speed: 0.08 },
-  { id: 'search', parent: 'home', radius: 0.065, color: [0.38, 0.65, 0.98], phase: 1.15, speed: 0.08 },
-  { id: 'cart', parent: 'home', radius: 0.065, color: [0.96, 0.45, 0.71], phase: 1.7, speed: 0.08 },
+  // у каждого модуля своя орбита, как у настоящих лун: дальше — медленнее (≈ Кеплер, v ∝ r^-1.5)
+  { id: 'catalog', parent: 'home', radius: 0.06, orbit: 2.35, color: [0.2, 0.83, 0.6], phase: 3.4, speed: 0.08 },
+  { id: 'search', parent: 'home', radius: 0.075, orbit: 2.95, color: [0.38, 0.65, 0.98], phase: 2.5, speed: 0.057 },
+  { id: 'cart', parent: 'home', radius: 0.055, orbit: 3.6, color: [0.96, 0.45, 0.71], phase: 4.3, speed: 0.042 },
   { id: 'moon', parent: 'ocean', radius: 0.12, color: [0.8, 0.82, 0.9], phase: 0, speed: 0.05 },
 ]
 
 export const presets: Record<string, CameraSpec> = {
-  /** титул: планета справа сверху, место под заголовок слева */
-  title: { focus: 'home', distance: 5, yaw: 0, pitch: 0, shift: [1.0, 0.31], fov: 2.35 },
+  /**
+   * титул: планета справа сверху (освещена наполовину), станция маленьким силуэтом
+   * слева сверху, заголовок слева снизу — треугольник визуальных весов.
+   * Ракурс сбоку-сверху: станция дальше планеты по глубине, поэтому не перетягивает кадр.
+   */
+  title: { focus: 'home', distance: 5, yaw: 48, pitch: 26, shift: [1.0, 0.31], fov: 2.35 },
   /** обзор системы по центру */
   system: { focus: 'home', distance: 7.5, yaw: 0, pitch: 6, shift: [0, 0], fov: 2.35 },
   /**
@@ -146,6 +155,8 @@ export const presets: Record<string, CameraSpec> = {
   finale: { focus: [-1.4, -0.3, 0.9], distance: 8.6, yaw: -24, pitch: 16, shift: [0.95, 0.14], fov: 2.35, duration: 3.2 },
   // прощание: собранная станция крупно справа, слева — место под текст
   farewell: { focus: 'station', distance: 5.2, yaw: -35, pitch: 18, shift: [1.0, 0.38], fov: 2.35, spin: 0.5, duration: 2.4 },
+  /** станция над Землёй: станция справа сверху, дуга Земли внизу, слева место под текст */
+  earth: { focus: 'station', distance: 6.5, yaw: -24, pitch: 52, shift: [0.95, 0.5], fov: 2.35, duration: 2.4 },
   ambient: { focus: [60, 40, -120], distance: 10, yaw: 0, pitch: 0, shift: [0, 0], fov: 2.35 },
 }
 
@@ -213,3 +224,11 @@ export const station = {
 }
 
 export const DEFAULT_STATION_DURATION = 2.2
+
+/** радиусы орбит, которые рисуются у планеты: у каждого спутника своя, без повторов */
+export function orbitsOf(p: PlanetDef): number[] {
+  const radii = satellites.filter(s => s.parent === p.id).map(s => s.orbit ?? p.orbit ?? 2)
+  if (!radii.length && p.orbit)
+    radii.push(p.orbit)
+  return [...new Set(radii)].sort((a, b) => a - b)
+}

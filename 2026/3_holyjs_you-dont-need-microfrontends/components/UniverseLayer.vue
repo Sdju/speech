@@ -4,8 +4,8 @@ import { onBeforeUnmount, onMounted, useTemplateRef, watch } from 'vue'
 import { SurfaceBaker } from '../universe/baker'
 import type { CameraFrame } from '../universe/camera'
 import { bodyAt, CameraRig, dot, norm, resolveCamera, resolveStation, satelliteRotation, setStationResolver, sub } from '../universe/camera'
-import type { Vec3 } from '../universe/scene'
-import { planets, satellites, station, SUN_DIR } from '../universe/scene'
+import type { CameraSpec, Vec3 } from '../universe/scene'
+import { orbitsOf, planets, presets, satellites, station, SUN_DIR } from '../universe/scene'
 import { BAKE_SIZE, MAX_P, MAX_S, renderFragment, vertex } from '../universe/shader'
 import { StationScene } from '../universe/station'
 import { stationScreen } from '../universe/screen'
@@ -47,7 +47,7 @@ watch(stationState, state => stationScene?.setState(state, performance.now()), {
 
 const UNIFORMS = [
   'u_res', 'u_time', 'u_eye', 'u_right', 'u_up', 'u_fwd', 'u_focal', 'u_shift', 'u_sun',
-  'u_pPos', 'u_pColor', 'u_pAxis', 'u_pRing', 'u_pSpin',
+  'u_pPos', 'u_pColor', 'u_pAxis', 'u_pRing', 'u_pOrbits', 'u_pOrbitA', 'u_pSpin',
   'u_sPos', 'u_sColor', 'u_sAxis', 'u_sRot',
   'u_pMix', 'u_texelAngle', 'u_fullDetail',
   'u_pA0', 'u_pA1', 'u_pA2', 'u_pB0', 'u_pB1', 'u_pB2',
@@ -107,6 +107,8 @@ onMounted(() => {
   const pColor = new Float32Array(MAX_P * 3)
   const pAxis = new Float32Array(MAX_P * 3)
   const pRing = new Float32Array(MAX_P * 4)
+  const pOrbits = new Float32Array(MAX_P * 4)
+  const pOrbitA = new Float32Array(MAX_P * 4).fill(-1)
   const pSpin = new Float32Array(MAX_P)
   const pMix = new Float32Array(MAX_P)
   planets.slice(0, MAX_P).forEach((p, i) => {
@@ -114,6 +116,7 @@ onMounted(() => {
     pColor.set(p.color, i * 3)
     pAxis.set(norm(p.axis), i * 3)
     pRing.set([p.ring?.inner ?? 0, p.ring?.outer ?? 0, p.orbit ?? 0, p.style === 'rocky' ? 1 : 0], i * 4)
+    pOrbits.set(orbitsOf(p).slice(0, 4), i * 4)
   })
   const sPos = new Float32Array(MAX_S * 4)
   const sColor = new Float32Array(MAX_S * 3)
@@ -127,6 +130,7 @@ onMounted(() => {
     g.uniform3fv(p.U.u_pColor, pColor)
     g.uniform3fv(p.U.u_pAxis, pAxis)
     g.uniform4fv(p.U.u_pRing, pRing)
+    g.uniform4fv(p.U.u_pOrbits, pOrbits)
     g.uniform3fv(p.U.u_sColor, sColor)
     g.uniform3fv(p.U.u_sun, SUN)
     // сэмплеры: A планет → 0..2, B → 3..5, спутники → 6..11
@@ -175,7 +179,7 @@ onMounted(() => {
   const bodiesInView = (cam: CameraFrame) => {
     const aspect = el.width / el.height
     const bounds = planets.slice(0, MAX_P)
-      .map(p => [p.pos, Math.max(p.radius * 1.3, p.ring?.outer ?? 0, (p.orbit ?? 0) + 0.2)] as [Vec3, number])
+      .map(p => [p.pos, Math.max(p.radius * 1.3, p.ring?.outer ?? 0, Math.max(0, ...orbitsOf(p)) + 0.2)] as [Vec3, number])
     bounds.push([station.pos, station.radius * 2.5])
     return bounds.some(([pos, radius]) => {
       const v = sub(pos, cam.eye)
@@ -192,7 +196,15 @@ onMounted(() => {
   }
 
   const updateBodies = (time: number) => {
-    planets.slice(0, MAX_P).forEach((p, i) => { pSpin[i] = time * p.spin })
+    planets.slice(0, MAX_P).forEach((p, i) => {
+      pSpin[i] = time * p.spin
+      // фаза спутника на каждой из орбит планеты — для шлейфа
+      orbitsOf(p).slice(0, 4).forEach((r, k) => {
+        const s = satellites.find(s => s.parent === p.id && (s.orbit ?? p.orbit ?? 2) === r)
+        const a = s ? time * s.speed + s.phase : -1
+        pOrbitA[i * 4 + k] = s ? ((a % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2) : -1
+      })
+    })
     satellites.slice(0, MAX_S).forEach((s, i) => {
       sPos.set([...bodyAt(s.id, time).pos, s.radius], i * 4)
       const rot = satelliteRotation(s.id, time)!
@@ -237,6 +249,7 @@ onMounted(() => {
     g.uniform2fv(p.U.u_shift, cam.shift)
     g.uniform1fv(p.U.u_pSpin, pSpin)
     g.uniform4fv(p.U.u_sPos, sPos)
+    g.uniform4fv(p.U.u_pOrbitA, pOrbitA)
     g.uniform3fv(p.U.u_sAxis, sAxis)
     g.uniform1fv(p.U.u_sRot, sRot)
     g.uniform1f(p.U.u_fullDetail, fullDetail ? 1 : 0)
@@ -315,6 +328,48 @@ onMounted(() => {
       get mode() { return mode },
       set mode(m: Mode) { if (programs[m]) mode = m },
       canBake,
+      /** подбор ракурса: поставить камеру поверх слайда (пресет + переопределения); null — вернуть слайдовую */
+      camera(spec: (CameraSpec & { preset?: string }) | null) {
+        const slide = resolveCamera(nav.slides.value as any, nav.currentSlideNo.value, nav.clicks.value)
+        const extra = spec ? { ...(spec.preset ? presets[spec.preset] : {}), ...spec } : {}
+        delete (extra as any).preset
+        rig.setTarget({ ...slide, ...extra } as any, performance.now(), true)
+        lastCam = rig.frame(worldTime(performance.now()), performance.now())
+      },
+      /** подбор мира: сдвинуть планету (и её спутники) на лету; радиус — по желанию */
+      planet(id: string, pos: Vec3, radius?: number) {
+        const i = planets.findIndex(p => p.id === id)
+        if (i < 0 || i >= MAX_P)
+          return
+        planets[i].pos = pos
+        if (radius)
+          planets[i].radius = radius
+        pPos.set([...pos, planets[i].radius], i * 4)
+        for (const pr of Object.values(programs)) {
+          g.useProgram(pr.program)
+          g.uniform4fv(pr.U.u_pPos, pPos)
+        }
+      },
+      /** где тела на экране: x, y в долях кадра (0..1), размер — радиус в долях высоты */
+      project() {
+        const time = worldTime(performance.now())
+        const cam = rig.frame(time, performance.now())
+        if (!cam)
+          return null
+        const aspect = el.width / el.height
+        const at = (pos: Vec3, radius: number) => {
+          const v = sub(pos, cam.eye)
+          const z = dot(v, cam.fwd)
+          const x = dot(v, cam.right) / z * cam.fov + cam.shift[0]
+          const y = dot(v, cam.up) / z * cam.fov + cam.shift[1]
+          return { x: +(0.5 + x / aspect / 2).toFixed(3), y: +(0.5 - y / 2).toFixed(3), size: +(radius / z * cam.fov / 2).toFixed(3), behind: z < 0 }
+        }
+        const out: Record<string, any> = {}
+        planets.forEach(p => { out[p.id] = at(p.pos, p.radius) })
+        satellites.forEach(s => { out[s.id] = at(bodyAt(s.id, time).pos, s.radius) })
+        out.station = at(bodyAt('station', time).pos, station.radius)
+        return out
+      },
       /** заморозить время мира (t — секунды) и перепечь снимки ровно на t; null — отпустить */
       freeze(t: number | null) {
         frozenAt = t
