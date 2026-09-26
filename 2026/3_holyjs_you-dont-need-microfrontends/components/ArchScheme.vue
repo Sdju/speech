@@ -11,6 +11,8 @@ import ArchRiskDetails from './ArchRiskDetails.vue'
  * Risks: семь претензий на той же схеме (Dev и миграция — по два состояния).
  * Modules: итоговая MFE-схема → общая сборка → перенос модулей → деплой → итог.
  * При возврате/прямом входе состояние вычисляется из шага; таймеров нет.
+ * Подписей на схеме нет — тексты шагов (captions) проговариваются по заметкам спикера;
+ * здесь они задают только число шагов.
  */
 const { mode = 'mfe', step = 0 } = defineProps<{
   mode?: 'mfe' | 'modules' | 'risks'
@@ -18,7 +20,8 @@ const { mode = 'mfe', step = 0 } = defineProps<{
 }>()
 
 const W = 920
-const H = 444
+/* высота — с местом под бар общего прогона CI (бывшая строка подписи) */
+const H = 488
 const LINE = 302
 const HOST = '#a78bfa'
 const SHARED = '#fbbf24'
@@ -46,7 +49,6 @@ const captions = computed(() => mode === 'risks' ? archRisks.map(risk => risk.ti
   'Границы модулей остаются, интеграция теперь при сборке',
 ])
 const phase = computed(() => Math.max(0, Math.min(captions.value.length - 1, step)))
-const caption = computed(() => captions.value[phase.value])
 const problem = computed(() => mode === 'risks' ? archRisks[phase.value] : undefined)
 const riskKind = computed(() => problem.value?.kind)
 const migrating = computed(() => riskKind.value === 'migration' || riskKind.value === 'migration-partial')
@@ -144,6 +146,16 @@ function riskPartClass(i: number) {
     'risk-with-button': riskKind.value === 'ui',
   }
 }
+/** подсветка модуля — по геометрии рамки HudBlock (раскрывается вместе с ней), а не по корню */
+function partEffects(i: number) {
+  const r = riskPartClass(i)
+  const focus = currentRelease(i + 1) || (s.value.local && !s.value.shared && i === 0) || (s.value.interaction && i < 2) || r['risk-focus']
+  if (r['risk-ready'])
+    return { glow: '#34d399', ring: '#34d399' }
+  if (r['risk-pending'])
+    return { glow: '#fbbf24', ring: '#fbbf2499' }
+  return { glow: !!focus, dashed: r['risk-mock'] }
+}
 function pipeNote(i: number) {
   if (riskKind.value?.startsWith('dev-')) return `localhost:${3000 + i}`
   if (riskKind.value === 'ci') return 'build ✓, tests ✓'
@@ -162,7 +174,9 @@ const host: Box = { x: 460, y: 46, w: 300, h: 60 }
 const remote = (i: number): Box => s.value.merged
   ? { x: 290 + i * 170, y: 394, w: 150, h: 64 }
   : { x: 250 + i * 210, y: 157, w: 164, h: 76 }
-const pipe = (i: number): Box => ({ x: i === 0 ? 70 : 250 + (i - 1) * 210, y: 368, w: 144, h: 68 })
+// ряд пайплайнов с одинаковым шагом: Shell слева, счётчик деплоев зеркально справа —
+// ряд симметричен относительно центра, где наверху стоит Shell
+const pipe = (i: number): Box => ({ x: 40 + i * 210, y: 368, w: 128, h: 68 })
 const build: Box = { x: 460, y: 375, w: 580, h: 136 }
 const shared: Box = { x: 460, y: 255, w: 540, h: 44 }
 const place = (b: Box) => ({
@@ -174,7 +188,7 @@ const runtimeArrows = parts.map((_, i) => {
   return `M${380 + i * 80} 76 C${380 + i * 80} 99 ${x} 94 ${x} 119`
 })
 const deployArrows = [
-  'M70 334 C70 140 160 46 306 46',
+  'M40 334 C40 140 160 46 306 46',
   ...parts.map((_, i) => `M${250 + i * 210} 334 L${250 + i * 210} 198`),
 ]
 const sharedArrows = [
@@ -186,13 +200,9 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
 </script>
 
 <template>
-  <div class="arch" :class="{ 'arch--instant': instant, 'arch--risks': !!problem }" :style="{ width: `${W}px`, height: `${H + 44}px` }">
-    <div class="arch__zone hud-label" :style="{ top: '0px' }">Runtime в браузере</div>
+  <div class="arch" :class="{ 'arch--instant': instant, 'arch--risks': !!problem, 'arch--build': !s.pipes }" :style="{ width: `${W}px`, height: `${H}px` }">
     <div class="arch__zone hud-label" :style="{ top: `${LINE + 10}px` }">{{ riskKind?.startsWith('dev-') ? 'Локальное окружение' : 'build / CI' }}</div>
     <div class="arch__line" :class="{ 'is-hot': s.punch }" :style="{ top: `${LINE}px` }" />
-    <div class="arch__progress" aria-hidden="true">
-      <span v-for="n in captions.length" :key="n" :class="{ 'is-current': phase === n - 1, 'is-done': phase >= n - 1 }" />
-    </div>
 
     <svg class="arch__svg" :viewBox="`0 0 ${W} ${H}`" :width="W" :height="H">
       <SvgArrow v-for="(d, i) in runtimeArrows" :key="`runtime-${i}`" :d="d"
@@ -226,19 +236,25 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
       <span class="hud-label arch__build-label">{{ s.punch ? 'Интеграция при сборке, границы сохранены' : 'Одна сборка: оболочка + модули' }}</span>
     </div>
 
-    <div class="arch__box hud-frame arch__host" :class="{ 'is-hidden': !s.shell, 'is-focus': s.intro, 'risk-muted': riskKind === 'ci' || riskKind === 'dev-isolated', 'risk-mock': riskKind === 'dev-isolated', 'risk-pending': migrating }"
-      :style="{ ...place(host), '--hud-c': HOST, transitionDelay: s.shell ? releaseDelay(0, 'node') : '0s' }">
+    <!-- блоки runtime раскрываются механически (HudBlock); позиция и размер — на корне, как раньше -->
+    <HudBlock class="arch__box arch__host" :shown="s.shell" :color="HOST" :delay="s.shell ? releaseDelay(0, 'node') : 0"
+      :glow="migrating ? '#fbbf24' : s.intro" :ring="migrating ? '#fbbf2499' : undefined" :dashed="riskKind === 'dev-isolated'"
+      :class="{ 'risk-muted': riskKind === 'ci' || riskKind === 'dev-isolated', 'risk-pending': migrating }"
+      :style="{ ...place(host), transitionDelay: s.shell ? releaseDelay(0, 'node') : '0s' }">
       <Transition name="arch-swap" mode="out-in">
         <div :key="s.app ? 'app' : 'shell'" class="arch__text">
           <b>{{ s.app ? 'Single App' : 'Shell' }}</b>
           <small>{{ hostNote }}</small>
         </div>
       </Transition>
-    </div>
+    </HudBlock>
 
-    <div v-for="(p, i) in parts" :key="p.id" class="arch__box hud-frame arch__part"
-      :class="{ ...riskPartClass(i), 'is-hidden': !released(i + 1), 'has-local': i === 0 && s.local, 'is-focus': currentRelease(i + 1) || (s.local && !s.shared && i === 0) || (s.interaction && i < 2) }"
-      :style="{ ...place(remote(i)), '--hud-c': p.color, transitionDelay: mode === 'modules' ? `${i * 0.22}s` : releaseDelay(i + 1, 'node') }">
+    <HudBlock v-for="(p, i) in parts" :key="p.id" class="arch__box arch__part"
+      :shown="released(i + 1)" :color="p.color"
+      :delay="mode === 'modules' ? i * 0.22 : releaseDelay(i + 1, 'node')"
+      v-bind="partEffects(i)"
+      :class="{ ...riskPartClass(i), 'has-local': i === 0 && s.local }"
+      :style="{ ...place(remote(i)), transitionDelay: mode === 'modules' ? `${i * 0.22}s` : releaseDelay(i + 1, 'node') }">
       <div class="arch__text">
         <b :style="{ color: p.color }">{{ p.name }}</b>
         <small :class="{ 'risk-version-hidden': riskKind === 'release' && i === 1 }">{{ partNote(i) }}</small>
@@ -249,7 +265,7 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
       <span class="risk-error-ring" />
       <span class="risk-ui-button" :class="{ 'is-hidden': riskKind !== 'ui' }">{{ ['Купить', 'Оформить', 'Войти'][i] }}</span>
       <span v-if="i === 0" class="arch__local" :class="{ 'is-visible': s.local, 'is-muted': s.local && s.shared }">Локальный search-utils</span>
-    </div>
+    </HudBlock>
 
     <div class="arch__box arch__shared" :class="{ 'is-hidden': !s.shared, 'is-focus': s.shared && (!s.interaction || !!problem), 'is-muted': sharedMuted }"
       :style="{ ...place(shared), '--hud-c': SHARED }">
@@ -270,10 +286,6 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
       <Transition name="arch-swap" mode="out-in"><b :key="deploys">{{ deploys }}</b></Transition>
       <span class="hud-label">{{ deploys === 1 ? 'деплой' : 'деплоя' }}</span>
     </div>
-    <div class="arch__caption">
-      <span v-if="problem" class="risk-topic">{{ problem.topic }} / 7</span>
-      <Transition name="arch-swap" mode="out-in"><span :key="caption">{{ caption }}</span></Transition>
-    </div>
   </div>
 </template>
 
@@ -282,10 +294,30 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
   --ease: cubic-bezier(0.65, 0, 0.35, 1);
   position: relative;
   margin: 0 auto;
+  /* рамка схемы — от левого края пайплайна Shell (−24) до правого края Profile (752);
+     сдвигаем, чтобы её центр совпал с центром слайда */
+  translate: 96px 0;
+  transition: translate 0.75s var(--ease);
   text-align: left;
   font-family: sans, sans-serif;
 }
 
+/* без ряда пайплайнов (общая сборка) схема и так симметрична вокруг Shell — сдвиг не нужен,
+   а линия зоны идёт на всю ширину */
+.arch--build {
+  translate: 0 0;
+}
+
+.arch--build .arch__line {
+  left: 0;
+  width: 920px;
+}
+
+.arch--build .arch__zone {
+  left: 0;
+}
+
+.arch--instant,
 .arch--instant :deep(*),
 .arch--instant :deep(*::before),
 .arch--instant :deep(*::after) {
@@ -293,32 +325,18 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
   animation: none !important;
 }
 
-.arch__progress {
-  position: absolute;
-  right: 0;
-  top: 8px;
-  display: flex;
-  gap: 6px;
-}
-.arch__progress span {
-  width: 22px;
-  height: 3px;
-  background: #ffffff24;
-  transition: background 0.25s;
-}
-.arch__progress .is-done { background: #a78bfa70; }
-.arch__progress .is-current { background: #c4b5fd; }
 
 .arch__zone {
   position: absolute;
-  left: 0;
+  left: -24px;
   opacity: 0.7;
 }
 
 .arch__line {
   position: absolute;
-  left: 0;
-  right: 0;
+  /* по ширине схемы, а не контейнера — линия симметрична вместе со схемой */
+  left: -24px;
+  width: 776px;
   border-top: 1px dashed var(--v-color);
   box-shadow: 0 0 10px var(--v-color);
   opacity: 0.55;
@@ -379,7 +397,7 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
   opacity: 0;
   filter: blur(6px);
 }
-.arch__box.is-focus {
+.arch__box.is-focus:not(.hb) {
   box-shadow: 0 0 24px color-mix(in srgb, var(--hud-c, #a78bfa) 30%, transparent);
 }
 .arch__box.is-muted:not(.is-hidden) { opacity: 0.35; }
@@ -480,33 +498,31 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
 
 .arch__counter {
   position: absolute;
-  right: 0;
-  top: 341px;
+  /* под рядом пайплайнов, по его центру: деплои уходят из CI */
+  left: 355px;
+  transition: opacity 0.3s ease, left 0.75s var(--ease);
+  top: 446px;
+  translate: -50% 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 110px;
-  transition: opacity 0.3s ease;
+  align-items: baseline;
+  gap: 10px;
+  white-space: nowrap;
 }
+.arch--build .arch__counter {
+  /* под общей сборкой — по центру схемы */
+  left: 460px;
+}
+
 .arch__counter.is-hidden {
   opacity: 0;
 }
 .arch__counter b {
-  font-size: 3.2rem;
+  font-size: 2.4rem;
   line-height: 1;
   color: var(--v-color);
   text-shadow: 0 0 18px var(--v-color);
 }
 
-.arch__caption {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  text-align: center;
-  font-size: 1.15rem;
-  opacity: 0.85;
-}
 
 .arch-swap-enter-active,
 .arch-swap-leave-active {
@@ -521,13 +537,12 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
   transform: translateY(-6px);
 }
 
-.arch--risks .arch__caption { font-size: 1.05rem; }
 .risk-topic { margin-right: 12px; color: #c4b5fd; font: 0.8rem monospace; }
 .arch__box.risk-muted:not(.is-hidden) { opacity: 0.4; }
-.arch__box.risk-mock { border: 1px dashed var(--hud-c); background: #171327; }
-.arch__box.risk-focus { box-shadow: 0 0 24px color-mix(in srgb, var(--hud-c) 35%, transparent); }
-.arch__box.risk-pending { outline: 1px solid #fbbf2499; box-shadow: 0 0 18px #fbbf2420; }
-.arch__box.risk-ready { outline: 1px solid #34d399; box-shadow: 0 0 18px #34d39940; }
+.arch__box.risk-mock:not(.hb) { border: 1px dashed var(--hud-c); background: #171327; }
+.arch__box.risk-focus:not(.hb) { box-shadow: 0 0 24px color-mix(in srgb, var(--hud-c) 35%, transparent); }
+.arch__box.risk-pending:not(.hb) { outline: 1px solid #fbbf2499; box-shadow: 0 0 18px #fbbf2420; }
+.arch__box.risk-ready:not(.hb) { outline: 1px solid #34d399; box-shadow: 0 0 18px #34d39940; }
 .risk-pending small { color: #fde68a; opacity: 0.9; }
 .risk-ready small { color: #6ee7b7; opacity: 1; }
 .arch__box.risk-pipe-focus { background: #18172a; box-shadow: 0 0 16px color-mix(in srgb, var(--hud-c) 20%, transparent); }
