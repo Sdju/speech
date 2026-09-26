@@ -277,18 +277,30 @@ slideClass: cs-green
 </v-clicks>
 
 ---
+layout: full
+clicks: 3
+---
 
-# А есть ли что-то готовое?
+<ModularityOptions :step="$clicks" />
 
-<v-clicks>
-
-- Nuxt Modules
-- Nuxt Layers
-- FEOD
-- FDA
-- FSD
-
-</v-clicks>
+<!--
+Цель: показать готовые средства модульности в рамках одного приложения.
+Старт: вопрос «А есть ли что-то готовое?».
+Клик 1: Nuxt Modules — подключаем расширения и интеграции к приложению.
+Модули Nuxt настраивают приложение при запуске dev-сервера или сборке;
+это не независимо деплоящиеся микрофронтенды.
+Клик 2: Nuxt Layers — переиспользуем группы компонентов, страниц и конфигурации.
+Клик 3: FEOD, FDA, FSD — группа подходов к организации кода.
+Внутри разные правила; мини-схема иллюстрирует идею границ и общего кода,
+а не точную структуру каждой методологии. Названия сохранены для устного пояснения.
+Статус: реализация
+Источники:
+https://nuxt.com/docs/4.x/guide/modules
+https://nuxt.com/docs/4.x/getting-started/layers
+https://github.com/feod-architecture
+https://github.com/Klickbee/feature-driven-architecture
+https://feature-sliced.design/docs/get-started/overview
+-->
 
 ---
 layout: full
