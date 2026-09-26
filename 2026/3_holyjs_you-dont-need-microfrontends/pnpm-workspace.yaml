@@ -1,0 +1,2 @@
+patchedDependencies:
+  '@slidev/client@52.19.0': patches/@slidev__client@52.19.0.patch

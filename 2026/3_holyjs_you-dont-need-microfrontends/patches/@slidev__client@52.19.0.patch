@@ -1,0 +1,76 @@
+diff --git a/composables/useViewTransition.ts b/composables/useViewTransition.ts
+index d7eea924ee6644e3793b251d75b7e851cd3611c8..e66bcbc1ba57ca1deb23463db3822ea801c5fad2 100644
+--- a/composables/useViewTransition.ts
++++ b/composables/useViewTransition.ts
+@@ -39,7 +39,7 @@ export function useViewTransition() {
+     let changeRoute: () => void
+     const ready = new Promise<void>(resolve => (changeRoute = resolve))
+ 
+-    // Wait for `TransitionGroup` to become normal `div`
++    // Wait for the slides wrapper to drop its CSS transition
+     setTimeout(() => {
+       document.startViewTransition(() => {
+         changeRoute()
+diff --git a/internals/SlidesShow.vue b/internals/SlidesShow.vue
+index ef3a8dde83657452c95ece2b938f789cc69d644b..5782e3b9b3802bc3c06ca89465777ecf21418b6d 100644
+--- a/internals/SlidesShow.vue
++++ b/internals/SlidesShow.vue
+@@ -1,7 +1,7 @@
+ <script setup lang="ts">
+ import type { SlideRoute } from '@slidev/types'
+ import { recomputeAllPoppers } from 'floating-vue'
+-import { computed, shallowRef, TransitionGroup, watchEffect } from 'vue'
++import { computed, shallowRef, watchEffect } from 'vue'
+ import { GlobalBottom, GlobalTop } from '#slidev/global-layers'
+ import { createFixedClicks } from '../composables/useClicks'
+ import { useNav } from '../composables/useNav'
+@@ -55,6 +55,18 @@ usePreloadImages(currentSlideRoute, prevRoute, nextRoute, slides)
+ 
+ const hasViewTransition = useViewTransition()
+ 
++// The wrapper must stay the same component: switching it between a plain `div` and
++// `TransitionGroup` remounts every loaded slide, so the first click after a view transition
++// would re-create components in their post-click state and skip their animations.
++// During a view transition the browser animates the change, so slides enter/leave instantly.
++const transitionProps = computed(() => {
++  if (hmrSkipTransition.value || disableTransition.value || isPrintMode.value)
++    return {}
++  if (hasViewTransition.value)
++    return { css: false }
++  return currentTransition.value
++})
++
+ const DrawingLayer = shallowRef<any>()
+ if (__SLIDEV_FEATURE_DRAWINGS__ || __SLIDEV_FEATURE_DRAWINGS_PERSIST__)
+   import('./DrawingLayer.vue').then(v => DrawingLayer.value = v.default)
+@@ -65,6 +77,9 @@ const loadedRoutes = computed(() => isPrintMode.value
+ )
+ 
+ function onAfterLeave() {
++  // View transitions are handled by the browser, keep the state untouched
++  if (hasViewTransition.value)
++    return
+   // After transition, we disable it so HMR won't trigger it again
+   // We will turn it back on `nav.go` so the normal navigation would still work
+   hmrSkipTransition.value = true
+@@ -78,9 +93,8 @@ function onAfterLeave() {
+   <GlobalBottom />
+ 
+   <!-- Slides -->
+-  <component
+-    :is="(hasViewTransition && !isPrintMode && !hmrSkipTransition && !disableTransition) ? 'div' : TransitionGroup"
+-    v-bind="(hmrSkipTransition || disableTransition || isPrintMode) ? {} : currentTransition"
++  <TransitionGroup
++    v-bind="transitionProps"
+     id="slideshow"
+     tag="div"
+     :class="{
+@@ -97,7 +111,7 @@ function onAfterLeave() {
+         :render-context="renderContext"
+       />
+     </template>
+-  </component>
++  </TransitionGroup>
+ 
+   <DragControl v-if="activeDragElement" :data="activeDragElement" />
+ 

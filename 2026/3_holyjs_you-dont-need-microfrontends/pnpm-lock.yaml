@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@slidev/client@52.19.0':
+    hash: 0d40fd16789b46f6fc0b2c0414452d4c3a2572d41a949ef6d981021332883cca
+    path: patches/@slidev__client@52.19.0.patch
+
 importers:
 
   .:
@@ -33,6 +38,18 @@ importers:
       '@types/three':
         specifier: ^0.186.0
         version: 0.186.0
+
+  addon:
+    dependencies:
+      '@slidev/types':
+        specifier: 52.19.0
+        version: 52.19.0(@modelcontextprotocol/server@2.0.0)(@nuxt/kit@3.21.8)(@vue/compiler-sfc@3.5.40)(cac@7.0.0)(markdown-it-async@2.2.0)(rolldown@1.2.2)(srvx@0.12.5)(typescript@6.0.3)(vite@8.2.0(@types/node@22.19.21)(jiti@2.7.0)(yaml@2.9.0))
+
+  theme:
+    dependencies:
+      '@slidev/types':
+        specifier: 52.19.0
+        version: 52.19.0(@modelcontextprotocol/server@2.0.0)(@nuxt/kit@3.21.8)(@vue/compiler-sfc@3.5.40)(cac@7.0.0)(markdown-it-async@2.2.0)(rolldown@1.2.2)(srvx@0.12.5)(typescript@6.0.3)(vite@8.2.0(@types/node@22.19.21)(jiti@2.7.0)(yaml@2.9.0))
 
 packages:
 
@@ -3592,7 +3609,7 @@ snapshots:
       '@shikijs/markdown-it': 4.4.1(markdown-it-async@2.2.0)
       '@shikijs/twoslash': 4.4.1(typescript@6.0.3)
       '@shikijs/vitepress-twoslash': 4.4.1(@nuxt/kit@3.21.8)(typescript@6.0.3)
-      '@slidev/client': 52.19.0(@modelcontextprotocol/server@2.0.0)(@nuxt/kit@3.21.8)(@oxc-project/types@0.142.0)(@vitejs/devtools-kit@0.4.12(@modelcontextprotocol/server@2.0.0)(cac@7.0.0)(srvx@0.12.5)(vite@8.2.0(@types/node@22.19.21)(jiti@2.7.0)(yaml@2.9.0)))(@vue/compiler-sfc@3.5.40)(cac@7.0.0)(lightningcss@1.33.0)(markdown-it-async@2.2.0)(oxc-parser@0.131.0)(rolldown@1.2.2)(srvx@0.12.5)(vite@8.2.0(@types/node@22.19.21)(jiti@2.7.0)(yaml@2.9.0))
+      '@slidev/client': 52.19.0(patch_hash=0d40fd16789b46f6fc0b2c0414452d4c3a2572d41a949ef6d981021332883cca)(@modelcontextprotocol/server@2.0.0)(@nuxt/kit@3.21.8)(@oxc-project/types@0.142.0)(@vitejs/devtools-kit@0.4.12(@modelcontextprotocol/server@2.0.0)(cac@7.0.0)(srvx@0.12.5)(vite@8.2.0(@types/node@22.19.21)(jiti@2.7.0)(yaml@2.9.0)))(@vue/compiler-sfc@3.5.40)(cac@7.0.0)(lightningcss@1.33.0)(markdown-it-async@2.2.0)(oxc-parser@0.131.0)(rolldown@1.2.2)(srvx@0.12.5)(vite@8.2.0(@types/node@22.19.21)(jiti@2.7.0)(yaml@2.9.0))
       '@slidev/parser': 52.19.0(@modelcontextprotocol/server@2.0.0)(@nuxt/kit@3.21.8)(@vue/compiler-sfc@3.5.40)(cac@7.0.0)(markdown-it-async@2.2.0)(rolldown@1.2.2)(srvx@0.12.5)(typescript@6.0.3)(vite@8.2.0(@types/node@22.19.21)(jiti@2.7.0)(yaml@2.9.0))
       '@slidev/types': 52.19.0(@modelcontextprotocol/server@2.0.0)(@nuxt/kit@3.21.8)(@vue/compiler-sfc@3.5.40)(cac@7.0.0)(markdown-it-async@2.2.0)(rolldown@1.2.2)(srvx@0.12.5)(typescript@6.0.3)(vite@8.2.0(@types/node@22.19.21)(jiti@2.7.0)(yaml@2.9.0))
       '@unocss/extractor-mdc': 66.7.5
@@ -3700,7 +3717,7 @@ snapshots:
       - unloader
       - webpack
 
-  '@slidev/client@52.19.0(@modelcontextprotocol/server@2.0.0)(@nuxt/kit@3.21.8)(@oxc-project/types@0.142.0)(@vitejs/devtools-kit@0.4.12(@modelcontextprotocol/server@2.0.0)(cac@7.0.0)(srvx@0.12.5)(vite@8.2.0(@types/node@22.19.21)(jiti@2.7.0)(yaml@2.9.0)))(@vue/compiler-sfc@3.5.40)(cac@7.0.0)(lightningcss@1.33.0)(markdown-it-async@2.2.0)(oxc-parser@0.131.0)(rolldown@1.2.2)(srvx@0.12.5)(vite@8.2.0(@types/node@22.19.21)(jiti@2.7.0)(yaml@2.9.0))':
+  '@slidev/client@52.19.0(patch_hash=0d40fd16789b46f6fc0b2c0414452d4c3a2572d41a949ef6d981021332883cca)(@modelcontextprotocol/server@2.0.0)(@nuxt/kit@3.21.8)(@oxc-project/types@0.142.0)(@vitejs/devtools-kit@0.4.12(@modelcontextprotocol/server@2.0.0)(cac@7.0.0)(srvx@0.12.5)(vite@8.2.0(@types/node@22.19.21)(jiti@2.7.0)(yaml@2.9.0)))(@vue/compiler-sfc@3.5.40)(cac@7.0.0)(lightningcss@1.33.0)(markdown-it-async@2.2.0)(oxc-parser@0.131.0)(rolldown@1.2.2)(srvx@0.12.5)(vite@8.2.0(@types/node@22.19.21)(jiti@2.7.0)(yaml@2.9.0))':
     dependencies:
       '@antfu/utils': 9.3.0
       '@fix-webm-duration/fix': 1.0.1
