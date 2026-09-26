@@ -10,7 +10,7 @@ const checks = [70, 250, 460, 670].map((x, i) =>
 
 <template>
   <div class="risk-details">
-    <div class="risk-boundary" :class="{ 'is-hidden': kind !== 'boundaries' }">
+    <div class="risk-boundary hud-dashed" :class="{ 'is-hidden': kind !== 'boundaries' }">
       <span class="risk-boundary__question">?</span>
     </div>
     <div class="risk-boundary__label" :class="{ 'is-hidden': kind !== 'boundaries' }">Промокоды — Catalog или Cart?</div>
@@ -20,17 +20,17 @@ const checks = [70, 250, 460, 670].map((x, i) =>
         class="risk-arrow" :class="{ 'is-on': kind === 'ci' }"
         :style="{ '--animation-delay': kind === 'ci' ? `${0.2 + i * 0.12}s` : '0s' }" />
     </svg>
-    <div class="risk-ci" :class="{ 'is-hidden': kind !== 'ci' }">Интеграционный прогон и совместимость версий</div>
+    <div class="risk-ci hud-frame hud-sm hud-solid" :class="{ 'is-hidden': kind !== 'ci' }">Интеграционный прогон и совместимость версий</div>
 
-    <div class="risk-panel" :class="{ 'is-hidden': kind !== 'dev-all' }">
+    <div class="risk-panel hud-frame hud-sm hud-solid" :class="{ 'is-hidden': kind !== 'dev-all' }">
       <b>Shell + Catalog + Cart + Profile</b>
       <small>Все dev-серверы, API, конфиги и согласованные версии</small>
     </div>
-    <div class="risk-panel" :class="{ 'is-hidden': kind !== 'dev-isolated' }">
+    <div class="risk-panel hud-frame hud-sm hud-solid" :class="{ 'is-hidden': kind !== 'dev-isolated' }">
       <b>Catalog + тестовые замены окружения</b>
       <small>Shell, API и соседние микрофронтенды — изолировать или замокать</small>
     </div>
-    <div class="risk-panel risk-contract" :class="{ 'is-hidden': kind !== 'contracts' }">
+    <div class="risk-panel risk-contract hud-frame hud-sm hud-solid" :class="{ 'is-hidden': kind !== 'contracts' }">
       <div><small>Catalog отправляет</small><code>{ id: "42" }</code></div>
       <span class="risk-contract__mismatch">≠</span>
       <div><small>Cart ожидает</small><code>{ productId: "42" }</code></div>
@@ -44,7 +44,7 @@ const checks = [70, 250, 460, 670].map((x, i) =>
 .risk-details .is-hidden { opacity: 0; }
 .risk-boundary {
   position: absolute; left: 154px; top: 107px; width: 400px; height: 101px;
-  border: 1px dashed #fbbf24; border-radius: 14px;
+  --hud-c: #fbbf24;
   background: linear-gradient(90deg, #34d39908, #fbbf2414, #60a5fa08);
 }
 .risk-boundary__question {
@@ -64,13 +64,12 @@ const checks = [70, 250, 460, 670].map((x, i) =>
 .risk-arrow :deep(.arrow-head) { stroke: none; }
 .risk-ci {
   position: absolute; left: 190px; top: 421px; width: 540px;
-  padding: 4px 10px; border: 1px solid #fbbf2466; border-radius: 5px;
-  background: #221b19; color: #fde68a; text-align: center; font-size: 13px;
+  padding: 4px 10px; --hud-c: #fbbf24; color: #fde68a; text-align: center; font-size: 13px;
 }
 .risk-panel {
   position: absolute; left: 190px; top: 233px; width: 540px; height: 44px;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
-  border: 1px solid #a78bfa55; border-radius: 6px; background: #171327;
+  padding: 0; --hud-c: #a78bfa;
 }
 .risk-panel b { font-size: 15px; font-weight: 600; }
 .risk-panel small { font-size: 11px; color: #b5adc8; }

@@ -34,16 +34,16 @@ const layers = [
         <div class="option-preview" aria-hidden="true">
           <!-- Расширения подключаются к общему приложению. -->
           <div v-if="option.id === 'modules'" class="module-demo">
-            <div class="module-app"><LogosNuxtIcon /><span>Nuxt app</span></div>
+            <div class="module-app hud-frame hud-sm"><LogosNuxtIcon /><span>Nuxt app</span></div>
             <div class="module-ports">
-              <span v-for="(name, k) in ['i18n', 'UI', 'SEO']" :key="name" class="module-plug"
+              <span v-for="(name, k) in ['i18n', 'UI', 'SEO']" :key="name" class="module-plug hud-frame hud-sm"
                 :style="{ '--part': k }">{{ name }}</span>
             </div>
           </div>
 
           <!-- Один слой содержит сразу несколько видов исходников. -->
           <div v-else-if="option.id === 'layers'" class="layer-demo">
-            <div v-for="(layer, k) in layers" :key="layer.name" class="layer-sheet"
+            <div v-for="(layer, k) in layers" :key="layer.name" class="layer-sheet hud-frame hud-sm"
               :style="{ '--part': k }">
               <span>{{ layer.name }}</span><small>{{ layer.detail }}</small>
             </div>
@@ -52,13 +52,13 @@ const layers = [
           <!-- Обобщённый пример границ, не дерево конкретной методологии. -->
           <div v-else class="boundary-demo">
             <div class="boundary-row">
-              <div v-for="(name, k) in ['catalog', 'cart']" :key="name" class="boundary-module"
+              <div v-for="(name, k) in ['catalog', 'cart']" :key="name" class="boundary-module hud-dashed"
                 :style="{ '--part': k }">
                 <span class="boundary-name">{{ name }}<small>API</small></span>
                 <span class="boundary-inside"><i>ui</i><i>model</i></span>
               </div>
             </div>
-            <div class="boundary-shared">shared</div>
+            <div class="boundary-shared hud-frame hud-sm">shared</div>
           </div>
         </div>
 
@@ -140,9 +140,8 @@ const layers = [
   gap: 10px;
   width: 138px;
   height: 38px;
-  border-radius: 7px;
-  border: 1px solid #34d39966;
-  background: #34d39912;
+  padding: 0;
+  --hud-c: #34d399;
   font-size: 13px;
 }
 .module-app svg { font-size: 25px; }
@@ -173,9 +172,8 @@ const layers = [
   z-index: 1;
   padding: 4px 0;
   text-align: center;
-  border-radius: 5px;
-  border: 1px solid #34d39988;
-  background: #12251f;
+  --hud-c: #34d399;
+  background-color: #12251f;
   color: #a7f3d0;
 }
 
@@ -191,9 +189,9 @@ const layers = [
   align-items: center;
   justify-content: space-between;
   padding: 0 10px;
-  border-radius: 6px;
-  border: 1px solid #60a5fa88;
-  background: linear-gradient(120deg, #192e4a, #182235);
+  --hud-c: #60a5fa;
+  /* пластины перекрываются — подложка непрозрачная */
+  background-color: #182235;
   box-shadow: 0 5px 12px #0005;
   color: #bfdbfe;
 }
@@ -205,9 +203,7 @@ const layers = [
 .boundary-module {
   position: relative;
   padding: 7px;
-  border: 1px dashed #a78bfa99;
-  border-radius: 6px;
-  background: #a78bfa0c;
+  --hud-c: #a78bfa;
 }
 .boundary-module::after {
   content: '';
@@ -220,7 +216,7 @@ const layers = [
 .boundary-name small { padding: 1px 3px; border-radius: 3px; background: #a78bfa30; font-size: 8px; }
 .boundary-inside { display: flex; gap: 4px; margin-top: 7px; }
 .boundary-inside i { flex: 1; padding: 3px 0; text-align: center; font-style: normal; font-size: 9px; border-radius: 3px; background: #ffffff0c; color: #b7b0c9; }
-.boundary-shared { margin-top: 11px; padding: 3px; text-align: center; border: 1px solid #a78bfa66; border-radius: 4px; background: #a78bfa16; color: #c4b5fd; }
+.boundary-shared { margin-top: 11px; padding: 3px; text-align: center; --hud-c: #a78bfa; color: #c4b5fd; }
 
 .option.mf-on :is(.module-plug, .layer-sheet, .boundary-module) {
   animation: option-part 0.55s cubic-bezier(0.22, 1, 0.36, 1) calc(0.2s + var(--part) * 0.12s) backwards;

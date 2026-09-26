@@ -29,7 +29,7 @@ const costs = [
           <span class="choice-label"><i /> Задача</span>
           <h2>Какую проблему<br>я пытаюсь решить?</h2>
 
-          <div class="benefit-example" :aria-hidden="!exampleShown">
+          <div class="benefit-example hud-frame hud-sm" :aria-hidden="!exampleShown">
             <span class="example-label">Например</span>
             <div class="documentation">
               <svg class="document-icon" viewBox="0 0 48 56" fill="none" aria-hidden="true">
@@ -52,7 +52,7 @@ const costs = [
         <h2>Чем я готов<br>пожертвовать?</h2>
 
         <div class="costs">
-          <div v-for="(cost, i) in costs" :key="cost.icon" class="cost-row" :style="{ '--order': i }">
+          <div v-for="(cost, i) in costs" :key="cost.icon" class="cost-row hud-frame hud-sm" :style="{ '--order': i }">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <template v-if="cost.icon === 'build'">
                 <path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z M4 7.5l8 4.5 8-4.5M12 12v9M8 5.3l8 4.5v4.5" />
@@ -141,9 +141,7 @@ const costs = [
   flex-shrink: 0;
   margin-top: auto;
   padding: 15px 14px;
-  border-radius: 10px;
-  border: 1px solid #34d39926;
-  background: #34d39909;
+  --hud-c: #34d399;
   opacity: 0;
   transform: translateY(12px);
   transition: opacity 0.55s ease, transform 0.65s var(--choice-ease);
@@ -168,9 +166,7 @@ const costs = [
   align-items: center;
   gap: 12px;
   padding: 8px 10px;
-  border-radius: 7px;
-  border: 1px solid #fbbf241f;
-  background: #fbbf2408;
+  --hud-c: #fbbf24;
   font-size: 15px;
   line-height: 1.3;
   color: #fff3d4;

@@ -62,9 +62,9 @@ const pipelines = [
 
           <!-- модуль отделяется от общего блока -->
           <span v-else-if="n.id === 'free'" class="split">
-            <i style="--c: #34d399" />
-            <i style="--c: #60a5fa" />
-            <i class="split__out" style="--c: #f472b6" />
+            <i class="hud-frame hud-sm" style="--hud-c: #34d399" />
+            <i class="hud-frame hud-sm" style="--hud-c: #60a5fa" />
+            <i class="split__out hud-frame hud-sm" style="--hud-c: #f472b6" />
           </span>
 
           <!-- разные фреймворки -->
@@ -191,25 +191,18 @@ const pipelines = [
   align-items: center;
   height: 44px;
 
+  gap: 4px;
+
   & i {
-    width: 32%;
+    width: 31%;
     height: 100%;
-    background: color-mix(in oklab, var(--c) 35%, #0b0b12);
-    border: 1.5px solid var(--c);
-  }
-
-  & i:first-child {
-    border-radius: 8px 0 0 8px;
-  }
-
-  & i:nth-child(2) {
-    border-left: none;
+    padding: 0;
+    background-color: color-mix(in oklab, var(--hud-c) 26%, #0b0b12);
   }
 }
 
 /* последний модуль отходит от общего блока */
 .split__out {
-  border-radius: 8px;
   transition: translate 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.4s;
 }
 

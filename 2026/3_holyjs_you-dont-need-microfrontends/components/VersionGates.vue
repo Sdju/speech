@@ -141,7 +141,7 @@ const captions = [
         <span class="lane__line" />
 
         <!-- шлюз: вспыхивает, когда до него доезжает версия текущего шага -->
-        <span class="gate" :style="{ left: `${GATE_X}px` }">
+        <span class="gate hud-frame hud-sm hud-solid" :style="{ left: `${GATE_X}px` }">
           <code>{{ l.range }}</code>
           <small>{{ l.rule }}</small>
           <template v-for="(ver, i) in l.versions" :key="ver.v">
@@ -155,7 +155,7 @@ const captions = [
         </span>
 
         <!-- версия в проде -->
-        <span class="prod" :style="{ left: `${SHOP_X}px` }">
+        <span class="prod hud-frame hud-sm hud-solid" :style="{ left: `${SHOP_X}px` }">
           <b
             v-for="p in prodSeq(l)"
             :key="p.v"
@@ -295,9 +295,7 @@ const captions = [
   align-items: center;
   gap: 2px;
   padding: 6px 12px;
-  border-radius: 8px;
-  border: 1.5px solid var(--c);
-  background: #0e0e18;
+  --hud-c: var(--c);
   white-space: nowrap;
 
   & code {
@@ -321,9 +319,7 @@ const captions = [
   translate: -50% -50%;
   min-width: 86px;
   padding: 6px 14px;
-  border-radius: 999px;
-  border: 1.5px solid #a78bfa;
-  background: color-mix(in oklab, #a78bfa 22%, #0b0b12);
+  --hud-c: #a78bfa;
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
@@ -434,7 +430,6 @@ const captions = [
 .gate__flash {
   position: absolute;
   inset: -2px;
-  border-radius: 9px;
   opacity: 0;
   pointer-events: none;
   animation: flash 0.9s ease both;

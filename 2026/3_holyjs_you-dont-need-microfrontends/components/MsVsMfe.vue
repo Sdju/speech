@@ -60,14 +60,14 @@ const versions = computed(() => s.value === 4)
       </header>
 
       <div class="srv">
-        <div class="srv__client">
+        <div class="srv__client hud-frame hud-sm">
           <span class="srv__icon">⌂</span> клиенты
           <span v-if="versions" class="srv__clients">
             <span class="srv__chip">web → v2</span>
             <span class="srv__chip srv__chip--old">ios → v1</span>
           </span>
         </div>
-        <div class="srv__lb">
+        <div class="srv__lb hud-frame hud-sm">
           балансировщик
           <span class="srv__metric" :class="{ 'srv__metric--good': s === 1 }">p95 {{ latency }}</span>
         </div>
@@ -82,7 +82,7 @@ const versions = computed(() => s.value === 4)
               <div
                 v-for="i in (svc.id === 'catalog' ? 4 : 1)"
                 :key="i"
-                class="srv__box"
+                class="srv__box hud-frame hud-sm hud-solid"
                 :class="[
                   `srv__box--${serviceState(svc.id)}`,
                   { 'srv__box--ghost': svc.id === 'catalog' && i > replicas },
@@ -314,8 +314,7 @@ const versions = computed(() => s.value === 4)
   align-items: center;
   gap: 8px;
   padding: 6px 10px;
-  border-radius: 6px;
-  background: rgb(255 255 255 / 0.05);
+  --hud-c: rgb(255 255 255 / 0.4);
   font-size: 12px;
   color: rgb(255 255 255 / 0.7);
 }
@@ -387,17 +386,14 @@ const versions = computed(() => s.value === 4)
   justify-content: center;
   gap: 4px;
   padding: 8px;
-  border-radius: 6px;
-  border: 1px solid color-mix(in oklab, var(--c) 60%, transparent);
-  background: linear-gradient(160deg, color-mix(in oklab, var(--c) 22%, #0b0b12), #0b0b12 70%);
-  transition: flex-grow 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease, padding 0.7s, border-color 0.4s, background 0.4s;
+  --hud-c: var(--c);
+  transition: flex-grow 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease, padding 0.7s;
 }
 
 /* копии Catalog: схлопнуты, на шаге масштабирования раскрываются в стопку */
 .srv__box--ghost {
   flex-grow: 0.0001;
   padding-block: 0;
-  border-width: 0;
   opacity: 0;
 }
 
@@ -439,15 +435,14 @@ const versions = computed(() => s.value === 4)
 }
 
 .srv__box--down {
-  border-color: #ef4444;
-  background: linear-gradient(160deg, rgb(239 68 68 / 0.25), #0b0b12 70%);
+  --hud-c: #ef4444;
 
   & .srv__status { color: #fca5a5; }
   & .srv__leds i { background: #ef4444; }
 }
 
 .srv__box--busy {
-  border-color: #fbbf24;
+  --hud-c: #fbbf24;
 
   & .srv__status { color: #fcd34d; }
   & .srv__leds i { background: #fbbf24; animation: blink 0.4s steps(2) infinite; }

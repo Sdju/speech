@@ -87,9 +87,9 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
       <div
         v-for="(t, i) in teams"
         :key="t.id"
-        class="team"
+        class="team hud-frame hud-solid"
         :class="{ 'is-published': s >= 2 }"
-        :style="{ '--c': t.color, 'top': `${t.y}px`, 'width': `${TEAM_W}px`, '--pub': d(2, i * 0.35) }"
+        :style="{ '--c': t.color, '--hud-c': t.color, 'top': `${t.y}px`, 'width': `${TEAM_W}px`, '--pub': d(2, i * 0.35) }"
       >
         <b>{{ t.id }}</b>
         <small>свой репозиторий</small>
@@ -116,10 +116,12 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
         <div
           v-for="(t, i) in teams"
           :key="t.id"
-          class="reg-row"
+          class="reg-row hud-dashed"
           :class="{ 'is-on': s >= 2, 'has-history': s >= 3 }"
-          :style="{ '--c': t.color, 'top': `${t.y}px`, '--pub': d(2, 0.9 + i * 0.35) }"
+          :style="{ '--c': t.color, '--hud-c': 'rgb(255 255 255 / 0.5)', 'top': `${t.y}px`, '--pub': d(2, 0.9 + i * 0.35) }"
         >
+          <!-- пустое место под пакет — пунктир; опубликованный пакет — полноценный блок -->
+          <span class="reg-row__fill hud-frame hud-sm" :style="{ '--hud-c': t.color }" />
           <code>@shop/{{ t.id }}</code>
           <span class="reg-row__v">
             <i class="old">{{ t.old }}</i>
@@ -148,7 +150,7 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
       >
         <span class="box-head">Shop в проде</span>
         <span class="prod__parts">
-          <i v-for="t in teams" :key="t.id" :style="{ '--c': t.color }">{{ t.id }} {{ t.v }}</i>
+          <i v-for="t in teams" :key="t.id" class="hud-frame hud-sm" :style="{ '--c': t.color, '--hud-c': t.color }">{{ t.id }} {{ t.v }}</i>
         </span>
       </div>
     </div>
@@ -257,13 +259,10 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
   justify-content: center;
   gap: 2px;
   padding: 0 16px;
-  border-radius: 12px;
-  border: 1.5px solid var(--c);
-  background: color-mix(in oklab, var(--c) 14%, rgb(10 10 20 / 0.82));
-  backdrop-filter: blur(8px);
 
   & b {
     font-size: 19px;
+    color: color-mix(in oklab, var(--c) 75%, white);
   }
 
   & small {
@@ -339,9 +338,11 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
   justify-content: space-between;
   height: 40px;
   padding: 0 10px;
-  border-radius: 8px;
-  border: 1px dashed rgb(255 255 255 / 0.15);
-  transition: border-color 0.4s ease var(--pub), background 0.4s ease var(--pub);
+  transition: border-color 0.4s ease var(--pub);
+
+  & > :not(.reg-row__fill) {
+    position: relative;
+  }
 
   & code {
     font-family: 'Fira Code', monospace;
@@ -351,14 +352,24 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
   }
 
   &.is-on {
-    border-style: solid;
-    border-color: color-mix(in oklab, var(--c) 60%, transparent);
-    background: color-mix(in oklab, var(--c) 10%, transparent);
+    border-color: transparent;
 
     & code {
       color: #fff;
     }
   }
+}
+
+.reg-row__fill {
+  position: absolute;
+  inset: -1px;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease var(--pub);
+}
+
+.reg-row.is-on .reg-row__fill {
+  opacity: 1;
 }
 
 .reg-row__v {
@@ -453,10 +464,8 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
     font-style: normal;
     font-size: 11.5px;
     font-weight: 600;
-    padding: 1px 8px;
-    border-radius: 5px;
-    background: color-mix(in oklab, var(--c) 30%, #0b0b12);
-    border: 1px solid color-mix(in oklab, var(--c) 70%, transparent);
+    padding: 2px 8px;
+    color: color-mix(in oklab, var(--c) 70%, white);
   }
 }
 

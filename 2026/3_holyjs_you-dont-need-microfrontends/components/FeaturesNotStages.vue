@@ -31,7 +31,7 @@ const STAIR = features.map((_, i) => ({ x: 100 + i * 192, y: 310 - i * 76 }))
 const COL_X = 200
 const COL_W = 190
 const ROW = features.map((_, i) => ({ x: COL_X + i * COL_W, y: 76 }))
-const BLOCK_W = 186
+const BLOCK_W = 176
 
 const projects = [
   { name: 'Монолит с модулями', has: [1, 0, 0, 0], at: 2 },
@@ -115,9 +115,10 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
       <div
         v-for="(f, i) in features"
         :key="f.name"
-        class="feat"
+        class="feat hud-frame hud-solid"
         :style="{
           '--c': f.color,
+          '--hud-c': f.color,
           '--i': i,
           'width': `${BLOCK_W}px`,
           'height': `${s >= 1 ? ROW_H : STAIR_H}px`,
@@ -253,10 +254,6 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
   gap: 4px;
   overflow: hidden;
   padding: 10px 12px 12px;
-  border-radius: 12px;
-  border: 1.5px solid var(--c);
-  background: color-mix(in oklab, var(--c) 16%, rgb(10 10 20 / 0.82));
-  backdrop-filter: blur(8px);
   animation: appear 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
   /* перестройка из лестницы в ряд — с небольшой очередью, ступени «разлетаются» */
   transition:
@@ -269,6 +266,7 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
     font-size: 17px;
     font-weight: 700;
     white-space: nowrap;
+    color: color-mix(in oklab, var(--c) 75%, white);
   }
 }
 

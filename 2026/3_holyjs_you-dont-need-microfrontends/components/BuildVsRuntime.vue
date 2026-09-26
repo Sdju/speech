@@ -75,13 +75,13 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
         </span>
 
         <!-- сборщик -->
-        <div class="bundler" :style="{ transitionDelay: d(1, 0.7) }">
+        <div class="bundler hud-frame hud-solid" :style="{ transitionDelay: d(1, 0.7) }">
           <span class="bundler__text">сборка Shop</span>
           <span class="bundler__warn">нужна пересборка Shop</span>
         </div>
 
         <!-- бандл: модули вшиты внутрь -->
-        <div class="bundle" :style="{ transitionDelay: d(1, 1.25) }">
+        <div class="bundle hud-frame hud-sm hud-solid" :style="{ transitionDelay: d(1, 1.25) }">
           <span class="bundle__name">shop.a91f.js</span>
           <span class="bundle__stripes">
             <i v-for="m in modules" :key="m.id" :style="{ background: m.color }" />
@@ -95,9 +95,9 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
             <span
               v-for="m in modules"
               :key="m.id"
-              class="block is-filled"
+              class="block hud-frame hud-sm"
               :class="{ 'is-stale': m.id === 'cart' && s >= 3 }"
-              :style="{ '--c': m.color }"
+              :style="{ '--c': m.color, '--hud-c': m.color }"
             >{{ m.id }} {{ leftV(m) }}</span>
           </span>
         </div>
@@ -125,7 +125,7 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
         <span
           v-for="(m, i) in modules"
           :key="m.id"
-          class="slot"
+          class="slot hud-dashed"
           :class="{ 'is-flash': m.id === 'cart' && s >= 3 }"
           :style="{
             'left': `${X[i]}px`,
@@ -134,6 +134,8 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
             '--flash': `${s === 3 ? 1.7 : 0}s`,
           }"
         >
+          <!-- пока модуль не доехал — пустой пунктир, доехал — полноценный блок -->
+          <span class="slot__fill hud-frame hud-sm" :style="{ '--hud-c': m.color }" />
           <span :key="rightV(m)" class="slot__v">{{ m.id }} {{ rightV(m) }}</span>
         </span>
 
@@ -307,12 +309,10 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
   height: 40px;
   display: grid;
   place-items: center;
-  border-radius: 10px;
-  border: 1.5px solid rgb(255 255 255 / 0.4);
-  background: rgb(255 255 255 / 0.06);
+  padding: 0;
+  --hud-c: #c4b5fd;
   font-size: 15px;
   font-weight: 600;
-  transition: border-color 0.5s ease 0.6s, background 0.5s ease 0.6s;
 }
 
 /* надписи сменяют друг друга в одной ячейке */
@@ -332,8 +332,7 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
 }
 
 .is-update .bundler {
-  border-color: #fbbf24;
-  background: rgb(251 191 36 / 0.12);
+  --hud-c: #fbbf24;
 }
 
 .is-update .bundler__warn {
@@ -351,9 +350,7 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
   justify-content: center;
   gap: 5px;
   padding: 0 12px;
-  border-radius: 8px;
-  border: 1px solid rgb(255 255 255 / 0.2);
-  background: rgb(10 10 20 / 0.7);
+  --hud-c: rgb(255 255 255 / 0.55);
 }
 
 .bundle__name {
@@ -423,11 +420,10 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
   height: 28px;
   display: grid;
   place-items: center;
-  border-radius: 6px;
+  padding: 0;
   font-size: 12px;
   font-weight: 600;
-  border: 1px solid var(--c);
-  background: color-mix(in oklab, var(--c) 28%, #0b0b12);
+  color: color-mix(in oklab, var(--c) 70%, white);
   transition: opacity 0.5s ease 0.6s;
 }
 
@@ -459,10 +455,21 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
   translate: -50% 0;
   display: grid;
   place-items: center;
-  border-radius: 8px;
-  border: 1.5px dashed rgb(255 255 255 / 0.25);
+  --hud-c: rgb(255 255 255 / 0.45);
   font-size: 12px;
   font-weight: 600;
+}
+
+.slot__fill {
+  position: absolute;
+  inset: -1px;
+  padding: 0;
+  opacity: 0;
+}
+
+.slot__v {
+  position: relative;
+  color: color-mix(in oklab, var(--c) 70%, white);
 }
 
 .panel.is-on > .slot {
@@ -473,8 +480,8 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
   opacity: 0;
 }
 
-.panel.is-on .slot {
-  animation: fill 0.5s ease var(--fill) forwards;
+.panel.is-on .slot__fill {
+  animation: fade-in 0.5s ease var(--fill) forwards;
 }
 
 .panel.is-on .slot__v {
@@ -483,9 +490,11 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
 
 .slot.is-flash {
   animation: flash 1.2s ease var(--flash) both !important;
-  border-style: solid;
-  border-color: var(--c);
-  background: color-mix(in oklab, var(--c) 28%, #0b0b12);
+
+  & .slot__fill {
+    opacity: 1;
+    animation: none !important;
+  }
 
   /* новая версия появляется, когда пакет доехал */
   & .slot__v {
@@ -561,14 +570,6 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
   15% { opacity: 1; }
   85% { opacity: 1; }
   100% { opacity: 0; transform: translateY(-96px); }
-}
-
-@keyframes fill {
-  to {
-    border-style: solid;
-    border-color: var(--c);
-    background: color-mix(in oklab, var(--c) 28%, #0b0b12);
-  }
 }
 
 @keyframes fade-in {

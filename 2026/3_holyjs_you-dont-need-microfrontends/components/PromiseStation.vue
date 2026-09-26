@@ -107,7 +107,7 @@ const lines = computed(() => {
         :class="`ps__item--${r.state}`"
         :style="{ '--c': r.color, top: `${i * ROW}px` }"
       >
-        <span class="ps__num">{{ i + 1 }}</span>
+        <span class="ps__num hud-frame hud-sm">{{ i + 1 }}</span>
         <span class="ps__body">
           <XSlide v-if="i === lead" :name="`promise-${i + 1}`" as="span" class="ps__lead">
             <span class="ps__text">{{ r.text }}</span>
@@ -173,9 +173,8 @@ const lines = computed(() => {
   flex: none;
   width: 34px;
   height: 34px;
-  border-radius: 8px;
-  border: 1px solid color-mix(in oklab, var(--c) 70%, transparent);
-  background: color-mix(in oklab, var(--c) 18%, transparent);
+  padding: 0;
+  --hud-c: var(--c);
   font-weight: 700;
   font-size: 16px;
   transition: all 0.6s ease;
@@ -232,8 +231,7 @@ const lines = computed(() => {
   }
   & .ps__solved { max-height: 20px; opacity: 1; }
   & .ps__num {
-    border-color: rgb(52 211 153 / 0.6);
-    background: rgb(52 211 153 / 0.15);
+    --hud-c: #34d399;
     color: #6ee7b7;
   }
 }
