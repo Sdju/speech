@@ -1,66 +1,199 @@
 ---
-layout: center
+layout: full
 ---
 
-<div class="sui">
-  <div class="sui-bar">
-    <span class="sui-bar__title">Экипаж</span>
-    <span class="sui-bar__meta">Бортинженер борта 01</span>
-    <span class="sui-bar__spacer" />
-    <span class="sui-bar__meta">Связь установлена</span>
-    <MissionClock class="sui-bar__meta" />
+<div class="about">
+  <div class="about__photo glass">
+    <img src="/img/photo.png" alt="" />
+    <div class="about__name">Денис Чернов</div>
   </div>
 
-  <div class="grid grid-cols-12 grid-rows-[148px_148px_104px] gap-3 w-full">
-    <div class="bento-4_3 hud-card !p-0 sui-photo">
-      <img class="absolute inset-0 size-full object-cover" src="/img/photo.png" />
-      <div class="sui-reticle" />
-      <div class="sui-scale" />
-      <div class="absolute inset-x-0 bottom-0 px-4 pb-3 pt-10 bg-gradient-to-t from-black/90 to-transparent">
-        <div class="sui-caption">ID DC-1697</div>
-        <div class="text-3xl font-bold text-white leading-none">Денис Чернов</div>
-      </div>
+  <div class="about__role glass">
+    <div class="about__big">Разработчик в платформенной команде</div>
+    <div class="about__years"><b>10+</b> лет в разработке</div>
+  </div>
+
+  <div class="about__committee glass">
+    <div class="about__label">Программный комитет</div>
+    <div class="about__badges">
+      <span class="hud-frame hud-sm">HolyJS</span>
+      <span class="hud-frame hud-sm">Стачка</span>
     </div>
-    <div class="bento-5_1 hud-card flex flex-col justify-center text-left">
-      <div class="sui-caption">роль</div>
-      <div class="text-xl font-bold text-white leading-tight">Разработчик в платформенной команде</div>
+  </div>
+
+  <div class="about__qr glass">
+    <!-- белый код на весь блок, без плашки; канал подписан в карточке @zede1697 ниже -->
+    <QrCode url="https://t.me/zede1697" class="about__qr-code" />
+  </div>
+
+  <div class="about__link glass">
+    <span class="about__icon hud-frame hud-sm" style="--hud-c: #60a5fa"><FileIconsTelegram /></span>
+    <div>
+      <b>@zede1697</b>
+      <small>личный канал</small>
     </div>
-    <div class="bento-3_2 hud-card flex flex-col items-center justify-center gap-2">
-      <QrCode url="https://t.me/zede1697" class="size-150 sui-qr" />
-      <div class="text-center leading-tight">
-        <div class="sui-caption !mb-0">канал связи</div>
-        <div class="text-xs font-mono opacity-60">t.me/zede1697</div>
-      </div>
-    </div>
-    <div class="bento-5_1 hud-card grid grid-cols-[1fr_auto] gap-x-8 items-center text-left">
-      <div>
-        <div class="sui-caption">налёт</div>
-        <div class="text-3xl font-bold text-white leading-none">10+</div>
-        <div class="text-xs opacity-60 mt-1 whitespace-nowrap">лет в разработке</div>
-        <div class="sui-gauge"><span v-for="i in 12" :key="i" :class="{ on: i <= 10 }" /></div>
-      </div>
-      <div class="flex flex-col gap-1.5">
-        <div class="sui-caption !mb-0 whitespace-nowrap">в программном комитете</div>
-        <div class="sui-badge">HolyJS</div>
-        <div class="sui-badge">Стачка</div>
-      </div>
-    </div>
-    <div class="bento-4_1 hud-card flex items-center gap-4 text-left">
-      <div class="sui-icon"><FileIconsTelegram /></div>
-      <div>
-        <div class="text-xl font-bold text-white leading-tight">@zede1697</div>
-        <div class="sui-caption !mb-0">личный канал</div>
-      </div>
-    </div>
-    <div class="bento-4_1 hud-card flex items-center gap-4 text-left">
-      <div class="sui-icon"><LogosVue /></div>
-      <div>
-        <div class="text-xl font-bold text-white leading-tight">@vueist</div>
-        <div class="sui-caption !mb-0">евангелист Vue</div>
-      </div>
+  </div>
+
+  <div class="about__link glass">
+    <span class="about__icon hud-frame hud-sm" style="--hud-c: #34d399"><LogosVue /></span>
+    <div>
+      <b>@vueist</b>
+      <small>евангелист Vue</small>
     </div>
   </div>
 </div>
+
+<style>
+.about {
+  position: absolute;
+  inset: 44px 50px;
+  display: grid;
+  grid-template-columns: 4fr 5fr 3fr;
+  grid-template-rows: 150px 150px 104px;
+  gap: 12px;
+  align-content: center;
+  color: #fff;
+  text-align: left;
+}
+
+.about .glass {
+  position: relative;
+  overflow: hidden;
+  padding: 18px 22px;
+}
+
+.about__photo {
+  grid-row: 1 / 4;
+  padding: 0 !important;
+
+  & img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.85), transparent 45%);
+  }
+}
+
+.about__name {
+  position: absolute;
+  z-index: 1;
+  left: 20px;
+  bottom: 16px;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.about__role {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.about__big {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.about__years {
+  font-size: 15px;
+  color: rgb(255 255 255 / 0.7);
+
+  & b {
+    font-size: 22px;
+    color: #c4b5fd;
+  }
+}
+
+.about__committee {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.about__label {
+  font-size: 15px;
+  color: rgb(255 255 255 / 0.7);
+}
+
+.about__badges {
+  display: flex;
+  gap: 10px;
+
+  & span {
+    padding: 6px 16px;
+    font-size: 17px;
+    font-weight: 600;
+    --hud-c: #a78bfa;
+  }
+}
+
+.about__qr {
+  grid-column: 3;
+  grid-row: 1 / 3;
+  display: grid;
+  place-items: center;
+  padding: 16px !important;
+}
+
+.about__qr-code {
+  width: 100%;
+  aspect-ratio: 1;
+
+  & :deep(svg) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.about__link {
+  grid-row: 3;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  & b {
+    display: block;
+    font-size: 20px;
+    line-height: 1.2;
+  }
+
+  & small {
+    font-size: 13px;
+    color: rgb(255 255 255 / 0.65);
+  }
+}
+
+/* две ссылки делят нижний ряд справа от фото поровну */
+.about__link:nth-last-child(2) {
+  grid-column: 2;
+}
+
+.about__link:last-child {
+  grid-column: 3;
+}
+
+.about__icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  font-size: 26px;
+}
+</style>
 
 <!--
 Цель: познакомиться
