@@ -218,6 +218,8 @@ function blueprintFill(line: THREE.Color, scan: THREE.Plane[]) {
       uLine: { value: line },
       uFill: { value: BP_FILL.clone().lerp(line, 0.18) },
       uOpacity: { value: 1 },
+      // подсветка модуля цветом команды (0..1, со вспышкой в момент включения)
+      uGlow: { value: 0 },
       // фронт скана в мире: направление и положение — светящаяся полоса на поверхности
       uScanDir: { value: new THREE.Vector3(1, 0, 0) },
       uScanAt: { value: 0 },
@@ -241,6 +243,7 @@ function blueprintFill(line: THREE.Color, scan: THREE.Plane[]) {
       uniform vec3 uLine;
       uniform vec3 uFill;
       uniform float uOpacity;
+      uniform float uGlow;
       uniform vec3 uScanDir;
       uniform float uScanAt;
       varying vec3 vNormal;
@@ -253,7 +256,9 @@ function blueprintFill(line: THREE.Color, scan: THREE.Plane[]) {
         float rim = pow(1.0 - facing, 3.0);
         float scan = exp(-max(0.0, uScanAt - dot(vWorld, uScanDir)) / 0.012);
         vec3 col = mix(uFill, uLine, rim * 0.75) + vec3(0.75, 0.9, 1.0) * scan;
-        gl_FragColor = vec4(col, uOpacity * (0.3 + 0.5 * rim) + scan * 0.6);
+        // подсвеченный модуль залит своим цветом, силуэт ярче
+        col = mix(col, uLine * (0.55 + 0.6 * rim), clamp(uGlow, 0.0, 1.0) * 0.6) + uLine * max(0.0, uGlow - 1.0);
+        gl_FragColor = vec4(col, uOpacity * (0.3 + 0.5 * rim) + scan * 0.6 + uGlow * 0.25);
       }
     `,
     transparent: true,
@@ -317,7 +322,7 @@ interface BlueprintParts {
 }
 
 /** Добавить к деталям узла чертёжные слои. Слои — дочерние объекты мешей: едут вместе с модулем. */
-function addBlueprint(root: THREE.Object3D, color: THREE.Color, scan: THREE.Plane[], out: BlueprintParts) {
+function addBlueprint(root: THREE.Object3D, color: THREE.Color, scan: THREE.Plane[], out: BlueprintParts): THREE.ShaderMaterial {
   const fill = blueprintFill(color, scan)
   const line = new THREE.LineBasicMaterial({ color, transparent: true, depthWrite: false, clippingPlanes: scan, toneMapped: false })
   const hidden = new THREE.LineDashedMaterial({
@@ -352,6 +357,7 @@ function addBlueprint(root: THREE.Object3D, color: THREE.Color, scan: THREE.Plan
       out.objects.push(o)
     }
   }
+  return fill
 }
 
 // ── Module Federation: двигатель внутри хаба ────────────────────────
@@ -415,6 +421,10 @@ interface ModuleRuntime {
   duration: number
   thrusters: THREE.Sprite[]
   phase: number
+  /** стыковка «с силой»: разгон в порт и отскок */
+  snap: boolean
+  /** заливка модуля на чертеже — для подсветки */
+  fill: THREE.ShaderMaterial | null
 }
 
 export class StationScene {
@@ -444,6 +454,9 @@ export class StationScene {
   private realMaterials = new Set<THREE.Material>()
   private grid: THREE.LineSegments | null = null
   private sprites: THREE.SpriteMaterial[] = []
+
+  // подсветка модулей на чертеже: включается по очереди, гаснет разом
+  private glow = { on: false, start: -1e9 }
 
   // Module Federation: двигатель внутри хаба и его видимость
   private mf: Fade = { from: 0, to: 0, start: -1e9, duration: 1 }
@@ -496,6 +509,8 @@ export class StationScene {
         duration: 1,
         thrusters,
         phase: rnd() * 10,
+        snap: false,
+        fill: null,
       }
       this.apply(rt, rt.from)
       this.modules.set(m.id, rt)
@@ -653,7 +668,7 @@ export class StationScene {
       const nav = new THREE.MeshBasicMaterial({ color, toneMapped: false })
       dress(node, name => name === 'accent' ? accent : name === 'navlight' ? nav : base(name))
       // контуры модуля — в цвет его команды, чуть светлее
-      addBlueprint(node, color.clone().lerp(new THREE.Color(1, 1, 1), 0.25), draft, this.blueprintParts)
+      rt.fill = addBlueprint(node, color.clone().lerp(new THREE.Color(1, 1, 1), 0.25), draft, this.blueprintParts)
       node.removeFromParent()
       node.position.set(0, 0, 0)
       node.scale.setScalar(H)
@@ -748,7 +763,8 @@ export class StationScene {
     rt.pivot.scale.setScalar(p.scale)
   }
 
-  setState(state: StationState, now: number, instant = false) {
+  /** Возвращает момент удара (performance.now), если модули встают в порты «с силой» */
+  setState(state: StationState, now: number, instant = false): number | null {
     // станцию сейчас никто не видит — анимировать незачем, сразу в новое состояние
     const delay = Math.max(0, state.delay || 0) * 1000
     // с паузой переход должен быть виден: станция к этому моменту уже в кадре
@@ -761,6 +777,9 @@ export class StationScene {
       ? cur
       : { from: instant ? to : fadeAt(cur, now), to, start: instant ? -1e9 : now + delay, duration: state.duration * 0.6 }
     this.mf = fade(this.mf, state.mf ? 1 : 0)
+    if (state.glow !== this.glow.on)
+      this.glow = { on: state.glow, start: instant ? -1e9 : now + delay }
+    let hit: number | null = null
     for (const rt of this.modules.values()) {
       const mode: Mode = state.hidden.includes(rt.def.id) ? 'hidden' : state.detached.includes(rt.def.id) ? 'detached' : 'docked'
       if (mode === rt.mode)
@@ -769,8 +788,33 @@ export class StationScene {
       rt.mode = mode
       rt.start = instant ? -1e9 : now + delay
       rt.duration = state.duration * 1000 * (mode === 'hidden' || rt.from.scale < 0.5 ? 1.4 : 1)
+      rt.snap = state.snap && mode === 'docked' && !instant
+      if (rt.snap)
+        hit = Math.max(hit ?? 0, rt.start + rt.duration)
       if (instant)
         this.apply(rt, this.target(rt.def, rt.length, mode))
+    }
+    return hit
+  }
+
+  /** Подсветка модулей: по очереди, у каждого вспышка при включении и ровное свечение после */
+  private updateGlow(now: number) {
+    let i = 0
+    for (const rt of this.modules.values()) {
+      if (!rt.fill)
+        continue
+      const t = (now - this.glow.start) / 1000
+      let g: number
+      if (this.glow.on) {
+        const k = t - i * 0.45
+        const rise = THREE.MathUtils.smoothstep(k, 0, 0.35)
+        g = rise * 0.85 + (k > 0 ? Math.exp(-k / 0.3) * 0.9 * rise : 0)
+      }
+      else {
+        g = this.glow.start < 0 ? 0 : 0.85 * (1 - THREE.MathUtils.smoothstep(t, 0, 0.5))
+      }
+      rt.fill.uniforms.uGlow.value = g
+      i++
     }
   }
 
@@ -792,12 +836,16 @@ export class StationScene {
     for (const rt of this.modules.values()) {
       const target = this.target(rt.def, rt.length, rt.mode)
       const raw = Math.min(1, Math.max(0, (now - rt.start) / rt.duration))
-      const e = ease(raw)
+      // с силой: разгон до самого порта (без торможения), потом короткий отскок от удара
+      const e = rt.snap ? raw ** 2.4 : ease(raw)
       const pose: Pose = {
         pos: rt.from.pos.clone().lerp(target.pos, e),
         quat: rt.from.quat.clone().slerp(target.quat, e),
         scale: THREE.MathUtils.lerp(rt.from.scale, target.scale, e),
       }
+      const after = (now - rt.start - rt.duration) / 1000
+      if (rt.snap && after > 0 && after < 0.8)
+        pose.pos.addScaledVector(PORT_DIR[rt.def.port], Math.sin(after * 38) * Math.exp(-after / 0.11) * H * 0.35)
       // отстыкованный модуль дрейфует
       if (rt.mode === 'detached') {
         const drift = Math.sin(time * 0.5 + rt.phase) * H * 0.4 * e
@@ -910,6 +958,7 @@ export class StationScene {
     this.updateScreen()
     this.updateBlueprint(now, new THREE.Vector3(...cam.right))
     this.updateEngine(now, time)
+    this.updateGlow(now)
 
     // заглушки глубины
     let k = 0

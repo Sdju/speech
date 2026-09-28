@@ -8,7 +8,7 @@ import type { CameraSpec, Vec3 } from '../universe/scene'
 import { orbitsOf, planets, presets, satellites, station, SUN_DIR } from '../universe/scene'
 import { BAKE_SIZE, MAX_P, MAX_S, renderFragment, vertex } from '../universe/shader'
 import { StationScene } from '../universe/station'
-import { stationScreen } from '../universe/screen'
+import { liveCamera, stationScreen } from '../universe/screen'
 
 /**
  * Общая 3D-сцена доклада. Живёт в global-bottom, поэтому не пересоздаётся между слайдами:
@@ -43,7 +43,12 @@ watch(
 
 // состояние станции: отстыкованные/скрытые модули; переходы анимирует StationScene
 const stationState = () => resolveStation(nav.slides.value as any, nav.currentSlideNo.value, nav.clicks.value)
-watch(stationState, state => stationScene?.setState(state, performance.now()), { deep: true })
+watch(stationState, (state) => {
+  // жёсткая стыковка сообщает момент удара — камера вздрагивает именно тогда
+  const hit = stationScene?.setState(state, performance.now())
+  if (hit)
+    rig.kick(hit)
+}, { deep: true })
 
 const UNIFORMS = [
   'u_res', 'u_time', 'u_eye', 'u_right', 'u_up', 'u_fwd', 'u_focal', 'u_shift', 'u_sun',
@@ -276,6 +281,9 @@ onMounted(() => {
     if (!cam)
       return
     lastCam = cam
+    liveCamera.frame = cam
+    liveCamera.goal = rig.goalFrame
+    liveCamera.aspect = el.width / el.height
 
     // пустой космос и камера стоит — звёздам хватит 15 fps
     const idle = !rig.moving && !bodiesInView(cam)

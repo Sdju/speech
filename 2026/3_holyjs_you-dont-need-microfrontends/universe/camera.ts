@@ -187,7 +187,7 @@ export function resolveCamera(slides: SlideLike[], no: number, click: number): R
 
 // ── состояние станции ──────────────────────────────────────────────
 
-export interface StationState { detached: string[], hidden: string[], blueprint: boolean, mf: boolean, duration: number, delay: number }
+export interface StationState { detached: string[], hidden: string[], blueprint: boolean, mf: boolean, snap: boolean, glow: boolean, duration: number, delay: number }
 
 function stationOf(slide: SlideLike | undefined, click: number | 'last'): StationSpec | null {
   const fm = slide?.meta?.slide?.frontmatter ?? {}
@@ -211,6 +211,8 @@ export function resolveStation(slides: SlideLike[], no: number, click: number): 
     hidden: list(spec?.hidden),
     blueprint: spec?.blueprint === true || String(spec?.blueprint) === 'true',
     mf: spec?.mf === true || String(spec?.mf) === 'true',
+    snap: spec?.snap === true || String(spec?.snap) === 'true',
+    glow: spec?.glow === true || String(spec?.glow) === 'true',
     duration: spec?.duration ?? DEFAULT_STATION_DURATION,
     delay: Number(spec?.delay ?? 0),
   }
@@ -287,6 +289,17 @@ function specDir(s: Spec, time: number, spinDeg: number): Vec3 {
   return [Math.cos(pitch) * Math.sin(yaw), Math.sin(pitch), Math.cos(pitch) * Math.cos(yaw)]
 }
 
+function toFrame(pose: Pose): CameraFrame {
+  const eye = add(pose.target, mul(pose.dir, pose.dist))
+  const fwd = norm(sub(pose.target, eye))
+  let right = cross(fwd, [0, 1, 0])
+  if (len(right) < 1e-3)
+    right = cross(fwd, [0, 0, -1])
+  right = norm(right)
+  const up = cross(right, fwd)
+  return { eye, right, up, fwd, fov: pose.fov, shift: pose.shift }
+}
+
 export class CameraRig {
   private spec: Spec | null = null
   private key = ''
@@ -294,6 +307,15 @@ export class CameraRig {
   private start = 0
   private specStart = 0
   private current: Pose | null = null
+  /** момент удара (performance.now) — короткая встряска кадра */
+  private shakeAt = -1e9
+  /** кадр, в котором камера окажется по завершении перелёта (без встряски) */
+  goalFrame: CameraFrame | null = null
+
+  /** Встряхнуть кадр в момент `at` (например, модуль с силой встал в порт) */
+  kick(at: number) {
+    this.shakeAt = at
+  }
 
   /** идёт перелёт между позами */
   get moving() {
@@ -330,6 +352,7 @@ export class CameraRig {
     if (!this.spec)
       return null
     const goal = this.goal(time, now)
+    this.goalFrame = toFrame(goal)
     let pose = goal
     if (this.from) {
       const raw = Math.min(1, (now - this.start) / 1000 / Math.max(0.01, this.spec.duration))
@@ -350,13 +373,14 @@ export class CameraRig {
     }
     this.current = pose
 
-    const eye = add(pose.target, mul(pose.dir, pose.dist))
-    const fwd = norm(sub(pose.target, eye))
-    let right = cross(fwd, [0, 1, 0])
-    if (len(right) < 1e-3)
-      right = cross(fwd, [0, 0, -1])
-    right = norm(right)
-    const up = cross(right, fwd)
-    return { eye, right, up, fwd, fov: pose.fov, shift: pose.shift }
+    const { eye, right, up, fwd } = toFrame(pose)
+    // встряска — сдвигом объектива: весь кадр (планеты и станция) дёргается вместе, без поворота
+    let shift = pose.shift
+    const since = now - this.shakeAt
+    if (since >= 0 && since < 600) {
+      const amp = 0.022 * Math.exp(-since / 130)
+      shift = [shift[0] + Math.sin(since * 0.11) * amp, shift[1] + Math.cos(since * 0.087 + 1) * amp * 0.8]
+    }
+    return { eye, right, up, fwd, fov: pose.fov, shift }
   }
 }

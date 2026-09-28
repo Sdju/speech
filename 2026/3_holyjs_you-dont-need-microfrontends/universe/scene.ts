@@ -146,6 +146,24 @@ export const presets: Record<string, CameraSpec> = {
   'promise-checkout': { focus: 'station.checkout', follow: 'module', distance: 10, yaw: 70, pitch: 28, shift: [0.95, 0], fov: 2.35, duration: 1.6 },
   /** экипаж вокруг станции (слайды 13–14): станция справа от центра, место под людей вокруг */
   crew: { focus: 'station', distance: 5.6, yaw: -35, pitch: 26, shift: [0.4, 0.12], fov: 2.35, spin: 0.4 },
+  /**
+   * слайды 14–16 — один непрерывный облёт с наездом на станцию справа (ракурс от корпуса станции,
+   * поэтому кадр не зависит от её вращения), заголовок-вопрос слева:
+   * соблазн разрезать (общий план) → «а проще?» (ближе, чертёж) → модули внутри (ещё ближе)
+   */
+  'no-mfe': { focus: 'station', follow: 'station', distance: 5.2, yaw: -60, pitch: 20, shift: [1.05, 0.12], fov: 2.35, spin: 0.8, duration: 2.2 },
+  simpler: { focus: 'station', follow: 'station', distance: 4, yaw: -40, pitch: 18, shift: [1.05, 0.04], fov: 2.35, spin: 0.8, duration: 2.6 },
+  modular: { focus: 'station', follow: 'station', distance: 3, yaw: -20, pitch: 16, shift: [1.05, 0.02], fov: 2.35, spin: 0.8, duration: 2.6 },
+  /**
+   * Земля = пользователи и прод. Земля мала рядом со станцией (радиус 2.8 в 8 ед. ниже), поэтому
+   * «станция над Землёй» — только ракурс сверху; крупная Земля — это уже камера у самой планеты.
+   */
+  /** раздел про деплой: станция справа сверху, под ней синяя дуга Земли; заголовок слева */
+  deploy: { focus: [-3.4, -0.5, 2.6], distance: 3, yaw: -25, pitch: 48, shift: [0.9, 0.35], fov: 2.35, duration: 2.6 },
+  /** «влияние на конечный продукт»: камера спускается к Земле — она крупно справа, с Луной */
+  users: { focus: 'ocean', distance: 2.6, yaw: -25, pitch: 35, shift: [1.5, -0.1], fov: 2.35, duration: 2.8 },
+  /** рантайм у пользователя: горизонт Земли внизу кадра, место под текст сверху */
+  horizon: { focus: 'ocean', distance: 1.7, yaw: -20, pitch: 30, shift: [0.4, -2.25], fov: 2.35, duration: 2.8 },
   /** модуль своего раздела у правого края — фон для текстовых слайдов раздела */
   'section-catalog': { focus: 'station.catalog', follow: 'module', distance: 11, yaw: 60, pitch: 12, shift: [1.35, 0.1], fov: 2.35 },
   'section-search': { focus: 'station.search', follow: 'module', distance: 11, yaw: 60, pitch: 12, shift: [1.35, 0.1], fov: 2.35 },
@@ -215,6 +233,10 @@ export interface StationSpec {
   blueprint?: boolean
   /** Module Federation — двигатель внутри хаба: виден на чертеже, в обычном виде скрыт корпусом */
   mf?: boolean
+  /** жёсткая стыковка: модули возвращаются с разгоном и отскоком, в момент удара камеру встряхивает */
+  snap?: boolean
+  /** на чертеже модули по очереди подсвечиваются цветами своих команд */
+  glow?: boolean
   duration?: number
   /** пауза перед переходом, секунд: например, дать камере долететь до станции */
   delay?: number
