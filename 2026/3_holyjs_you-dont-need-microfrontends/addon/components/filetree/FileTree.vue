@@ -65,6 +65,30 @@ watch([current, index], ([step, i], [old, oldI]) => {
 
 const lit = computed(() => focused(current.value.rows, current.value.focus))
 
+// ── линии дерева: отдельный слой, не зависят от анимации строк ─────
+// У каждой строки с родителем своя линия-уголок: от иконки родителя вниз до строки и вправо.
+// Координаты — из итоговой раскладки, а не из положения анимируемых строк; при перестройке
+// линия переезжает переходом CSS-свойства `d` синхронно со строкой, новая — дорисовывается.
+const INDENT = 1.55 // em, как --ft-indent
+const C0 = 0.5 // em, центр иконки от начала строки
+const lines = computed(() => {
+  const rows = current.value.rows
+  const f = font.value
+  const rowH = ROW * f
+  const index = new Map(rows.map((r, i) => [r.id, i]))
+  return rows.flatMap((r, i) => {
+    const pi = r.parentId == null ? undefined : index.get(r.parentId)
+    if (pi === undefined)
+      return []
+    const px = (rows[pi].depth * INDENT + C0) * f
+    const y0 = pi * rowH + rowH * 0.78
+    const y1 = i * rowH + rowH / 2
+    const x1 = (r.depth * INDENT - 0.2) * f
+    const flag = flags.value.get(r.id)
+    return [{ id: r.id, d: `path('M ${px} ${y0} V ${y1} H ${x1}')`, fresh: !!flag?.fresh, order: flag?.order ?? 0 }]
+  })
+})
+
 // ── размер: самый длинный шаг помещается в height ──────────────────
 const ROW = 1.45 // высота строки, em
 const maxRows = computed(() => Math.max(1, ...all.value.map(s => s.rows.length)))
@@ -142,6 +166,20 @@ onUnmounted(() => {
       </Transition>
     </div>
 
+    <div class="ft__body">
+      <svg class="ft-lines" aria-hidden="true">
+        <TransitionGroup tag="g" name="ft-line">
+          <path
+            v-for="l in lines"
+            :key="l.id"
+            class="ft-line"
+            :class="{ [`is-fresh-${tick % 2}`]: l.fresh }"
+            pathLength="1"
+            :style="{ 'd': l.d, '--d': `${l.order * 55}ms` }"
+          />
+        </TransitionGroup>
+      </svg>
+
     <TransitionGroup tag="div" name="ft" class="ft__list">
       <div
         v-for="r in current.rows"
@@ -150,14 +188,6 @@ onUnmounted(() => {
         :class="rowClass(r)"
         :style="{ '--depth': r.depth, '--c': color(r), '--d': `${(flags.get(r.id)?.order ?? 0) * 55}ms` }"
       >
-        <span
-          v-for="l in Math.max(0, r.depth - 1)"
-          :key="l"
-          class="ft-rail"
-          :class="{ 'is-on': r.rails[l] }"
-          :style="{ '--l': l }"
-        />
-        <span v-if="r.depth" class="ft-elbow" :class="{ 'is-last': r.last }" />
 
         <svg v-if="!r.ellipsis" class="ft-icon" viewBox="0 0 16 16" aria-hidden="true">
           <path v-if="r.dir" d="M1.5 3.5h4.2l1.4 1.5h7.4v7.5a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z" />
@@ -173,14 +203,13 @@ onUnmounted(() => {
         <span v-if="r.note" class="ft-note">{{ r.note }}</span>
       </div>
     </TransitionGroup>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .ft {
   --ft-indent: 1.55em;
-  --ft-c0: 0.5em; /* центр иконки от начала строки — сюда приходят линии дерева */
-  --ft-line: rgba(196, 181, 253, 0.28);
   --ft-ease: cubic-bezier(0.65, 0, 0.35, 1);
   font-family: var(--slidev-code-font-family, 'Fira Code', monospace);
   font-size: var(--ft-font);
@@ -275,50 +304,53 @@ onUnmounted(() => {
 }
 
 /* ── линии дерева ───────────────────────────────────────────────── */
-.ft-rail,
-.ft-elbow {
+/* слой линий: одна прозрачность на весь слой — линии одного родителя совпадают по вертикали,
+   и наложения не должны делать их ярче */
+.ft__body {
+  position: relative;
+}
+
+.ft-lines {
   position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
   pointer-events: none;
-  transition: opacity 0.45s ease;
+  opacity: 0.3;
 }
 
-.ft-rail {
-  top: 0;
-  bottom: 0;
-  left: calc((var(--l) - 1 - var(--depth)) * var(--ft-indent) + var(--ft-c0));
-  border-left: 1px solid var(--ft-line);
+.ft-line {
+  fill: none;
+  stroke: #c4b5fd;
+  stroke-width: 1;
+  /* переезд — вместе со строками (.ft-move: 0.8s с задержкой 0.12s) */
+  transition: d 0.8s var(--ft-ease) 0.12s;
+}
+
+/* линия новой строки дорисовывается, когда строка въехала */
+.ft-line.is-fresh-0,
+.ft-line.is-fresh-1 {
+  stroke-dasharray: 1;
+  animation: ft-line-draw-a 0.45s ease-out calc(0.75s + var(--d)) backwards;
+}
+.ft-line.is-fresh-1 {
+  animation-name: ft-line-draw-b;
+}
+@keyframes ft-line-draw-a {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes ft-line-draw-b {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+.ft-line-leave-active {
+  transition: opacity 0.3s ease;
+}
+.ft-line-leave-to {
   opacity: 0;
-}
-.ft-rail.is-on {
-  opacity: 1;
-}
-
-.ft-elbow {
-  top: 0;
-  bottom: 0;
-  left: calc(var(--ft-c0) - var(--ft-indent));
-  width: calc(var(--ft-indent) - var(--ft-c0) - 0.25em);
-}
-/* ├ : вертикаль насквозь, └ : до середины */
-.ft-elbow::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  border-left: 1px solid var(--ft-line);
-  transition: bottom 0.45s var(--ft-ease);
-}
-.ft-elbow.is-last::before {
-  bottom: 50%;
-}
-.ft-elbow::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  border-top: 1px solid var(--ft-line);
 }
 
 /* ── фокус ──────────────────────────────────────────────────────── */
