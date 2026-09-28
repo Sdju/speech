@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSlideContext } from '@slidev/client'
+import { useIsSlideActive, useSlideContext } from '@slidev/client'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { stationScreen } from '../universe/screen'
 
@@ -10,7 +10,7 @@ import { stationScreen } from '../universe/screen'
  *
  *   0 — один астронавт на тросе: один разработчик, всё понятно
  *   1 — людей всё больше: прилетает экипаж; трос тянется, когда астронавт долетел
- *   2 — кода всё больше: вокруг копятся контейнеры
+ *   2 — кода всё больше: каждый разработчик без остановки шлёт в свой модуль конверты-коммиты
  *   3 — зоны ответственности размываются: тросы плавно перестраиваются к чужим модулям,
  *       цвета команд гаснут
  *   4 — связи становятся комплексными: тросы между людьми, клубок
@@ -69,13 +69,6 @@ onBeforeUnmount(() => cancelAnimationFrame(swapRaf))
 // клубок связей между людьми
 const knots: [number, number][] = [[0, 4], [1, 5], [2, 3], [3, 7], [4, 8], [5, 0], [6, 1], [7, 4], [8, 2], [0, 6], [2, 5], [1, 7]]
 
-// контейнеры с кодом
-const crates = [
-  { x: -0.35, y: -0.55, r: 12 }, { x: 0.55, y: -0.35, r: -20 }, { x: 0.7, y: 0.25, r: 8 },
-  { x: -0.25, y: 0.55, r: -12 }, { x: 0.05, y: 0.75, r: 25 }, { x: -0.7, y: 0.25, r: -5 },
-  { x: 0.95, y: -0.1, r: 15 }, { x: -0.6, y: -0.3, r: 30 },
-]
-
 const R = 190
 
 const scene = computed(() => {
@@ -118,6 +111,7 @@ const people = computed(() => {
       y,
       visible,
       color: s.value >= 3 ? '#9ca3af' : TEAMS[c.team],
+      target: [tx, ty] as [number, number],
       tether: `M ${x} ${y} Q ${mx} ${my} ${tx} ${ty}`,
       tetherColor: TEAMS[target],
     }
@@ -136,11 +130,85 @@ const tangle = computed(() => {
   })
 })
 
-const boxes = computed(() => {
+/*
+ * Коммиты — конверты, которые каждый разработчик по кругу отправляет в «свой» модуль
+ * (туда же, куда держится его трос; на шаге размытых границ — уже в чужой).
+ * Траектория считается каждый кадр от руки астронавта до модуля — вслед за вращением станции,
+ * CSS-переходов на координатах нет. Ритм у всех свой, поэтому поток выглядит живым, а не строем.
+ */
+const active = useIsSlideActive()
+const FLY = 1.7 // с, полёт конверта
+const DOCK = 0.55 // с, вспышка приёма у модуля
+const now = ref(0)
+let mailStart = 0
+let mailRaf = 0
+function mailLoop(t: number) {
+  now.value = (t - mailStart) / 1000
+  mailRaf = requestAnimationFrame(mailLoop)
+}
+watch(() => active.value && s.value >= 2, (on) => {
+  cancelAnimationFrame(mailRaf)
+  if (!on)
+    return
+  mailStart = performance.now()
+  now.value = 0
+  mailRaf = requestAnimationFrame(mailLoop)
+}, { immediate: true })
+onBeforeUnmount(() => cancelAnimationFrame(mailRaf))
+
+const ease = (k: number) => (k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2)
+const bez = (a: number, c: number, b: number, k: number) => (1 - k) ** 2 * a + 2 * (1 - k) * k * c + k * k * b
+
+const mail = computed(() => {
   const sc = scene.value
   if (!sc || s.value < 2)
     return []
-  return crates.map(c => ({ x: sc.cx + c.x * R * 1.1, y: sc.cy + c.y * R * 0.75, r: c.r }))
+  const t = now.value
+  return people.value.flatMap((p) => {
+    // у каждого свой период и сдвиг: первые конверты уходят «волной», дальше — вразнобой
+    const period = 2.5 + (p.i % 4) * 0.45 + p.scale * 0.4
+    const local = t - 0.2 - p.i * 0.33
+    if (local < 0)
+      return []
+    const cyc = local % period
+    // рука, которая бросает: правая рука из позы астронавта (с поворотом и масштабом)
+    const a = (p.rot * Math.PI) / 180
+    const hx = p.x + (19 * Math.cos(a) + 6 * Math.sin(a)) * p.scale
+    const hy = p.y + (19 * Math.sin(a) - 6 * Math.cos(a)) * p.scale
+    const [tx, ty] = p.target
+    // дуга наружу от центра станции — конверт «заходит» в модуль, а не летит по линейке
+    const side = Math.sign(hx - sc.cx) || 1
+    const cxp = (hx + tx) / 2 + side * 50
+    const cyp = (hy + ty) / 2 - 70
+    const out: { kind: 'env' | 'dock', key: string, x: number, y: number, rot?: number, scale?: number, opacity: number, color: string, r?: number }[] = []
+    if (cyc < FLY) {
+      const k = cyc / FLY
+      const e = ease(k)
+      const x = bez(hx, cxp, tx, e)
+      const y = bez(hy, cyp, ty, e)
+      // касательная — конверт летит «носом» вперёд, с лёгким покачиванием
+      const dx = 2 * (1 - e) * (cxp - hx) + 2 * e * (tx - cxp)
+      const dy = 2 * (1 - e) * (cyp - hy) + 2 * e * (ty - cyp)
+      const heading = (Math.atan2(dy, dx) * 180) / Math.PI
+      out.push({
+        kind: 'env',
+        key: `e${p.i}`,
+        x,
+        y,
+        rot: heading * 0.35 + Math.sin(k * Math.PI * 2 + p.i) * 8,
+        // вылетает из руки маленьким, в полёте крупнее, у модуля «втягивается» внутрь
+        scale: (0.55 + Math.sin(k * Math.PI) * 0.55) * (k > 0.85 ? 1 - (k - 0.85) / 0.15 * 0.6 : 1),
+        opacity: Math.min(1, k / 0.1, (1 - k) / 0.06),
+        color: p.color,
+      })
+    }
+    else if (cyc < FLY + DOCK) {
+      // модуль принял коммит: короткое кольцо цвета модуля
+      const k = (cyc - FLY) / DOCK
+      out.push({ kind: 'dock', key: `d${p.i}`, x: tx, y: ty, r: 4 + k * 16, opacity: (1 - k) * 0.9, color: p.tetherColor })
+    }
+    return out
+  })
 })
 
 const captions = [
@@ -166,17 +234,26 @@ const captions = [
       <!-- клубок между людьми -->
       <path v-for="(d, k) in tangle" :key="`k${k}`" class="knot" :d="d" />
 
-      <!-- контейнеры с кодом -->
-      <g
-        v-for="(b, k) in boxes"
-        :key="`b${k}`"
-        class="crate"
-        :style="{ transform: `translate(${b.x}px, ${b.y}px) rotate(${b.r}deg)`, animationDelay: `${k * 0.08}s` }"
-      >
-        <rect x="-11" y="-8" width="22" height="16" rx="2" />
-        <!-- наклейка вместо <text>: с CSS zoom Slidev текст в SVG встаёт не на место -->
-        <rect class="crate__label" x="-6" y="-3" width="12" height="6" rx="1" />
-      </g>
+      <!-- коммиты: конверты от разработчиков к модулям -->
+      <template v-for="m in mail" :key="m.key">
+        <g
+          v-if="m.kind === 'env'"
+          class="env"
+          :style="{ transform: `translate(${m.x}px, ${m.y}px) rotate(${m.rot}deg) scale(${m.scale})`, opacity: m.opacity, '--seal': m.color }"
+        >
+          <rect x="-11" y="-7.5" width="22" height="15" rx="2" class="env__body" />
+          <path d="M -10.5 -6.5 L 0 1.5 L 10.5 -6.5" class="env__flap" />
+          <circle cy="1.5" r="2.6" class="env__seal" />
+        </g>
+        <circle
+          v-else
+          class="dock"
+          :cx="m.x"
+          :cy="m.y"
+          :r="m.r"
+          :style="{ stroke: m.color, opacity: m.opacity }"
+        />
+      </template>
 
       <!-- астронавты -->
       <g
@@ -276,19 +353,31 @@ const captions = [
   animation: draw 1.4s ease forwards;
 }
 
-.crate {
-  animation: pop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+.env__body {
+  fill: #f4f1ea;
+  stroke: rgb(0 0 0 / 0.25);
+  stroke-width: 0.8;
+}
 
-  & rect {
-    fill: #d6b36a;
-    stroke: #8a6a2e;
-    stroke-width: 1;
-  }
+.env__flap {
+  fill: none;
+  stroke: #b9b4a8;
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+}
 
-  & .crate__label {
-    fill: #f3e2b8;
-    stroke: none;
-  }
+.env__seal {
+  fill: var(--seal);
+  transition: fill 0.8s ease;
+}
+
+.env {
+  filter: drop-shadow(0 0 5px rgb(255 255 255 / 0.35));
+}
+
+.dock {
+  fill: none;
+  stroke-width: 1.6;
 }
 
 /*
@@ -366,8 +455,4 @@ const captions = [
   to { stroke-dashoffset: 0; }
 }
 
-@keyframes pop {
-  from { opacity: 0; scale: 0.3; }
-  to { opacity: 1; scale: 1; }
-}
 </style>
