@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useIsSlideActive, useSlideContext } from '@slidev/client'
-import { onBeforeUnmount, useTemplateRef, watch } from 'vue'
+import { onBeforeUnmount, ref, useTemplateRef, watch } from 'vue'
 import type { ChairPlanetOptions } from '../universe/chairs'
 import { ChairPlanet } from '../universe/chairs'
 
@@ -15,6 +15,12 @@ import { ChairPlanet } from '../universe/chairs'
 const props = defineProps<ChairPlanetOptions>()
 
 const canvas = useTemplateRef<HTMLCanvasElement>('canvas')
+/**
+ * Поколение канваса. При уходе со слайда контекст гасится (forceContextLoss), а потерянный
+ * контекст остаётся привязан к своему канвасу навсегда: новый рендерер на том же элементе
+ * получил бы мёртвый контекст. Поэтому после освобождения канвас заменяется новым.
+ */
+const generation = ref(0)
 const active = useIsSlideActive()
 const { $renderContext } = useSlideContext()
 const live = () => $renderContext.value === 'slide' || $renderContext.value === 'presenter'
@@ -38,8 +44,11 @@ function start() {
 function stop() {
   cancelAnimationFrame(raf)
   raf = 0
-  scene?.dispose()
+  if (!scene)
+    return
+  scene.dispose()
   scene = null
+  generation.value++
 }
 
 watch([active, canvas], ([on, el]) => {
@@ -53,7 +62,7 @@ onBeforeUnmount(stop)
 </script>
 
 <template>
-  <canvas ref="canvas" class="chair-planet" />
+  <canvas :key="generation" ref="canvas" class="chair-planet" />
 </template>
 
 <style scoped>
