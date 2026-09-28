@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import stationUrl from './assets/station.glb?url'
+// через импорт: Vite кладёт файл в сборку и подставляет путь с учётом base (на хостинге — /speech/slides/…)
+import mfeLogoUrl from '../img/mfe.svg?url'
 import type { BodyState, CameraFrame, StationState } from './camera'
 import { stationYaw } from './camera'
 import type { ModuleDef, Port, Vec3 } from './scene'
@@ -545,7 +547,7 @@ export class StationScene {
     }
 
     // лента с логотипом Module Federation — опоясывает корпус посередине
-    const logo = logoBandTexture('/img/mfe.svg')
+    const logo = logoBandTexture(mfeLogoUrl)
     const band = new THREE.Mesh(
       new THREE.CylinderGeometry(R * 1.04, R * 1.04, H * 0.46, 96, 1, true),
       new THREE.MeshStandardMaterial({
