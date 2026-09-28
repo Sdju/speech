@@ -9,7 +9,8 @@ import ArchRiskDetails from './ArchRiskDetails.vue'
  * Один драйвер — внешний $clicks.
  * MFE: shell в CI → его релиз → релизы трёх remotes → local → shared → взаимодействие.
  * Risks: семь претензий на той же схеме (Dev и миграция — по два состояния).
- * Modules: итоговая MFE-схема → общая сборка → перенос модулей → деплой → итог.
+ * Modules: схема в том виде, где её оставил слайд претензий (миграция UI library) → общая сборка →
+ *   перенос модулей → деплой → итог. Shell остаётся на всех шагах: точка входа есть и у одного приложения.
  * При возврате/прямом входе состояние вычисляется из шага; таймеров нет.
  * Подписей на схеме нет — тексты шагов (captions) проговариваются по заметкам спикера;
  * здесь они задают только число шагов.
@@ -42,14 +43,17 @@ const captions = computed(() => mode === 'risks' ? archRisks.map(risk => risk.ti
   'Shared dependency — общая библиотека в рантайме',
   'Отдельные релизы, но части взаимодействуют по контракту',
 ] : [
-  'Микрофронтенды: отдельные релизы, зависимости и связи',
+  'Микрофронтенды: где остановились — миграция общей зависимости',
   'Перенесём интеграцию в общую сборку',
   'Те же части становятся модулями одного приложения',
   'Собираем приложение и деплоим целиком',
   'Границы модулей остаются, интеграция теперь при сборке',
 ])
 const phase = computed(() => Math.max(0, Math.min(captions.value.length - 1, step)))
-const problem = computed(() => mode === 'risks' ? archRisks[phase.value] : undefined)
+// modules стартует ровно с последнего состояния слайда претензий — переход между слайдами без скачка
+const problem = computed(() => mode === 'risks'
+  ? archRisks[phase.value]
+  : mode === 'modules' && phase.value === 0 ? archRisks[archRisks.length - 1] : undefined)
 const riskKind = computed(() => problem.value?.kind)
 const migrating = computed(() => riskKind.value === 'migration' || riskKind.value === 'migration-partial')
 const active = useIsSlideActive()
@@ -63,7 +67,7 @@ watch([() => step, active], ([next, on], [previous, wasOn]) => {
 const s = computed(() => {
   const mfe = mode === 'mfe'
   const n = phase.value
-  if (mode === 'risks') {
+  if (problem.value) {
     return {
       intro: false, shell: true, pipes: true, runtime: true,
       deploy: riskKind.value === 'ci' || riskKind.value === 'release',
@@ -92,7 +96,7 @@ const s = computed(() => {
 const released = (index: number) => mode !== 'mfe' || phase.value >= index + 1
 const pipeVisible = (index: number) => s.value.pipes && (riskKind.value === 'dev-isolated' ? index === 1 : index === 0 || released(index))
 const currentRelease = (index: number) => mode === 'mfe' && phase.value === index + 1
-const deploys = computed(() => mode === 'risks' ? 0 : mode === 'mfe' ? Math.min(phase.value, 4) : s.value.app ? 1 : phase.value === 0 ? 4 : 0)
+const deploys = computed(() => problem.value ? 0 : mode === 'mfe' ? Math.min(phase.value, 4) : s.value.app ? 1 : phase.value === 0 ? 4 : 0)
 
 // Новый релиз: CI-блок → стрелка публикации → runtime-блок → связь с shell.
 // При обратном ходе нет ожидания «релиза» уже существующей части.
@@ -112,28 +116,26 @@ const runtimeMuted = (i: number) => problem.value
 const sharedMuted = computed(() => problem.value ? false : s.value.interaction)
 const sharedColor = (i: number) => riskKind.value === 'migration-partial' && i === 1 ? parts[0].color : SHARED
 const sharedTitle = computed(() => problem.value
-  ? migrating.value ? 'UI library: v1 → v2' : 'Общая зависимость: UI library'
-  : 'Общая зависимость: Vue')
-const sharedNote = computed(() => problem.value
-  ? riskKind.value === 'migration-partial' ? 'Catalog готов, Shell, Cart и Profile ещё на v1'
-    : migrating.value ? 'Новый API библиотеки — цель миграции' : 'Единые компоненты, токены и правила обновления'
-  : 'в этом примере: shared + singleton')
-const eventText = computed(() => riskKind.value === 'release' ? 'контракт нарушен' : 'событие add-to-cart')
+  ? split.value ? 'UI library v1' : migrating.value ? 'UI library: v1 → v2' : 'UI library'
+  : 'Vue · shared')
+/*
+ * Мелких подписей на схеме нет (как на слайде 10): пояснения — в заметках спикера.
+ * Остаётся только то, что не читается из картинки: версии, порты, имя события, код контракта.
+ */
+// миграция наполовину: в приложении две версии библиотеки — общий блок делится на v1 и v2
+const split = computed(() => riskKind.value === 'migration-partial')
+const eventText = computed(() => riskKind.value === 'release' ? 'контракт нарушен' : 'add-to-cart')
 const eventColor = computed(() => ['release', 'contracts'].includes(riskKind.value!) ? '#fb7185' : EVENT)
 const eventDelay = computed(() => riskKind.value === 'release' ? '1.3s' : '0s')
-const hostNote = computed(() => migrating.value ? 'UI v1, нужен переход'
-  : riskKind.value === 'dev-isolated' ? 'тестовая оболочка'
-    : riskKind.value === 'dev-all' ? 'localhost:3000'
-      : s.value.app ? 'одно приложение' : 'router, auth, layout')
+const hostNote = computed(() => migrating.value ? 'UI v1'
+  : riskKind.value === 'dev-all' ? 'localhost:3000' : '')
 function partNote(i: number) {
   if (migrating.value)
-    return riskKind.value === 'migration-partial' && i === 0 ? 'UI v2 ✓' : 'UI v1, нужен переход'
-  if (riskKind.value === 'ui') return ''
+    return riskKind.value === 'migration-partial' && i === 0 ? 'UI v2 ✓' : 'UI v1'
   if (riskKind.value === 'dev-all') return `localhost:${3001 + i}`
-  if (riskKind.value === 'dev-isolated') return i === 0 ? 'localhost:3001' : 'тестовая замена'
+  if (riskKind.value === 'dev-isolated') return i === 0 ? 'localhost:3001' : ''
   if (riskKind.value === 'release') return 'v1.0'
-  if (riskKind.value === 'contracts') return i === 0 ? 'отправитель' : i === 1 ? 'получатель' : 'remoteEntry.js'
-  return s.value.merged ? 'модуль' : 'remoteEntry.js'
+  return ''
 }
 function riskPartClass(i: number) {
   return {
@@ -158,15 +160,8 @@ function partEffects(i: number) {
 }
 function pipeNote(i: number) {
   if (riskKind.value?.startsWith('dev-')) return `localhost:${3000 + i}`
-  if (riskKind.value === 'ci') return 'build ✓, tests ✓'
-  if (riskKind.value === 'release' && i === 2) return 'build ✓, tests ✓'
-  return 'сборка → публикация'
-}
-function pipeDetail(i: number) {
-  if (riskKind.value?.startsWith('dev-')) return 'dev server'
-  if (riskKind.value === 'ci') return 'публикация и откат'
-  if (riskKind.value === 'release' && i === 2) return 'v2.0 опубликована ✓'
-  return 'CI → CDN'
+  if (riskKind.value === 'ci' || (riskKind.value === 'release' && i === 2)) return 'CI ✓'
+  return ''
 }
 
 interface Box { x: number, y: number, w: number, h: number }
@@ -179,6 +174,9 @@ const remote = (i: number): Box => s.value.merged
 const pipe = (i: number): Box => ({ x: 40 + i * 210, y: 368, w: 128, h: 68 })
 const build: Box = { x: 460, y: 375, w: 580, h: 136 }
 const shared: Box = { x: 460, y: 255, w: 540, h: 44 }
+// при двух версиях: v2 — под Catalog, v1 — под Cart и Profile (и стрелкой от Shell)
+const sharedV1: Box = { x: 565, y: 255, w: 350, h: 44 }
+const sharedV2: Box = { x: 250, y: 255, w: 180, h: 44 }
 const place = (b: Box) => ({
   width: `${b.w}px`, height: `${b.h}px`,
   transform: `translate(${b.x - b.w / 2}px, ${b.y - b.h / 2}px)`,
@@ -192,7 +190,8 @@ const deployArrows = [
   ...parts.map((_, i) => `M${250 + i * 210} 334 L${250 + i * 210} 198`),
 ]
 const sharedArrows = [
-  'M610 46 C830 46 830 255 734 255',
+  // изгиб не выходит за правый край окна браузера
+  'M610 46 C770 46 770 255 734 255',
   ...parts.map((_, i) => `M${250 + i * 210} 197 L${250 + i * 210} 230`),
 ]
 const singleDeploy = 'M460 307 L460 80'
@@ -201,7 +200,20 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
 
 <template>
   <div class="arch" :class="{ 'arch--instant': instant, 'arch--risks': !!problem, 'arch--build': !s.pipes }" :style="{ width: `${W}px`, height: `${H}px` }">
-    <div class="arch__zone hud-label" :style="{ top: `${LINE + 10}px` }">{{ riskKind?.startsWith('dev-') ? 'Локальное окружение' : 'build / CI' }}</div>
+    <!--
+      Две зоны схемы — узнаваемыми образами, а не подписью: сверху контур окна браузера
+      (то, что получает пользователь), снизу «цех» сборки — тёмная полоса со штриховкой и шестерёнкой.
+      Обе на грани видимости: считываются сразу, но не спорят с блоками.
+    -->
+    <div class="arch__browser" :style="{ height: `${LINE - 8 + 34}px` }" aria-hidden="true">
+      <div class="arch__browser-bar"><i /><i /><i /><span /></div>
+    </div>
+    <div class="arch__ci" :style="{ top: `${LINE + 6}px` }" aria-hidden="true" />
+    <div class="arch__zone hud-label" :style="{ top: `${LINE + 12}px` }">
+      <svg v-if="riskKind?.startsWith('dev-')" viewBox="0 0 16 16" width="16" height="16"><path d="M2 3h12v10H2z M4 6l2.5 2L4 10 M8 10h4" fill="none" stroke="currentColor" stroke-width="1.4" /></svg>
+      <svg v-else viewBox="0 0 16 16" width="16" height="16"><path d="M8 5.2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6z M8 1v2.2 M8 12.8V15 M1 8h2.2 M12.8 8H15 M3 3l1.6 1.6 M11.4 11.4 13 13 M13 3l-1.6 1.6 M4.6 11.4 3 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" /></svg>
+      {{ riskKind?.startsWith('dev-') ? 'локально' : 'CI' }}
+    </div>
     <div class="arch__line" :class="{ 'is-hot': s.punch }" :style="{ top: `${LINE}px` }" />
 
     <svg class="arch__svg" :viewBox="`0 0 ${W} ${H}`" :width="W" :height="H">
@@ -224,16 +236,9 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
     </svg>
     <ArchRiskDetails v-if="problem" :kind="problem.kind" />
 
-    <div class="arch__shell-info" :class="{ 'is-hidden': !s.intro }">
-      <span class="hud-label">Роль shell в приложении</span>
-      <b>Точка входа и общая оболочка</b>
-      <span>Маршрутизация, авторизация, layout</span>
-      <small>Загружает и размещает микрофронтенды</small>
-    </div>
-
     <div class="arch__box arch__build" :class="{ 'is-hidden': !s.build, 'is-focus': s.punch }"
       :style="{ ...place(build), transitionDelay: s.build ? '0.3s' : '0s' }">
-      <span class="hud-label arch__build-label">{{ s.punch ? 'Интеграция при сборке, границы сохранены' : 'Одна сборка: оболочка + модули' }}</span>
+      <span class="hud-label arch__build-label">одна сборка</span>
     </div>
 
     <!-- блоки runtime раскрываются механически (HudBlock); позиция и размер — на корне, как раньше -->
@@ -243,8 +248,8 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
       :style="{ ...place(host), transitionDelay: s.shell ? releaseDelay(0, 'node') : '0s' }">
       <Transition name="arch-swap" mode="out-in">
         <div :key="s.app ? 'app' : 'shell'" class="arch__text">
-          <b>{{ s.app ? 'Single App' : 'Shell' }}</b>
-          <small>{{ hostNote }}</small>
+          <b>Shell</b>
+          <small v-if="hostNote">{{ hostNote }}</small>
         </div>
       </Transition>
     </HudBlock>
@@ -257,29 +262,35 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
       :style="{ ...place(remote(i)), transitionDelay: mode === 'modules' ? `${i * 0.22}s` : releaseDelay(i + 1, 'node') }">
       <div class="arch__text">
         <b :style="{ color: p.color }">{{ p.name }}</b>
-        <small :class="{ 'risk-version-hidden': riskKind === 'release' && i === 1 }">{{ partNote(i) }}</small>
+        <small v-if="partNote(i)" :class="{ 'risk-version-hidden': riskKind === 'release' && i === 1 }">{{ partNote(i) }}</small>
       </div>
       <div v-if="i === 1" class="risk-version" :class="{ 'is-hidden': riskKind !== 'release' }">
         <span class="risk-version__old">v1.0</span><span class="risk-version__new">v2.0</span>
       </div>
       <span class="risk-error-ring" />
       <span class="risk-ui-button" :class="{ 'is-hidden': riskKind !== 'ui' }">{{ ['Купить', 'Оформить', 'Войти'][i] }}</span>
-      <span v-if="i === 0" class="arch__local" :class="{ 'is-visible': s.local, 'is-muted': s.local && s.shared }">Локальный search-utils</span>
+      <span v-if="i === 0" class="arch__local" :class="{ 'is-visible': s.local, 'is-muted': s.local && s.shared }">search-utils</span>
     </HudBlock>
 
+    <!-- v2 «отделяется» от общего блока: пока версия одна, он лежит под ним и невидим -->
+    <div class="arch__box arch__shared arch__shared--v2" :class="{ 'is-hidden': !split, 'is-focus': split }"
+      :style="{ ...place(split ? sharedV2 : shared), '--hud-c': parts[0].color }">
+      <div class="arch__text"><b>UI library v2</b></div>
+    </div>
     <div class="arch__box arch__shared" :class="{ 'is-hidden': !s.shared, 'is-focus': s.shared && (!s.interaction || !!problem), 'is-muted': sharedMuted }"
-      :style="{ ...place(shared), '--hud-c': SHARED }">
+      :style="{ ...place(split ? sharedV1 : shared), '--hud-c': SHARED }">
       <div class="arch__text">
         <b>{{ sharedTitle }}</b>
-        <small>{{ sharedNote }}</small>
       </div>
+      <!-- в бандл приложения теперь попадают две копии библиотеки -->
+      <span class="arch__twice" :class="{ 'is-visible': split }">×2</span>
     </div>
     <div class="arch__event" :class="{ 'is-hidden': !s.interaction }" :style="{ color: eventColor, transitionDelay: eventDelay }">{{ eventText }}</div>
 
     <div v-for="(p, i) in releases" :key="`pipe-${p.id}`" class="arch__box arch__pipe"
       :class="{ 'risk-pipe-focus': riskKind === 'ci' || riskKind?.startsWith('dev-') || (riskKind === 'release' && i === 2), 'risk-muted': !!problem && !['ci', 'dev-all', 'dev-isolated'].includes(riskKind!) && !(riskKind === 'release' && i === 2), 'is-hidden': !pipeVisible(i), 'is-focus': currentRelease(i) || (i === 0 && phase === 0 && mode === 'mfe'), 'is-muted': s.details }"
       :style="{ ...place(pipe(i)), '--hud-c': p.color }">
-      <div class="arch__text"><b>{{ p.name }}</b><small>{{ pipeNote(i) }}</small><small>{{ pipeDetail(i) }}</small></div>
+      <div class="arch__text"><b>{{ p.name }}</b><small v-if="pipeNote(i)">{{ pipeNote(i) }}</small></div>
     </div>
 
     <div class="arch__counter" :class="{ 'is-hidden': !deploys }" :style="{ transitionDelay: deploys ? '1.4s' : '0s' }">
@@ -314,7 +325,74 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
 }
 
 .arch--build .arch__zone {
+  left: 10px;
+}
+
+.arch--build .arch__browser,
+.arch--build .arch__ci {
   left: 0;
+  width: 920px;
+}
+
+/* окно браузера: тонкий контур и полоска вкладки с «светофором» и адресной строкой */
+/* с запасом 16px вокруг крайних блоков (пайплайн Shell слева, Profile справа) */
+.arch__browser {
+  position: absolute;
+  left: -40px;
+  top: -34px;
+  width: 812px;
+  border: 1.5px solid rgb(255 255 255 / 0.26);
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.035);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.25), 0 12px 40px rgb(0 0 0 / 0.25);
+  pointer-events: none;
+  transition: left 0.75s var(--ease), width 0.75s var(--ease);
+}
+
+.arch__browser-bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 9px 9px 0 0;
+  border-bottom: 1px solid rgb(255 255 255 / 0.18);
+  background: rgb(255 255 255 / 0.07);
+
+  /* «светофор» окна — приглушённые, но узнаваемые цвета */
+  & i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f87171;
+    opacity: 0.75;
+  }
+
+  & i:nth-child(2) { background: #fbbf24; }
+  & i:nth-child(3) { background: #34d399; }
+
+  & span {
+    width: 34%;
+    height: 12px;
+    margin-left: 16px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.16);
+  }
+}
+
+/* сборка: чуть темнее фона и в мелкую диагональную штриховку */
+.arch__ci {
+  position: absolute;
+  left: -40px;
+  width: 812px;
+  bottom: -6px;
+  border-radius: 10px;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  background:
+    repeating-linear-gradient(135deg, rgb(255 255 255 / 0.06) 0 1px, transparent 1px 9px),
+    rgb(0 0 0 / 0.42);
+  pointer-events: none;
+  transition: left 0.75s var(--ease), width 0.75s var(--ease);
 }
 
 .arch--instant,
@@ -328,15 +406,19 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
 
 .arch__zone {
   position: absolute;
-  left: -24px;
-  opacity: 0.7;
+  left: -30px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .arch__line {
   position: absolute;
   /* по ширине схемы, а не контейнера — линия симметрична вместе со схемой */
-  left: -24px;
-  width: 776px;
+  left: -40px;
+  width: 812px;
   border-top: 1px dashed var(--v-color);
   box-shadow: 0 0 10px var(--v-color);
   opacity: 0.55;
@@ -401,20 +483,6 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
   box-shadow: 0 0 24px color-mix(in srgb, var(--hud-c, #a78bfa) 30%, transparent);
 }
 .arch__box.is-muted:not(.is-hidden) { opacity: 0.35; }
-.arch__shell-info {
-  position: absolute;
-  left: 230px;
-  top: 126px;
-  width: 500px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  transition: opacity 0.2s;
-}
-.arch__shell-info b { font-size: 1.5rem; }
-.arch__shell-info span:not(.hud-label) { font-size: 1rem; }
-.arch__shell-info small { font-size: 0.85rem; opacity: 0.65; }
-.arch__shell-info.is-hidden,
 .arch__event.is-hidden { opacity: 0; pointer-events: none; }
 .arch__local {
   position: absolute;
@@ -442,6 +510,29 @@ const interaction = 'M250 197 C250 225 460 225 460 197'
   color: #fde68a;
 }
 .arch__shared .arch__text b { font-size: 0.95rem; }
+/* вторая версия библиотеки: цвет Catalog — он первым перешёл на v2 */
+.arch__shared--v2 {
+  border-color: color-mix(in srgb, var(--hud-c) 70%, transparent);
+  background: color-mix(in srgb, var(--hud-c) 10%, #10201b);
+  color: #a7f3d0;
+}
+/* «×2» в зазоре между v2 и v1 — две копии одной библиотеки */
+.arch__twice {
+  position: absolute;
+  left: -43px;
+  top: 50%;
+  translate: 0 -50%;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fbbf24;
+  color: #1c1406;
+  font-weight: 800;
+  font-size: 0.8rem;
+  opacity: 0;
+  scale: 0.4;
+  transition: opacity 0.3s ease 0.6s, scale 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) 0.6s;
+}
+.arch__twice.is-visible { opacity: 1; scale: 1; }
 .arch__event {
   position: absolute;
   top: 211px;

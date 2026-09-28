@@ -12,27 +12,25 @@ const checks = [40, 250, 460, 670].map(x => `M${x} 404 L${x} 436`)
     <div class="risk-boundary hud-dashed" :class="{ 'is-hidden': kind !== 'boundaries' }">
       <span class="risk-boundary__question">?</span>
     </div>
-    <div class="risk-boundary__label" :class="{ 'is-hidden': kind !== 'boundaries' }">Промокоды — Catalog или Cart?</div>
+    <div class="risk-boundary__label" :class="{ 'is-hidden': kind !== 'boundaries' }">Промокоды — чьи?</div>
 
     <svg class="risk-svg" viewBox="0 0 920 488" width="920" height="488">
       <SvgArrow v-for="(d, i) in checks" :key="i" :d="d" :reveal="kind === 'ci' ? 1 : 0"
         class="risk-arrow" :class="{ 'is-on': kind === 'ci' }"
         :style="{ '--animation-delay': kind === 'ci' ? `${0.2 + i * 0.12}s` : '0s' }" />
     </svg>
-    <HudBlock class="risk-ci" :shown="kind === 'ci'" color="#fbbf24" sm solid>Интеграционный прогон и совместимость версий</HudBlock>
+    <HudBlock class="risk-ci" :shown="kind === 'ci'" color="#fbbf24" sm solid>общий прогон</HudBlock>
 
     <HudBlock class="risk-panel" :shown="kind === 'dev-all'" color="#a78bfa" sm solid>
       <b>Shell + Catalog + Cart + Profile</b>
-      <small>Все dev-серверы, API, конфиги и согласованные версии</small>
     </HudBlock>
     <HudBlock class="risk-panel" :shown="kind === 'dev-isolated'" color="#a78bfa" sm solid>
-      <b>Catalog + тестовые замены окружения</b>
-      <small>Shell, API и соседние микрофронтенды — изолировать или замокать</small>
+      <b>Catalog + моки</b>
     </HudBlock>
     <HudBlock class="risk-panel risk-contract" :shown="kind === 'contracts'" color="#a78bfa" sm solid>
-      <div><small>Catalog отправляет</small><code>{ id: "42" }</code></div>
+      <div><code>{ id: "42" }</code></div>
       <span class="risk-contract__mismatch">≠</span>
-      <div><small>Cart ожидает</small><code>{ productId: "42" }</code></div>
+      <div><code>{ productId: "42" }</code></div>
     </HudBlock>
   </div>
 </template>
