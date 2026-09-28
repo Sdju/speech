@@ -94,3 +94,36 @@
   background: none;
   @apply font-600 font-mono text-shadow-xl text-[1.06em];
 }
+
+/*
+ * Заголовок-вопрос слева по центру высоты, справа крупно станция (камера — на слайде).
+ * Как на слайде 5; используется на слайдах 14–16, где фон — сама станция.
+ */
+.side-title {
+  position: absolute;
+  left: 80px;
+  top: 50%;
+  translate: 0 -50%;
+  max-width: 470px;
+  text-align: left;
+
+  & h1 {
+    margin: 0;
+    font-size: 2.6em;
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  /* короткая поясняющая строка под заголовком */
+  & .side-title__sub {
+    margin: 0.9em 0 0;
+    font-size: 1.15em;
+    line-height: 1.35;
+    color: rgb(255 255 255 / 0.7);
+  }
+
+  /* как в центрированном заголовке главы: выделение цветом раздела */
+  & strong {
+    color: --shift-lightness(var(--v-color), 0.12);
+  }
+}
