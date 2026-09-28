@@ -1,53 +1,193 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { useIsSlideActive } from '@slidev/client'
+import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue'
+import LoadMeter from './LoadMeter.vue'
 
 /**
- * «Микросервисы ≠ микрофронтенды»: слева серверы, справа псевдосайт в окне браузера.
- * Один драйвер — внешний $clicks. Состояние целиком вычисляется из шага (без таймеров),
- * поэтому прямой вход на любой клик и шаг назад показывают правильную картинку.
+ * «Микросервисы ≠ микрофронтенды»: слева серверы (поды), справа псевдосайт в окне браузера.
+ * Один драйвер — внешний $clicks. Картинка шага вычисляется из шага; «живыми» делает её только
+ * генератор нагрузки: пока слайд активен, каждый тик графики шагают к целевой нагрузке шага.
  *
- * 0 — два мира: процессы на серверах и одна вкладка
- * 1 — масштабирование: копии сервиса vs «копии» каталога на странице пользователя
+ * 0 — два мира: у Catalog один под под 80%, вкладка спокойна
+ * 1 — масштабирование: Catalog ×3 — нагрузка делится; «копии» каталога на странице — CPU в потолке
  * 2 — изоляция: сервис падает сам по себе vs стили Cart протекают в Catalog
- * 3 — один поток: занят один сервис vs тяжёлая задача Profile морозит всю вкладку
+ * 3 — один поток: Profile ×2 — завис один под, второй работает; во вкладке замерзает всё
  * 4 — версии: API держит v1 и v2 vs пользователь видит обе версии UI сразу
+ * 5 — память: у пода Cart «пила» — течёт до лимита → OOMKilled → перезапуск, по кругу;
+ *     вкладка упирается в память один раз → «Опаньки…»
+ *
+ * Прямой вход на шаг (или неактивный слайд) показывает шаг «идущим давно»: графики ровные
+ * или уже с пилой, вкладка уже упала. Текста на слайде минимум — выводы в заметках спикера.
  */
 const { step = 0 } = defineProps<{ step?: number }>()
 
-const LAST = 4
+const LAST = 5
 const s = computed(() => Math.max(0, Math.min(LAST, step)))
-
-const captions = [
-  'Похожие слова — разные миры: процессы на серверах против одной вкладки браузера',
-  'Сервис масштабируют копиями. Микрофронтенд исполняет каждый пользователь сам — копировать нечего',
-  'У сервисов свои процессы. У микрофронтендов — одна страница: общий DOM, стили и window',
-  'Один главный поток на всю вкладку: тяжёлая задача одной части морозит все',
-  'API живёт в двух версиях сразу. Интерфейс видит человек — и видит все версии одновременно',
-]
+const active = useIsSlideActive()
 
 const services = [
-  { id: 'catalog', name: 'Catalog', color: '#34d399' },
-  { id: 'cart', name: 'Cart', color: '#60a5fa' },
-  { id: 'profile', name: 'Profile', color: '#f472b6' },
-]
+  { id: 'catalog', name: 'Catalog', color: '#34d399', pods: 3 },
+  { id: 'cart', name: 'Cart', color: '#60a5fa', pods: 1 },
+  { id: 'profile', name: 'Profile', color: '#f472b6', pods: 2 },
+] as const
+type Pod = `${typeof services[number]['id']}-${number}`
 
-// левая панель
-const replicas = computed(() => (s.value === 1 ? 4 : 1))
-const latency = computed(() => (s.value === 1 ? '180 мс' : '820 мс'))
-const serviceState = (id: string) => {
-  if (s.value === 2 && id === 'profile')
-    return 'down'
-  if (s.value === 3 && id === 'profile')
-    return 'busy'
-  return 'ok'
+// сколько подов сервиса запущено: Catalog масштабирован с шага 1, Profile — с шага 3
+const replicas = (id: string) => {
+  if (id === 'catalog')
+    return s.value >= 1 ? 3 : 1
+  if (id === 'profile')
+    return s.value >= 3 ? 2 : 1
+  return 1
 }
 
-// правая панель
-const catalogCopies = computed(() => (s.value === 1 ? 4 : 1))
-const cpu = computed(() => (s.value === 1 ? 97 : s.value === 3 ? 100 : 22))
+// ── время внутри шага ─────────────────────────────────────────────
+// сценарий памяти разворачивается во времени; без живого показа — как будто шаг идёт уже давно
+const TICK = 320
+const SETTLED = 30 // с, «давно»: вкладка уже упала, под уже не раз перезапускался
+const now = ref(performance.now())
+const enteredAt = ref(now.value - SETTLED * 1000)
+const t = computed(() => (now.value - enteredAt.value) / 1000)
+
+/*
+ * Шаг 5, сервер — типичная «пила» памяти: под Cart течёт, упирается в лимит → OOMKilled →
+ * Restarting… → снова с базовой памяти, и так по кругу. Сервис при этом продолжает жить,
+ * растёт только счётчик рестартов. Браузер падает один раз и насовсем.
+ */
+const SAW = { leak: 3.2, killed: 0.8, restart: 0.6 }
+const SAW_PERIOD = SAW.leak + SAW.killed + SAW.restart
+const CRASH_AT = 4.6 // вкладка падает сразу после первого OOM на сервере — на контрасте
+
+function saw(tt: number) {
+  const cycle = Math.floor(tt / SAW_PERIOD)
+  const u = tt - cycle * SAW_PERIOD
+  const phase = u < SAW.leak ? 'leak' : u < SAW.leak + SAW.killed ? 'killed' : 'restart'
+  return { phase, u, restarts: cycle + (phase === 'leak' ? 0 : 1) } as const
+}
+const cartSaw = computed(() => (s.value === 5 ? saw(t.value) : null))
+const crashed = computed(() => s.value === 5 && t.value >= CRASH_AT)
+const metric = computed(() => (s.value === 5 ? 'RAM' : 'CPU'))
+
+type PodState = 'ok' | 'down' | 'busy' | 'killed' | 'restart'
+function podStateAt(id: string, i: number, tt: number): PodState {
+  if (id === 'profile' && i === 1 && s.value === 2)
+    return 'down'
+  if (id === 'profile' && i === 1 && s.value === 3)
+    return 'busy'
+  if (id === 'cart' && s.value === 5) {
+    const { phase } = saw(tt)
+    return phase === 'leak' ? 'ok' : phase
+  }
+  return 'ok'
+}
+const podState = (id: string, i: number) => podStateAt(id, i, t.value)
+const podStatus: Record<PodState, string> = { ok: '', down: '✕ 500', busy: '', killed: 'OOMKilled', restart: 'Restarting…' }
+const deadAt = (id: string, i: number, tt: number) => ['down', 'killed', 'restart'].includes(podStateAt(id, i, tt))
+const dead = (id: string, i: number) => deadAt(id, i, t.value)
+const restarts = computed(() => cartSaw.value?.restarts ?? 0)
+
+// ── целевая нагрузка в момент tt ──────────────────────────────────
+const ramp = (tt: number, from: number, to: number, dur: number) => from + (to - from) * Math.min(1, Math.max(0, tt / dur))
+
+function podTarget(id: string, i: number, tt: number): number {
+  if (i > replicas(id) || deadAt(id, i, tt))
+    return 0
+  if (s.value === 5) {
+    if (id === 'cart')
+      return ramp(saw(tt).u, 15, 100, SAW.leak) // зубец пилы: от базовой памяти до лимита
+    return id === 'catalog' ? 44 : 38
+  }
+  if (id === 'catalog')
+    return s.value >= 1 ? 27 : 80 // один под на 80% → три по ~27%
+  if (id === 'profile')
+    return s.value === 3 && i === 1 ? 100 : 24
+  return 30
+}
+
+function pageTarget(tt: number): number {
+  switch (s.value) {
+    case 1: return 97 // три каталога на странице: процессор пользователя в потолке
+    case 2: return 30
+    case 3: return 100
+    case 4: return 26
+    case 5: return tt >= CRASH_AT ? 0 : ramp(tt, 34, 100, CRASH_AT * 0.9)
+    default: return 22
+  }
+}
+
+// ── генератор нагрузки ────────────────────────────────────────────
+const HIST = 40 // ~13 с истории — на графике пода видно два-три зубца пилы
+const pods = services.flatMap(svc => Array.from({ length: svc.pods }, (_, k) => `${svc.id}-${k + 1}` as Pod))
+const target = (key: string, tt = t.value) => {
+  if (key === 'page')
+    return pageTarget(tt)
+  const [id, i] = key.split('-')
+  return podTarget(id, Number(i), tt)
+}
+
+/** Бесконечный датчик: каждый next() — следующий отсчёт, шаг к цели с небольшим шумом */
+function* sampler(key: string): Generator<number, never> {
+  let v = target(key)
+  while (true) {
+    const goal = target(key)
+    // память растёт ровно, процессор дёргается
+    const amp = metric.value === 'RAM' ? 1.5 : goal > 90 ? 3 : 7
+    // процесс убит — показание обрывается сразу, без плавного спада
+    v = goal <= 0 ? 0 : v + (goal - v) * 0.4 + (Math.random() - 0.5) * amp
+    v = Math.max(0, Math.min(100, v))
+    yield v
+  }
+}
+
+const keys = ['page', ...pods]
+const samplers = new Map(keys.map(k => [k, sampler(k)]))
+const hist = reactive(Object.fromEntries(keys.map(k => [k, [] as number[]]))) as Record<string, number[]>
+
+/** История без анимации: цели за последние HIST тиков — ровная линия или готовая «пила» */
+function settle() {
+  for (const k of keys) {
+    samplers.set(k, sampler(k))
+    hist[k] = Array.from({ length: HIST }, (_, n) => target(k, t.value - ((HIST - 1 - n) * TICK) / 1000))
+  }
+}
+
+function tick() {
+  now.value = performance.now()
+  for (const k of keys) {
+    const next = samplers.get(k)!.next().value
+    hist[k] = [...hist[k].slice(1 - HIST), next]
+  }
+}
+
+settle()
+let timer: ReturnType<typeof setInterval> | undefined
+watch(active, (on) => {
+  clearInterval(timer)
+  timer = on ? setInterval(tick, TICK) : undefined
+  if (!on) {
+    now.value = performance.now()
+    enteredAt.value = now.value - SETTLED * 1000
+    settle()
+  }
+}, { immediate: true })
+onBeforeUnmount(() => clearInterval(timer))
+
+watch(s, (_, prev) => {
+  // живой переход — сценарий шага идёт с нуля; сменилась метрика (CPU ↔ RAM) — графики с чистого листа
+  now.value = performance.now()
+  enteredAt.value = now.value - (active.value ? 0 : SETTLED * 1000)
+  if (!active.value || (prev === 5) !== (s.value === 5))
+    settle()
+})
+
+// ── правая панель ─────────────────────────────────────────────────
+const catalogCopies = computed(() => (s.value === 1 ? 3 : 1))
 const leak = computed(() => s.value === 2)
 const frozen = computed(() => s.value === 3)
 const versions = computed(() => s.value === 4)
+const pageLoad = computed(() => hist.page[hist.page.length - 1] ?? 0)
+// окно «греется» по фактическому показанию датчика — жар нарастает вместе с графиком
+const hot = computed(() => !crashed.value && pageLoad.value > 80)
 </script>
 
 <template>
@@ -55,75 +195,52 @@ const versions = computed(() => s.value === 4)
     <!-- ── микросервисы ─────────────────────────────────────────── -->
     <section class="mvm__side">
       <header class="mvm__head">
-        <span class="mvm__kicker">сервер</span>
         <span class="mvm__title">Микросервисы</span>
       </header>
 
       <div class="srv">
-        <div class="srv__client hud-frame hud-sm">
-          <span class="srv__icon">⌂</span> клиенты
-          <span v-if="versions" class="srv__clients">
-            <span class="srv__chip">web → v2</span>
-            <span class="srv__chip srv__chip--old">ios → v1</span>
-          </span>
-        </div>
-        <div class="srv__lb hud-frame hud-sm">
-          балансировщик
-          <span class="srv__metric" :class="{ 'srv__metric--good': s === 1 }">p95 {{ latency }}</span>
-        </div>
-
         <div class="srv__row">
           <div
             v-for="svc in services"
             :key="svc.id"
             class="srv__col"
           >
-            <div class="srv__stack" :style="{ '--n': svc.id === 'catalog' ? replicas : 1 }">
+            <div class="srv__stack">
               <div
-                v-for="i in (svc.id === 'catalog' ? 4 : 1)"
+                v-for="i in svc.pods"
                 :key="i"
                 class="srv__box hud-frame hud-sm hud-solid"
                 :class="[
-                  `srv__box--${serviceState(svc.id)}`,
-                  { 'srv__box--ghost': svc.id === 'catalog' && i > replicas },
+                  `srv__box--${podState(svc.id, i)}`,
+                  { 'srv__box--ghost': i > replicas(svc.id) },
                 ]"
-                :style="{ '--c': svc.color, '--i': i - 1 }"
+                :style="{ '--c': svc.color }"
               >
-                <span class="srv__leds"><i /><i /><i /></span>
-                <span class="srv__name">{{ svc.name }}</span>
-                <span class="srv__status">
-                  {{ serviceState(svc.id) === 'down' ? '✕ 500' : serviceState(svc.id) === 'busy' ? 'CPU 100%' : '200 OK' }}
+                <span class="srv__top">
+                  <span class="srv__leds"><i /><i /><i /></span>
+                  <span class="srv__name">{{ svc.name }}</span>
                 </span>
+                <span class="srv__status">
+                  {{ podStatus[podState(svc.id, i)] || (svc.id === 'cart' && restarts ? `↻ ${restarts}` : '') }}
+                </span>
+                <LoadMeter
+                  class="srv__meter"
+                  compact
+                  :tall="svc.id === 'cart'"
+                  :hist="hist[`${svc.id}-${i}`]"
+                  :label="metric"
+                  :dead="dead(svc.id, i)"
+                />
               </div>
             </div>
             <div class="srv__mem">
               <template v-if="versions && svc.id === 'cart'">
                 <span class="srv__api">/v1</span><span class="srv__api srv__api--new">/v2</span>
               </template>
-              <template v-else>
-                свой процесс и память
-              </template>
             </div>
           </div>
         </div>
 
-        <div class="srv__note">
-          <template v-if="s === 1">
-            Catalog ×4 — нагрузка делится между копиями
-          </template>
-          <template v-else-if="s === 2">
-            Profile упал — Catalog и Cart отвечают
-          </template>
-          <template v-else-if="s === 3">
-            Profile занят — соседи этого не чувствуют
-          </template>
-          <template v-else-if="s === 4">
-            старые клиенты ходят в /v1, новые в /v2
-          </template>
-          <template v-else>
-            у каждого сервиса свой процесс, память и ресурсы
-          </template>
-        </div>
       </div>
     </section>
 
@@ -134,26 +251,31 @@ const versions = computed(() => s.value === 4)
     <!-- ── микрофронтенды ───────────────────────────────────────── -->
     <section class="mvm__side">
       <header class="mvm__head">
-        <span class="mvm__kicker">браузер пользователя</span>
         <span class="mvm__title">Микрофронтенды</span>
+        <!-- нагрузка на машине пользователя: CPU, на шаге 5 — память -->
+        <LoadMeter :hist="hist.page" :label="metric" :dead="crashed" />
       </header>
+
+      <div class="win-wrap" :class="{ 'win-wrap--hot': hot }">
+        <!-- волны жара над окном при перегрузке -->
+        <span class="heat" aria-hidden="true"><i /><i /><i /><i /><i /></span>
 
       <div class="win" :class="{ 'win--frozen': frozen }">
         <div class="win__bar">
           <span class="win__dots"><i /><i /><i /></span>
-          <span class="win__url">shop.example/catalog</span>
+          <span class="win__url" />
         </div>
 
         <div class="site">
           <div class="site__nav">
-            <b>Shop</b><span>Каталог</span><span>Акции</span><span class="site__search" />
+            <b>Shop</b><span class="skel" /><span class="skel" /><span class="site__search" />
           </div>
 
           <div class="site__body">
             <!-- Catalog -->
             <div class="site__catalog">
               <div
-                v-for="copy in 4"
+                v-for="copy in 3"
                 :key="copy"
                 class="cat"
                 :class="{
@@ -183,7 +305,7 @@ const versions = computed(() => s.value === 4)
               <span class="tag" style="--c: #60a5fa">Cart{{ versions ? ' v1' : '' }}</span>
               <div class="cart__item" /><div class="cart__item" />
               <div class="cart__total">
-                <span>Итого</span><b>4 980 ₽</b>
+                <span class="skel" /><span class="skel skel--short" />
               </div>
               <button class="btn btn--cart" :class="{ 'btn--leak': leak, 'btn--v1': versions }">
                 {{ versions ? 'ОФОРМИТЬ ЗАКАЗ' : 'Оформить' }}
@@ -197,36 +319,32 @@ const versions = computed(() => s.value === 4)
             <span class="tag" style="--c: #f472b6">Profile</span>
             <span class="avatar" />
             <span class="card__line" style="width: 90px" />
-            <span v-if="frozen" class="profile__task">считаем скидки…</span>
           </div>
         </div>
 
         <div class="win__freeze" :class="{ 'win__freeze--on': frozen }">
           <div class="win__dialog">
             <b>Страница не отвечает</b>
-            <span>Profile занял главный поток</span>
           </div>
+        </div>
+
+        <!-- вкладка упала по памяти: та самая страница «Опаньки…» -->
+        <div class="crash" :class="{ 'crash--on': crashed }">
+          <svg class="crash__icon" viewBox="0 0 48 56" aria-hidden="true">
+            <path d="M4 3h28l12 12v38H4z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" />
+            <path d="M32 3v12h12" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" />
+            <path d="M14 27l5 3M34 27l-5 3" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+            <path d="M15 44q9-7 18 0" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+          </svg>
+          <b>Опаньки…</b>
+          <span>Код ошибки: Out of Memory</span>
+          <i>Перезагрузить</i>
         </div>
       </div>
 
-      <div class="dev">
-        <span>CPU пользователя</span>
-        <span class="dev__bar"><i :style="{ width: `${cpu}%` }" :class="{ hot: cpu > 80 }" /></span>
-        <b>{{ cpu }}%</b>
       </div>
     </section>
 
-    <!-- ── вывод шага ──────────────────────────────────────────── -->
-    <div class="mvm__captions">
-      <div
-        v-for="(text, i) in captions"
-        :key="i"
-        class="mvm__caption"
-        :class="i === s ? 'mf-on' : i < s ? 'mf-out' : 'mf-off'"
-      >
-        {{ text }}
-      </div>
-    </div>
   </div>
 </template>
 
@@ -237,10 +355,11 @@ const versions = computed(() => s.value === 4)
   position: relative;
   display: grid;
   grid-template-columns: 1fr 44px 1fr;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 1fr;
   gap: 10px 0;
   width: 900px;
-  height: 480px;
+  /* без строки подписи; снизу остаётся место под номер слайда — полоса CPU его не задевает */
+  height: 440px;
   color: #fff;
   text-align: left;
   font-size: 14px;
@@ -255,19 +374,14 @@ const versions = computed(() => s.value === 4)
 
 .mvm__head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
+  min-height: 42px;
   justify-content: space-between;
 }
 
 .mvm__title {
   font-size: 22px;
   font-weight: 700;
-}
-
-.mvm__kicker {
-  order: 2;
-  font-size: 12px;
-  color: rgb(255 255 255 / 0.5);
 }
 
 .mvm__neq {
@@ -278,20 +392,69 @@ const versions = computed(() => s.value === 4)
   color: rgb(255 255 255 / 0.45);
 }
 
-.mvm__captions {
-  grid-column: 1 / -1;
-  display: grid;
-  font-size: 19px;
-  line-height: 1.3;
-  min-height: 2.6em;
-
-  & > * {
-    grid-area: 1 / 1;
-  }
+/* плашка-заглушка вместо текста интерфейса: это скелет сайта, а не информация */
+.skel {
+  display: inline-block;
+  width: 46px;
+  height: 7px;
+  border-radius: 4px;
+  background: rgb(0 0 0 / 0.12);
 }
 
-.mvm__caption {
-  transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
+.skel--short {
+  width: 30px;
+}
+
+/* окно «греется»: красное свечение по краю и волны жара над ним */
+.win-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  transition: box-shadow 0.6s ease;
+}
+
+.win-wrap--hot {
+  box-shadow: 0 0 0 1.5px rgb(239 68 68 / 0.7), 0 0 36px rgb(239 68 68 / 0.45);
+}
+
+.heat {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: space-around;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+
+  & i {
+    width: 16px;
+    height: 34px;
+    align-self: flex-end;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(248 113 113 / 0.6), transparent);
+    filter: blur(3px);
+    animation: heat-rise 1.6s ease-in infinite;
+  }
+
+  & i:nth-child(2) { animation-delay: 0.35s; }
+  & i:nth-child(3) { animation-delay: 0.9s; }
+  & i:nth-child(4) { animation-delay: 0.55s; }
+  & i:nth-child(5) { animation-delay: 1.2s; }
+}
+
+.win-wrap--hot .heat {
+  opacity: 1;
+}
+
+@keyframes heat-rise {
+  0% { transform: translateY(12px) scaleX(0.6); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(-26px) scaleX(1.3); opacity: 0; }
 }
 
 /* ── серверы ─────────────────────────────────────────────────────── */
@@ -308,56 +471,10 @@ const versions = computed(() => s.value === 4)
   backdrop-filter: blur(6px);
 }
 
-.srv__client,
-.srv__lb {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  --hud-c: rgb(255 255 255 / 0.4);
-  font-size: 12px;
-  color: rgb(255 255 255 / 0.7);
-}
-
-.srv__icon {
-  font-size: 14px;
-}
-
-.srv__clients {
-  display: flex;
-  gap: 6px;
-  margin-left: auto;
-}
-
-.srv__chip {
-  padding: 1px 6px;
-  border-radius: 4px;
-  font-family: 'Fira Code', monospace;
-  font-size: 11px;
-  background: rgb(52 211 153 / 0.18);
-  color: #6ee7b7;
-}
-
-.srv__chip--old {
-  background: rgb(255 255 255 / 0.08);
-  color: rgb(255 255 255 / 0.6);
-}
-
-.srv__metric {
-  margin-left: auto;
-  font-family: 'Fira Code', monospace;
-  color: #fca5a5;
-  transition: color 0.5s;
-}
-
-.srv__metric--good {
-  color: #6ee7b7;
-}
-
 .srv__row {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -383,17 +500,19 @@ const versions = computed(() => s.value === 4)
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   gap: 4px;
   padding: 8px;
   --hud-c: var(--c);
-  transition: flex-grow 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease, padding 0.7s;
+  transition: flex-grow 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease, padding 0.7s, margin 0.7s;
 }
 
 /* копии Catalog: схлопнуты, на шаге масштабирования раскрываются в стопку */
 .srv__box--ghost {
   flex-grow: 0.0001;
   padding-block: 0;
+  /* съедает gap стопки — колонки с разным числом подов остаются одной высоты */
+  margin-top: -5px;
   opacity: 0;
 }
 
@@ -408,6 +527,17 @@ const versions = computed(() => s.value === 4)
   max-height: 120px;
   background: repeating-linear-gradient(180deg, rgb(255 255 255 / 0.06) 0 2px, transparent 2px 12px);
   pointer-events: none;
+}
+
+.srv__top {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.srv__meter {
+  position: relative;
+  z-index: 1;
 }
 
 .srv__leds {
@@ -429,6 +559,7 @@ const versions = computed(() => s.value === 4)
 }
 
 .srv__status {
+  flex: 1;
   font-family: 'Fira Code', monospace;
   font-size: 11px;
   color: #6ee7b7;
@@ -439,6 +570,20 @@ const versions = computed(() => s.value === 4)
 
   & .srv__status { color: #fca5a5; }
   & .srv__leds i { background: #ef4444; }
+}
+
+.srv__box--killed {
+  --hud-c: #ef4444;
+
+  & .srv__status { color: #fca5a5; }
+  & .srv__leds i { background: #ef4444; }
+}
+
+.srv__box--restart {
+  --hud-c: #fbbf24;
+
+  & .srv__status { color: #fcd34d; }
+  & .srv__leds i { background: #fbbf24; animation: blink 0.5s steps(2) infinite; }
 }
 
 .srv__box--busy {
@@ -469,12 +614,6 @@ const versions = computed(() => s.value === 4)
 .srv__api--new {
   background: rgb(52 211 153 / 0.18);
   color: #6ee7b7;
-}
-
-.srv__note {
-  font-size: 12px;
-  color: rgb(255 255 255 / 0.6);
-  min-height: 1.4em;
 }
 
 /* ── окно браузера ───────────────────────────────────────────────── */
@@ -513,11 +652,9 @@ const versions = computed(() => s.value === 4)
 
 .win__url {
   flex: 1;
-  padding: 2px 10px;
+  height: 14px;
   border-radius: 999px;
   background: #2c2c36;
-  color: rgb(255 255 255 / 0.55);
-  font-size: 11px;
 }
 
 .site {
@@ -592,9 +729,9 @@ const versions = computed(() => s.value === 4)
   transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Catalog ×4 — страница просто получает четыре каталога, а не больше мощности */
+/* Catalog ×3 — страница просто получает три каталога, а не больше мощности */
 .cat--small {
-  grid-column: span 1;
+  grid-column: span 2;
   grid-row: span 1;
 
   & .cat__grid { gap: 3px; }
@@ -776,13 +913,6 @@ const versions = computed(() => s.value === 4)
   background: #fbcfe8;
 }
 
-.profile__task {
-  margin-left: auto;
-  margin-right: 50px;
-  font-size: 10px;
-  color: #db2777;
-}
-
 /* главный поток занят: вся вкладка замирает */
 .win--frozen .spin,
 .win--frozen .srv__leds i {
@@ -822,32 +952,54 @@ const versions = computed(() => s.value === 4)
   & span { font-size: 10px; color: #666; }
 }
 
-.dev {
+/* Out of Memory: вкладка вместо сайта показывает страницу сбоя */
+.crash {
+  position: absolute;
+  z-index: 5;
+  inset: 26px 0 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  font-size: 12px;
-  color: rgb(255 255 255 / 0.6);
+  background: #fff;
+  color: #5f6368;
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
 
-  & b { width: 40px; text-align: right; font-family: 'Fira Code', monospace; color: #fff; }
-}
-
-.dev__bar {
-  flex: 1;
-  height: 6px;
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.1);
-  overflow: hidden;
-
-  & i {
-    display: block;
-    height: 100%;
-    border-radius: inherit;
-    background: #34d399;
-    transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1), background 0.5s;
+  & b {
+    margin-top: 6px;
+    font-size: 22px;
+    font-weight: 500;
+    color: #202124;
   }
 
-  & i.hot { background: #ef4444; }
+  & span {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+  }
+
+  & i {
+    margin-top: 8px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    background: #1a73e8;
+    color: #fff;
+    font-style: normal;
+    font-size: 11px;
+    font-weight: 500;
+  }
+}
+
+.crash--on {
+  opacity: 1;
+}
+
+.crash__icon {
+  width: 44px;
+  height: 52px;
+  color: #5f6368;
 }
 
 @keyframes spin {
