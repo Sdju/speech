@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useSlideContext } from '@slidev/client'
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { stationScreen } from '../universe/screen'
 
 /**
@@ -8,10 +8,11 @@ import { stationScreen } from '../universe/screen'
  * Минималистичные 2D-астронавты поверх 3D-станции; тросы тянутся к модулям
  * по их экранным позициям (universe/screen.ts).
  *
- *   0 — один астронавт на тросе: один разработчик, всё понятно (слайд 13 и вход на 14)
- *   1 — людей всё больше: прилетает экипаж, у каждого трос к модулю своей команды
+ *   0 — один астронавт на тросе: один разработчик, всё понятно
+ *   1 — людей всё больше: прилетает экипаж; трос тянется, когда астронавт долетел
  *   2 — кода всё больше: вокруг копятся контейнеры
- *   3 — зоны ответственности размываются: тросы к чужим модулям, цвета команд гаснут
+ *   3 — зоны ответственности размываются: тросы плавно перестраиваются к чужим модулям,
+ *       цвета команд гаснут
  *   4 — связи становятся комплексными: тросы между людьми, клубок
  */
 const { step = 0 } = defineProps<{ step?: number }>()
@@ -43,6 +44,28 @@ const crew = [
 
 // «кто теперь за что держится» на шаге размытых границ
 const swapped = ['cart', 'catalog', 'search', 'cart', 'catalog', 'search', 'catalog', 'search', 'cart']
+/**
+ * 0 — тросы к модулям своих команд, 1 — к чужим. Между шагами 2 и 3 перетекает плавно:
+ * точка крепления интерполируется в коде, а не CSS-переходом на координатах — так трос
+ * и переезжает к новому модулю, и не отстаёт от вращающейся станции.
+ */
+const swap = ref(s.value >= 3 ? 1 : 0)
+let swapRaf = 0
+watch(() => (s.value >= 3 ? 1 : 0), (to) => {
+  cancelAnimationFrame(swapRaf)
+  const from = swap.value
+  const start = performance.now()
+  const tick = (now: number) => {
+    const k = Math.min(1, (now - start) / 1100)
+    const e = k < 0.5 ? 4 * k * k * k : 1 - (-2 * k + 2) ** 3 / 2
+    swap.value = from + (to - from) * e
+    if (k < 1)
+      swapRaf = requestAnimationFrame(tick)
+  }
+  swapRaf = requestAnimationFrame(tick)
+})
+onBeforeUnmount(() => cancelAnimationFrame(swapRaf))
+
 // клубок связей между людьми
 const knots: [number, number][] = [[0, 4], [1, 5], [2, 3], [3, 7], [4, 8], [5, 0], [6, 1], [7, 4], [8, 2], [0, 6], [2, 5], [1, 7]]
 
@@ -79,8 +102,12 @@ const people = computed(() => {
     const x = sc.cx + c.x * R
     const y = sc.cy + c.y * R * 0.66
     const visible = i === 0 || s.value >= 1
-    const target = s.value >= 3 ? swapped[i] : c.team
-    const [tx, ty] = sc.mod(target)
+    const [ox, oy] = sc.mod(c.team)
+    const [nx, ny] = sc.mod(swapped[i])
+    const k = swap.value
+    const tx = ox + (nx - ox) * k
+    const ty = oy + (ny - oy) * k
+    const target = k > 0.5 ? swapped[i] : c.team
     // трос провисает между рукой и модулем
     const mx = (x + tx) / 2
     const my = (y + ty) / 2 + 40
@@ -134,7 +161,7 @@ const captions = [
         class="tether"
         :class="{ 'is-on': p.visible }"
         :d="p.tether"
-        :style="{ stroke: p.tetherColor }"
+        :style="{ 'stroke': p.tetherColor, '--delay': `${p.i * 0.09}s` }"
       />
       <!-- клубок между людьми -->
       <path v-for="(d, k) in tangle" :key="`k${k}`" class="knot" :d="d" />
@@ -224,12 +251,19 @@ const captions = [
   stroke-opacity: 0;
   stroke-dasharray: 600;
   stroke-dashoffset: 600;
-  transition: stroke-opacity 0.6s ease, stroke-dashoffset 1.2s ease 0.3s, stroke 0.8s ease;
+  /* исчезает сразу, вместе с астронавтом */
+  transition: stroke-opacity 0.35s ease, stroke-dashoffset 0.5s ease, stroke 0.8s ease;
 }
 
+/* появляется, когда астронавт долетел (его полёт — 1.2 с с той же задержкой --delay),
+   иначе трос тянется от точки, где астронавта ещё нет */
 .tether.is-on {
   stroke-opacity: 0.75;
   stroke-dashoffset: 0;
+  transition:
+    stroke-opacity 0.4s ease calc(var(--delay) + 0.9s),
+    stroke-dashoffset 1s ease calc(var(--delay) + 0.9s),
+    stroke 0.8s ease;
 }
 
 .knot {
