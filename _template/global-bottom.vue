@@ -61,7 +61,7 @@ function wait(ms: number) {
 }
 
 watch(currentSlideNo, async () => {
-  const selector = `[data-slidev-no="${currentSlideNo.value}"] .slidev-layout`
+  const selector = `[data-slidev-no="${currentSlideNo.value}"] :is(.slidev-layout, .full)`
   while(!document.querySelector(selector)) {
     await wait(100)
   }

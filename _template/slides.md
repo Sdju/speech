@@ -11,7 +11,7 @@ transition: view-transition
 contextMenu: false
 comark: true
 growSeed: 4
-title: История реактивности Frontend
+title: Шаблон доклада
 layout: center
 ---
 
@@ -31,4 +31,12 @@ src: ./parts/1_palette.md
 
 ---
 src: ./parts/2_advanced.md
+---
+
+---
+src: ./parts/3_file-tree.md
+---
+
+---
+src: ./parts/4_arrows.md
 ---

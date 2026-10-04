@@ -20,5 +20,15 @@ export default definePreparserSetup(() => {
         frontmatter.clicks = Math.max(0, timeline.length - 1)
       },
     },
+    {
+      // то же для `fileTree:` (FileTree.vue): шаги дерева = клики слайда
+      name: 'zede-file-tree-clicks',
+      transformSlide(_content, frontmatter) {
+        const steps = frontmatter.fileTree
+        if (!Array.isArray(steps) || steps.length === 0 || frontmatter.clicks != null || frontmatter.timeline != null)
+          return
+        frontmatter.clicks = Math.max(0, steps.length - 1)
+      },
+    },
   ]
 })
