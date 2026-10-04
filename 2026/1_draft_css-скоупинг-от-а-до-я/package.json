@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "node addon/scripts/build.ts",
+    "build": "node ../../scripts/build-static.ts 2026/1_draft_css-скоупинг-от-а-до-я",
     "dev": "slidev"
   },
   "dependencies": {

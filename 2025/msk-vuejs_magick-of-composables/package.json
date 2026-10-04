@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "env-cmd -x slidev build --out $STATIC_ROOT$PRJ_NAME --base $BASE_ROOT$PRJ_NAME",
+    "build": "node ../../scripts/build-static.ts 2025/msk-vuejs_magick-of-composables",
     "dev": "slidev",
     "export": "slidev export --with-clicks"
   },

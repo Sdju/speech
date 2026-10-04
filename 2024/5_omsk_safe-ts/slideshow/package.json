@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "slidev build --out ../../../-static/slides/2024_omsk_safe-ts --base /speech/slides/2024_omsk_safe-ts/",
+    "build": "node ../../../scripts/build-static.ts 2024/5_omsk_safe-ts/slideshow",
     "dev": "slidev",
     "export": "slidev export --with-clicks"
   },

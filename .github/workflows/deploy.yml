@@ -1,34 +1,72 @@
-name: Deploy presentation
+name: Deploy presentations
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      presentation:
+        description: 'Optional slug or source path to rebuild'
+        required: false
+        type: string
   push:
     branches:
       - main
 
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
       pages: write
       id-token: write
-
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - uses: actions/checkout@v4
-
+        with:
+          # Cold caches restore the existing published archive from a pinned commit.
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.29.1
+          run_install: false
+      - name: Read site paths
+        id: paths
+        run: |
+          node --input-type=module - <<'JS'
+          import fs from 'node:fs';
+          import { loadConfig } from './scripts/static-site.ts';
+          const config = loadConfig();
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `cache=${config.cacheDir}\nsite=${config.outputDir}\n`);
+          JS
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.paths.outputs.cache }}
+          key: static-v1-${{ runner.os }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            static-v1-${{ runner.os }}-
+      - name: Test incremental builder
+        run: node --test scripts/static-site.test.ts
+      - name: Rebuild selected presentation
+        if: inputs.presentation != ''
+        env:
+          PRESENTATION: ${{ inputs.presentation }}
+        run: node scripts/build-static.ts "$PRESENTATION" --force --install
+      - name: Assemble site (only changed presentations are built)
+        run: node scripts/build-static.ts --install
       - name: Setup Pages
         uses: actions/configure-pages@v5
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '-static'
+          path: ${{ steps.paths.outputs.site }}
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

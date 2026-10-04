@@ -242,8 +242,16 @@ async function createPresentation(): Promise<void> {
       process.exit(1);
     }
 
+    const staticConfigPath = path.join(rootDir, 'static.config.json');
+    const staticConfig = JSON.parse(fs.readFileSync(staticConfigPath, 'utf8'));
+    const slug = `${currentYear}_${folderName.replace(/^\d+_/, '')}`;
+    if (staticConfig.presentations.some((entry: { slug: string }) => entry.slug === slug)) {
+      throw new Error(`Static slug already registered: ${slug}`);
+    }
     console.log('\n⏳ Копирование шаблона...');
     copyDir(templatePath, targetPath);
+    staticConfig.presentations.push({ slug, source: presentationPath, title: talkTitle });
+    fs.writeFileSync(staticConfigPath, JSON.stringify(staticConfig, null, 2) + '\n');
 
     if (!options.skipInstall) {
       console.log('📦 Установка зависимостей...');

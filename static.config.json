@@ -1,0 +1,118 @@
+{
+  "outputDir": "dist/site",
+  "cacheDir": ".cache/static",
+  "base": "/speech/",
+  "origin": "https://sdju.github.io",
+  "archive": {
+    "ref": "81840e30806d2a2ce41cf5c375983a4e016a1656",
+    "directory": "-static",
+    "base": "/speech/"
+  },
+  "presentations": [
+    {
+      "slug": "2024_holy-spring_vue-renderer",
+      "title": "The Progressive Path",
+      "source": "2024/2_holy-spring_vue-renderer/slides",
+      "archiveHash": "03c657c7dd7ead505672b4090bfcb34f8104cd49f020bae50cf57fe176993130"
+    },
+    {
+      "slug": "2024_holy_gears-of-vue-reactivity",
+      "title": "Шестеренки реактивности Vue",
+      "source": "2024/8_holy_gears-of-vue-reactivity",
+      "archiveHash": "23aa32ea56c29f3e9162e4756970476826a57265c5f6327f8160c9f2ecb81bcf"
+    },
+    {
+      "slug": "2024_msk-vuejs_50-shades-of-vue-reactivity",
+      "title": "The Progressive Path",
+      "source": "2024/3_msk-vuejs_50-shades-of-vue-reactivity",
+      "archiveHash": "fa35a3f2da1c4b586496feb40bb9b2c7cd832c2dc84b0640f0dc4eda5b49d175"
+    },
+    {
+      "slug": "2024_omsk_safe-ts",
+      "title": "The Progressive Path",
+      "source": "2024/5_omsk_safe-ts/slideshow",
+      "archiveHash": "0de86e2c029ee10ebea56b82991893bd06b720c7f57e7d0234c3580b0d92ea69"
+    },
+    {
+      "slug": "2024_skillbox_safe-ts",
+      "title": "The Progressive Path",
+      "source": "2024/4_skillbox_safe-ts/slideshow",
+      "archiveHash": "6bc631190927062ce79ad33c3bd0a8045d3c58090e6a466eec51f29bdb0b7b2b"
+    },
+    {
+      "slug": "2024_stachka_js-that-do-not-exist",
+      "title": "The Progressive Path",
+      "source": "2024/1_stachka_js-that-do-not-exist",
+      "archiveHash": "55ec6c27ac1c8c17226e4ef999168ed2e49c0479f0f48103ecd2911148f8c5a7"
+    },
+    {
+      "slug": "2024_twitch_frontend-history",
+      "source": "2024/6_twitch_frontend-history/slideshow",
+      "title": "История фронтенда"
+    },
+    {
+      "slug": "2024_ufadevconf_safe-ts",
+      "title": "Safe TS"
+    },
+    {
+      "slug": "2024_ufadevconf_safe-ts-light",
+      "title": "Safe TS",
+      "source": "2024/7_ufadevconf_safe-ts",
+      "archiveHash": "dd484edeeeeb9812dc82a9906ff66a69318aa0e008f99dfd1a07faa55955f485"
+    },
+    {
+      "slug": "2025_holy-open_no-swiping",
+      "title": "Жулик не воруй",
+      "source": "2025/holy-open_no-swiping",
+      "archiveHash": "7daa9e3accc0ecc4ef2293e71e8befc4e53eff3c7a27531c57eb27b010c664bc"
+    },
+    {
+      "slug": "2025_holy_composables-constellation",
+      "title": "Созвездия композаблов",
+      "source": "2025/holy_composables-constellation",
+      "archiveHash": "0ca86c3383c4082562f94a0c5934dde792667ba05bcc06bb223564de22d64c56"
+    },
+    {
+      "slug": "2025_ith_frontend-2026",
+      "title": "Frontend 2026: недалёкое будущее",
+      "source": "2025/1_ith_frontend-2026",
+      "archiveHash": "25f4b0e324442b73e8a32fd9fdbadba6e7290b5d78a6e896ea34c067ab51c004"
+    },
+    {
+      "slug": "2025_msk-vuejs_magick-of-composables",
+      "title": "Магия композаблов",
+      "source": "2025/msk-vuejs_magick-of-composables",
+      "archiveHash": "8132a3f086d33eb83d31e7d5a97436ba2c565c3404396ea5dd4e66de6481d438"
+    },
+    {
+      "slug": "2025_secon_history-of-reactivity",
+      "title": "История реактивности Frontend",
+      "source": "2025/seccon_history-of-reactivity",
+      "archiveHash": "9f78f9c959b6f903418a5c3012d16c6c63debe9238e94f57ce6e1cb1c5ba84bb"
+    },
+    {
+      "slug": "2025_ufadevconf_the-state-of-frontend",
+      "title": "Состояние фронтенда на 2025 год",
+      "source": "2025/ufadevconf_the-state-of-frontend",
+      "archiveHash": "73f5eb7848054a82801d20e81dbaa3389f588f1c3b0edde148cb83fbf24fbf08"
+    },
+    {
+      "slug": "2026_draft_css-скоупинг-от-а-до-я",
+      "title": "CSS скоупинг от А до Я",
+      "source": "2026/1_draft_css-скоупинг-от-а-до-я",
+      "archiveHash": "a4a8b61f1951f7aee65a5cf44cc6c06420d2412680942160775fef94d02f69bf"
+    },
+    {
+      "slug": "2026_holyjs_you-dont-need-microfrontends",
+      "title": "Вам (не) нужны микрофронтенды",
+      "source": "2026/3_holyjs_you-dont-need-microfrontends",
+      "archiveHash": "a2f3706f5e7182703f9cd505750929f9a816984272c1098f39c959c3fc433074"
+    },
+    {
+      "slug": "2026_msk-vuejs_вкусы-реактивности",
+      "title": "Вкусы реактивности",
+      "source": "2026/2_msk-vuejs_вкусы-реактивности",
+      "archiveHash": "5c90a15f7fd9392b5b05c188197d9f0b032365501899ac192995e45240321166"
+    }
+  ]
+}

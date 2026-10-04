@@ -1,1 +1,0 @@
-import{gt as e}from"./modules/shiki-CS0aakMY.js";var t=e(null),n={frame:null,goal:null,aspect:16/9};export{t as n,n as t};

@@ -15,7 +15,9 @@ _template/          # канон новой презентации (копиру
 .cursor/skills/     # рабочие skill'ы
 .cursor/agents/     # сабагенты
 scripts/            # presentation:create, static:index
--static/            # собранный хаб бинарных билдов
+static.config.json  # реестр публикаций и настройки статического сайта
+.cache/static/      # кеш докладов (вне Git)
+dist/site/          # собранный хаб для Pages (вне Git)
 ```
 
 Внутри доклада:
@@ -35,6 +37,7 @@ components/ img/    # per-talk
 ```bash
 # корень репо
 pnpm presentation:create -c <conf> -t "<english-title>" -y <year>
+pnpm static:build
 pnpm static:index
 
 # внутри <year>/<talk>/

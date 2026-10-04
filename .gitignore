@@ -4,5 +4,8 @@ dist
 *.local
 .remote-assets
 components.d.ts
--static/.vite
+-static/
 .samples/
+.cache/
+# Slidev 0.x generates these entry files in the presentation source directory.
+20??/**/index.html

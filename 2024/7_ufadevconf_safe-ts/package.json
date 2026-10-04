@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "env-cmd -x slidev build --out $STATIC_ROOT$PRJ_NAME --base $BASE_ROOT$PRJ_NAME",
+    "build": "node ../../scripts/build-static.ts 2024/7_ufadevconf_safe-ts",
     "dev": "slidev",
     "export": "slidev export --with-clicks"
   },

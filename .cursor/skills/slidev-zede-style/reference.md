@@ -8,8 +8,11 @@
 pnpm presentation:create -c msk-vuejs -t "Вкусы реактивности" -y 2026
 ```
 
-`build.ts` → `-static/slides/{year}_{conf}_{title}/…` (без порядкового номера папки), `base` `/speech/slides/{year}_{conf}_{title}/…`.  
-После сборки обновляет разводящую `-static/index.html` (`pnpm static:index` / `scripts/generate-static-index.ts`).
+`pnpm build` / `build.ts` → общий `scripts/build-static.ts`; реестр — `static.config.json`.
+Кеш докладов: `.cache/static/slides/{year}_{conf}_{title}/…`, сайт: `dist/site/`.
+Существующие публичные URL сохраняются; новый доклад автоматически регистрирует `presentation:create`.
+`pnpm static:build` восстанавливает архив/кеш и пересобирает только изменённые доклады.
+`pnpm static:index` обновляет индекс готового сайта и README из реестра.
 
 ## Frontmatter (custom)
 

@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "node addon/scripts/build.ts",
+    "build": "node ../../scripts/build-static.ts 2025/1_ith_frontend-2026",
     "dev": "slidev"
   },
   "dependencies": {

@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "pnpm icons:generate && jiti addon/scripts/build.ts",
+    "build": "node ../../scripts/build-static.ts 2026/2_msk-vuejs_вкусы-реактивности",
     "icons:generate": "jiti addon/scripts/generate-toolbar-icons.ts && jiti addon/scripts/generate-point-icons.ts",
     "predev": "pnpm icons:generate",
     "dev": "slidev"

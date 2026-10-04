@@ -1,28 +1,11 @@
 #!/usr/bin/env node
 
-/**
- * Regenerates -static/index.html and README.md from README.template.md.
- * Scans directories under -static/slides that contain index.html.
- *
- * Usage: node scripts/generate-static-index.ts
- * Also invoked from presentation addon/scripts/build.ts after slidev build.
- */
-
+/** Generates the hub from assembled artifacts and README from the publication registry. */
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const repoRoot = path.resolve(__dirname, '..');
-
-const STATIC_DIR = path.join(repoRoot, '-static');
-const SLIDES_DIR = path.join(STATIC_DIR, 'slides');
-const INDEX_PATH = path.join(STATIC_DIR, 'index.html');
-const README_TEMPLATE_PATH = path.join(repoRoot, 'README.template.md');
-const README_PATH = path.join(repoRoot, 'README.md');
-const BASE_ROOT = '/speech/slides/';
-const PAGES_ORIGIN = 'https://sdju.github.io';
+import { loadConfig, outputDir, repoRoot } from './static-site.ts';
+import type { StaticConfig } from './static-site.ts';
 
 interface SlideEntry {
   dir: string;
@@ -47,19 +30,20 @@ function yearOf(dir: string): string {
   return m?.[1] ?? 'other';
 }
 
-function discoverSlides(): SlideEntry[] {
+function discoverSlides(directory: string, config: StaticConfig): SlideEntry[] {
+  const SLIDES_DIR = path.join(directory, 'slides');
   if (!fs.existsSync(SLIDES_DIR)) return [];
 
   return fs
     .readdirSync(SLIDES_DIR, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && !e.name.startsWith('.'))
+    .filter((e) => e.isDirectory() && config.presentations.some(entry => entry.slug === e.name))
     .map((e) => {
       const indexHtml = path.join(SLIDES_DIR, e.name, 'index.html');
       if (!fs.existsSync(indexHtml)) return null;
       return {
         dir: e.name,
         title: readTitle(indexHtml, e.name),
-        href: `${BASE_ROOT}${e.name}/`,
+        href: `${config.base}slides/${e.name}/`,
         year: yearOf(e.name),
       } satisfies SlideEntry;
     })
@@ -185,7 +169,7 @@ ${items}
     <p class="sub">Собранные доклады · ссылки на статику</p>
 ${
   entries.length === 0
-    ? '    <p class="empty">Пока нет собранных слайдов в <code>-static/slides/</code>.</p>'
+    ? '    <p class="empty">Пока нет собранных докладов.</p>'
     : sections
 }
   </main>
@@ -194,8 +178,8 @@ ${
 `;
 }
 
-function renderReadme(entries: SlideEntry[]): string {
-  const template = fs.readFileSync(README_TEMPLATE_PATH, 'utf8');
+function renderReadme(entries: SlideEntry[], config: StaticConfig, root: string): string {
+  const template = fs.readFileSync(path.join(root, 'README.template.md'), 'utf8');
   const placeholder = '{{SLIDES_TABLE}}';
   if (!template.includes(placeholder)) {
     throw new Error(`README.template.md must contain ${placeholder}`);
@@ -210,21 +194,30 @@ function renderReadme(entries: SlideEntry[]): string {
     '| Год | Доклад | Слайды |',
     '| --- | --- | --- |',
     ...entries.map((entry) =>
-      `| ${entry.year === 'other' ? '—' : entry.year} | ${escapeCell(entry.title)} | [открыть](${PAGES_ORIGIN}${encodeURI(entry.href).replaceAll('(', '%28').replaceAll(')', '%29')}) |`,
+      `| ${entry.year === 'other' ? '—' : entry.year} | ${escapeCell(entry.title)} | [открыть](${config.origin}${encodeURI(entry.href).replaceAll('(', '%28').replaceAll(')', '%29')}) |`,
     ),
   ].join('\n');
   return template.replaceAll(placeholder, () => table);
 }
 
-export function generateStaticIndex(): { count: number; path: string; readmePath: string } {
-  const entries = discoverSlides();
-  const readme = renderReadme(entries);
-  fs.mkdirSync(STATIC_DIR, { recursive: true });
-  fs.writeFileSync(INDEX_PATH, renderHtml(entries), 'utf8');
-  fs.writeFileSync(README_PATH, readme, 'utf8');
-  return { count: entries.length, path: INDEX_PATH, readmePath: README_PATH };
+export function generateStaticIndex(options: { directory?: string; readme?: boolean; config?: StaticConfig; root?: string } = {}): { count: number; path: string } {
+  const config = options.config ?? loadConfig();
+  const root = options.root ?? repoRoot;
+  const directory = options.directory ?? outputDir(config, root);
+  const entries = discoverSlides(directory, config);
+  fs.mkdirSync(directory, { recursive: true });
+  const index = path.join(directory, 'index.html');
+  fs.writeFileSync(index, renderHtml(entries), 'utf8');
+  if (options.readme !== false) {
+    const published = config.presentations.map(entry => ({
+      dir: entry.slug, title: entry.title, href: `${config.base}slides/${entry.slug}/`, year: yearOf(entry.slug),
+    })).sort((a, b) => b.year.localeCompare(a.year) || a.dir.localeCompare(b.dir, 'ru'));
+    fs.writeFileSync(path.join(root, 'README.md'), renderReadme(published, config, root), 'utf8');
+  }
+  return { count: entries.length, path: index };
 }
 
-const result = generateStaticIndex();
-console.log(`✅ Wrote ${result.path} (${result.count} slides)`);
-console.log(`✅ Wrote ${result.readmePath} from README.template.md`);
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const result = generateStaticIndex();
+  console.log(`Wrote ${result.path} (${result.count} slides) and README.md`);
+}

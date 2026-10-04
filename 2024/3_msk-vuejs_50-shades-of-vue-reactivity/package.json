@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "slidev build --out ../../-static/slides/2024_msk-vuejs_50-shades-of-vue-reactivity --base /speech/slides/2024_msk-vuejs_50-shades-of-vue-reactivity/",
+    "build": "node ../../scripts/build-static.ts 2024/3_msk-vuejs_50-shades-of-vue-reactivity",
     "dev": "slidev",
     "eject": "slidev theme eject",
     "export": "slidev export"
