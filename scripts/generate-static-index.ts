@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Regenerates -static/index.html — hub page with links to built slides.
+ * Regenerates -static/index.html and README.md from README.template.md.
  * Scans directories under -static/slides that contain index.html.
  *
  * Usage: node scripts/generate-static-index.ts
@@ -19,7 +19,10 @@ const repoRoot = path.resolve(__dirname, '..');
 const STATIC_DIR = path.join(repoRoot, '-static');
 const SLIDES_DIR = path.join(STATIC_DIR, 'slides');
 const INDEX_PATH = path.join(STATIC_DIR, 'index.html');
+const README_TEMPLATE_PATH = path.join(repoRoot, 'README.template.md');
+const README_PATH = path.join(repoRoot, 'README.md');
 const BASE_ROOT = '/speech/slides/';
+const PAGES_ORIGIN = 'https://sdju.github.io';
 
 interface SlideEntry {
   dir: string;
@@ -191,12 +194,37 @@ ${
 `;
 }
 
-export function generateStaticIndex(): { count: number; path: string } {
-  fs.mkdirSync(STATIC_DIR, { recursive: true });
+function renderReadme(entries: SlideEntry[]): string {
+  const template = fs.readFileSync(README_TEMPLATE_PATH, 'utf8');
+  const placeholder = '{{SLIDES_TABLE}}';
+  if (!template.includes(placeholder)) {
+    throw new Error(`README.template.md must contain ${placeholder}`);
+  }
+  const escapeCell = (text: string): string => text
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('|', '&#124;')
+    .replace(/[\r\n]+/g, ' ');
+  const table = [
+    '| Год | Доклад | Слайды |',
+    '| --- | --- | --- |',
+    ...entries.map((entry) =>
+      `| ${entry.year === 'other' ? '—' : entry.year} | ${escapeCell(entry.title)} | [открыть](${PAGES_ORIGIN}${encodeURI(entry.href).replaceAll('(', '%28').replaceAll(')', '%29')}) |`,
+    ),
+  ].join('\n');
+  return template.replaceAll(placeholder, () => table);
+}
+
+export function generateStaticIndex(): { count: number; path: string; readmePath: string } {
   const entries = discoverSlides();
+  const readme = renderReadme(entries);
+  fs.mkdirSync(STATIC_DIR, { recursive: true });
   fs.writeFileSync(INDEX_PATH, renderHtml(entries), 'utf8');
-  return { count: entries.length, path: INDEX_PATH };
+  fs.writeFileSync(README_PATH, readme, 'utf8');
+  return { count: entries.length, path: INDEX_PATH, readmePath: README_PATH };
 }
 
 const result = generateStaticIndex();
 console.log(`✅ Wrote ${result.path} (${result.count} slides)`);
+console.log(`✅ Wrote ${result.readmePath} from README.template.md`);
