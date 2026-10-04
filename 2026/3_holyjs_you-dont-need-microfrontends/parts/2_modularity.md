@@ -135,59 +135,59 @@ fileTree:
     tree: |
       src/ @src
         components/ @components
-          Map/ @map-ui
-          ProfileCard/ @profile-card
+          map/ @map-ui
+          profile-card/ @profile-card
           ...
         pages/ @pages
         utils/
-        App.vue
+        app.vue
         main.js
   - caption: 'Проект растёт — каждая папка пухнет'
     tree: |
       src/ @src
         components/ @components
-          Map/ @map-ui
-            MapComponent/
-            MapCard/
+          map/ @map-ui
+            map-component/
+            map-card/
             ...
-          Profile/ @profile-ui
-            UserProfile/
-            ProfileCard/ @profile-card
+          profile/ @profile-ui
+            user-profile/
+            profile-card/ @profile-card
           ...
         pages/ @pages
-          MapPage/ @map-pages
-          ProfilePage/ @profile-pages
+          map-page/ @map-pages
+          profile-page/ @profile-pages
           ...
         stores/ @stores
-          MapStore/ @map-store
-          ProfileStore/ @profile-store
+          map-store/ @map-store
+          profile-store/ @profile-store
           ...
         utils/
-        App.vue
+        app.vue
         main.js
   - caption: 'Всё про карту размазано по трём папкам'
     focus: '#green'
     tree: |
       src/ @src
         components/ @components
-          Map/ @map-ui #green
-            MapComponent/
-            MapCard/
+          map/ @map-ui #green
+            map-component/
+            map-card/
             ...
-          Profile/ @profile-ui #blue
-            UserProfile/
-            ProfileCard/ @profile-card
+          profile/ @profile-ui #blue
+            user-profile/
+            profile-card/ @profile-card
           ...
         pages/ @pages
-          MapPage/ @map-pages #green
-          ProfilePage/ @profile-pages #blue
+          map-page/ @map-pages #green
+          profile-page/ @profile-pages #blue
           ...
         stores/ @stores
-          MapStore/ @map-store #green
-          ProfileStore/ @profile-store #blue
+          map-store/ @map-store #green
+          profile-store/ @profile-store #blue
           ...
         utils/
-        App.vue
+        app.vue
         main.js
   - caption: 'И всё про профиль — тоже'
     focus: '#blue'
@@ -196,51 +196,51 @@ fileTree:
     tree: |
       src/ @src
         components/ @components
-          Map/ @map-ui #green
-            MapComponent/
-            MapCard/
+          map/ @map-ui #green
+            map-component/
+            map-card/
             ...
-          Profile/ @profile-ui #blue
-            UserProfile/
-            ProfileCard/ @profile-card
+          profile/ @profile-ui #blue
+            user-profile/
+            profile-card/ @profile-card
           ...
         pages/ @pages
-          MapPage/ @map-pages #green
-          ProfilePage/ @profile-pages #blue
+          map-page/ @map-pages #green
+          profile-page/ @profile-pages #blue
           ...
         stores/ @stores
-          MapStore/ @map-store #green
-          ProfileStore/ @profile-store #blue
+          map-store/ @map-store #green
+          profile-store/ @profile-store #blue
           ...
         modules/ @modules
         utils/
-        App.vue
+        app.vue
         main.js
   - caption: 'Модуль Map: свои компоненты, страницы, стор'
     focus: '#green'
     tree: |
       src/ @src
         components/ @components
-          Profile/ @profile-ui #blue
-            UserProfile/
-            ProfileCard/ @profile-card
+          profile/ @profile-ui #blue
+            user-profile/
+            profile-card/ @profile-card
           ...
         pages/ @pages
-          ProfilePage/ @profile-pages #blue
+          profile-page/ @profile-pages #blue
           ...
         stores/ @stores
-          ProfileStore/ @profile-store #blue
+          profile-store/ @profile-store #blue
           ...
         modules/ @modules
-          Map/ @map #green
+          map/ @map #green
             components/ @map-ui
-              MapComponent/
-              MapCard/
+              map-component/
+              map-card/
               ...
             pages/ @map-pages
             stores/ @map-store
         utils/
-        App.vue
+        app.vue
         main.js
   - caption: 'Модуль Profile — так же. Общее уходит в shared'
     tree: |
@@ -248,11 +248,11 @@ fileTree:
         app/
         pages/ @pages
         modules/ @modules
-          Map/ @map #green
+          map/ @map #green
             components/ @map-ui
             pages/ @map-pages
             stores/ @map-store
-          Profile/ @profile #blue
+          profile/ @profile #blue
             components/ @profile-ui
             pages/ @profile-pages
             stores/ @profile-store
@@ -260,7 +260,7 @@ fileTree:
         shared/ @components
           ...
         utils/
-        App.vue
+        app.vue
         main.js
   - caption: 'Модуль — это граница: публичный API, тесты, документация'
     focus: '@map'
@@ -269,19 +269,19 @@ fileTree:
         app/
         pages/ @pages
         modules/ @modules
-          Map/ @map #green
+          map/ @map #green
             components/ @map-ui
             pages/ @map-pages
             stores/ @map-store
             tests/
             index.ts // публичный API модуля
             README.md
-          Profile/ @profile #blue
+          profile/ @profile #blue
           ...
         shared/ @components
           ...
         utils/
-        App.vue
+        app.vue
         main.js
 ---
 

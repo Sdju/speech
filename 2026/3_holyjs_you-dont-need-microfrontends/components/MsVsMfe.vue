@@ -188,6 +188,9 @@ const versions = computed(() => s.value === 4)
 const pageLoad = computed(() => hist.page[hist.page.length - 1] ?? 0)
 // окно «греется» по фактическому показанию датчика — жар нарастает вместе с графиком
 const hot = computed(() => !crashed.value && pageLoad.value > 80)
+
+// имена для морфа со схемой в виде сайта (ArchScheme, слайд претензий) — окно, участки, серверы
+const vt = (name: string) => ({ viewTransitionName: `x-site-${name}`, viewTransitionClass: 'x-site' })
 </script>
 
 <template>
@@ -214,7 +217,7 @@ const hot = computed(() => !crashed.value && pageLoad.value > 80)
                   `srv__box--${podState(svc.id, i)}`,
                   { 'srv__box--ghost': i > replicas(svc.id) },
                 ]"
-                :style="{ '--c': svc.color }"
+                :style="{ '--c': svc.color, ...(i === 1 ? vt(`srv-${svc.id}`) : {}) }"
               >
                 <span class="srv__top">
                   <span class="srv__leds"><i /><i /><i /></span>
@@ -260,20 +263,20 @@ const hot = computed(() => !crashed.value && pageLoad.value > 80)
         <!-- волны жара над окном при перегрузке -->
         <span class="heat" aria-hidden="true"><i /><i /><i /><i /><i /></span>
 
-      <div class="win" :class="{ 'win--frozen': frozen }">
+      <div class="win" :class="{ 'win--frozen': frozen }" :style="vt('win')">
         <div class="win__bar">
           <span class="win__dots"><i /><i /><i /></span>
           <span class="win__url" />
         </div>
 
         <div class="site">
-          <div class="site__nav">
+          <div class="site__nav" :style="vt('nav')">
             <b>Shop</b><span class="skel" /><span class="skel" /><span class="site__search" />
           </div>
 
           <div class="site__body">
             <!-- Catalog -->
-            <div class="site__catalog">
+            <div class="site__catalog" :style="vt('catalog')">
               <div
                 v-for="copy in 3"
                 :key="copy"
@@ -301,7 +304,7 @@ const hot = computed(() => !crashed.value && pageLoad.value > 80)
             </div>
 
             <!-- Cart -->
-            <div class="site__cart" :class="{ 'site__cart--v1': versions }">
+            <div class="site__cart" :class="{ 'site__cart--v1': versions }" :style="vt('cart')">
               <span class="tag" style="--c: #60a5fa">Cart{{ versions ? ' v1' : '' }}</span>
               <div class="cart__item" /><div class="cart__item" />
               <div class="cart__total">
@@ -315,7 +318,7 @@ const hot = computed(() => !crashed.value && pageLoad.value > 80)
           </div>
 
           <!-- Profile -->
-          <div class="site__profile">
+          <div class="site__profile" :style="vt('profile')">
             <span class="tag" style="--c: #f472b6">Profile</span>
             <span class="avatar" />
             <span class="card__line" style="width: 90px" />

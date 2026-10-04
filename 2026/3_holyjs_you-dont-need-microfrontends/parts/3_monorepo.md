@@ -40,12 +40,12 @@ fileTree:
         app/ @app
         pages/
         modules/ @modules
-          Profile/ @profile #blue
-          Map/ @map #green
+          profile/ @profile #blue
+          map/ @map #green
           ... @more
         shared/
         utils/
-        App.vue
+        app.vue
         main.js
   - caption: 'Каждый модуль — отдельный пакет'
     tree: |
