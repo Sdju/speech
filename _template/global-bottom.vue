@@ -4,12 +4,8 @@ import { computed, ref, watch } from "vue"
 import { TransitionPresets, useTransition } from '@vueuse/core'
 import GlslBackground from "./theme/components/backgrounds/GlslBackground.vue"
 import shader from "./background-shader.glsl?raw"
-import { 
-  type PostProcessingPipeline,
-  shadingShader,
-  noopShader
-} from "./addon/utils/shaders"
-import { PostProcessingStage } from "./addon/utils/webgl"
+import { shadingShader } from "./addon/utils/shaders"
+import type { PostProcessingStage } from "./addon/utils/webgl"
 
 const { currentSlideRoute, currentSlideNo } = useNav()
 const frontmatter = computed(() => {

@@ -1,5 +1,3 @@
-import { presetWebFonts } from 'unocss'
-
 function parseValue(value: string) {
   return value.endsWith('%') ? value : `${value}px`
 }
@@ -137,17 +135,6 @@ export default {
       'fx': 'transform filter duration-[var(--slidev-transition-duration)]',
       'center': 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
     }
-  ],
-  presets: [
-    presetWebFonts({
-      fonts: {
-        mono: 'sans',
-        sans: 'sans',
-        strong: 'sans',
-        fast: 'Ubuntu',
-        hand: 'Bentham',
-      },
-    }),
   ],
   safelist: [
     ...Object.keys(variants).map(key => `cs-${key}`),

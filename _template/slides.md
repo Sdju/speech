@@ -40,3 +40,7 @@ src: ./parts/3_file-tree.md
 ---
 src: ./parts/4_arrows.md
 ---
+
+---
+src: ./parts/5_qr-code.md
+---

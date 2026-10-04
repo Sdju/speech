@@ -1,42 +1,60 @@
 <script setup lang="ts">
-import QRCodeStyling from 'qr-code-styling';
-import { useTemplateRef, onMounted, watch } from 'vue';
-const qrCodeRef = useTemplateRef('qrCodeRef');
+import QRCodeStyling, { type Options } from 'qr-code-styling'
+import { computed, onMounted, onBeforeUnmount, useTemplateRef, watch } from 'vue'
 
-const props = defineProps<{
-  url: string;
-}>();
+const props = withDefaults(defineProps<{
+  url: string
+  size?: number
+  color?: string
+  background?: string
+}>(), { size: 200, color: '#ffffff', background: 'transparent' })
+
+const qrCodeRef = useTemplateRef('qrCodeRef')
+let qrCode: QRCodeStyling | undefined
+
+const options = computed<Options>(() => ({
+  width: props.size,
+  height: props.size,
+  type: 'svg',
+  // At least four modules of empty space, including the smallest QR (21 modules).
+  margin: Math.ceil(props.size * 4 / 29),
+  qrOptions: { errorCorrectionLevel: 'H' },
+  dotsOptions: { color: props.color, type: 'dots' },
+  cornersSquareOptions: { color: props.color, type: 'extra-rounded' },
+  cornersDotOptions: { color: props.color, type: 'rounded' },
+  backgroundOptions: { color: props.background },
+  data: props.url,
+}))
 
 onMounted(() => {
-  const qrCode = new QRCodeStyling({
-    width: 200,
-    height: 200,
-    type: 'svg',
-    imageOptions: {
-      hideBackgroundDots: true,
-      imageSize: 0.4,
-      margin: 20,
-    },
-    dotsOptions: {
-      color: 'white',
-      type: 'dots',
-    },
-    cornersSquareOptions: {
-      type: 'extra-rounded',
-      color: 'white',
-    },
-    cornersDotOptions: {
-      type: 'rounded',
-      color: 'white',
-    },
-    backgroundOptions: {
-      color: 'transparent',
-    },
-    data: props.url,
-  });
-  qrCode.append(qrCodeRef.value!);
-});
+  qrCode = new QRCodeStyling(options.value)
+  qrCode.append(qrCodeRef.value!)
+})
+
+watch(options, value => qrCode?.update(value))
+onBeforeUnmount(() => { qrCode = undefined })
 </script>
+
 <template>
-  <div ref="qrCodeRef" />
+  <div
+    ref="qrCodeRef"
+    class="qr-code"
+    :style="{ '--qr-size': `${size}px` }"
+    role="img"
+    :aria-label="`QR-код: ${url}`"
+  />
 </template>
+
+<style>
+:where(.qr-code) {
+  width: var(--qr-size);
+  height: var(--qr-size);
+  flex-shrink: 0;
+}
+
+.qr-code > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+</style>

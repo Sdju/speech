@@ -1,5 +1,5 @@
 .slidev-layout {
-  font-family: sans, sans-serif;
+  @apply font-sans;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;

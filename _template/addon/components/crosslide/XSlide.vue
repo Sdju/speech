@@ -14,8 +14,6 @@ import { useXSlides } from '../../module/XSlides/XSlidesService'
 const props = withDefaults(defineProps<{
   /** Registry key shared across slides */
   name?: string
-  /** @deprecated use `name` */
-  slot?: string
   /** Тег обёртки, которая получает view-transition-name */
   as?: string
 }>(), { as: 'div' })
@@ -30,7 +28,7 @@ const { isPlaying, isPresenter } = useNav()
 /** Per-slide page no from SlideWrapper (`$$slidev-page`). */
 const pageRef = inject<Ref<number>>('$$slidev-page')
 const page = computed(() => pageRef?.value ?? 0)
-const key = computed(() => props.name || props.slot || '')
+const key = computed(() => props.name || '')
 
 if (slots.default && key.value)
   register(key.value, page.value, slots.default)

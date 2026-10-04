@@ -105,9 +105,3 @@
     initial-value: 0deg;
     inherits: false;
 }
-
-@property --un-rotate-z {
-    syntax: '<angle>';
-    initial-value: 0deg;
-    inherits: false;
-}
