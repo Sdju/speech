@@ -35,13 +35,15 @@ export const SlideService = () => {
     }, { immediate: true })
 
     function updateSlide() {
-        const newRect = slideElement.value.getBoundingClientRect()
+        const element = slideElement.value
+        if (!element) return
+        const newRect = element.getBoundingClientRect()
         rect.value = newRect
         left.value = newRect.left
         top.value = newRect.top
-        width.value = slideElement.value.clientWidth / scale.value
-        height.value = slideElement.value.clientHeight / scale.value
-        scale.value = newRect.width / slideElement.value!.clientWidth
+        width.value = element.clientWidth / scale.value
+        height.value = element.clientHeight / scale.value
+        scale.value = newRect.width / element.clientWidth
     }
 
     watch( () => slideElement.value, () => {
