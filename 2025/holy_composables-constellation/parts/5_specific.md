@@ -211,7 +211,7 @@ export const useColorTheme = () => {
 ````
 
 </Example>
-<ImgExample v-if="t.exampleId === 2" src="../img/sun.png" class="w-full h-full object-contain" />
+<ImgExample v-if="t.exampleId === 2" src="./img/sun.png" class="w-full h-full object-contain" />
 
 </Point></Points>
 

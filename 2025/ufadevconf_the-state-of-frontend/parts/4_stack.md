@@ -900,7 +900,7 @@ layout: center
     </div>
   </div>
   <div class="bento-3_1 box box--rich cs-gold flex items-center gap-4 fx">
-    <ImgExample src="../img/ufaqr.png" />
+    <ImgExample src="./img/ufaqr.png" />
   </div>
   <div class="bento-3_1 box box--rich cs-gold flex items-center gap-4 fx">
     <div class="size-80 rd-xl of-hidden">

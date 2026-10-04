@@ -53,7 +53,7 @@ const speed = computed(() => frontmatter.value['bg.speed'] ?? '0.7s')
   <div class="absolute w-full h-full">
     <svg
       class="absolute left-[0px] top-0 w-[980px] h-[554px] back"
-      :viewBox="`${offset} ${offset} ${offset + 980} ${offset + 532}`"
+      :viewBox="`${offset[0]} ${offset[1]} 980 532`"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >

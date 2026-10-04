@@ -13,6 +13,7 @@
 import { computed, ref, watch } from 'vue'
 import { useNav } from '@slidev/client'
 import seedrandom from 'seedrandom'
+import backgroundTexture from './img/Rectangle.png'
 
 const { currentSlideRoute } = useNav()
 
@@ -177,7 +178,7 @@ const poly3 = usePloy(3)
       }"
     />
   </div>
-  <div class="absolute top-0 left-0 w-full h-full" :style="{background: 'url(/img/Rectangle.png)', opacity: '0.15'}" />
+  <div class="absolute top-0 left-0 w-full h-full" :style="{background: `url(${backgroundTexture})`, opacity: '0.15'}" />
 </template>
 
 <style scoped>
