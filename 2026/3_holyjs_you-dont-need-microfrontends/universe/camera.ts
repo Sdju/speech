@@ -1,6 +1,6 @@
 import type { CameraSpec, Vec3 } from './scene'
 import type { StationSpec } from './scene'
-import { DEFAULT_DURATION, DEFAULT_PRESET, DEFAULT_STATION_DURATION, partCameras, planets, presets, satellites, station, SUN_DIR } from './scene'
+import { DEFAULT_DURATION, DEFAULT_PRESET, DEFAULT_STATION_DURATION, orbitsOf, partCameras, planets, presets, satellites, station, SUN_DIR } from './scene'
 
 // ── векторная мелочь ───────────────────────────────────────────────
 
@@ -24,6 +24,8 @@ export function planeBasis(axis: Vec3): [Vec3, Vec3, Vec3] {
   e1 = norm(e1)
   return [n, e1, cross(e1, n)]
 }
+
+type Spec = Required<Omit<CameraSpec, 'preset'>>
 
 // ── мир во времени ─────────────────────────────────────────────────
 
@@ -166,7 +168,7 @@ function slideCamera(slide: SlideLike | undefined, click: number | 'last'): RawC
  * Камера для слайда `no` (1-based) на клике `click`.
  * `keep` и пустой `camera: keep` берут итоговую камеру предыдущего слайда.
  */
-export function resolveCamera(slides: SlideLike[], no: number, click: number): Required<Omit<CameraSpec, 'preset'>> {
+function resolveRaw(slides: SlideLike[], no: number, click: number): Required<Omit<CameraSpec, 'preset'>> {
   let raw = slideCamera(slides[no - 1], click)
   for (let i = no - 1; raw === 'keep' && i >= 1; i--)
     raw = slideCamera(slides[i - 1], 'last')
@@ -182,7 +184,176 @@ export function resolveCamera(slides: SlideLike[], no: number, click: number): R
     spin: spec.spin ?? 0,
     follow: spec.follow ?? 'world',
     duration: spec.duration ?? DEFAULT_DURATION,
+    hold: spec.hold ?? false,
+    face: spec.face ?? '',
+    exact: spec.exact ?? false,
   }
+}
+
+// ── детерминированный ракурс слайда ────────────────────────────────
+//
+// Ракурс каждого (слайд, клик) вычисляется один раз, в порядке доклада, от ракурса предыдущего шага:
+// он ближе к нему по повороту, но не зависит от того, как зритель пришёл на слайд —
+// вернувшись назад, он увидит ровно тот же кадр.
+
+/** на сколько камера может довернуть yaw/pitch слайда, чтобы сократить поворот от предыдущего шага */
+const YAW_FLEX = 60
+const PITCH_FLEX = 8
+const FLEX_COST = 0.35
+/** `hold`: шаг поворота камеры на месте, градусы; берём минимальный угол, при котором в кадре нет объектов */
+const HOLD_TURN_STEP = 5
+const HOLD_TURN_MAX = 100
+/** запас по ширине кадра при проверке видимости объектов на `hold` */
+const HOLD_ASPECT = 1.8
+
+const PORT_DIR: Record<string, Vec3> = { '+x': [1, 0, 0], '-x': [-1, 0, 0], '+z': [0, 0, 1], '-z': [0, 0, -1], '-y': [0, -1, 0] }
+
+/** направление модуля от хаба при нулевом времени — не зависит от живой сцены */
+function staticModuleDir(focus: string): Vec3 | undefined {
+  const m = station.modules.find(m => `${station.id}.${m.id}` === focus)
+  if (!m)
+    return
+  const [x, y, z] = PORT_DIR[m.port]
+  const a = stationYaw(0)
+  return [x * Math.cos(a) + z * Math.sin(a), y, -x * Math.sin(a) + z * Math.cos(a)]
+}
+
+const turnDeg = (a: Vec3, b: Vec3) => Math.acos(Math.max(-1, Math.min(1, dot(a, b)))) / deg
+
+/** положение и размер тела без живой сцены: для детерминированных расчётов ракурсов */
+function staticBody(focus: string | Vec3): BodyState {
+  if (Array.isArray(focus))
+    return { pos: focus, radius: 1 }
+  if (focus === station.id || focus.startsWith(`${station.id}.`))
+    return { pos: station.pos, radius: station.radius }
+  return bodyAt(focus, 0)
+}
+
+/**
+ * Попадает ли в кадр хоть одно тело (сфера с запасом). Угловой критерий вместо проекции:
+ * работает и для тел рядом с камерой, где проекция вырождается.
+ */
+function anyBodyInView(eye: Vec3, fwd: Vec3, shift: [number, number], fov: number): boolean {
+  const right = norm(cross(fwd, Math.abs(fwd[1]) > 0.999 ? [0, 0, -1] : [0, 1, 0]))
+  const up = cross(right, fwd)
+  const bounds = planets.map(p => [p.pos, Math.max(p.radius * 1.3, p.ring?.outer ?? 0, Math.max(0, ...orbitsOf(p)) + 0.2)] as [Vec3, number])
+  bounds.push([station.pos, station.radius * 2.5])
+  return bounds.some(([pos, radius]) => {
+    const v = sub(pos, eye)
+    const d = len(v)
+    if (d <= radius)
+      return true
+    const beta = Math.acos(Math.max(-1, Math.min(1, dot(v, fwd) / d)))
+    // полуугол кадра в направлении на тело: окно |x/z·fov + shift| < aspect, |y/z·fov + shift| < 1
+    const px = dot(v, right)
+    const py = dot(v, up)
+    const pl = Math.hypot(px, py) || 1
+    const ux = px / pl
+    const uy = py / pl
+    const edge = (u: number, lo: number, hi: number) => Math.abs(u) < 1e-6 ? Infinity : (u > 0 ? hi : lo) / u
+    const t = Math.min(
+      edge(ux, (-HOLD_ASPECT - shift[0]) / fov, (HOLD_ASPECT - shift[0]) / fov),
+      edge(uy, (-1 - shift[1]) / fov, (1 - shift[1]) / fov),
+    )
+    return beta < Math.atan(t) + Math.asin(Math.min(1, radius / d)) + 0.05
+  })
+}
+
+/**
+ * Слайд без объектов в кадре: камера остаётся на месте и поворачивается на минимальный угол,
+ * при котором в кадре остаются одни звёзды. Дистанция та же, облёта нет.
+ */
+function holdSpec(prev: Spec, hold: Spec): Spec {
+  const body = staticBody(prev.focus)
+  const dist = prev.distance * (Array.isArray(prev.focus) ? 1 : body.radius)
+  const dir = specDir(prev, 0, 0, true)
+  const eye = add(body.pos, mul(dir, dist))
+  const fwd = mul(dir, -1)
+  const right = norm(cross(fwd, Math.abs(fwd[1]) > 0.999 ? [0, 0, -1] : [0, 1, 0]))
+  const up = cross(right, fwd)
+  // направления поворота по предпочтению: вверх, вправо, влево, вниз
+  const sides: Vec3[] = [up, right, mul(right, -1), mul(up, -1)]
+  for (let a = HOLD_TURN_STEP; a <= HOLD_TURN_MAX; a += HOLD_TURN_STEP) {
+    for (const side of sides) {
+      const f = norm(add(mul(fwd, Math.cos(a * deg)), mul(side, Math.sin(a * deg))))
+      if (anyBodyInView(eye, f, prev.shift, prev.fov))
+        continue
+      return {
+        ...prev,
+        focus: add(eye, mul(f, dist)),
+        follow: 'world',
+        distance: dist,
+        yaw: Math.atan2(-f[0], -f[2]) / deg,
+        pitch: Math.asin(-f[1]) / deg,
+        fov: hold.fov,
+        spin: 0,
+        duration: hold.duration,
+        hold: true,
+      }
+    }
+  }
+  return { ...prev, shift: hold.shift, fov: hold.fov, duration: hold.duration, hold: true }
+}
+
+const canonCache = new WeakMap<object, Map<string, Spec>>()
+
+function canonical(slides: SlideLike[]): Map<string, Spec> {
+  const out = new Map<string, Spec>()
+  /** последний «настоящий» кадр (не hold) и его направление: следующий слайд подгоняется под него */
+  let real: Spec | null = null
+  let realDir: Vec3 | null = null
+  let held: Spec | null = null
+  slides.forEach((slide, i) => {
+    const steps = slide?.meta?.slide?.frontmatter?.timeline
+    const n = Math.max(1, Array.isArray(steps) ? steps.length : 1)
+    for (let c = 0; c < n; c++) {
+      let spec = resolveRaw(slides, i + 1, c)
+      if (real && realDir) {
+        if (spec.hold) {
+          held = held ?? holdSpec(real, spec)
+          out.set(`${i + 1}.${c}`, held)
+          continue
+        }
+        let best = Infinity
+        let pick = spec
+        const yawFlex = spec.exact ? 0 : YAW_FLEX
+        const pitchFlex = spec.exact ? 0 : PITCH_FLEX
+        for (let dy = -yawFlex; dy <= yawFlex; dy += 5) {
+          for (let dp = -pitchFlex; dp <= pitchFlex; dp += 4) {
+            const cand = { ...spec, yaw: spec.yaw + dy, pitch: spec.pitch + dp }
+            const cost = turnDeg(realDir, specDir(cand, 0, 0, true)) + FLEX_COST * (Math.abs(dy) + Math.abs(dp))
+            if (cost < best) {
+              best = cost
+              pick = cand
+            }
+          }
+        }
+        spec = pick
+      }
+      held = null
+      out.set(`${i + 1}.${c}`, spec)
+      if (!spec.hold) {
+        real = spec
+        realDir = specDir(spec, 0, 0, true)
+      }
+    }
+  })
+  return out
+}
+
+/**
+ * Камера для слайда `no` (1-based) на клике `click`.
+ * Ракурс подогнан под предыдущий шаг (см. выше) и не зависит от маршрута зрителя.
+ */
+export function resolveCamera(slides: SlideLike[], no: number, click: number): Spec {
+  let map = canonCache.get(slides)
+  if (!map) {
+    map = canonical(slides)
+    canonCache.set(slides, map)
+  }
+  const steps = slides[no - 1]?.meta?.slide?.frontmatter?.timeline
+  const n = Math.max(1, Array.isArray(steps) ? steps.length : 1)
+  return map.get(`${no}.${Math.max(0, Math.min(click, n - 1))}`) ?? resolveRaw(slides, no, click)
 }
 
 // ── состояние станции ──────────────────────────────────────────────
@@ -239,7 +410,12 @@ export interface CameraFrame {
   shift: [number, number]
 }
 
-const ease = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2
+/** мягкий старт и остановка: пиковая скорость всего в 1.57× от средней (у кубической — в 3×) */
+const ease = (t: number) => (1 - Math.cos(Math.PI * t)) / 2
+
+/** средняя угловая скорость поворота камеры, град/с: дальний поворот растягивается во времени */
+const MAX_TURN_DEG_PER_S = 20
+const MAX_FLIGHT_S = 4.5
 
 /** сферическая интерполяция направлений (без рывков при смене системы отсчёта) */
 function slerp(a: Vec3, b: Vec3, t: number): Vec3 {
@@ -256,19 +432,72 @@ function slerp(a: Vec3, b: Vec3, t: number): Vec3 {
   return add(mul(a, Math.sin((1 - t) * theta) / s), mul(b, Math.sin(t * theta) / s))
 }
 
-type Spec = ReturnType<typeof resolveCamera>
 
 /** поворот корпуса станции вокруг вертикали — тот же, что в StationScene.animate */
 export const stationYaw = (time: number) => 0.5 + time * station.spin
 
-function specDir(s: Spec, time: number, spinDeg: number): Vec3 {
+// ── доворот станции ─────────────────────────────────────────────────
+// Вместо облёта камеры вокруг вращающейся станции станция сама поворачивается нужным модулем к камере
+// (`face`), выбирая из двух симметричных ракурсов тот, что ближе к текущему углу; без `face` станция плавно
+// возвращается к обычному вращению.
+
+/** секунд на доворот станции */
+const TURN_S = 2.4
+/** на сколько градусов от направления на камеру смотрит модуль: он виден сбоку, а не торцом */
+const FACE_OFFSET = 50
+let faceYaw: number | null = null
+/** какой доворот уже запущен: модуль и yaw камеры — повторный вход в тот же ракурс его не перезапускает */
+let faceKey = ''
+let turnFrom = 0
+let turnStart = -1e9
+
+const wrapPi = (a: number) => a - Math.PI * 2 * Math.round(a / (Math.PI * 2))
+
+/** живой угол станции с учётом доворота: им пользуются сцена станции и ракурсы `follow: station` */
+export function liveYaw(time: number): number {
+  const goal = faceYaw ?? stationYaw(time)
+  const k = ease(Math.min(1, Math.max(0, (time - turnStart) / TURN_S)))
+  return turnFrom + wrapPi(goal - turnFrom) * k
+}
+
+/**
+ * угол станции, при котором модуль `id` смотрит в сторону камеры (yaw камеры — в градусах).
+ * Модуль виден сбоку: его можно отвернуть от камеры на FACE_OFFSET в любую из двух сторон —
+ * берём ту, до которой станции ближе доворачиваться от текущего угла `from` (вместо 180° выходит около 90°).
+ */
+function faceTarget(id: string, camYaw: number, from: number): number | null {
+  const m = station.modules.find(m => m.id === id)
+  if (!m)
+    return null
+  const [x, , z] = PORT_DIR[m.port]
+  if (!x && !z)
+    return null
+  const base = camYaw * deg - Math.atan2(x, z)
+  const left = base - FACE_OFFSET * deg
+  const right = base + FACE_OFFSET * deg
+  return Math.abs(wrapPi(left - from)) < Math.abs(wrapPi(right - from)) ? left : right
+}
+
+function setFace(spec: Spec, time: number, instant: boolean) {
+  const key = spec.face ? `${spec.face}|${spec.yaw}` : ''
+  if (key === faceKey)
+    return
+  faceKey = key
+  const from = liveYaw(time)
+  turnFrom = from
+  faceYaw = spec.face ? faceTarget(spec.face, spec.yaw, from) : null
+  turnStart = instant ? -1e9 : time
+}
+
+/** `fixed` — модуль берётся из статической раскладки станции, а не из живой сцены (для детерминированной подгонки) */
+export function specDir(s: Spec, time: number, spinDeg: number, fixed = false): Vec3 {
   // follow: station — ракурс держится относительно станции, а не мира
-  const yaw = (s.yaw + spinDeg) * deg + (s.follow === 'station' ? stationYaw(time) : 0)
+  const yaw = (s.yaw + spinDeg) * deg + (s.follow === 'station' ? liveYaw(time) : 0)
   const pitch = s.pitch * deg
   if (s.follow === 'module' && typeof s.focus === 'string') {
     // yaw 0 — со стороны торца модуля, yaw 90 — сбоку; pitch — над/под плоскостью портов.
     // Станция вращается, но ракурс держится относительно модуля — он всегда в кадре сбоку.
-    const out = bodyAt(s.focus, time).dir
+    const out = fixed ? staticModuleDir(s.focus) : bodyAt(s.focus, time).dir
     if (out) {
       const up: Vec3 = Math.abs(out[1]) > 0.9 ? [1, 0, 0] : [0, 1, 0]
       const radial = norm(sub(out, mul(up, dot(out, up))))
@@ -307,6 +536,13 @@ export class CameraRig {
   private start = 0
   private specStart = 0
   private current: Pose | null = null
+  /** длительность текущего перелёта: не короче `duration`, но так, чтобы поворот не был резким */
+  private flight = 0
+  private pending = false
+  private fresh = false
+  /** hold: живое положение глаза в момент входа на слайд — камера лишь поворачивается на месте */
+  private holdEye: Vec3 | null = null
+  private instantSet = false
   /** момент удара (performance.now) — короткая встряска кадра */
   private shakeAt = -1e9
   /** кадр, в котором камера окажется по завершении перелёта (без встряски) */
@@ -329,6 +565,10 @@ export class CameraRig {
       return
     this.key = key
     this.from = instant ? null : this.current
+    this.flight = spec.duration
+    this.pending = this.from !== null
+    this.fresh = true
+    this.instantSet = instant
     this.spec = spec
     this.start = now
     this.specStart = now
@@ -338,6 +578,10 @@ export class CameraRig {
     const s = this.spec!
     const body = bodyAt(s.focus, time)
     const scale = Array.isArray(s.focus) ? 1 : body.radius
+    if (s.hold && this.holdEye) {
+      const dir = specDir(s, time, 0)
+      return { target: sub(this.holdEye, mul(dir, s.distance)), dir, dist: s.distance, shift: s.shift, fov: s.fov }
+    }
     return {
       target: body.pos,
       dir: specDir(s, time, s.spin * (now - this.specStart) / 1000),
@@ -351,15 +595,30 @@ export class CameraRig {
   frame(time: number, now: number): CameraFrame | null {
     if (!this.spec)
       return null
+    if (this.fresh) {
+      setFace(this.spec, time, this.instantSet)
+      const c = this.current
+      this.holdEye = this.spec.hold && c ? add(c.target, mul(c.dir, c.dist)) : null
+      this.fresh = false
+    }
     const goal = this.goal(time, now)
+    if (this.pending && this.from) {
+      const turn = Math.acos(Math.max(-1, Math.min(1, dot(this.from.dir, goal.dir)))) / deg
+      this.flight = Math.min(MAX_FLIGHT_S, Math.max(this.spec.duration, turn / MAX_TURN_DEG_PER_S))
+    }
+    this.pending = false
     this.goalFrame = toFrame(goal)
     let pose = goal
     if (this.from) {
-      const raw = Math.min(1, (now - this.start) / 1000 / Math.max(0.01, this.spec.duration))
+      const raw = Math.min(1, (now - this.start) / 1000 / Math.max(0.01, this.flight))
       const e = ease(raw)
       const f = this.from
       // дальний перелёт — отъезжаем назад в середине пути
-      const span = len(sub(goal.target, f.target))
+      // поворот на месте и облёт одной точки — не перелёт: отъезд только когда сдвигаются и цель, и камера
+      const span = Math.min(
+        len(sub(goal.target, f.target)),
+        len(sub(add(goal.target, mul(goal.dir, goal.dist)), add(f.target, mul(f.dir, f.dist)))),
+      )
       const boost = Math.min(3, span / Math.max(f.dist, goal.dist) * 0.35)
       pose = {
         target: lerp3(f.target, goal.target, e),

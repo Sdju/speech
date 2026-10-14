@@ -17,7 +17,7 @@ const s = computed(() => Math.max(0, Math.min(1, step)))
   <div class="mfe">
     <div class="mfe__caption glass" :class="s >= 1 ? 'mf-on' : 'mf-off'">
       <b>Module Federation</b>
-      <span>двигатель станции</span>
+      <span>ядро станции</span>
     </div>
   </div>
 </template>

@@ -226,10 +226,13 @@ const vt = (name: string) => ({ viewTransitionName: `x-site-${name}`, viewTransi
                 <span class="srv__status">
                   {{ podStatus[podState(svc.id, i)] || (svc.id === 'cart' && restarts ? `↻ ${restarts}` : '') }}
                 </span>
+                <span v-if="versions && svc.id === 'cart'" class="srv__apis">
+                  <span class="srv__api" style="--a: #60a5fa"><b>/v1</b>Cart v1</span>
+                  <span class="srv__api srv__api--new" style="--a: #34d399"><b>/v2</b>Catalog v2</span>
+                </span>
                 <LoadMeter
                   class="srv__meter"
                   compact
-                  :tall="svc.id === 'cart'"
                   :hist="hist[`${svc.id}-${i}`]"
                   :label="metric"
                   :dead="dead(svc.id, i)"
@@ -237,9 +240,6 @@ const vt = (name: string) => ({ viewTransitionName: `x-site-${name}`, viewTransi
               </div>
             </div>
             <div class="srv__mem">
-              <template v-if="versions && svc.id === 'cart'">
-                <span class="srv__api">/v1</span><span class="srv__api srv__api--new">/v2</span>
-              </template>
             </div>
           </div>
         </div>
@@ -541,6 +541,11 @@ const vt = (name: string) => ({ viewTransitionName: `x-site-${name}`, viewTransi
 .srv__meter {
   position: relative;
   z-index: 1;
+
+  /* график вдвое выше стандартных 22px компактного датчика */
+  & :deep(.lm__graph) {
+    height: 44px;
+  }
 }
 
 .srv__leds {
@@ -605,18 +610,49 @@ const vt = (name: string) => ({ viewTransitionName: `x-site-${name}`, viewTransi
   text-align: center;
 }
 
+.srv__apis {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* версия API → клиент, который на неё ходит: цвет клиента как у его участка справа */
 .srv__api {
-  padding: 1px 6px;
-  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 6px;
+  border-radius: 5px;
+  border: 1px solid color-mix(in srgb, var(--a) 55%, transparent);
+  background: color-mix(in srgb, var(--a) 14%, rgb(10 10 18 / 0.7));
   font-family: 'Fira Code', monospace;
-  font-size: 11px;
-  background: rgb(255 255 255 / 0.08);
-  color: rgb(255 255 255 / 0.7);
+  font-size: 10px;
+  color: rgb(255 255 255 / 0.8);
+
+  & b {
+    font-size: 12px;
+    color: var(--a);
+  }
+}
+
+/* /v1 уже была, /v2 добавляется следом: въезжает с задержкой и коротко вспыхивает */
+.srv__api:not(.srv__api--new) {
+  animation: api-in 0.4s ease both;
 }
 
 .srv__api--new {
-  background: rgb(52 211 153 / 0.18);
-  color: #6ee7b7;
+  animation: api-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.9s both, api-flash 1s ease-out 0.9s;
+}
+
+@keyframes api-in {
+  from { opacity: 0; transform: translateY(6px); }
+}
+
+@keyframes api-flash {
+  from { box-shadow: 0 0 12px 1px color-mix(in srgb, var(--a) 70%, transparent); }
+  to { box-shadow: 0 0 0 0 transparent; }
 }
 
 /* ── окно браузера ───────────────────────────────────────────────── */

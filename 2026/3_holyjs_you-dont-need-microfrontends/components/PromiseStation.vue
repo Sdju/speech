@@ -36,7 +36,7 @@ interface PromiseItem {
 
 const promises: PromiseItem[] = [
   { module: 'catalog', text: 'Чёткие границы ответственности', color: '#34d399', solved: { by: 'Модули', stage: 1 } },
-  { module: 'search', text: 'Свои пайплайны в репозитории', color: '#60a5fa', solved: { by: 'Монорепозиторий', stage: 2 } },
+  { module: 'search', text: 'Свои пайплайны в репозитории', color: '#60a5fa', solved: { by: 'Монорепозиторий', stage: 2 } },
   { module: 'cart', text: 'Независимый деплой', color: '#f472b6', solved: { by: 'Распределённый монолит', stage: 3 } },
   { module: 'checkout', text: 'Динамическая подгрузка', color: '#a78bfa', secret: true },
 ]
@@ -262,8 +262,8 @@ const lines = computed(() => {
   & path {
     fill: none;
     stroke: var(--c);
-    stroke-width: 1.5;
-    stroke-opacity: 0.8;
+    stroke-width: 3;
+    stroke-opacity: 1;
   }
 
   & circle {

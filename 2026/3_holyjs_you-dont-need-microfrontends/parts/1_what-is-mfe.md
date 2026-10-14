@@ -54,11 +54,11 @@ timeline:
 ---
 layout: full
 clicks: 1
-camera: { focus: station, follow: station, distance: 3.0, yaw: 45, pitch: 14, shift: [0.85, 0.05], duration: 2.4 }
+camera: { focus: station, follow: station, exact: true, distance: 3.0, yaw: 45, pitch: 14, shift: [0.85, 0.05], duration: 2.4 }
 station: { blueprint: true, mf: true, delay: 2.2, duration: 2.4 }
 timeline:
   - {}
-  - camera: { focus: station, follow: station, distance: 0.6, yaw: 45, pitch: 8, shift: [0.7, 0], duration: 2.6 }
+  - camera: { focus: station, follow: station, exact: true, distance: 0.6, yaw: 45, pitch: 8, shift: [0.7, 0], duration: 2.6 }
 ---
 
 <MfDocking :step="$clicks" />

@@ -21,7 +21,7 @@ const modules = [
   { id: 'search', v: '4.3', color: '#60a5fa' },
 ]
 /** центры колонок модулей внутри панели */
-const X = [85, 215, 345]
+const X = [90, 215, 340]
 
 /** версия модуля в проде слева / справа */
 const leftV = (m: typeof modules[number]) => m.v
@@ -30,20 +30,12 @@ const srcV = (m: typeof modules[number]) => (m.id === 'cart' && s.value >= 3 ? '
 
 /** задержка появления: на своём шаге — по хореографии, на следующих — сразу */
 const d = (at: number, t: number) => `${s.value === at ? t : 0}s`
-
-const captions = [
-  'Два способа собрать страницу из модулей разных команд',
-  'Сборка: модули линкуются в один бандл, версии зафиксированы в CI',
-  'Рантайм: оболочка в браузере сама загружает модули с их серверов',
-  'Cart выпустил 2.2: слева нужен релиз Shop, справа достаточно обновить страницу',
-]
-const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' : 'mf-off')
 </script>
 
 <template>
   <div class="bvr">
     <h1 class="bvr__title">
-      Уникальная сила микрофронтендов — подгрузка в рантайме
+      Уникальная сила микрофронтендов — подгрузка в рантайме
     </h1>
 
     <div class="bvr__panels">
@@ -82,7 +74,9 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
 
         <!-- бандл: модули вшиты внутрь -->
         <div class="bundle hud-frame hud-sm hud-solid" :style="{ transitionDelay: d(1, 1.25) }">
-          <span class="bundle__name">shop.a91f.js</span>
+          <span :key="s >= 3 ? 'new' : 'old'" class="bundle__name" :class="{ 'is-new': s >= 3 }">
+            shop.{{ s >= 3 ? '7c2e' : 'a91f' }}.js
+          </span>
           <span class="bundle__stripes">
             <i v-for="m in modules" :key="m.id" :style="{ background: m.color }" />
           </span>
@@ -163,11 +157,6 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
       </section>
     </div>
 
-    <div class="bvr__captions">
-      <div v-for="(text, i) in captions" :key="i" :class="state(i)">
-        {{ text }}
-      </div>
-    </div>
   </div>
 </template>
 
@@ -192,19 +181,6 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
 .bvr__panels {
   display: flex;
   justify-content: space-between;
-}
-
-.bvr__captions {
-  display: grid;
-  margin-top: auto;
-  font-size: 20px;
-  line-height: 1.3;
-  text-shadow: 0 2px 16px rgb(0 0 0 / 0.8);
-
-  & > * {
-    grid-area: 1 / 1;
-    transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
-  }
 }
 
 /* ── панель ─────────────────────────────────────────────────────── */
@@ -359,6 +335,18 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
   color: rgb(255 255 255 / 0.8);
 }
 
+.bundle__name.is-new {
+  color: #fcd34d;
+  font-weight: 700;
+  animation: hash-new 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.6s backwards;
+}
+
+/* пересборка: хэш бандла меняется — рамка бандла тоже вспыхивает */
+.is-update .bundle {
+  --hud-c: #fbbf24;
+  animation: flash-amber 1.4s ease 0.6s both;
+}
+
 .bundle__stripes {
   display: flex;
   gap: 3px;
@@ -450,7 +438,7 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
 .slot {
   position: absolute;
   top: 100px;
-  width: 110px;
+  width: 100px;
   height: 52px;
   translate: -50% 0;
   display: grid;
@@ -578,6 +566,17 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
 
 @keyframes flash {
   0%, 30% { box-shadow: 0 0 0 2px var(--c), 0 0 18px var(--c); }
+  100% { box-shadow: none; }
+}
+
+@keyframes hash-new {
+  0% { opacity: 0; transform: scale(1.7); text-shadow: 0 0 0 transparent; }
+  35% { opacity: 1; transform: scale(1.25); text-shadow: 0 0 14px #fbbf24; }
+  100% { transform: none; text-shadow: 0 0 6px rgb(251 191 36 / 0.5); }
+}
+
+@keyframes flash-amber {
+  0%, 30% { box-shadow: 0 0 0 2px #fbbf24, 0 0 22px #fbbf24; }
   100% { box-shadow: none; }
 }
 

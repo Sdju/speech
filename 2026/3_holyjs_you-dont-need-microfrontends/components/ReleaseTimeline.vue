@@ -34,9 +34,10 @@ const COLORS = { catalog: '#34d399', profile: '#f472b6', cart: '#60a5fa', shop: 
 
 const lanes = [
   { id: 'catalog', name: 'Catalog', note: 'пакет', y: 84, base: '1.4', monday: '1.5' },
-  { id: 'profile', name: 'Profile', note: 'пакет', y: 136, base: '3.0', monday: '3.0.1' },
-  { id: 'cart', name: 'Cart', note: 'пакет, зависит от Catalog', y: 188, base: '2.1', monday: '2.1.1' },
+  { id: 'cart', name: 'Cart', note: 'пакет, зависит от Catalog', y: 136, base: '2.1', monday: '2.1.1' },
+  { id: 'profile', name: 'Profile', note: 'пакет', y: 188, base: '3.0', monday: '3.0.1' },
 ] as const
+const [CATALOG_Y, CART_Y, PROFILE_Y] = lanes.map(l => l.y)
 
 const GOOD_Y = 276
 const BAD_Y = 348
@@ -86,7 +87,7 @@ const captions = [
         <g class="ev" :class="{ 'is-on': s >= 4 }">
           <path
             class="dep"
-            :d="`M ${x(2) - 24} ${lanes[2].y - 12} C ${x(2) - 60} ${lanes[0].y + 40}, ${x(1) + 60} ${lanes[0].y + 30}, ${x(1) + 26} ${lanes[0].y + 12}`"
+            :d="`M ${x(2) - 26} ${CART_Y - 8} C ${x(2) - 70} ${CART_Y - 14}, ${x(1) + 50} ${CATALOG_Y + 36}, ${x(1) + 22} ${CATALOG_Y + 12}`"
             marker-end="url(#rt-arrow)"
           />
         </g>
@@ -98,7 +99,7 @@ const captions = [
             <path :d="`M ${mx} ${lanes[i].y + 14} L ${mx} ${GOOD_Y - 12}`" class="flow flow--calm" marker-end="url(#rt-arrow)" />
           </g>
           <g class="ev" :class="{ 'is-on': s >= 5 }">
-            <path :d="`M ${x(2)} ${lanes[1].y + 14} C ${x(2) - 30} ${lanes[2].y}, ${x(2) - 30} ${lanes[2].y + 30}, ${x(2)} ${GOOD_Y - 16}`" class="flow" marker-end="url(#rt-arrow)" />
+            <path :d="`M ${x(2)} ${PROFILE_Y + 14} L ${x(2)} ${GOOD_Y - 16}`" class="flow" marker-end="url(#rt-arrow)" />
             <rect :x="x(3) - 30" :y="GOOD_Y - 13" :width="870 - x(3) + 30" height="26" rx="4" fill="url(#rt-wait)" />
           </g>
         </g>
@@ -108,7 +109,7 @@ const captions = [
           <line :x1="BASE_X" x2="870" :y1="BAD_Y" :y2="BAD_Y" class="lane__line lane__line--root" />
           <path :d="`M ${x(1)} ${lanes[0].y + 14} L ${x(1)} ${BAD_Y - 16}`" class="flow flow--bad" marker-end="url(#rt-arrow)" />
           <rect :x="x(1) + 58" :y="BAD_Y - 13" :width="(s >= 7 ? x(3) : 870) - x(1) - 58" height="26" rx="4" fill="url(#rt-broken)" class="blocked" />
-          <path :d="`M ${x(2)} ${lanes[1].y + 14} L ${x(2)} ${BAD_Y - 16}`" class="flow flow--queued" marker-end="url(#rt-arrow)" />
+          <path :d="`M ${x(2)} ${PROFILE_Y + 14} L ${x(2)} ${BAD_Y - 16}`" class="flow flow--queued" marker-end="url(#rt-arrow)" />
           <g class="ev" :class="{ 'is-on': s >= 7 }">
             <path :d="`M ${x(3)} ${lanes[0].y + 14} L ${x(4) - 30} ${BAD_Y - 16}`" class="flow" marker-end="url(#rt-arrow)" />
           </g>
@@ -128,10 +129,10 @@ const captions = [
       <span class="ev pill pill--breaking" :class="{ 'is-on': s >= 2 }" :style="{ left: `${x(1)}px`, top: `${lanes[0].y}px`, '--c': COLORS.catalog }">2.0</span>
       <span class="ev lbl lbl--tag lbl--bad" :class="{ 'is-on': s >= 2 }" :style="{ left: `${x(1) + 38}px`, top: `${lanes[0].y - 26}px` }">ломает API</span>
 
-      <span class="ev pill" :class="{ 'is-on': s >= 3 }" :style="{ left: `${x(2)}px`, top: `${lanes[1].y}px`, '--c': COLORS.profile }">3.1</span>
+      <span class="ev pill" :class="{ 'is-on': s >= 3 }" :style="{ left: `${x(2)}px`, top: `${PROFILE_Y}px`, '--c': COLORS.profile }">3.1</span>
 
-      <span class="ev pill" :class="{ 'is-on': s >= 4 }" :style="{ left: `${x(2)}px`, top: `${lanes[2].y}px`, '--c': COLORS.cart }">2.2</span>
-      <span class="ev lbl lbl--tag" :class="{ 'is-on': s >= 4 }" :style="{ left: `${x(2) + 40}px`, top: `${lanes[2].y - 8}px` }">нужен Catalog 2.0</span>
+      <span class="ev pill" :class="{ 'is-on': s >= 4 }" :style="{ left: `${x(2)}px`, top: `${CART_Y}px`, '--c': COLORS.cart }">2.2</span>
+      <span class="ev lbl lbl--tag" :class="{ 'is-on': s >= 4 }" :style="{ left: `${x(2) + 40}px`, top: `${CART_Y - 8}px` }">нужен Catalog 2.0</span>
 
       <span class="ev pill pill--fix" :class="{ 'is-on': s >= 7 }" :style="{ left: `${x(3)}px`, top: `${lanes[0].y}px`, '--c': COLORS.catalog }">2.0.1</span>
       <span class="ev lbl lbl--tag lbl--good" :class="{ 'is-on': s >= 7 }" :style="{ left: `${x(3) + 44}px`, top: `${lanes[0].y - 26}px` }">фикс</span>

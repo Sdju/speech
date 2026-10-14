@@ -10,7 +10,7 @@ const s = computed(() => Math.max(0, step))
 
 const kinds = [
   { id: 'ui', name: 'UI-библиотека', pkg: '@shop/ui', what: 'Кнопки, поля и токены дизайна — общие для всех команд' },
-  { id: 'contracts', name: 'Типы контрактов', pkg: '@shop/contracts', what: 'Общий язык между модулями и бэкендом, без кода рантайма' },
+  { id: 'contracts', name: 'Типы контрактов', pkg: '@shop/contracts', what: 'Общий язык между модулями и бэкендом, без кода рантайма' },
   { id: 'stack', name: 'Другой стек', pkg: '@shop/chart', what: 'Небольшой виджет на Svelte живёт внутри Vue-приложения' },
 ]
 </script>

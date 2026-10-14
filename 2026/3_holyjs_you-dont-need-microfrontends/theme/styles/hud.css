@@ -405,7 +405,7 @@
       gap: 10px;
 
       & > li {
-        @apply text-[0.85em];
+        @apply text-[0.85em] flex items-center;
         padding: 10px 16px 10px 54px;
 
         &::before {

@@ -25,6 +25,7 @@ SEAT_D = 0.40
 SEAT_T = 0.035
 LEG = 0.034
 BACK_H = 0.90
+STRETCH = 0.16  # высота проножек над полом
 
 PREVIEW = {
     'wood': ((0.55, 0.36, 0.20), 0.0, 0.6),
@@ -74,16 +75,25 @@ def build():
     hx, hy = SEAT_W / 2, SEAT_D / 2
     splay = 0.018  # ножки чуть шире внизу
 
+    # ножки: концы считаем один раз — по ним же ставим проножки, чтобы они сходились ровно в осях ножек
+    front = {}
+    back = {}
+    for sx in (-1, 1):
+        front[sx] = ((sx * (hx - LEG / 2 + splay), -hy + LEG / 2 - splay, 0),
+                     (sx * (hx - LEG / 2), -hy + LEG / 2, SEAT_H - SEAT_T))
+        x = sx * (hx - LEG / 2)
+        y = hy - LEG / 2
+        back[sx] = ((x + sx * splay, y + splay * 1.6, 0), (x, y, SEAT_H))
+
     # передние ножки
     for sx in (-1, 1):
-        leg(bm, (sx * (hx - LEG / 2 + splay), -hy + LEG / 2 - splay, 0),
-            (sx * (hx - LEG / 2), -hy + LEG / 2, SEAT_H - SEAT_T), LEG)
+        leg(bm, *front[sx], LEG)
     # задние ножки продолжаются в стойки спинки с лёгким завалом назад
     lean = 0.07
     for sx in (-1, 1):
         x = sx * (hx - LEG / 2)
         y = hy - LEG / 2
-        leg(bm, (x + sx * splay, y + splay * 1.6, 0), (x, y, SEAT_H), LEG)
+        leg(bm, *back[sx], LEG)
         leg(bm, (x, y, SEAT_H - 0.01), (x * 0.96, y + lean, BACK_H), LEG * 0.92)
 
     # царги под сиденьем
@@ -92,10 +102,20 @@ def build():
     box(bm, (SEAT_W - LEG, 0.018, 0.06), (0, hy - LEG / 2, z))
     for sx in (-1, 1):
         box(bm, (0.018, SEAT_D - LEG, 0.06), (sx * (hx - LEG / 2), 0, z))
-    # проножки
+    # проножки: боковые идут от оси передней ножки к оси задней на высоте STRETCH, а поперечная
+    # связывает середины боковых на той же высоте — все три сходятся в одной плоскости (буква H)
+    def on_leg(a_b, zz):
+        (a, b) = a_b
+        k = (zz - a[2]) / (b[2] - a[2])
+        return Vector(a).lerp(Vector(b), k)
+
+    mid = {}
     for sx in (-1, 1):
-        box(bm, (0.018, SEAT_D - LEG + splay, 0.018), (sx * (hx - LEG / 2 + splay * 0.6), 0, 0.16))
-    box(bm, (SEAT_W - LEG + splay, 0.018, 0.018), (0, 0, 0.12))
+        pf = on_leg(front[sx], STRETCH)
+        pb = on_leg(back[sx], STRETCH)
+        leg(bm, pf, pb, 0.018)
+        mid[sx] = (pf + pb) / 2
+    leg(bm, mid[-1], mid[1], 0.018)
 
     # сиденье: чуть скруглённая плита — отдельный материал
     box(bm, (SEAT_W + 0.02, SEAT_D + 0.02, SEAT_T), (0, 0, SEAT_H - SEAT_T / 2), 1)

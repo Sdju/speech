@@ -5,14 +5,17 @@ import type { ChairPlanetOptions } from '../universe/chairs'
 import { ChairPlanet } from '../universe/chairs'
 
 /**
- * Планета из стульев (universe/chairs.ts). При каждом входе на слайд стулья слетаются заново.
+ * Планета из стульев (universe/chairs.ts). При каждом входе на слайд — два стула, по кликам налетают новые волны.
  *
  * WebGL-контекст живёт только пока слайд активен и только на основном экране / у докладчика.
  * Slidev заранее монтирует все слайды и рисует их копии в превью и обзоре — если создавать
  * контекст при монтировании, их набирается больше лимита браузера (~16), и Chrome гасит самый
  * старый: фоновый шейдер и сцену доклада. В превью/обзоре/экспорте WebGL не создаётся вообще.
  */
-const props = defineProps<ChairPlanetOptions>()
+const props = defineProps<ChairPlanetOptions & {
+  /** клик слайда: 0 — два стула, дальше — всё больше */
+  step?: number
+}>()
 
 const canvas = useTemplateRef<HTMLCanvasElement>('canvas')
 /**
@@ -36,8 +39,13 @@ function loop(now: number) {
 function start() {
   if (scene || !canvas.value)
     return
+  const now = performance.now()
   scene = new ChairPlanet(canvas.value, props)
-  scene.restart(performance.now())
+  scene.restart(now)
+  // вход на слайд с уже сделанными кликами: прошлые волны сразу на местах
+  const step = props.step ?? 0
+  for (let k = 0; k <= step; k++)
+    scene.setStage(k, now, step > 0)
   raf = requestAnimationFrame(loop)
 }
 
@@ -57,6 +65,14 @@ watch([active, canvas], ([on, el]) => {
   else
     stop()
 }, { immediate: true })
+
+watch(() => props.step, (step, old) => {
+  if (!scene || step == null)
+    return
+  // клики вперёд — налетает следующая волна; назад — просто ничего не убираем
+  if (old == null || step > old)
+    scene.setStage(step, performance.now())
+})
 
 onBeforeUnmount(stop)
 </script>

@@ -29,6 +29,9 @@ export class SurfaceBaker {
   readonly planets: PlanetBake[] = []
   readonly satellites: WebGLTexture[] = []
   private rr = 0
+  private lastTime = 0
+  /** сколько граней запечено с последнего сброса (для замеров нагрузки): по планетам */
+  readonly baked: number[] = []
 
   constructor(private gl: WebGLRenderingContext, planets: PlanetDef[], satellites: SatelliteDef[], time: number) {
     const program = gl.createProgram()!
@@ -62,7 +65,9 @@ export class SurfaceBaker {
       this.satellites.push(tex)
     })
 
+    this.lastTime = time
     for (const def of planets) {
+      this.baked.push(0)
       const tex: PlanetBake['tex'] = [this.createCube(), this.createCube(), this.createCube()]
       this.planets.push({ def, tex, times: [time, time + BAKE_PERIOD, time + 2 * BAKE_PERIOD], progress: 0 })
     }
@@ -86,9 +91,18 @@ export class SurfaceBaker {
    * Вызывать раз в кадр: сдвигает снимки и допекает одну грань (бюджет ~1/18 полной планеты).
    * Возвращает для каждой планеты долю смешивания A→B.
    */
-  update(time: number, frozen = false): number[] {
+  update(time: number, frozen = false, active?: boolean[]): number[] {
+    const dtw = Math.max(0, time - this.lastTime)
+    this.lastTime = time
     if (!frozen) {
+      // планета вне кадра: её поверхностные часы стоят — ничего не печём, а картинка при возвращении та же
+      this.planets.forEach((p, i) => {
+        if (active && !active[i])
+          p.times = p.times.map(t => t + dtw) as [number, number, number]
+      })
       for (const p of this.planets) {
+        if (active && !active[this.planets.indexOf(p)])
+          continue
         if (time >= p.times[1] && p.progress >= 6) {
           const [a, b, c] = p.tex
           p.tex = [b, c, a]
@@ -100,9 +114,13 @@ export class SurfaceBaker {
       }
       // одна грань за кадр, по кругу между планетами
       for (let k = 0; k < this.planets.length; k++) {
-        const p = this.planets[(this.rr + k) % this.planets.length]
+        const pi = (this.rr + k) % this.planets.length
+        const p = this.planets[pi]
+        if (active && !active[pi])
+          continue
         if (p.progress < 6) {
           this.bakePlanetFace(p, 2, p.progress)
+          this.baked[pi]++
           p.progress++
           if (p.progress === 6)
             this.finish(p.tex[2])
@@ -112,6 +130,27 @@ export class SurfaceBaker {
       }
     }
     return this.planets.map(p => Math.min(1, Math.max(0, (time - p.times[0]) / (p.times[1] - p.times[0]))))
+  }
+
+  /** замер: среднее время запекания грани у каждой планеты, мс */
+  bench(gl: WebGLRenderingContext, reps = 36): Record<string, number> {
+    const out: Record<string, number> = {}
+    const px = new Uint8Array(4)
+    // readPixels принудительно дожидается GPU: gl.finish() в Chrome не гарантирует синхронизацию
+    const sync = () => {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo)
+      gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px)
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+    }
+    for (const p of this.planets) {
+      sync()
+      const t0 = performance.now()
+      for (let k = 0; k < reps; k++)
+        this.bakePlanetFace(p, 2, k % 6)
+      sync()
+      out[p.def.id] = +((performance.now() - t0) / reps).toFixed(2)
+    }
+    return out
   }
 
   private bakePlanetFace(p: PlanetBake, slot: 0 | 1 | 2, face: number) {

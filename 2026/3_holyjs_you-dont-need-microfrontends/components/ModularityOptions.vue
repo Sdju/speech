@@ -12,9 +12,9 @@ watch([() => step, active], ([next, on], [previous, wasOn]) => {
 }, { flush: 'sync' })
 
 const options = [
-  { id: 'modules', name: 'Nuxt Modules', label: 'Подключить возможности', color: '#34d399', what: 'Интеграции и расширения через модульную систему Nuxt' },
-  { id: 'layers', name: 'Nuxt Layers', label: 'Переиспользовать части', color: '#60a5fa', what: 'Компоненты, страницы и конфигурация в общих слоях приложения' },
-  { id: 'methods', name: 'FEOD · FDA · FSD', label: 'Организовать код', color: '#a78bfa', what: 'Подходы к разделению кода и управлению связями между частями' },
+  { id: 'modules', name: 'Nuxt Modules', color: '#34d399', what: 'Интеграции и расширения через модульную систему Nuxt' },
+  { id: 'layers', name: 'Nuxt Layers', color: '#60a5fa', what: 'Компоненты, страницы и конфигурация в общих слоях приложения' },
+  { id: 'methods', name: 'FEOD · FDA · FSD', color: '#a78bfa', what: 'Подходы к разделению кода и управлению связями между частями' },
 ]
 const layers = [
   { name: 'base', detail: 'UI · config' },
@@ -62,7 +62,6 @@ const layers = [
           </div>
         </div>
 
-        <span class="option-label">{{ option.label }}</span>
         <h2>{{ option.name }}</h2>
         <p>{{ option.what }}</p>
       </article>
@@ -112,12 +111,6 @@ const layers = [
   font-size: 15px;
   line-height: 1.4;
   color: rgb(255 255 255 / 0.72);
-}
-.option-label {
-  margin-top: 16px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--option-color);
 }
 .option-preview {
   height: 122px;

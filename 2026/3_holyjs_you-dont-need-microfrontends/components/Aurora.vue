@@ -18,14 +18,21 @@ import { liveCamera } from '../universe/screen'
  * Сияние привязано к небу, а не к экрану: это направление в мире, как звёзды. Пока камера
  * летит к кадру слайда, полотно едет вместе с космосом и встаёт в угол, когда камера долетела.
  *
- * Кадры идут только пока слайд активен; разгорание — CSS-переход прозрачности.
+ * Кадры идут только пока слайд активен. Сияние зарождается на глазах (u_birth): искра на кромке занавеса,
+ * огонь бежит в стороны, лучи вытягиваются вверх; занавесы зажигаются по очереди.
  */
 const active = useIsSlideActive()
 const { $slidev } = useSlideContext()
 const canvas = useTemplateRef<HTMLCanvasElement>('canvas')
 
-const W = 400 // половина CSS-размера (800×440)
+const W = 400 // область сияния в углу — половина CSS-размера (800×440)
 const H = 220
+// Запас полотна слева и сверху: пока камера летит, всё небо вместе с сиянием сдвинуто вправо-вниз, и без запаса
+// на месте уехавшей кромки полотна зияла бы пустота. Узор в запасе — продолжение сияния за край слайда.
+const PAD_X = 350
+const PAD_Y = 150
+const CW = W + PAD_X
+const CH = H + PAD_Y
 
 const VERT = `
 attribute vec2 a_pos;
@@ -39,7 +46,9 @@ const FRAG = `
 precision highp float;
 varying vec2 v_uv;
 uniform float u_time;
-uniform vec2 u_res;
+uniform vec2 u_res;   // размер области сияния в углу (без запаса), px
+uniform vec2 u_pad;   // запас полотна слева и сверху, px
+uniform float u_birth; // зарождение сияния 0…1: вспышка на кромке → разгорание в стороны → лучи вверх
 
 float hash(vec2 p) {
   p = fract(p * vec2(123.34, 456.21));
@@ -84,8 +93,18 @@ vec3 palette(float h, float hueShift) {
 }
 
 // один занавес: base — высота кромки слева, slope — подъём вправо, height — высота свечения
-vec3 curtain(vec2 p, float t, float seed, float base, float slope, float height, float hueShift, float gain) {
+vec3 curtain(vec2 p, float t, float seed, float base, float slope, float height, float hueShift, float gain, float delay, float cx) {
   float x = p.x;
+  // каждый занавес зажигается со своей задержкой: сначала искра на кромке, затем огонь бежит в стороны
+  float b = clamp((u_birth - delay) / 0.42, 0.0, 1.0);
+  if (b <= 0.0) return vec3(0.0);
+  float spread = pow(b, 0.8) * 3.2;
+  float reveal = 1.0 - smoothstep(spread - 0.55, spread, abs(x - cx));
+  // высота: тонкая дуга, из которой лучи вытягиваются вверх
+  height *= 0.1 + 0.9 * smoothstep(0.1, 1.0, b);
+  // вспыхивающее разгорание: первые мгновения мерцает
+  float spark = 0.6 + 0.4 * sin(u_time * 23.0 + seed * 5.0) * (1.0 - b);
+  gain *= reveal * smoothstep(0.0, 0.25, b) * spark;
   // кромка: крупная волна + медленно плывущий шум
   float edge = base + slope * x
     + 0.045 * sin(x * 4.2 + t * 0.35 + seed)
@@ -114,20 +133,21 @@ vec3 curtain(vec2 p, float t, float seed, float base, float slope, float height,
 }
 
 void main() {
-  vec2 uv = v_uv;
+  // координаты области угла: 0…1 внутри неё, левее/выше — запас (x < 0, y > 1)
+  vec2 uv = vec2((gl_FragCoord.x - u_pad.x) / u_res.x, gl_FragCoord.y / u_res.y);
   float aspect = u_res.x / u_res.y;
   // y вверх, x в долях высоты
   vec2 p = vec2(uv.x * aspect, uv.y);
   float t = u_time;
 
   vec3 col = vec3(0.0);
-  col += curtain(p, t, 1.3, 0.20, 0.22, 0.55, 0.00, 1.00);
-  col += curtain(p, t, 4.7, 0.42, 0.18, 0.45, 0.06, 0.70);
-  col += curtain(p, t, 8.1, 0.05, 0.30, 0.50, -0.02, 0.55);
-  col += curtain(p, t, 2.9, 0.62, 0.10, 0.38, 0.15, 0.45);
+  col += curtain(p, t, 1.3, 0.20, 0.22, 0.55, 0.00, 1.00, 0.00, 0.95);
+  col += curtain(p, t, 4.7, 0.42, 0.18, 0.45, 0.06, 0.70, 0.22, 1.5);
+  col += curtain(p, t, 8.1, 0.05, 0.30, 0.50, -0.02, 0.55, 0.38, 0.5);
+  col += curtain(p, t, 2.9, 0.62, 0.10, 0.38, 0.15, 0.45, 0.55, 1.1);
 
   // слой собирается в углу: гаснет к правому и нижнему краю полотна
-  vec2 q = vec2(uv.x, 1.0 - uv.y);
+  vec2 q = max(vec2(uv.x, 1.0 - uv.y), 0.0);
   float corner = 1.0 - smoothstep(0.35, 1.0, length(q * vec2(1.15, 1.2)));
   col *= corner;
 
@@ -140,6 +160,12 @@ let gl: WebGLRenderingContext | null = null
 let raf = 0
 let start = 0
 let uTime: WebGLUniformLocation | null = null
+let uBirth: WebGLUniformLocation | null = null
+/** когда слайд стал активным: от этого момента сияние зарождается */
+let birthAt = 0
+/** пока камера долетает, сияние не зажигаем; затем оно разгорается за BIRTH_MS */
+const BIRTH_DELAY_MS = 900
+const BIRTH_MS = 6500
 
 function compile(type: number, src: string) {
   const s = gl!.createShader(type)!
@@ -168,8 +194,10 @@ function init() {
   gl.enableVertexAttribArray(loc)
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0)
   gl.uniform2f(gl.getUniformLocation(prog, 'u_res'), W, H)
+  gl.uniform2f(gl.getUniformLocation(prog, 'u_pad'), PAD_X, PAD_Y)
   uTime = gl.getUniformLocation(prog, 'u_time')
-  gl.viewport(0, 0, W, H)
+  uBirth = gl.getUniformLocation(prog, 'u_birth')
+  gl.viewport(0, 0, CW, CH)
   gl.clearColor(0, 0, 0, 0)
   start = performance.now()
   draw(start)
@@ -180,6 +208,9 @@ function draw(now: number) {
     return
   // с «прошедшими» 40 с — занавесы сразу в движении, а не из стартовой позы
   gl.uniform1f(uTime, 40 + (now - start) / 1000)
+  const b = Math.min(1, Math.max(0, (now - birthAt - BIRTH_DELAY_MS) / BIRTH_MS))
+  // ease-out: искра вспыхивает быстро, дальше разгорается плавнее
+  gl.uniform1f(uBirth, 1 - (1 - b) ** 1.6)
   gl.clear(gl.COLOR_BUFFER_BIT)
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 }
@@ -223,8 +254,10 @@ function loop(now: number) {
 onMounted(init)
 watch(active, (on) => {
   cancelAnimationFrame(raf)
-  if (on)
+  if (on) {
+    birthAt = performance.now()
     raf = requestAnimationFrame(loop)
+  }
 }, { immediate: true })
 onBeforeUnmount(() => {
   cancelAnimationFrame(raf)
@@ -238,8 +271,8 @@ onBeforeUnmount(() => {
     ref="canvas"
     class="aurora"
     :class="{ 'aurora--on': active }"
-    :width="W"
-    :height="H"
+    :width="CW"
+    :height="CH"
     aria-hidden="true"
   />
 </template>
@@ -247,14 +280,14 @@ onBeforeUnmount(() => {
 <style scoped>
 .aurora {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 800px;
-  height: 440px;
+  left: -700px; /* PAD_X × 2 */
+  top: -300px; /* PAD_Y × 2 */
+  width: 1500px;
+  height: 740px;
   pointer-events: none;
   mix-blend-mode: screen;
   opacity: 0;
-  transition: opacity 4s ease 0.6s;
+  transition: opacity 0.4s ease;
 }
 
 .aurora--on {

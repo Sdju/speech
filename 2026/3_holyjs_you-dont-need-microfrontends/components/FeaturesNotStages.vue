@@ -1,158 +1,152 @@
 <script setup lang="ts">
 import { useIsSlideActive, useSlideContext } from '@slidev/client'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 /**
- * «Это не этапы, а независимые решения».
- * Доклад идёт по порядку — модули, монорепо, реестр, микрофронтенды — и это легко
- * прочитать как лестницу к «серьёзному проекту». Слайд ломает лестницу:
- * каждая часть — ответ на своё требование, и их берут в любых сочетаниях.
+ * «Это не этапы, а независимые решения» — требования включают решения.
+ * Доклад идёт по порядку — модули, монорепо, реестр, микрофронтенды — и это легко прочитать как
+ * лестницу к «серьёзному проекту». Слайд показывает обратное: сверху требования (фичи) с тумблерами,
+ * ниже — решения, которые каждое из них включает, и проект, получившийся из включённого.
+ * Раскладка не двигается: меняются только положения тумблеров, подсветка решений и подпись проекта.
  *
- *   0 — лестница строится на глазах: ступень → стрелка → следующая ступень → «серьёзный проект»
- *   1 — лестница рассыпается в ряд, у каждого решения появляется требование, на которое оно отвечает
- *   2 — реальные проекты: только модули; модули в репозиториях через реестр
- *   3 — микрофронтенды внутри монорепо и микрофронтенды без модулей и монорепо
+ *   0 — «эволюция»: решения по очереди проявляются слева направо со стрелками, шкала «Серьёзность проекта»
+ *       заполняется слева направо (требований пока не видно)
+ *   1 — появляются требования с выключенными тумблерами, решения гаснут
+ *   2 — граница ответственности → монолит с модулями
+ *   3 — границы + независимая публикация → модули по репозиториям (монорепо не нужно)
+ *   4 — границы + пайплайны + рантайм → микрофронтенды в монорепо
+ *   5 — только сборка в рантайме → микрофронтенды отдельными приложениями
  */
 const { step = 0 } = defineProps<{ step?: number }>()
-const s = computed(() => Math.max(0, Math.min(3, step)))
+const s = computed(() => Math.max(0, Math.min(5, step)))
 
 const features = [
-  { name: 'Модули', need: 'нужны границы ответственности', color: '#34d399' },
-  { name: 'Монорепо', need: 'нужны свои пайплайны', color: '#60a5fa' },
-  { name: 'Реестр пакетов', need: 'нужна независимая публикация', color: '#f472b6' },
-  { name: 'Микрофронтенды', need: 'нужна сборка в рантайме', color: '#fbbf24' },
+  { need: 'Границы ответственности', name: 'Модули', color: '#34d399' },
+  { need: 'Свои пайплайны', name: 'Монорепо', color: '#60a5fa' },
+  { need: 'Независимая публикация', name: 'Реестр пакетов', color: '#f472b6' },
+  { need: 'Сборка в рантайме', name: 'Микрофронтенды', color: '#fbbf24' },
 ]
 
-// лестница: снизу слева вверх направо; на ступенях блок низкий — только название
-const STAIR_H = 50
-const ROW_H = 86
-const STAIR = features.map((_, i) => ({ x: 100 + i * 192, y: 310 - i * 76 }))
-// ряд независимых решений: колонки над матрицей проектов
-const COL_X = 200
-const COL_W = 190
-const ROW = features.map((_, i) => ({ x: COL_X + i * COL_W, y: 76 }))
-const BLOCK_W = 176
-
-const projects = [
-  { name: 'Монолит с модулями', has: [1, 0, 0, 0], at: 2 },
-  { name: 'Модули по репозиториям', has: [1, 0, 1, 0], at: 2 },
-  { name: 'Микрофронтенды в монорепо', has: [1, 1, 0, 1], at: 3 },
-  { name: 'Микрофронтенды из разных репо', has: [0, 0, 0, 1], at: 3 },
+/** какие требования включены на шагах 1…5 и что получилось */
+const configs: { has: number[], name: string }[] = [
+  { has: [0, 0, 0, 0], name: 'Каждое решение — ответ на своё требование' },
+  { has: [1, 0, 0, 0], name: 'Монолит с модулями' },
+  { has: [1, 0, 1, 0], name: 'Модули по репозиториям' },
+  { has: [1, 1, 0, 1], name: 'Микрофронтенды в монорепо' },
+  { has: [0, 0, 0, 1], name: 'Микрофронтенды из разных репо' },
 ]
 
-/** порядковый номер проекта среди появившихся на том же шаге — для очереди */
-const queue = (r: number) => projects.slice(0, r).filter(p => p.at === projects[r].at).length
+// общие имена с MfeTrilemma (следующий слайд): плитки и плашка морфятся в тумблеры и шину
+const vt = (name: string) => ({ viewTransitionName: name, viewTransitionClass: 'x-site' })
 
 const titles = ['Похоже на эволюцию?', 'Не этапы, а независимые решения']
-const captions = [
-  'Мы шли по порядку, и это легко принять за лестницу к «серьёзному» проекту',
-  'Каждое решение — ответ на своё требование, а не следующая ступень',
-  'Их берут по отдельности: модулям не нужны ни монорепо, ни микрофронтенды',
-  'И в любых сочетаниях: микрофронтенды отлично живут внутри монорепо',
-]
+
+/** на шаге 0 решения проявляются по очереди — «путь по докладу» */
+const STEP_T = 0.9
+const PATH_S = STEP_T * features.length
 
 /*
- * Стрелки лестницы в координатах сцены: из середины верха ступени вверх
- * и направо — в середину левого края следующей ступени.
+ * Анимация эволюции должна играть при каждом входе на слайд. Slidev рендерит соседние слайды заранее,
+ * а на открытом слайде первый кадр сразу финальный — transition не стартует. Поэтому «запуск» —
+ * отдельный флаг: сбрасывается, пока слайд не активен, и поднимается через пару кадров после входа.
  */
-const R = 10
-const arrows = STAIR.slice(0, -1).map((a, i) => {
-  const b = STAIR[i + 1]
-  const sx = a.x + BLOCK_W / 2
-  const cy = b.y + STAIR_H / 2
-  return `M ${sx} ${a.y} V ${cy + R} Q ${sx} ${cy} ${sx + R} ${cy} H ${b.x - 3}`
-})
-const TOP = STAIR[STAIR.length - 1]
-const SUMMIT_Y = TOP.y - 44
-const summitArrow = `M ${TOP.x + BLOCK_W / 2} ${TOP.y} V ${SUMMIT_Y + 3}`
-
-// хореография построения: ступень, затем стрелка к следующей
-const STEP_T = 0.9
-const blockDelay = (i: number) => i * STEP_T
-const arrowDelay = (i: number) => i * STEP_T + 0.4
-
-// Slidev заранее рендерит соседние слайды — строим лестницу только когда слайд на экране
 const { $renderContext } = useSlideContext()
 const active = useIsSlideActive()
-const waiting = computed(() => $renderContext.value === 'slide' && !active.value)
+const started = ref($renderContext.value !== 'slide')
+watch(active, (a) => {
+  if ($renderContext.value !== 'slide')
+    return
+  started.value = false
+  if (a)
+    requestAnimationFrame(() => requestAnimationFrame(() => started.value = true))
+}, { immediate: true })
 
-const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' : 'mf-off')
+const isOn = (i: number) => s.value >= 1 && configs[s.value - 1].has[i] === 1
+/** решение подсвечено: на шаге 0 — когда до него дошла очередь, дальше — если включено его требование */
+const lit = (i: number) => started.value && (s.value === 0 || isOn(i))
+/** на шаге 0 решения ещё не «пришли»; со второго шага стоят на местах (тусклые, если не включены) */
+const shown = (i: number) => s.value >= 1 || started.value
+const delay = (i: number) => s.value === 0 ? 0.3 + i * STEP_T : i * 0.07
+const state = (i: number) => (i === Math.min(s.value, 1) ? 'mf-on' : 'mf-off')
 </script>
 
 <template>
-  <div class="fns" :class="{ 'is-broken': s >= 1, 'is-waiting': waiting }">
+  <div class="fns" :class="{ 'is-evolution': s === 0, 'is-started': started }">
     <div class="fns__titles">
       <h1 :class="state(0)">
         {{ titles[0] }}
       </h1>
-      <h1 :class="s >= 1 ? 'mf-on' : 'mf-off'">
+      <h1 :class="state(1)">
         {{ titles[1] }}
       </h1>
     </div>
 
-    <div class="fns__stage">
-      <!-- стрелки между ступенями и «вершина» лестницы: гаснут, когда лестница ломается -->
-      <svg class="stairs" aria-hidden="true">
-        <defs>
-          <marker id="fns-head" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="rgb(255 255 255 / 0.6)" />
-          </marker>
-        </defs>
-        <g v-for="(d, i) in [...arrows, summitArrow]" :key="i">
-          <path class="stairs__arrow" :d="d" pathLength="1" :style="{ animationDelay: `${arrowDelay(i)}s` }" />
-          <!-- наконечник отдельно: появляется, когда линия дорисовалась -->
-          <path class="stairs__head" :d="d" marker-end="url(#fns-head)" :style="{ animationDelay: `${arrowDelay(i) + 0.4}s` }" />
-        </g>
-      </svg>
+    <div class="board">
+      <!-- ряд 1: требования с тумблерами (на шаге 0 их ещё нет) -->
+      <template v-for="(f, i) in features" :key="`n${f.need}`">
+        <div
+          class="need hud-frame hud-sm hud-solid"
+          :class="{ 'is-lit': isOn(i), 'is-shown': s >= 1 }"
+          :style="{ '--hud-c': f.color, '--c': f.color, 'grid-column': i * 2 + 1, 'transition-delay': `${s >= 1 ? 0.15 + i * 0.07 : 0}s`, ...vt(`x-tg-t${i}`) }"
+        >
+          <span class="need__toggle" aria-hidden="true"><i /></span>
+          <b>{{ f.need }}</b>
+        </div>
+      </template>
+
+      <!-- провода: требование → решение -->
       <span
-        class="summit"
-        :style="{ left: `${TOP.x + BLOCK_W / 2}px`, top: `${SUMMIT_Y}px`, animationDelay: `${arrowDelay(3) + 0.4}s` }"
-      >
-        «серьёзный» проект
-      </span>
-
-      <!-- решения: ступени лестницы → независимые колонки -->
-      <div
         v-for="(f, i) in features"
-        :key="f.name"
-        class="feat hud-frame hud-solid"
-        :style="{
-          '--c': f.color,
-          '--hud-c': f.color,
-          '--i': i,
-          'width': `${BLOCK_W}px`,
-          'height': `${s >= 1 ? ROW_H : STAIR_H}px`,
-          'left': `${(s >= 1 ? ROW : STAIR)[i].x}px`,
-          'top': `${(s >= 1 ? ROW : STAIR)[i].y}px`,
-          'animationDelay': `${blockDelay(i)}s`,
-        }"
-      >
-        <small class="feat__need">{{ f.need }}</small>
-        <b>{{ f.name }}</b>
-      </div>
+        :key="`w1${f.name}`"
+        class="wire wire--top"
+        :class="{ 'is-lit': isOn(i) }"
+        :style="{ '--c': f.color, '--i': i }"
+      />
 
-      <!-- проекты: какие решения в них включены -->
-      <div
-        v-for="(p, r) in projects"
-        :key="p.name"
-        class="proj"
-        :class="{ 'is-on': s >= p.at }"
-        :style="{ 'top': `${196 + r * 56}px`, '--d': `${queue(r) * 0.35}s` }"
-      >
-        <span class="proj__name">{{ p.name }}</span>
+      <!-- ряд 2: решения; на шаге 0 между ними — стрелки «лестницы» -->
+      <template v-for="(f, i) in features" :key="`s${f.name}`">
+        <div
+          class="sol hud-frame hud-solid"
+          :class="{ 'is-lit': lit(i), 'is-shown': shown(i) }"
+          :style="{ '--hud-c': f.color, '--c': f.color, 'grid-column': i * 2 + 1, 'transition-delay': `${delay(i)}s` }"
+        >
+          <b>{{ f.name }}</b>
+        </div>
+        <svg
+          v-if="i < features.length - 1"
+          class="arrow"
+          :class="{ 'is-shown': s === 0 && started }"
+          :style="{ 'grid-column': i * 2 + 2, 'transition-delay': s === 0 ? `${0.3 + i * STEP_T + 0.5}s` : '0s' }"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path d="M 4 12 H 18 M 12 5 L 19 12 L 12 19" />
+        </svg>
+      </template>
+
+      <!-- провода: решение → проект -->
+      <span
+        v-for="(f, i) in features"
+        :key="`w2${f.name}`"
+        class="wire wire--bottom"
+        :class="{ 'is-lit': s >= 2 && isOn(i) }"
+        :style="{ '--c': f.color, '--i': i }"
+      />
+
+      <!-- проект: на шаге 0 — путь до «серьёзного» проекта, дальше — то, что собрано из включённого -->
+      <div class="proj hud-frame hud-solid" style="--hud-c: rgb(255 255 255 / 0.7)" :style="vt('x-tg-rail')">
+        <span class="proj__path" :style="{ transitionDuration: s === 0 ? `${PATH_S}s` : '0.5s' }" :class="{ 'is-go': s === 0 && started }" />
+        <span class="proj__caption proj__caption--path" :class="{ 'is-shown': s === 0 && started }" :style="{ transitionDelay: s === 0 && started ? '0.3s' : '0s' }">
+          Серьёзность проекта
+        </span>
         <span
-          v-for="(on, i) in p.has"
-          :key="i"
-          class="dot"
-          :class="{ 'is-lit': on }"
-          :style="{ 'left': `${COL_X + i * COL_W + BLOCK_W / 2}px`, '--c': features[i].color, '--k': i }"
-        />
-      </div>
-    </div>
-
-    <div class="fns__captions">
-      <div v-for="(text, i) in captions" :key="i" :class="state(i)">
-        {{ text }}
+          v-for="(c, k) in configs"
+          :key="c.name"
+          class="proj__caption"
+          :class="{ 'is-shown': s === k + 1, 'proj__caption--note': k === 0 }"
+        >
+          {{ c.name }}
+        </span>
       </div>
     </div>
   </div>
@@ -162,17 +156,15 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
 .fns {
   position: absolute;
   inset: 0;
-  padding: 40px 0 36px;
+  padding: 40px 50px 60px;
   display: flex;
   flex-direction: column;
   color: #fff;
   text-align: left;
 }
 
-.fns__titles,
-.fns__captions {
+.fns__titles {
   display: grid;
-  padding: 0 50px;
 
   & > * {
     grid-area: 1 / 1;
@@ -187,196 +179,239 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
   letter-spacing: -0.02em;
 }
 
-.fns__captions {
-  margin-top: auto;
-  font-size: 20px;
-  line-height: 1.3;
-  text-shadow: 0 2px 16px rgb(0 0 0 / 0.8);
-}
-
-.fns__stage {
+/*
+ * Сетка из 4 колонок с узкими зазорами под стрелки. Ряды: требования · провод · решения · провод · проект.
+ * Высоты фиксированные — на любом шаге всё стоит на своих местах.
+ */
+.board {
+  --need-h: 98px;
+  --wire-h: 32px;
+  --sol-h: 84px;
   position: relative;
-  flex: none;
-  height: 410px;
+  margin-top: 26px;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 26px 1fr 26px 1fr 26px 1fr;
+  grid-template-rows: var(--need-h) var(--wire-h) var(--sol-h) var(--wire-h) 1fr;
 }
 
-/* ── лестница ───────────────────────────────────────────────────── */
-.stairs {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-  transition: opacity 0.4s ease, transform 0.8s ease;
-}
-
-/* стрелка «прорастает» от ступени к следующей; наконечник — маркер, проявляется в конце */
-.stairs__arrow {
-  fill: none;
-  stroke: rgb(255 255 255 / 0.5);
-  stroke-width: 1.5;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-  animation: draw 0.45s ease-out backwards;
-}
-
-.stairs__head {
-  fill: none;
-  stroke: none;
-  stroke-width: 1.5;
-  animation: fade 0.15s ease backwards;
-}
-
-.summit {
-  position: absolute;
-  translate: -50% -100%;
-  font-size: 16px;
-  font-style: italic;
-  color: rgb(255 255 255 / 0.75);
-  white-space: nowrap;
-  transition: opacity 0.4s ease, transform 0.8s ease;
-  animation: appear 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
-}
-
-.is-broken .stairs,
-.is-broken .summit {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-/* ── решение ────────────────────────────────────────────────────── */
-.feat {
-  position: absolute;
+/* ── требования с тумблерами ────────────────────────────────────── */
+.need {
+  grid-row: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  gap: 4px;
-  overflow: hidden;
-  padding: 10px 12px 12px;
-  animation: appear 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
-  /* перестройка из лестницы в ряд — с небольшой очередью, ступени «разлетаются» */
-  transition:
-    left 1s cubic-bezier(0.65, 0, 0.35, 1) calc(0.25s + var(--i) * 0.08s),
-    top 1s cubic-bezier(0.65, 0, 0.35, 1) calc(0.25s + var(--i) * 0.08s),
-    height 0.5s cubic-bezier(0.65, 0, 0.35, 1) calc(1.05s + var(--i) * 0.08s);
+  justify-content: space-between;
+  gap: 6px;
+  padding: 10px 14px 12px;
+  filter: saturate(0.25) brightness(0.7);
+  opacity: 0;
+  transform: translateY(0.4em);
+  transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
 
   & b {
-    flex: none;
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 700;
-    white-space: nowrap;
+    line-height: 1.15;
+    color: rgb(255 255 255 / 0.92);
+  }
+}
+
+.need.is-shown {
+  opacity: 1;
+  transform: none;
+}
+
+.need.is-lit {
+  filter: none;
+  --hud-bg: color-mix(in srgb, var(--c) 14%, rgb(10 10 20 / 0.72));
+
+  & b {
+    color: color-mix(in oklab, var(--c) 55%, white);
+  }
+}
+
+.need__toggle {
+  align-self: flex-start;
+  width: 46px;
+  height: 24px;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1.5px solid color-mix(in srgb, var(--c) 60%, transparent);
+  background: rgb(255 255 255 / 0.06);
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+
+  & i {
+    display: block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.5);
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s ease;
+  }
+}
+
+.is-lit .need__toggle {
+  background: color-mix(in srgb, var(--c) 35%, transparent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--c) 60%, transparent);
+
+  & i {
+    background: var(--c);
+    transform: translateX(22px);
+  }
+}
+
+/* ── решения ────────────────────────────────────────────────────── */
+.sol {
+  grid-row: 3;
+  display: grid;
+  place-items: center;
+  padding: 0 10px;
+  filter: saturate(0.25) brightness(0.7);
+  opacity: 0;
+  transform: translateY(0.5em) scale(0.96);
+  transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
+
+  & b {
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 1.1;
+    text-align: center;
     color: color-mix(in oklab, var(--c) 75%, white);
   }
 }
 
-/* требование: на ступени спрятано, в ряду проявляется, когда блок вырос */
-.feat__need {
-  flex: none;
-  font-size: 13px;
-  line-height: 1.25;
-  color: color-mix(in oklab, var(--c) 70%, white);
-  opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.is-broken .feat__need {
+.sol.is-shown {
   opacity: 1;
   transform: none;
-  transition-delay: 1.4s;
 }
 
-/* слайд ещё не на экране: лестница не построена, анимации не идут */
-.is-waiting {
-  & .feat,
-  & .stairs__arrow,
-  & .stairs__head,
-  & .summit {
-    animation: none;
-    opacity: 0;
-  }
+.sol.is-lit {
+  filter: none;
+  --hud-bg: color-mix(in srgb, var(--c) 18%, rgb(10 10 20 / 0.72));
 }
 
-/* ── проекты ────────────────────────────────────────────────────── */
-.proj {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 0;
-
-  &::before {
-    content: '';
-    position: absolute;
-    left: 50px;
-    right: 50px;
-    top: 0;
-    border-top: 1px solid rgb(255 255 255 / 0.1);
-    opacity: 0;
-    transition: opacity 0.5s ease var(--d);
-  }
-
-  &.is-on::before {
-    opacity: 1;
-  }
-}
-
-.proj__name {
-  position: absolute;
-  left: 50px;
-  top: 0;
-  width: 140px;
-  translate: 0 -50%;
-  font-size: 15px;
-  line-height: 1.2;
+/* ── стрелки «лестницы» между решениями ─────────────────────────── */
+.arrow {
+  grid-row: 3;
+  align-self: center;
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: rgb(255 255 255 / 0.7);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   opacity: 0;
-  transform: translateX(-16px);
-  filter: blur(6px);
-  transition: opacity 0.5s ease var(--d), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--d), filter 0.5s ease var(--d);
+  transition: opacity 0.4s ease;
 }
 
-.proj.is-on .proj__name {
+.arrow.is-shown {
+  opacity: 1;
+}
+
+/* ── провода ────────────────────────────────────────────────────── */
+.wire {
+  position: absolute;
+  /* центр i-й колонки: ширина колонки (100% − 3·26px)/4, плюс зазоры слева */
+  left: calc((100% - 78px) / 4 * (var(--i) + 0.5) + 26px * var(--i));
+  width: 2px;
+  height: var(--wire-h);
+  translate: -50% 0;
+  background: var(--c);
+  box-shadow: 0 0 10px var(--c);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.35s ease;
+}
+
+.wire--top {
+  top: var(--need-h);
+}
+
+.wire--bottom {
+  top: calc(var(--need-h) + var(--wire-h) + var(--sol-h));
+}
+
+.wire.is-lit {
+  transform: scaleY(1);
+}
+
+.wire--top.is-lit {
+  transition-delay: 0.3s;
+}
+
+.wire--bottom.is-lit {
+  transition-delay: 0.6s;
+}
+
+/* ── проект ─────────────────────────────────────────────────────── */
+.proj {
+  grid-column: 1 / -1;
+  grid-row: 5;
+  position: relative;
+  display: grid;
+  align-items: center;
+  /* padding нулевой: абсолютный слой в сетке отсчитывается от области ячейки, отступы — у подписей */
+  padding: 0;
+  min-height: 0;
+  overflow: hidden;
+
+  & > * {
+    grid-area: 1 / 1;
+  }
+}
+
+/* шкала «серьёзности»: градиент всегда в полный размер, открывается маской слева направо */
+.proj__path {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #34d399, #60a5fa, #f472b6, #fbbf24);
+  clip-path: inset(0 100% 0 0);
+  opacity: 0;
+  transition: clip-path 0.5s ease, opacity 0.5s ease;
+}
+
+.is-evolution .proj__path {
+  opacity: 0.32;
+}
+
+.proj__path.is-go {
+  clip-path: inset(0 0 0 0);
+  transition-timing-function: linear;
+  transition-delay: 0.3s;
+}
+
+.proj__caption {
+  margin-inline: 28px;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  opacity: 0;
+  transform: translateY(0.35em);
+  filter: blur(8px);
+  transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), filter 0.5s ease;
+}
+
+.proj__caption.is-shown {
   opacity: 1;
   transform: none;
   filter: none;
 }
 
-.dot {
-  position: absolute;
-  top: 0;
-  width: 14px;
-  height: 14px;
-  translate: -50% -50%;
-  border-radius: 50%;
-  border: 1.5px solid rgb(255 255 255 / 0.22);
-  opacity: 0;
-  scale: 0.3;
-  transition:
-    opacity 0.35s ease calc(var(--d) + 0.3s + var(--k) * 0.08s),
-    scale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--d) + 0.3s + var(--k) * 0.08s);
-
-  &.is-lit {
-    width: 20px;
-    height: 20px;
-    border-color: var(--c);
-    background: var(--c);
-    box-shadow: 0 0 14px color-mix(in oklab, var(--c) 70%, transparent);
-  }
+.proj__caption:not(.proj__caption--path).is-shown {
+  transition-delay: 0.45s;
 }
 
-.proj.is-on .dot {
-  opacity: 1;
-  scale: 1;
-}
-@keyframes draw {
-  from { stroke-dashoffset: 1; }
+.proj__caption--path {
+  position: relative;
+  color: rgb(255 255 255 / 0.95);
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.55);
 }
 
-@keyframes fade {
-  from { opacity: 0; }
-}
-
-@keyframes appear {
-  from { opacity: 0; transform: translateY(14px) scale(0.96); }
+.proj__caption--note {
+  font-size: 28px;
+  font-weight: 600;
+  color: rgb(255 255 255 / 0.9);
 }
 </style>

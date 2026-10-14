@@ -180,25 +180,61 @@ onMounted(() => {
     }
   }
 
-  // видно ли хоть одно тело (с кольцами/орбитой) — иначе в кадре только звёзды
-  const bodiesInView = (cam: CameraFrame) => {
+  // попадает ли шар (с запасом на кольца/орбиты) в кадр
+  const sphereInView = (cam: CameraFrame, aspect: number, pos: Vec3, radius: number) => {
+    const v = sub(pos, cam.eye)
+    const z = dot(v, cam.fwd)
+    if (z < -radius)
+      return false
+    if (z < radius)
+      return true
+    const x = dot(v, cam.right) / z * cam.fov + cam.shift[0]
+    const y = dot(v, cam.up) / z * cam.fov + cam.shift[1]
+    const m = radius / z * cam.fov * 1.3 + 0.1
+    return Math.abs(x) < aspect + m && Math.abs(y) < 1 + m
+  }
+
+  const planetBounds = planets.slice(0, MAX_P)
+    .map(p => [p.pos, Math.max(p.radius * 1.3, p.ring?.outer ?? 0, Math.max(0, ...orbitsOf(p)) + 0.2)] as [Vec3, number])
+
+  /** какие планеты (с кольцами, орбитами и спутниками) в кадре */
+  const planetsInView = (cam: CameraFrame) => {
     const aspect = el.width / el.height
-    const bounds = planets.slice(0, MAX_P)
-      .map(p => [p.pos, Math.max(p.radius * 1.3, p.ring?.outer ?? 0, Math.max(0, ...orbitsOf(p)) + 0.2)] as [Vec3, number])
-    bounds.push([station.pos, station.radius * 2.5])
-    return bounds.some(([pos, radius]) => {
-      const v = sub(pos, cam.eye)
-      const z = dot(v, cam.fwd)
-      if (z < -radius)
-        return false
-      if (z < radius)
-        return true
-      const x = dot(v, cam.right) / z * cam.fov + cam.shift[0]
-      const y = dot(v, cam.up) / z * cam.fov + cam.shift[1]
-      const m = radius / z * cam.fov * 1.3 + 0.1
-      return Math.abs(x) < aspect + m && Math.abs(y) < 1 + m
+    return planetBounds.map(([pos, radius], i) => sphereInView(cam, aspect, planets[i].pos ?? pos, radius))
+  }
+
+  /**
+   * Чьё тело (шар) в кадре: поверхность запекаем только таким — кольца и орбиты текстур не используют.
+   * Проверка угловая: конус взгляда (по диагонали кадра, со сдвигом объектива) против углового радиуса шара.
+   */
+  const planetsToBake = (cam: CameraFrame) => {
+    const aspect = el.width / el.height
+    // четыре боковые плоскости пирамиды кадра (все через глаз): экранная x = (v·right)/z·fov + shift ∈ [−aspect, aspect], y ∈ [−1, 1]
+    const side = (axis: Vec3, k: number, sign: number): Vec3 => {
+      const n: Vec3 = [
+        sign * cam.fov * axis[0] + k * cam.fwd[0],
+        sign * cam.fov * axis[1] + k * cam.fwd[1],
+        sign * cam.fov * axis[2] + k * cam.fwd[2],
+      ]
+      const len = Math.hypot(n[0], n[1], n[2])
+      return [n[0] / len, n[1] / len, n[2] / len]
+    }
+    const planes = [
+      side(cam.right, cam.shift[0] + aspect, 1),
+      side(cam.right, aspect - cam.shift[0], -1),
+      side(cam.up, cam.shift[1] + 1, 1),
+      side(cam.up, 1 - cam.shift[1], -1),
+    ]
+    return planets.slice(0, MAX_P).map((p) => {
+      const v = sub(p.pos, cam.eye)
+      const R = p.radius * 1.15
+      return planes.every(n => dot(v, n) >= -R)
     })
   }
+
+  // видно ли хоть одно тело (с кольцами/орбитой) — иначе в кадре только звёзды
+  const bodiesInView = (cam: CameraFrame, vis: boolean[]) =>
+    vis.some(Boolean) || sphereInView(cam, el.width / el.height, station.pos, station.radius * 2.5)
 
   const updateBodies = (time: number) => {
     planets.slice(0, MAX_P).forEach((p, i) => {
@@ -286,7 +322,12 @@ onMounted(() => {
     liveCamera.aspect = el.width / el.height
 
     // пустой космос и камера стоит — звёздам хватит 15 fps
-    const idle = !rig.moving && !bodiesInView(cam)
+    const vis = planetsInView(cam)
+    const idle = !rig.moving && !bodiesInView(cam, vis)
+    // часы запекания идут и в пустом космосе — иначе планета, вернувшись в кадр, получит устаревшую поверхность
+    const bakeVis = planetsToBake(cam)
+    if (idle)
+      baker?.update(time, frozenAt !== null, bakeVis)
     if (idle && now - lastDraw < 1000 / 15)
       return
 
@@ -306,7 +347,7 @@ onMounted(() => {
 
     updateBodies(time)
     if (baker)
-      pMix.set(baker.update(time, frozenAt !== null))
+      pMix.set(baker.update(time, frozenAt !== null, bakeVis))
     resize(rig.moving ? quality * 0.65 : quality)
     // ошибка кадра не должна останавливать цикл
     try {
@@ -336,6 +377,40 @@ onMounted(() => {
       get mode() { return mode },
       set mode(m: Mode) { if (programs[m]) mode = m },
       canBake,
+      /** замер запекания: сколько граней запечено по планетам с последнего вызова с reset=true */
+      bakeStats(reset = false) {
+        const out = baker ? { planets: planets.slice(0, MAX_P).map((p, i) => p.id), faces: [...baker.baked] } : null
+        if (reset && baker)
+          baker.baked.fill(0)
+        return out
+      },
+      /** прогон запекания на «виртуальных» кадрах (60 fps) с камерой текущего слайда: сколько граней и каких планет */
+      simulateBake(seconds = 8) {
+        if (!baker)
+          return null
+        const now = performance.now()
+        const time = worldTime(now)
+        const cam = rig.frame(time, now)
+        if (!cam)
+          return null
+        const vis = planetsToBake(cam)
+        // чистое состояние до и после прогона: виртуальное время не должно сбить живые снимки
+        baker.rebakeAll(time)
+        const before = [...baker.baked]
+        for (let f = 0; f < seconds * 60; f++)
+          baker.update(time + f / 60, false, vis)
+        const baked = [...baker.baked]
+        baker.rebakeAll(time)
+        baker.baked.splice(0, baker.baked.length, ...baked)
+        return {
+          visible: planets.slice(0, MAX_P).filter((_, i) => vis[i]).map(p => p.id),
+          faces: Object.fromEntries(planets.slice(0, MAX_P).map((p, i) => [p.id, baked[i] - before[i]])),
+        }
+      },
+      /** стоимость одной грани запекания по планетам, мс (с gl.finish) */
+      benchBake() {
+        return baker?.bench(g) ?? null
+      },
       /** подбор ракурса: поставить камеру поверх слайда (пресет + переопределения); null — вернуть слайдовую */
       camera(spec: (CameraSpec & { preset?: string }) | null) {
         const slide = resolveCamera(nav.slides.value as any, nav.currentSlideNo.value, nav.clicks.value)

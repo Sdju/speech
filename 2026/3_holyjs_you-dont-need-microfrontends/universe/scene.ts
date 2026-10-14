@@ -73,6 +73,12 @@ export interface CameraSpec {
    */
   follow?: 'world' | 'orbit' | 'module' | 'station'
   duration?: number
+  /** держать текущее направление взгляда (камера только смещается) — для слайдов без объектов в кадре */
+  hold?: boolean
+  /** id модуля станции: вместо облёта камеры станция сама поворачивается этим модулем к камере */
+  face?: string
+  /** ракурс слайда задан точно: не подгонять yaw/pitch под предыдущий кадр */
+  exact?: boolean
 }
 
 const tilt = (ang: number, z: number): Vec3 => [Math.sin(ang) * 0.95, Math.cos(ang) * 0.95, z]
@@ -138,12 +144,12 @@ export const presets: Record<string, CameraSpec> = {
   /** «геройский» план станции со слайда 3: станция справа сверху, крупный заголовок слева снизу */
   'station-hero': { focus: 'station', distance: 3.3, yaw: -28, pitch: 12, shift: [1.05, 0.2], fov: 2.35, spin: 1.2 },
   /** сквозной слайд обещаний: станция крупно справа, колонка обещаний слева */
-  promises: { focus: 'station', distance: 4.6, yaw: -30, pitch: 34, shift: [1.05, -0.05], fov: 2.35, spin: 0.6 },
+  promises: { focus: 'station', distance: 4.6, yaw: -30, pitch: 34, shift: [1.05, -0.05], fov: 2.35 },
   /** крупно модуль-обещание на сквозном слайде: справа от колонки обещаний */
-  'promise-catalog': { focus: 'station.catalog', follow: 'module', distance: 9, yaw: 70, pitch: 28, shift: [0.95, 0], fov: 2.35, duration: 1.6 },
-  'promise-search': { focus: 'station.search', follow: 'module', distance: 9, yaw: 70, pitch: 28, shift: [0.95, 0], fov: 2.35, duration: 1.6 },
-  'promise-cart': { focus: 'station.cart', follow: 'module', distance: 10, yaw: 20, pitch: -8, shift: [0.95, 0], fov: 2.35, duration: 1.6 },
-  'promise-checkout': { focus: 'station.checkout', follow: 'module', distance: 10, yaw: 70, pitch: 28, shift: [0.95, 0], fov: 2.35, duration: 1.6 },
+  'promise-catalog': { focus: 'station', distance: 4.6, yaw: -30, pitch: 34, shift: [1.05, -0.05], fov: 2.35, face: 'catalog' },
+  'promise-search': { focus: 'station', distance: 4.6, yaw: -30, pitch: 34, shift: [1.05, -0.05], fov: 2.35, face: 'search' },
+  'promise-cart': { focus: 'station', distance: 4.6, yaw: -30, pitch: 34, shift: [1.05, -0.05], fov: 2.35, face: 'cart' },
+  'promise-checkout': { focus: 'station', distance: 4.6, yaw: -30, pitch: 34, shift: [1.05, -0.05], fov: 2.35, face: 'checkout' },
   /** экипаж вокруг станции (слайды 13–14): станция справа от центра, место под людей вокруг */
   crew: { focus: 'station', distance: 5.6, yaw: -35, pitch: 26, shift: [0.4, 0.12], fov: 2.35, spin: 0.4 },
   /**
@@ -179,7 +185,7 @@ export const presets: Record<string, CameraSpec> = {
   earth: { focus: 'station', distance: 6.5, yaw: -24, pitch: 52, shift: [0.95, 0.5], fov: 2.35, duration: 2.4 },
   /** станция над Землёй под центрированный заголовок: станция и Земля уходят к правому краю */
   'earth-wide': { focus: 'station', distance: 7.5, yaw: -24, pitch: 52, shift: [1.4, 0.6], fov: 2.35, duration: 2.4 },
-  ambient: { focus: [60, 40, -120], distance: 10, yaw: 0, pitch: 0, shift: [0, 0], fov: 2.35 },
+  ambient: { focus: [60, 40, -120], distance: 10, yaw: 0, pitch: 0, shift: [0, 0], fov: 2.35, hold: true },
 }
 
 export const DEFAULT_PRESET = 'ambient'

@@ -10,10 +10,10 @@ const { step = 0 } = defineProps<{ step?: number }>()
 const s = computed(() => Math.max(0, step))
 
 const tools = [
-  { name: 'Workspaces', icons: ['npm', 'yarn', 'pnpm'], what: 'Пакеты в одном репо ссылаются друг на друга, общий install' },
+  { name: 'Workspaces', icons: ['npm', 'yarn', 'pnpm'], what: 'Пакеты в одном репо ссылаются друг на друга, общий install' },
   { name: 'Turborepo', icons: ['turbo'], what: 'Кэш и параллельный запуск задач по графу пакетов' },
-  { name: 'Nx', icons: ['nx'], what: 'Граф проекта, запуск только затронутого и контроль границ модулей' },
-  { name: 'Rush', icons: ['rush'], what: 'Строгие версии и публикация пакетов для больших команд' },
+  { name: 'Nx', icons: ['nx'], what: 'Граф проекта, запуск только затронутого и контроль границ модулей' },
+  { name: 'Rush', icons: ['rush'], what: 'Строгие версии и публикация пакетов для больших команд' },
 ]
 </script>
 

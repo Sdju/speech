@@ -4,7 +4,7 @@ import stationUrl from './assets/station.glb?url'
 // через импорт: Vite кладёт файл в сборку и подставляет путь с учётом base (на хостинге — /speech/slides/…)
 import mfeLogoUrl from '../img/mfe.svg?url'
 import type { BodyState, CameraFrame, StationState } from './camera'
-import { stationYaw } from './camera'
+import { liveYaw } from './camera'
 import type { ModuleDef, Port, Vec3 } from './scene'
 import { planets, satellites, station as def } from './scene'
 
@@ -377,6 +377,8 @@ const fadeAt = (f: Fade, now: number) => {
   return THREE.MathUtils.lerp(f.from, f.to, ease(raw))
 }
 
+const LOGO_BAND_OFFSET = 0.12
+
 /** лента с логотипом: словесный знак MF по кругу, три повтора — один всегда смотрит в камеру */
 function logoBandTexture(url: string) {
   const c = document.createElement('canvas')
@@ -386,6 +388,8 @@ function logoBandTexture(url: string) {
   tex.colorSpace = THREE.SRGBColorSpace
   tex.wrapS = THREE.RepeatWrapping
   tex.repeat.set(3, 1)
+  // сдвиг ленты по кругу: центр надписи смотрит в камеру слайда «Module Federation» (1 = один повтор)
+  tex.offset.x = LOGO_BAND_OFFSET
   tex.anisotropy = 8
   const img = new Image()
   img.onload = () => {
@@ -396,7 +400,7 @@ function logoBandTexture(url: string) {
     ctx.fillStyle = 'rgba(56,189,248,0.55)'
     ctx.fillRect(0, 10, c.width, 4)
     ctx.fillRect(0, c.height - 14, c.width, 4)
-    const w = c.width * 0.82
+    const w = c.width * 0.58
     const h = w * img.height / img.width
     ctx.drawImage(img, (c.width - w) / 2, (c.height - h) / 2, w, h)
     tex.needsUpdate = true
@@ -832,7 +836,7 @@ export class StationScene {
   }
 
   private animate(time: number, now: number) {
-    this.body.rotation.y = stationYaw(time)
+    this.body.rotation.y = liveYaw(time)
     for (const rt of this.modules.values()) {
       const target = this.target(rt.def, rt.length, rt.mode)
       const raw = Math.min(1, Math.max(0, (now - rt.start) / rt.duration))

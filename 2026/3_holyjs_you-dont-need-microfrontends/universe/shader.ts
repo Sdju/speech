@@ -96,20 +96,60 @@ vec3 gasSurface(vec3 q, vec3 base, float time) {
   return col;
 }
 
-// твёрдая планета: океан цвета base, материки, облака, шапки
-vec3 rockySurface(vec3 q, vec3 base, float time, out float spec) {
-  float h = fbm(q * 2.2 + 3.7);
+// твёрдая планета «Земля»: континенты с климатическими поясами и горами, океан с шельфом, шапки, облака с тенями.
+// Альфа выхода — рельеф (суша, лёд, облака; 0 = открытая вода): по нему рендер считает бамп и блик океана.
+vec3 rockySurface(vec3 q, vec3 base, float time, out float relief) {
+  // континенты: домен слегка искажён, чтобы берега не были «шумовыми кляксами»
+  vec3 w = vec3(fbm(q * 1.7 + 11.0), fbm(q * 1.7 + 23.0), 0.0) - 0.5;
+  vec3 qw = q + vec3(w.x, w.y, w.x - w.y) * 0.34;
+  float h = fbm(qw * 2.2 + 3.7);
   float detail = fbm(q * 9.0);
-  float land = smoothstep(0.5, 0.53, h + (detail - 0.5) * 0.08);
-  vec3 ocean = mix(base * 0.35, base * 0.75, smoothstep(0.3, 0.5, h));
-  vec3 ground = mix(vec3(0.42, 0.38, 0.28), vec3(0.24, 0.34, 0.2), smoothstep(0.52, 0.7, h));
-  ground *= 0.8 + 0.4 * detail;
+  float fine = fbm(q * 26.0);
+  float land = smoothstep(0.455, 0.475, h + (detail - 0.5) * 0.06);
+  float elev = clamp((h - 0.455) / 0.3, 0.0, 1.0);
+  float ridge = 1.0 - abs(fbm(qw * 5.5 + 8.0) * 2.0 - 1.0);
+  float mount = smoothstep(0.62, 0.92, ridge) * smoothstep(0.12, 0.55, elev);
+
+  // климат: тепло убывает к полюсам, влажность — шум
+  float lat = abs(q.y);
+  float temp = 1.0 - smoothstep(0.12, 0.95, lat + (detail - 0.5) * 0.14);
+  float moist = fbm(q * 2.8 + 19.0);
+  vec3 desert = vec3(0.80, 0.63, 0.40);
+  vec3 grass = vec3(0.36, 0.44, 0.18);
+  vec3 forest = vec3(0.08, 0.24, 0.10);
+  vec3 tundra = vec3(0.48, 0.47, 0.40);
+  vec3 ground = mix(desert, grass, smoothstep(0.38, 0.55, moist));
+  ground = mix(ground, forest, smoothstep(0.52, 0.72, moist) * smoothstep(0.25, 0.6, temp));
+  ground = mix(tundra, ground, smoothstep(0.12, 0.5, temp));
+  ground = mix(ground, vec3(0.43, 0.38, 0.33), mount * 0.85);
+  ground = mix(ground, vec3(0.95), mount * smoothstep(0.62, 0.95, elev) * 0.8);
+  ground *= 0.74 + 0.5 * fine;
+  // прибрежная полоса светлее: пляжи и дельты
+  ground = mix(ground, vec3(0.78, 0.7, 0.5), (1.0 - smoothstep(0.0, 0.12, elev)) * 0.35);
+
+  // океан: бирюзовый шельф у берега → глубокая синева
+  float depth = smoothstep(0.0, 0.1, 0.455 - h);
+  vec3 shallow = mix(base, vec3(0.1, 0.78, 0.74), 0.5) * 0.9;
+  vec3 deep = base * 0.4;
+  vec3 ocean = mix(shallow, deep, smoothstep(0.0, 0.75, depth));
+  ocean *= 0.9 + 0.2 * fine;
   vec3 col = mix(ocean, ground, land);
-  float ice = smoothstep(0.78, 0.9, abs(q.y) + (detail - 0.5) * 0.15);
-  col = mix(col, vec3(0.92, 0.95, 1.0), ice);
-  float clouds = smoothstep(0.5, 0.75, fbm(q * 3.4 + vec3(time * 0.02, 0.0, 0.0)));
-  col = mix(col, vec3(1.0), clouds * 0.85);
-  spec = (1.0 - land) * (1.0 - clouds) * (1.0 - ice);
+
+  float ice = smoothstep(0.8, 0.9, lat + (detail - 0.5) * 0.15);
+  col = mix(col, vec3(0.93, 0.96, 1.0), ice);
+
+  // облака: искажённый шум, меньше у экватора-пустынь, больше в умеренных широтах; тень сдвинута от солнца
+  vec3 cq = q * 4.2 + vec3(w.x, w.y, w.y - w.x) * 1.1 + vec3(time * 0.02, 0.0, 0.0);
+  float c = fbm(cq);
+  float belt = 0.82 + 0.4 * smoothstep(0.15, 0.6, lat) - 0.2 * smoothstep(0.7, 0.95, lat);
+  float cloud = smoothstep(0.53, 0.68, c * belt);
+  float cs = fbm(cq + vec3(0.05, -0.07, 0.03));
+  float shadow = smoothstep(0.53, 0.68, cs * belt);
+  col *= 1.0 - 0.38 * shadow * (1.0 - cloud);
+  vec3 cloudCol = mix(vec3(0.8, 0.84, 0.9), vec3(1.0), smoothstep(0.55, 0.95, c * belt));
+  col = mix(col, cloudCol, cloud * 0.93);
+
+  relief = clamp(land * (0.04 + 0.3 * elev + 0.5 * mount) + ice * 0.05 + cloud * (0.2 + 0.7 * (c - 0.5)), 0.0, 1.0);
   return col;
 }
 
@@ -308,14 +348,30 @@ void main() {
     q.xz = mat2(cos(a), -sin(a), sin(a), cos(a)) * q.xz;
 
 #if BAKED
-    vec4 tex = planetTex(i, q, texLod(pxK * t / R, dot(n, -rd)));
+    bool rocky = u_pRing[i].w > 0.5;
+    float lodP = texLod(pxK * t / R, dot(n, -rd));
+    vec4 tex = planetTex(i, q, lodP);
     vec3 surf = tex.rgb;
-    float spec = tex.a;
+    // у твёрдой планеты альфа — рельеф (0 = открытая вода): по нему бамп-нормаль и блик океана
+    float spec = rocky ? 1.0 - smoothstep(0.0, 0.03, tex.a) : 0.0;
+    vec3 nb = n;
+    if (rocky) {
+      vec3 t1 = normalize(cross(q, abs(q.y) < 0.95 ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0)));
+      vec3 t2 = cross(q, t1);
+      float eps = 0.012;
+      float h1 = planetTex(i, normalize(q + t1 * eps), lodP).a;
+      float h2 = planetTex(i, normalize(q + t2 * eps), lodP).a;
+      vec3 nl = normalize(q - 0.03 * ((h1 - tex.a) * t1 + (h2 - tex.a) * t2) / eps);
+      nb = satWorld(nl, ax, a);
+    }
 #else
     float pxR = R / (pxK * t);            // радиус на экране, px
     g_oct = u_fullDetail > 0.5 ? 5 : (pxR < 40.0 ? 3 : (pxR < 150.0 ? 4 : 5));
-    float spec = 0.0;
-    vec3 surf = u_pRing[i].w > 0.5 ? rockySurface(q, u_pColor[i], u_time, spec) : gasSurface(q, u_pColor[i], u_time);
+    bool rocky = u_pRing[i].w > 0.5;
+    float relief = 0.0;
+    vec3 surf = rocky ? rockySurface(q, u_pColor[i], u_time, relief) : gasSurface(q, u_pColor[i], u_time);
+    float spec = rocky ? 1.0 - smoothstep(0.0, 0.03, relief) : 0.0;
+    vec3 nb = n;
 #endif
 
     float ndl = dot(n, u_sun);
@@ -328,12 +384,25 @@ void main() {
       if (tr > 0.0) rs = 1.0 - 0.75 * ringDensity(length(p - c + u_sun * tr), u_pRing[i].x, u_pRing[i].y);
     }
     float limb = pow(max(dot(n, -rd), 0.0), 0.35);
-    vec3 col = surf * (0.03 + 1.05 * day * rs) * limb;
-    vec3 hv = normalize(u_sun - rd);
-    col += spec * pow(max(dot(n, hv), 0.0), 60.0) * 0.6 * day;
-    float fres = pow(1.0 - max(dot(n, -rd), 0.0), 3.0);
+    // рельеф: склоны к солнцу светлее, от солнца — темнее; у терминатора тени длиннее
+    float rel = rocky ? clamp(1.0 + 1.7 * (dot(nb, u_sun) - ndl), 0.45, 1.6) : 1.0;
+    vec3 col = surf * (0.03 + 1.05 * day * rs * rel) * limb;
+    float ndv = max(dot(n, -rd), 0.0);
+    float fres = pow(1.0 - ndv, 3.0);
+    if (spec > 0.0) {
+      // океан: рябь разбивает блик на искры, а широкое отражение неба растёт к горизонту
+      vec3 wv = vec3(noise(q * 70.0 + u_time * 0.15), noise(q * 70.0 + 31.0 - u_time * 0.12), noise(q * 70.0 + 67.0)) - 0.5;
+      vec3 wn = normalize(n + 0.07 * wv);
+      vec3 hv = normalize(u_sun - rd);
+      float g = max(dot(wn, hv), 0.0);
+      col += spec * (pow(g, 160.0) * 0.5 + pow(g, 22.0) * 0.03) * day * vec3(1.0, 0.95, 0.85);
+      col += spec * vec3(0.2, 0.4, 0.75) * pow(1.0 - ndv, 4.0) * 0.3 * day;
+    }
     vec3 atmo = mix(u_pColor[i], vec3(0.6, 0.8, 1.0), 0.5);
     col += atmo * fres * smoothstep(-0.25, 0.4, ndl) * 1.1;
+    // закатная кайма вдоль терминатора у твёрдой планеты — рассеяние в толще атмосферы
+    if (rocky)
+      col += vec3(1.0, 0.45, 0.2) * exp(-pow(ndl / 0.12, 2.0)) * pow(1.0 - ndv, 2.0) * 0.5;
 
     float dmin = length(cross(rd, c - ro));
     float edge = smoothstep(0.0, pxK * t * 1.5, R - dmin);
