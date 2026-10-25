@@ -34,8 +34,7 @@ clicks: 4
 ---
 layout: center
 fileTree:
-  - caption: 'Один пакет, внутри — модули'
-    tree: |
+  - tree: |
       src/ @root
         app/ @app
         pages/
@@ -47,15 +46,13 @@ fileTree:
         utils/
         app.vue
         main.js
-  - caption: 'Каждый модуль — отдельный пакет'
-    tree: |
+  - tree: |
       packages/ @root
         app/ @app
         profile/ @profile #blue
         map/ @map #green
         ... @more
-  - caption: 'У каждого пакета свой package.json'
-    tree: |
+  - tree: |
       packages/ @root
         app/ @app
           package.json
@@ -64,8 +61,7 @@ fileTree:
         map/ @map #green
           package.json
         ... @more
-  - caption: 'Общий код — тоже пакеты'
-    focus: ['ui', 'types']
+  - focus: ['ui', 'types']
     tree: |
       packages/ @root
         app/ @app

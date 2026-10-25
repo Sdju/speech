@@ -42,16 +42,6 @@ const [CATALOG_Y, CART_Y, PROFILE_Y] = lanes.map(l => l.y)
 const GOOD_Y = 276
 const BAD_Y = 348
 
-const captions = [
-  'Shop собран из опубликованных пакетов, каждый релизится сам',
-  'Понедельник: все выпускают патчи, Shop спокойно забирает их и релизится',
-  'Вторник: Catalog выпускает 2.0 с ломающим изменением API',
-  'Среда: Profile выпускает 3.1 — стабильно и без связи с Catalog',
-  'Среда: Cart выпускает 2.2, которому уже нужен Catalog 2.0',
-  'Хорошо: Profile выехал в среду, но Catalog и Cart застряли вместе',
-  'Плохо: Shop взял Catalog 2.0 — сборка упала, Profile ждёт в очереди',
-  'Четверг: фикс Catalog 2.0.1 — в пятницу выезжает всё разом',
-]
 </script>
 
 <template>
@@ -159,16 +149,6 @@ const captions = [
       </div>
     </div>
 
-    <div class="rt__captions">
-      <div
-        v-for="(text, i) in captions"
-        :key="i"
-        class="rt__caption"
-        :class="i === s ? 'mf-on' : i < s ? 'mf-out' : 'mf-off'"
-      >
-        {{ text }}
-      </div>
-    </div>
   </div>
 </template>
 
@@ -352,18 +332,4 @@ const captions = [
   opacity: 0.45;
 }
 
-.rt__captions {
-  display: grid;
-  font-size: 20px;
-  line-height: 1.3;
-  min-height: 2.6em;
-
-  & > * {
-    grid-area: 1 / 1;
-  }
-}
-
-.rt__caption {
-  transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
-}
 </style>

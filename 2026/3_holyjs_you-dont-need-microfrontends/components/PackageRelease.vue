@@ -34,14 +34,6 @@ const PROD_Y = 204
 /** задержка на своём шаге — по хореографии, на следующих — сразу */
 const d = (at: number, t: number) => `${s.value === at ? t : 0}s`
 
-const captions = [
-  'Каждая команда живёт в своём репозитории со своим CI',
-  'Между командами и продуктом появляется реестр пакетов',
-  'Команды публикуют пакеты в реестр — когда хотят, в своём темпе',
-  'Версии копятся в реестре, а Shop диапазонами решает, какие брать',
-  'Shop собирает релиз из опубликованных пакетов — и выкатывает его целиком',
-]
-const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' : 'mf-off')
 </script>
 
 <template>
@@ -155,11 +147,6 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
       </div>
     </div>
 
-    <div class="pr__captions">
-      <div v-for="(text, i) in captions" :key="i" :class="state(i)">
-        {{ text }}
-      </div>
-    </div>
   </div>
 </template>
 
@@ -186,19 +173,6 @@ const state = (i: number) => (i === s.value ? 'mf-on' : i < s.value ? 'mf-out' :
   flex: none;
   width: 880px;
   height: 320px;
-}
-
-.pr__captions {
-  display: grid;
-  margin-top: auto;
-  font-size: 20px;
-  line-height: 1.3;
-  text-shadow: 0 2px 16px rgb(0 0 0 / 0.8);
-
-  & > * {
-    grid-area: 1 / 1;
-    transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
-  }
 }
 
 .box-head {

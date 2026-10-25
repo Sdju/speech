@@ -108,14 +108,6 @@ const arrival = (l: Lane) => prodSeq(l)[1]?.in ?? 0
 /** прод обновился автоматически на текущем шаге — подписываем, кто это сделал */
 const autoNow = (l: Lane) => l.versions.some(v => v.pass && v.at === s.value)
 
-const captions = [
-  'Диапазон в package.json Shop решает, что уедет в прод без нас',
-  'Catalog ^1.4.0: минорные и патч-версии CI поднимает и выкатывает сам',
-  'Мажор 2.0.0 в диапазон не попал — ждёт ручного обновления',
-  'Profile ~3.0.0: патч проходит сам, минор держим до ручного решения',
-  'Cart закреплён точно: даже патч ждёт человека',
-  'Не обязательно semver: в прод уходит то, что команда пометила как stable',
-]
 </script>
 
 <template>
@@ -205,16 +197,6 @@ const captions = [
       </div>
     </div>
 
-    <div class="vg__captions">
-      <div
-        v-for="(text, i) in captions"
-        :key="i"
-        class="vg__caption"
-        :class="i === s ? 'mf-on' : i < s ? 'mf-out' : 'mf-off'"
-      >
-        {{ text }}
-      </div>
-    </div>
   </div>
 </template>
 
@@ -441,22 +423,6 @@ const captions = [
   &.is-stop {
     --f: #fbbf24;
   }
-}
-
-.vg__captions {
-  display: grid;
-  font-size: 20px;
-  line-height: 1.3;
-  min-height: 2.6em;
-  margin-top: auto;
-
-  & > * {
-    grid-area: 1 / 1;
-  }
-}
-
-.vg__caption {
-  transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
 }
 
 @keyframes bump {

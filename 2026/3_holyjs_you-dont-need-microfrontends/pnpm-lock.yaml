@@ -5,9 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
-  '@slidev/client@52.19.0':
-    hash: 0d40fd16789b46f6fc0b2c0414452d4c3a2572d41a949ef6d981021332883cca
-    path: patches/@slidev__client@52.19.0.patch
+  '@slidev/client@52.19.0': 0d40fd16789b46f6fc0b2c0414452d4c3a2572d41a949ef6d981021332883cca
 
 importers:
 
@@ -19,6 +17,9 @@ importers:
       '@slidev/cli':
         specifier: 52.19.0
         version: 52.19.0(@nuxt/kit@3.21.8)(@oxc-project/types@0.142.0)(@types/markdown-it@14.1.2)(@types/node@22.19.21)(@vitejs/devtools-kit@0.4.12(@modelcontextprotocol/server@2.0.0)(cac@7.0.0)(srvx@0.12.5)(vite@8.2.0(@types/node@22.19.21)(jiti@2.7.0)(yaml@2.9.0)))(@vue/compiler-sfc@3.5.40)(cac@7.0.0)(hono@4.13.0)(lightningcss@1.33.0)(markdown-it-async@2.2.0)(markdown-it@14.3.0)(oxc-parser@0.131.0)(postcss@8.5.25)(rolldown@1.2.2)(srvx@0.12.5)
+      '@vueuse/core':
+        specifier: 14.4.0
+        version: 14.4.0(vue@3.5.40(typescript@6.0.3))
       qr-code-styling:
         specifier: ^1.9.2
         version: 1.9.2
@@ -38,6 +39,9 @@ importers:
       '@types/three':
         specifier: ^0.186.0
         version: 0.186.0
+      jiti:
+        specifier: 2.7.0
+        version: 2.7.0
 
   addon:
     dependencies:
