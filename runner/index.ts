@@ -29,12 +29,15 @@ function mergeStatus() {
 
   return presentations.map((p) => {
     const proc = running.get(p.id);
+    const install = manager.getInstall(p.id);
     return {
       ...p,
       status: proc?.status ?? 'stopped',
       port: proc?.port,
       pid: proc?.pid,
       error: proc?.error,
+      installStatus: install?.status ?? 'idle',
+      installError: install?.error,
     };
   });
 }
@@ -79,11 +82,31 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  const installMatch = pathname.match(/^\/api\/presentations\/(.+)\/install$/);
+  if (req.method === 'POST' && installMatch) {
+    const id = decodeURIComponent(installMatch[1]);
+    const presentation = discoverPresentations(REPO_ROOT).find((p) => p.id === id);
+    if (!presentation) {
+      json(res, 404, { error: 'Presentation not found' });
+      return;
+    }
+    const install = manager.getInstall(id);
+    if (install?.status === 'installing') {
+      json(res, 200, { ok: true, status: install.status });
+      return;
+    }
+    void manager.install(id, presentation.installDirs);
+    json(res, 200, { ok: true, status: 'installing' });
+    return;
+  }
+
   const logsMatch = pathname.match(/^\/api\/presentations\/(.+)\/logs$/);
   if (req.method === 'GET' && logsMatch) {
     const id = decodeURIComponent(logsMatch[1]);
     const proc = manager.get(id);
-    json(res, 200, { logs: proc?.logs ?? [] });
+    const install = manager.getInstall(id);
+    const logs = [...(install?.logs ?? []), ...(proc?.logs ?? [])];
+    json(res, 200, { logs });
     return;
   }
 

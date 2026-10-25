@@ -7,6 +7,20 @@ export interface Presentation {
   year: string;
   cwd: string;
   hasDeps: boolean;
+  installDirs: string[];
+}
+
+function collectInstallDirs(cwd: string): string[] {
+  const dirs = [cwd];
+  for (const sub of ['theme', 'addon']) {
+    const dir = path.join(cwd, sub);
+    if (fs.existsSync(path.join(dir, 'package.json'))) dirs.push(dir);
+  }
+  return dirs;
+}
+
+function hasInstalledDeps(cwd: string): boolean {
+  return collectInstallDirs(cwd).every((dir) => fs.existsSync(path.join(dir, 'node_modules')));
 }
 
 function readPackageJson(dir: string): { scripts?: { dev?: string } } | null {
@@ -57,12 +71,15 @@ export function discoverPresentations(repoRoot: string): Presentation[] {
       const rel = path.relative(repoRoot, cwd);
       const name = rel.split(path.sep).slice(1).join('/') || path.basename(cwd);
 
+      const installDirs = collectInstallDirs(cwd);
+
       presentations.push({
         id: rel,
         name,
         year,
         cwd,
-        hasDeps: fs.existsSync(path.join(cwd, 'node_modules')),
+        hasDeps: hasInstalledDeps(cwd),
+        installDirs,
       });
     });
   }

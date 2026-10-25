@@ -2,6 +2,15 @@ import { spawn, type ChildProcess } from 'node:child_process';
 import * as net from 'node:net';
 
 export type ProcessStatus = 'running' | 'starting' | 'stopped' | 'error';
+export type InstallStatus = 'idle' | 'installing' | 'done' | 'error';
+
+export interface InstallJob {
+  id: string;
+  status: InstallStatus;
+  error?: string;
+  logs: string[];
+  child?: ChildProcess;
+}
 
 export interface RunningProcess {
   id: string;
@@ -20,6 +29,7 @@ const BASE_PORT = 3030;
 
 export class PresentationManager {
   private processes = new Map<string, RunningProcess>();
+  private installs = new Map<string, InstallJob>();
 
   list(): RunningProcess[] {
     return [...this.processes.values()];
@@ -27,6 +37,46 @@ export class PresentationManager {
 
   get(id: string): RunningProcess | undefined {
     return this.processes.get(id);
+  }
+
+  getInstall(id: string): InstallJob | undefined {
+    return this.installs.get(id);
+  }
+
+  async install(id: string, dirs: string[]): Promise<InstallJob> {
+    const existing = this.installs.get(id);
+    if (existing?.status === 'installing') return existing;
+
+    const job: InstallJob = {
+      id,
+      status: 'installing',
+      logs: [],
+    };
+    this.installs.set(id, job);
+
+    const appendLog = (line: string) => {
+      job.logs.push(line);
+      if (job.logs.length > MAX_LOG_LINES) job.logs.shift();
+    };
+
+    try {
+      for (const dir of dirs) {
+        appendLog(`[install] ${dir}`);
+        await runPnpmInstall(dir, appendLog, (child) => {
+          job.child = child;
+        });
+      }
+      job.status = 'done';
+      appendLog('[install] готово');
+    } catch (err) {
+      job.status = 'error';
+      job.error = err instanceof Error ? err.message : String(err);
+      appendLog(`[error] ${job.error}`);
+    } finally {
+      job.child = undefined;
+    }
+
+    return job;
   }
 
   async start(id: string, cwd: string): Promise<RunningProcess> {
@@ -116,6 +166,41 @@ export class PresentationManager {
       if (proc.child) proc.child.kill('SIGTERM');
     }
   }
+}
+
+function runPnpmInstall(
+  cwd: string,
+  appendLog: (line: string) => void,
+  onChild: (child: ChildProcess) => void,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const child = spawn('pnpm', ['install'], {
+      cwd,
+      env: { ...process.env, FORCE_COLOR: '0' },
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+
+    onChild(child);
+
+    child.stdout?.on('data', (chunk: Buffer) => {
+      chunk.toString().split('\n').filter(Boolean).forEach(appendLog);
+    });
+
+    child.stderr?.on('data', (chunk: Buffer) => {
+      chunk
+        .toString()
+        .split('\n')
+        .filter(Boolean)
+        .forEach((line) => appendLog(`[stderr] ${line}`));
+    });
+
+    child.on('error', (err) => reject(err));
+
+    child.on('exit', (code) => {
+      if (code === 0 || code === null) resolve();
+      else reject(new Error(`pnpm install завершился с кодом ${code}`));
+    });
+  });
 }
 
 function findFreePort(start: number): Promise<number> {

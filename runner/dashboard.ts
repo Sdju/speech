@@ -40,6 +40,7 @@ export function renderDashboard(): string {
     .badge.starting { background: #9e6a0333; color: #d29922; }
     .badge.stopped { background: #30363d; color: #8b949e; }
     .badge.error { background: #da363333; color: #f85149; }
+    .badge.installing { background: #1f6feb33; color: #58a6ff; }
     .actions { display: flex; gap: 6px; flex-wrap: wrap; }
     button, a.btn {
       appearance: none;
@@ -147,12 +148,15 @@ export function renderDashboard(): string {
     function actions(item) {
       const id = encodeURIComponent(item.id);
       const running = item.status === 'running' || item.status === 'starting';
+      const installing = item.installStatus === 'installing';
       const open = item.port ? '<a class="btn" href="http://localhost:' + item.port + '" target="_blank" rel="noopener">Открыть</a>' : '';
       const start = running
         ? '<button class="danger" onclick="stop(\\'' + id + '\\')">Стоп</button>'
-        : '<button class="primary" onclick="start(\\'' + id + '\\')"' + (item.hasDeps ? '' : ' title="Нет node_modules"') + '>Старт</button>';
+        : '<button class="primary" onclick="start(\\'' + id + '\\')"' + (item.hasDeps ? '' : ' title="Нет node_modules"') + (installing ? ' disabled' : '') + '>Старт</button>';
+      const depsLabel = installing ? 'Установка…' : (item.hasDeps ? 'Обновить deps' : 'Установить deps');
+      const deps = '<button onclick="installDeps(\\'' + id + '\\')"' + (running || installing ? ' disabled' : '') + '>' + depsLabel + '</button>';
       const logs = '<button onclick="showLogs(\\'' + id + '\\', \\'' + item.name.replace(/'/g, "\\\\'") + '\\')">Логи</button>';
-      return '<div class="actions">' + start + open + logs + '</div>';
+      return '<div class="actions">' + start + deps + open + logs + '</div>';
     }
 
     function render(items) {
@@ -165,9 +169,10 @@ export function renderDashboard(): string {
           <td>
             <div class="name">\${item.year} / \${item.name}</div>
             <div class="path">\${item.id}</div>
-            \${item.hasDeps ? '' : '<div class="warn">node_modules не установлены — pnpm install в папке презентации</div>'}
+            \${item.hasDeps ? '' : '<div class="warn">node_modules не установлены — нажмите «Установить deps»</div>'}
+            \${item.installStatus === 'error' ? '<div class="warn">' + (item.installError || 'Ошибка установки зависимостей') + '</div>' : ''}
           </td>
-          <td>\${badge(item.status)}</td>
+          <td>\${badge(item.status)}\${item.installStatus === 'installing' ? ' <span class="badge installing">installing</span>' : ''}</td>
           <td>\${item.port ?? '—'}</td>
           <td>\${actions(item)}</td>
         </tr>
@@ -191,6 +196,11 @@ export function renderDashboard(): string {
 
     async function stop(id) {
       await api('/api/presentations/' + id + '/stop', { method: 'POST' });
+      await refresh();
+    }
+
+    async function installDeps(id) {
+      await api('/api/presentations/' + id + '/install', { method: 'POST' });
       await refresh();
     }
 
