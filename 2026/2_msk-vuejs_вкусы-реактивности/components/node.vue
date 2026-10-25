@@ -84,8 +84,8 @@ const dataEditName = computed(() => {
 
 const classList = computed(() => {
   return [
-    twMerge(
-      'fx b-1 grid place-items-center text-xl font-bold duration-200',
+      twMerge(
+      'rough-target fx b-1 grid place-items-center text-xl font-bold duration-200',
       highlight && `[--un-drop-shadow:var(--v-color)]`,
       pulse && 'animate-pulse',
       solid ? solidPresets[color].color : colorPresets[color].color,

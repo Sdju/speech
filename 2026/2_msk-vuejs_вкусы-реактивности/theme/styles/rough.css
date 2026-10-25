@@ -1,0 +1,78 @@
+.rough-enabled .box,
+.rough-enabled .box--rich,
+.rough-enabled .point,
+.rough-enabled .point-full {
+  border-color: transparent !important;
+  background-image: none !important;
+  background-color: transparent !important;
+  backdrop-filter: none;
+  border-radius: 0;
+}
+
+.rough-enabled .mk-panel,
+.rough-enabled .mk-title,
+.rough-enabled .mk-tray {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.rough-enabled .mk-panel__header,
+.rough-enabled .mk-panel__photo,
+.rough-enabled .mk-panel__qr-wrap {
+  border-color: transparent;
+}
+
+.rough-enabled .mk-section-hero--img .mk-section-hero__content {
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.rough-enabled .mk-title-minimal h1::after,
+.rough-enabled .mk-title__content h1::after,
+.rough-enabled .mk-section-hero__content h1::after,
+.rough-enabled .rough-heading::after {
+  display: none;
+}
+
+.rough-source {
+  isolation: isolate;
+}
+
+.rough-source > .rough-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.rough-source > :not(.rough-overlay) {
+  position: relative;
+  z-index: 1;
+}
+
+.rough-heading {
+  isolation: isolate;
+}
+
+.rough-heading__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.rough-enabled .rough-target {
+  border-color: transparent !important;
+  background-color: transparent !important;
+  border-radius: 0;
+}
+
+.rough-enabled blockquote {
+  border-left-color: transparent;
+}
